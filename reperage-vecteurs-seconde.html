@@ -139,7 +139,7 @@ svg text.grad{font-family:var(--f-body); font-style:normal; font-size:11px; fill
     <span class="eyebrow">Seconde · Chapitre géométrie</span>
     <h1>Repérage et vecteurs dans le plan</h1>
     <p class="lead">Questions de cours, exercices de la fiche et exercices nouveaux, corrigés automatiquement. Écris ton calcul une étape par ligne (par exemple <span class="formula">x = 4 − (−2) = 6</span>) : chaque égalité est vérifiée, et en cas d'erreur la page te dit laquelle et te propose la méthode pour avancer.</p>
-    <div class="score"><span class="pill" id="score-cours">Cours : 0 / 0</span><span class="pill" id="score-fiche">Fiche : 0 / 0</span><span class="pill" id="score-gen">Nouveaux réussis : 0</span></div>
+    <div class="score"><span class="pill" id="score-cours">Cours : 0 / 0</span><span class="pill" id="score-fiche">Fiche : 0 / 0</span><span class="pill" id="score-manuel">Manuel : 0 / 0</span><span class="pill" id="score-gen">Nouveaux réussis : 0</span></div>
   </div>
 </header>
 
@@ -194,7 +194,7 @@ const store = {
 };
 const solved = new Set(store.get("vec-solved", []));
 let genSolved = store.get("vec-gen", 0);
-const registry = { cours: [], fiche: [] };
+const registry = { cours: [], fiche: [], manuel: [] };
 function markSolved(id) {
   if (id.startsWith("gen-")) { if (!solved.has(id)) { solved.add(id); genSolved++; store.set("vec-gen", genSolved); } }
   else { solved.add(id); store.set("vec-solved", [...solved].filter(x => !x.startsWith("gen-"))); }
@@ -205,6 +205,7 @@ function updateScore() {
   const f = registry.fiche.filter(id => solved.has(id)).length;
   $("#score-cours").textContent = `Cours : ${c} / ${registry.cours.length}`;
   $("#score-fiche").textContent = `Fiche : ${f} / ${registry.fiche.length}`;
+  $("#score-manuel").textContent = `Manuel : ${registry.manuel.filter(id => solved.has(id)).length} / ${registry.manuel.length}`;
   $("#score-gen").textContent = `Nouveaux réussis : ${genSolved}`;
   document.querySelectorAll(".toc button").forEach(b => {
     const ids = b.dataset.ids.split(",");
@@ -404,6 +405,7 @@ function renderPart(part, card) {
   if (part.type === "text") html += `<div class="ansrow"><label class="lbl" for="${id}-t">${part.textLabel || "Réponse"} :</label><input class="t" type="text" id="${id}-t" placeholder="${part.placeholder || ""}" autocomplete="off" spellcheck="false"></div>`;
   if (part.type === "choice") html += `<div class="opts">${part.options.map((o, i) => `<label class="opt"><input type="radio" name="${id}-c" value="${i}" id="${id}-c${i}"><span>${o.t}</span></label>`).join("")}</div>`;
   if (part.type === "click") html += `<div class="clickzone"></div>`;
+  if (part.type === "checks") html += `<div class="opts">${part.items.map((t, i) => `<label class="opt"><input type="checkbox" id="${id}-k${i}"><span>${t}</span></label>`).join("")}</div>`;
   html += `<div class="actions"><button class="primary" data-a="check">Vérifier</button><button data-a="hint">Indice</button><button class="ai ai-only" data-a="ai">Analyser ma démarche avec Claude</button><button data-a="sol" disabled title="Disponible après un premier essai">Correction</button></div>
   <div class="fb" aria-live="polite"></div><div class="hintzone"></div><div class="aizone"></div><div class="solzone"></div>`;
   w.innerHTML = html;
@@ -420,6 +422,7 @@ function renderPart(part, card) {
     }
     if (part.type === "text") { const r = $("#" + id + "-t", w).value; return r.trim() ? { v: r, raw: r } : { err: "Écris ta réponse.", raw: "" }; }
     if (part.type === "choice") { const c = w.querySelector(`input[name="${id}-c"]:checked`); return c ? { v: +c.value, raw: plain(part.options[+c.value].t) } : { err: "Choisis une réponse.", raw: "" }; }
+    if (part.type === "checks") { const v = part.items.map((_, i) => $("#" + id + "-k" + i, w).checked); return { v, raw: part.items.map((t, i) => plain(t) + (v[i] ? " : oui" : " : non")).join(" ; ") }; }
     if (part.type === "click" && part.getAns) return part.getAns(st);
     if (part.type === "click") return st.pt ? { v: st.pt, raw: part.rawAns(st.pt) } : { err: "Clique sur un nœud du quadrillage pour placer le point.", raw: "" };
   };
@@ -1204,14 +1207,198 @@ const gens = {
 const genLabels = { vec: "Coordonnées d'un vecteur", milieu: "Milieu", para: "Parallélogramme", combo: "Combinaison k·u + m·v", chasles: "Relation de Chasles", construction: "Construction à cliquer", test: "Est-ce un parallélogramme ?" };
 function buildNouveaux() {
   const v = $("#v-nouveaux");
-  v.innerHTML = `<h2>Nouveaux exercices</h2><p class="note">Chaque bouton crée un exercice avec de nouvelles valeurs. Entraîne-toi autant que tu veux : le correcteur reconnaît les erreurs classiques (ordre des lettres, oubli d'un coefficient, signe…).</p>
+  v.innerHTML = `<h2>Exercices du manuel</h2><p class="note">Dix exercices du chapitre 4 du manuel, classés du plus simple au plus difficile. Les figures sont redessinées.</p><div class="toc toc-manuel"></div><div class="manuel" style="display:grid;gap:18px"></div>
+  <h2>Exercices générés</h2><p class="note">Chaque bouton crée un exercice avec de nouvelles valeurs. Entraîne-toi autant que tu veux : le correcteur reconnaît les erreurs classiques (ordre des lettres, oubli d'un coefficient, signe…).</p>
   <div class="gen-bar">${Object.keys(gens).map(k => `<button data-g="${k}">+ ${genLabels[k]}</button>`).join("")}<button class="primary" data-g="any">+ Au hasard</button></div><div class="genlist" style="display:grid;gap:18px"></div>`;
   const list = v.querySelector(".genlist");
   const add = k => { const key = k === "any" ? pick(Object.keys(gens)) : k; const card = gens[key](); card.isNew = true; const el = renderCard(card, document.createDocumentFragment()); list.prepend(el); return el; };
   v.querySelector(".gen-bar").addEventListener("click", e => { const b = e.target.closest("button[data-g]"); if (!b) return; const el = add(b.dataset.g); el.scrollIntoView({ behavior: "smooth", block: "start" }); });
   add("construction"); add("vec");
+  buildManuel(v.querySelector(".manuel"), v.querySelector(".toc-manuel"));
 }
 function renderCardTo(card, frag) { return renderCard(card, frag); }
+
+/* ---------- EXERCICES DU MANUEL (difficulté croissante) ---------- */
+/* Direction, sens, norme de deux vecteurs */
+function dsnPart(id, a, b, truth, sol) {
+  const names = ["la même direction", "le même sens", "la même norme"];
+  return { id, type: "checks", work: false, label: `${V(a)} et ${V(b)} ont :`, items: ["la même direction", "le même sens", "la même norme"],
+    hints: ["Même direction : les droites qui portent les deux vecteurs sont parallèles (ou confondues).", "On ne compare le sens que si la direction est la même. Si les directions sont différentes, les sens ne peuvent pas être les mêmes.", "Même norme : même longueur. Dans un rectangle, les diagonales ont la même longueur et O est leur milieu."],
+    solution: sol,
+    check(v) {
+      const msgs = [];
+      if (v[1] && !v[0]) msgs.push("Deux vecteurs qui n'ont pas la même direction ne peuvent pas avoir le même sens.");
+      [0, 1, 2].forEach(i => { if (i === 1 && v[1] && !v[0]) return; if (v[i] !== truth[i]) msgs.push(`${truth[i] ? "Ils ont" : "Ils n'ont pas"} ${names[i]} : revois ${i === 0 ? "les droites qui portent les vecteurs" : i === 1 ? "le sens des flèches (de l'origine vers l'extrémité)" : "les longueurs sur la figure"}.`); });
+      const ok = v.every((x, i) => x === truth[i]);
+      return { ok, msgs: ok ? (truth.every(Boolean) ? ["Même direction, même sens, même norme : ces vecteurs sont égaux."] : []) : msgs };
+    } };
+}
+/* a·u + b·v avec u, v donnés par leurs coordonnées */
+function linPart(id, a, u, b, v, un = "u", vn = "v") {
+  const cs = c => eq(c, 1) ? "" : eq(c, -1) ? "−" : fmt(c);
+  const expr = cs(a) + V(un) + (b ? (b < 0 ? " − " : " + ") + cs(Math.abs(b)) + V(vn) : "");
+  const flags = [];
+  if (Math.abs(a) !== 1) flags.push({ k: "noA", msg: `Tu as oublié de multiplier ${V(un)} par ${fmt(a)}.` });
+  if (a < 0) flags.push({ k: "signA", msg: `Attention au signe : ${fmt(a)}${V(un)} a le sens contraire de ${V(un)}, ses coordonnées changent de signe.` });
+  if (b && Math.abs(b) !== 1) flags.push({ k: "noB", msg: `Tu as oublié de multiplier ${V(vn)} par ${fmt(Math.abs(b))}.` });
+  if (b) flags.push({ k: "signB", msg: b < 0 ? `Erreur de signe : on <b>soustrait</b> les coordonnées de ${cs(Math.abs(b))}${V(vn)}.` : `Erreur de signe : on <b>ajoute</b> les coordonnées de ${V(vn)}.` });
+  if (!b) flags.push({ k: "onlyX", msg: `Si ${V(un)}(x ; y) alors k${V(un)}(kx ; ky) : <b>les deux</b> coordonnées sont multipliées.` });
+  const model = f => {
+    let A = f.has("noA") ? Math.sign(a) : a, B = f.has("noB") ? Math.sign(b) : b;
+    if (f.has("signA")) A = -A; if (f.has("signB")) B = -B;
+    if (f.has("onlyX")) return [A * u[0], u[1]];
+    return [A * u[0] + B * v[0], A * u[1] + B * v[1]];
+  };
+  const exp = model(new Set());
+  const step = i => `${fmt(a)} × ${pn(u[i])}` + (b ? ` ${b < 0 ? "−" : "+"} ${fmt(Math.abs(b))} × ${pn(v[i])}` : "");
+  return { id, type: "pair", work: true, pairLabel: expr, label: `Calcule les coordonnées de ${expr}.`,
+    hints: [`Si ${V(un)}(x ; y) alors k${V(un)}(kx ; ky).`, `Si ${V(un)}(x ; y) et ${V(vn)}(x′ ; y′) alors ${V(un)} + ${V(vn)}(x + x′ ; y + y′).`, `Abscisse : ${step(0)}.`],
+    solution: `${expr} : x = ${step(0)} = ${fmt(exp[0])} et y = ${step(1)} = ${fmt(exp[1])}, donc ${expr}${P2(exp)}.`,
+    check: p => diagPair(p, model, flags, 2) };
+}
+/* Point défini par un calcul, avec erreurs classiques fournies */
+function pointPart(id, n, label, exp, alts, hints, solution) {
+  const flags = alts.map((a, i) => ({ k: "a" + i, msg: a.msg }));
+  const model = f => { for (let i = 0; i < alts.length; i++) if (f.has("a" + i)) return alts[i].p; return exp; };
+  return { id, type: "pair", work: true, pairLabel: M(n), label, hints, solution, check: p => diagPair(p, model, flags, 1) };
+}
+/* Compléter avec des lettres (relation de Chasles) */
+function fillPart(id, label, answer, hints, solution, why) {
+  return { id, type: "text", work: false, label, textLabel: "Lettre(s) manquante(s)", placeholder: answer.length > 1 ? "ex. : X Y" : "ex. : X", hints, solution,
+    check(r) {
+      const got = (r.toUpperCase().match(/[A-Z]/g) || []).join("");
+      if (got === answer) return { ok: true, msgs: [] };
+      if (got.length !== answer.length) return { ok: false, msgs: [`Il faut ${answer.length} lettre${answer.length > 1 ? "s" : ""}.`] };
+      return { ok: false, msgs: [why] };
+    } };
+}
+function buildManuel(container, toc) {
+  const cards = [];
+  // 1. Ex 51 p 137
+  const R = [0, 2], L = [4, 2], Mm = [4, 0], U = [0, 0], O = [2, 1];
+  cards.push({ anchor: "m51", tag: "Manuel · Ex. 51 p. 137", title: "Direction, sens, norme dans un rectangle",
+    statement: `<p>RLMU est un rectangle de centre O. Dans chaque cas, coche ce que les deux vecteurs ont en commun.</p>${figure({ xmin: 0, xmax: 4, ymin: 0, ymax: 2, s: 60, lattice: false,
+      polys: [{ pts: [R, L, Mm, U], color: "var(--ink)", w: 1.6 }], segs: [{ a: R, b: Mm }, { a: L, b: U }],
+      points: [{ n: "R", c: R, off: [-16, -6] }, { n: "L", c: L, off: [6, -6] }, { n: "M", c: Mm, off: [6, 16] }, { n: "U", c: U, off: [-16, 16] }, { n: "O", c: O, off: [-5, -10] }] })}`,
+    numStyle: "alpha",
+    parts: [
+      dsnPart("m51-a", "RM", "OM", [true, true, false], `Même direction (la diagonale [RM]), même sens, mais pas la même norme : OM est la moitié de RM.`),
+      dsnPart("m51-b", "RL", "MU", [true, false, true], `Même direction et même norme, mais sens contraires : ces vecteurs sont opposés, ${V("RL")} = −${V("MU")}.`),
+      dsnPart("m51-c", "RM", "LU", [false, false, true], `Les diagonales ne sont pas parallèles : pas la même direction, donc pas le même sens. Elles ont la même longueur : même norme.`),
+      dsnPart("m51-d", "UR", "ML", [true, true, true], `Même direction, même sens et même norme : ${V("UR")} = ${V("ML")}.`),
+      dsnPart("m51-e", "LO", "UO", [true, false, true], `Même direction (la diagonale [LU]), sens contraires, même longueur : ils sont opposés.`),
+      dsnPart("m51-f", "UO", "MO", [false, false, true], `Pas la même direction (deux diagonales différentes), donc pas le même sens, mais la même norme (O est le milieu de deux diagonales de même longueur).`)
+    ] });
+  // 2. Ex 67 p 138
+  const ch = "Relation de Chasles : " + V("XY") + " + " + V("YZ") + " = " + V("XZ") + ". La lettre du milieu est la même.";
+  cards.push({ anchor: "m67", tag: "Manuel · Ex. 67 p. 138", title: "Compléter avec la relation de Chasles", numStyle: "alpha",
+    statement: "<p>Complète chaque égalité vectorielle en utilisant la relation de Chasles.</p>",
+    parts: [
+      fillPart("m67-a", `${V("BA")} + ${V("?C")} = ${V("BC")}`, "A", [ch], `${V("BA")} + ${V("AC")} = ${V("BC")}.`, "L'origine du second vecteur doit être l'extrémité du premier."),
+      fillPart("m67-b", `${V("AB")} + ${V("B?")} = ${V("AC")}`, "C", [ch], `${V("AB")} + ${V("BC")} = ${V("AC")}.`, "Le résultat va de A à C : le second vecteur doit finir en C."),
+      fillPart("m67-c", `${V("C?")} + ${V("BA")} = ${V("CA")}`, "B", [ch], `${V("CB")} + ${V("BA")} = ${V("CA")}.`, "Le premier vecteur doit finir là où commence " + V("BA") + "."),
+      fillPart("m67-d", `${V("?C")} + ${V("?A")} = ${V("BA")} (donne les deux lettres dans l'ordre)`, "BC", [ch, "Le résultat part de B : le premier vecteur part donc de B. Le second part de l'extrémité du premier."], `${V("BC")} + ${V("CA")} = ${V("BA")}.`, "Le premier vecteur doit partir de B, et le second partir de C.")
+    ] });
+  // 3. Ex 33 p 136
+  const u33 = [3, -5];
+  cards.push({ anchor: "m33", tag: "Manuel · Ex. 33 p. 136", title: "Produit d'un vecteur par un réel",
+    statement: `<p>Soit le vecteur ${V("u")}(3 ; −5).</p>`,
+    parts: [linPart("m33-a", 2, u33, 0, [0, 0]), linPart("m33-b", -1, u33, 0, [0, 0]), linPart("m33-c", -5, u33, 0, [0, 0]), linPart("m33-d", 3, u33, 0, [0, 0])] });
+  // 4. Ex 83 p 140
+  const P83 = { A: [1, 2], B: [5, -1], C: [8, 2], D: [4, 1], E: [5, 3], F: [2, 3], G: [-1, -1], H: [-1, 4] };
+  const pts83 = Object.entries(P83).map(([n, c]) => pt(n, c[0], c[1]));
+  const g83 = n => pts83.find(p => p.n === n);
+  cards.push({ anchor: "m83", tag: "Manuel · Ex. 83 p. 140", title: "Lire des coordonnées sur un graphique",
+    statement: `<p>Lis les coordonnées des points sur la figure, puis calcule les coordonnées des vecteurs. Vérifie ensuite par lecture graphique (déplacement en carreaux).</p>${figure({ xmin: -2, xmax: 9, ymin: -2, ymax: 5, s: 30, axes: true,
+      vecs: [{ a: P83.A, b: P83.B, color: "var(--red)" }, { a: P83.C, b: P83.D, color: "var(--green)" }, { a: P83.E, b: P83.F, color: "var(--red)" }, { a: P83.G, b: P83.H, color: "var(--blue)" }],
+      points: pts83.map(p => ({ n: p.n, c: p.c, off: { A: [-14, -6], B: [6, 16], C: [6, -6], D: [-6, 18], E: [4, -8], F: [-14, -8], G: [-16, 16], H: [-16, -4] }[p.n] })) })}`,
+    parts: [["A", "B"], ["C", "D"], ["E", "F"], ["G", "H"]].map(([a, b], i) => vecPart("m83-" + i, g83(a), g83(b), { label: `Coordonnées du vecteur ${V(a + b)} (lis d'abord celles de ${M(a)} et ${M(b)}).` })) });
+  // 5. Ex 92 p 140
+  const u92 = [5, 1], v92 = [2, -3];
+  cards.push({ anchor: "m92", tag: "Manuel · Ex. 92 p. 140", title: "Combinaisons de vecteurs",
+    statement: `<p>Soit les vecteurs ${V("u")}(5 ; 1) et ${V("v")}(2 ; −3).</p>`,
+    parts: [linPart("m92-a", 1, u92, 1, v92), linPart("m92-b", 2, u92, 0, v92), linPart("m92-c", -3, v92, 0, [0, 0], "v"), linPart("m92-d", 2, u92, -3, v92)] });
+  // 6. Ex 89 p 140
+  const A89 = pt("A", 2, -5), B89 = pt("B", 2, 1), C89 = pt("C", 5, -1);
+  cards.push({ anchor: "m89", tag: "Manuel · Ex. 89 p. 140", title: "Point défini par une égalité de vecteurs",
+    statement: `<p>Soit les points ${ptH(A89)}, ${ptH(B89)} et ${ptH(C89)}.</p>`,
+    parts: [vecPart("m89-a", B89, C89),
+      pointPart("m89-b", "M", `Calcule les coordonnées du point ${M("M")} défini par ${V("AM")} = ${V("BC")}.`, [5, -7],
+        [{ p: [3, -2], msg: `Ce sont les coordonnées de ${V("BC")}, pas celles du point M. Écris ${V("AM")}(${X("x", "M")} − 2 ; ${X("y", "M")} − (−5)) puis résous.` },
+         { p: [-1, -3], msg: `Erreur en résolvant : ${X("x", "M")} − ${X("x", "A")} = 3 donne ${X("x", "M")} = 3 + ${X("x", "A")}.` },
+         { p: [1, 3], msg: `Erreur en résolvant : ${X("x", "M")} − 2 = 3 donne ${X("x", "M")} = 3 <b>+</b> 2.` }],
+        [`Écris les coordonnées de ${V("AM")} avec les inconnues : ${V("AM")}(${X("x", "M")} − 2 ; ${X("y", "M")} + 5).`, `Deux vecteurs égaux ont les mêmes coordonnées : ${X("x", "M")} − 2 = 3 et ${X("y", "M")} + 5 = −2.`],
+        `${V("BC")}(3 ; −2) et ${V("AM")}(${X("x", "M")} − 2 ; ${X("y", "M")} + 5). ${X("x", "M")} − 2 = 3 donc ${X("x", "M")} = 5 ; ${X("y", "M")} + 5 = −2 donc ${X("y", "M")} = −7. ${M("M")}(5 ; −7).`)] });
+  // 7. Ex 90 p 140
+  const A90 = pt("A", 2, -4), B90 = pt("B", -2, 1), C90 = pt("C", -5, 3);
+  cards.push({ anchor: "m90", tag: "Manuel · Ex. 90 p. 140", title: "Translation et symétrie centrale", numStyle: "alpha",
+    statement: `<p>Soit les points ${ptH(A90)}, ${ptH(B90)} et ${ptH(C90)}. Calcule, dans chaque cas, les coordonnées du point E.</p>`,
+    parts: [
+      pointPart("m90-a", "E", `E est l'image de A par la translation de vecteur ${V("BC")}.`, [-1, -2],
+        [{ p: [-3, 2], msg: `Ce sont les coordonnées de ${V("BC")}. E est un point : ${V("AE")} = ${V("BC")}.` },
+         { p: [5, -6], msg: `La translation de vecteur ${V("BC")} envoie A en E tel que ${V("AE")} = ${V("BC")} : on <b>ajoute</b> les coordonnées de ${V("BC")} à celles de A.` }],
+        [`La translation de vecteur ${V("BC")} envoie A en E : cela signifie ${V("AE")} = ${V("BC")}.`, `Calcule ${V("BC")}, puis écris ${X("x", "E")} − 2 = … et ${X("y", "E")} + 4 = ….`],
+        `${V("BC")}(−3 ; 2). ${V("AE")} = ${V("BC")} donne ${X("x", "E")} − 2 = −3 et ${X("y", "E")} + 4 = 2, donc ${M("E")}(−1 ; −2).`),
+      pointPart("m90-b", "E", "E est le symétrique de B par rapport à A.", [6, -9],
+        [{ p: [0, -1.5], msg: "Tu as calculé le milieu de [AB]. Ici, c'est A qui est le milieu de [BE]." },
+         { p: [-6, 6], msg: "Tu as construit le symétrique de A par rapport à B. Relis l'énoncé : on cherche le symétrique de B." },
+         { p: [4, -5], msg: `Ce sont les coordonnées de ${V("BA")}. Il faut ensuite partir de A : ${V("AE")} = ${V("BA")}.` }],
+        ["E symétrique de B par rapport à A signifie : A est le milieu de [BE].", `Méthode 1 : ${X("x", "A")} = (${X("x", "B")} + ${X("x", "E")}) / 2. Méthode 2 : ${V("AE")} = ${V("BA")}.`],
+        `A est le milieu de [BE] : 2 = (−2 + ${X("x", "E")}) / 2 donne ${X("x", "E")} = 6 et −4 = (1 + ${X("y", "E")}) / 2 donne ${X("y", "E")} = −9. ${M("E")}(6 ; −9).`)
+    ] });
+  // 8. Ex 85 p 140
+  const M85 = pt("M", -3, 6), N85 = pt("N", 5, -1), P85 = pt("P", 11, 0), Q85 = pt("Q", 3, 7), R85 = pt("R", -10, 5);
+  cards.push({ anchor: "m85", tag: "Manuel · Ex. 85 p. 140", title: "Reconnaître un parallélogramme",
+    statement: `<p>On considère les points ${ptH(M85)}, ${ptH(N85)}, ${ptH(P85)}, ${ptH(Q85)} et ${ptH(R85)}.</p>`,
+    parts: [vecPart("m85-1", M85, N85), vecPart("m85-2", Q85, P85),
+      choicePart("m85-3", `${V("MN")} et ${V("QP")} sont égaux. Que peut-on en déduire ?`, [
+        { t: "MNPQ est un parallélogramme.", ok: true, why: `${V("MN")} = ${V("QP")} ⇔ MNPQ parallélogramme (on garde M, N puis on inverse Q et P).` },
+        { t: "MNQP est un parallélogramme.", why: `Attention à l'ordre : ${V("AB")} = ${V("CD")} ⇔ ABDC. Ici ${V("MN")} = ${V("QP")}, donc on lit M, N, P, Q.` },
+        { t: "Les points M, N, P, Q sont alignés.", why: "Des vecteurs égaux ne donnent pas des points alignés, mais un parallélogramme (éventuellement aplati)." }
+      ], { hints: [`Propriété : ${V("AB")} = ${V("CD")} ⇔ ABDC est un parallélogramme.`], solution: `${V("MN")}(8 ; −7) = ${V("QP")}, donc MNPQ est un parallélogramme.` }),
+      choicePart("m85-4", "Le quadrilatère MPNR est-il un parallélogramme ? Justifie par un calcul.", [
+        { t: "Oui", why: `Calcule ${V("MP")} et ${V("RN")} : MPNR est un parallélogramme si et seulement si ${V("MP")} = ${V("RN")}. Compare les abscisses.` },
+        { t: "Non", ok: true }
+      ], { work: true, hints: [`MPNR est un parallélogramme ⇔ ${V("MP")} = ${V("RN")}.`, `Calcule ${V("MP")} et ${V("RN")}, puis compare coordonnée par coordonnée.`], solution: `${V("MP")}(14 ; −6) et ${V("RN")}(15 ; −6) : les abscisses sont différentes, donc ${V("MP")} ≠ ${V("RN")} et MPNR n'est pas un parallélogramme.` })] });
+  // 9. Ex 91 p 140
+  const E91 = pt("E", 12, -5), F91 = pt("F", -2, 3), G91 = pt("G", -4, 10);
+  const Ap = pt("A", -18, 18), Bp = pt("B", 10, 2);
+  cards.push({ anchor: "m91", tag: "Manuel · Ex. 91 p. 140", title: "Deux parallélogrammes et un milieu",
+    statement: `<p>On considère les points ${ptH(E91)}, ${ptH(F91)} et ${ptH(G91)}. Soit A et B les points tels que les quadrilatères EFAG et EFGB sont des parallélogrammes.</p>`,
+    parts: [
+      pointPart("m91-a", "A", `Calcule les coordonnées du point ${M("A")} (EFAG parallélogramme).`, [-18, 18],
+        [{ p: [10, 2], msg: `Tu as utilisé ${V("EF")} = ${V("AG")}. Dans EFAG, les côtés opposés sont [EF] et [AG] lus dans des sens contraires : ${V("EF")} = ${V("GA")}.` },
+         { p: [-14, 8], msg: `Ce sont les coordonnées de ${V("EF")}, pas celles du point A.` }],
+        [`EFAG parallélogramme ⇔ ${V("EF")} = ${V("GA")} (on suit les sommets dans l'ordre : E→F et G→A).`, `Calcule ${V("EF")}, puis résous ${X("x", "A")} − (−4) = … et ${X("y", "A")} − 10 = ….`],
+        `${V("EF")}(−14 ; 8). ${V("GA")} = ${V("EF")} donne ${X("x", "A")} + 4 = −14 et ${X("y", "A")} − 10 = 8, donc ${M("A")}(−18 ; 18).`),
+      pointPart("m91-b", "B", `Calcule les coordonnées du point ${M("B")} (EFGB parallélogramme).`, [10, 2],
+        [{ p: [-18, 18], msg: `Tu as utilisé ${V("EF")} = ${V("GB")}. Dans EFGB, on a ${V("EF")} = ${V("BG")}.` },
+         { p: [-14, 8], msg: `Ce sont les coordonnées de ${V("EF")}, pas celles du point B.` }],
+        [`EFGB parallélogramme ⇔ ${V("EF")} = ${V("BG")}.`, `${V("BG")}(−4 − ${X("x", "B")} ; 10 − ${X("y", "B")}).`],
+        `${V("BG")} = ${V("EF")} donne −4 − ${X("x", "B")} = −14 et 10 − ${X("y", "B")} = 8, donc ${M("B")}(10 ; 2).`),
+      Object.assign(milieuPart("m91-c", Ap, Bp, "K"), { label: `Calcule les coordonnées du milieu ${M("K")} de [AB] avec A(−18 ; 18) et B(10 ; 2). Que remarques-tu ?` })
+    ] });
+  cards[cards.length - 1].parts[2].solution += " K a les coordonnées de G : G est donc le milieu de [AB].";
+  // 10. Ex 97 p 140
+  const A97 = pt("A", 1, -3), B97 = pt("B", 2, 7), C97 = pt("C", 6, -1), M97 = pt("M", 7, 2), N97 = pt("N", 4, 4);
+  cards.push({ anchor: "m97", tag: "Manuel · Ex. 97 p. 140", title: "Démontrer une égalité vectorielle",
+    statement: `<p>Soit les points ${ptH(A97)}, ${ptH(B97)}, ${ptH(C97)}, ${ptH(M97)} et ${ptH(N97)}.</p>`,
+    parts: [vecPart("m97-1", A97, B97), vecPart("m97-2", A97, C97), comboPart("m97-3", 1, A97, B97, -2, A97, C97),
+      comboPart("m97-4", 3, M97, N97, 0),
+      choicePart("m97-5", `Conclusion : a-t-on ${V("AB")} − 2${V("AC")} = 3${V("MN")} ?`, [
+        { t: "Oui, car les deux vecteurs ont les mêmes coordonnées.", ok: true },
+        { t: "Non", why: "Compare les résultats des deux questions précédentes : ils sont identiques." },
+        { t: "On ne peut pas savoir sans figure.", why: "Si : deux vecteurs sont égaux si et seulement s'ils ont les mêmes coordonnées." }
+      ], { hints: ["Deux vecteurs sont égaux si et seulement s'ils ont les mêmes coordonnées."], solution: `${V("AB")} − 2${V("AC")}(−9 ; 6) et 3${V("MN")}(−9 ; 6) : ils sont égaux.` })] });
+
+  cards.forEach(c => {
+    renderCard(c, container);
+    const ids = c.parts.map(p => p.id); ids.forEach(i => registry.manuel.push(i));
+    const b = document.createElement("button"); b.textContent = c.tag.replace("Manuel · ", ""); b.dataset.ids = ids.join(",");
+    b.addEventListener("click", () => document.getElementById(c.anchor).scrollIntoView({ behavior: "smooth", block: "start" }));
+    toc.appendChild(b);
+  });
+}
 
 /* ---------- navigation ---------- */
 function show(view) {
