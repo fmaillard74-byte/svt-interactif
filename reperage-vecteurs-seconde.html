@@ -1,0 +1,1228 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Repérage et vecteurs</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;1,400;1,600&display=swap">
+<style>
+/* Layout: cahier quadrillé — bandeau à carreaux, onglets, une colonne de fiches d'exercice ; stylo bleu pour l'élève, stylo rouge pour la correction */
+:root{
+  --paper:#f5f7fb; --sheet:#ffffff; --ink:#18203a; --muted:#596379; --line:#d9dfec; --gridline:rgba(36,72,201,.09);
+  --blue:#2448c9; --blue-soft:#e8edff; --red:#c3322b; --red-soft:#fdecea; --green:#1d7f55; --green-soft:#e3f4ec;
+  --amber:#965f00; --amber-soft:#fff3d6; --violet:#6a3fc2; --violet-soft:#f1ebff;
+  --f-head:"Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Inter", "Segoe UI", system-ui, sans-serif;
+  --f-math:"STIX Two Text", "Cambria Math", "Times New Roman", serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#10131b; --sheet:#171b26; --ink:#e7eaf3; --muted:#9ca5ba; --line:#2b3244; --gridline:rgba(142,167,255,.08);
+  --blue:#8fa8ff; --blue-soft:#1d2645; --red:#ff8f86; --red-soft:#3a1d1d; --green:#62d29c; --green-soft:#173126;
+  --amber:#f2bd5c; --amber-soft:#352a12; --violet:#c4a8ff; --violet-soft:#2a2142; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --paper:#10131b; --sheet:#171b26; --ink:#e7eaf3; --muted:#9ca5ba; --line:#2b3244; --gridline:rgba(142,167,255,.08);
+  --blue:#8fa8ff; --blue-soft:#1d2645; --red:#ff8f86; --red-soft:#3a1d1d; --green:#62d29c; --green-soft:#173126;
+  --amber:#f2bd5c; --amber-soft:#352a12; --violet:#c4a8ff; --violet-soft:#2a2142; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--paper); color:var(--ink); font-family:var(--f-body); font-size:15px; line-height:1.55}
+.wrap{max-width:860px; margin:0 auto; padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px))}
+header.top{
+  background-color:var(--sheet);
+  background-image:linear-gradient(var(--gridline) 1px, transparent 1px), linear-gradient(90deg, var(--gridline) 1px, transparent 1px);
+  background-size:18px 18px; border-bottom:1px solid var(--line);
+}
+header.top .wrap{padding-block:28px 20px; display:grid; gap:10px}
+.eyebrow{font:600 12px/1 var(--f-body); letter-spacing:.08em; text-transform:uppercase; color:var(--blue)}
+h1{font:700 clamp(26px,5vw,36px)/1.1 var(--f-head); margin:0; text-wrap:balance}
+.lead{margin:0; color:var(--muted); max-width:64ch}
+.score{display:flex; flex-wrap:wrap; gap:8px; margin-top:4px}
+.pill{font:500 13px/1 var(--f-body); padding:6px 10px; border-radius:999px; background:var(--blue-soft); color:var(--blue); font-variant-numeric:tabular-nums}
+nav.tabs{display:flex; gap:6px; flex-wrap:wrap; padding-block:16px 4px}
+nav.tabs a{font:600 14px/1 var(--f-body); color:var(--muted); text-decoration:none; padding:10px 14px; border-radius:8px; border:1px solid transparent}
+nav.tabs a:hover{color:var(--ink); background:var(--sheet)}
+nav.tabs a[aria-current="page"]{color:var(--blue); background:var(--sheet); border-color:var(--line)}
+main{padding-block:12px 64px}
+.view{display:grid; gap:18px}
+h2{font:700 21px/1.2 var(--f-head); margin:12px 0 0}
+h3{font:600 16px/1.3 var(--f-head); margin:0}
+p{margin:0}
+.card{background:var(--sheet); border:1px solid var(--line); border-radius:10px; padding:18px; display:grid; gap:14px; min-width:0}
+.card-head{display:flex; gap:10px; align-items:baseline; flex-wrap:wrap}
+.tag{font:600 11px/1 var(--f-body); letter-spacing:.07em; text-transform:uppercase; color:var(--muted); border:1px solid var(--line); padding:5px 7px; border-radius:5px}
+.tag.new{color:var(--violet); border-color:transparent; background:var(--violet-soft)}
+.statement{display:grid; gap:8px}
+.statement .fig{overflow-x:auto}
+.m{font-family:var(--f-math); font-style:italic; font-size:1.08em}
+.vec{display:inline-block; position:relative; padding-top:.32em; font-family:var(--f-math); font-style:italic; font-size:1.08em; line-height:1}
+.vec::before{content:""; position:absolute; left:.04em; right:.2em; top:.14em; border-top:1.4px solid currentColor}
+.vec::after{content:""; position:absolute; right:0; top:calc(.14em - .2em + .7px); border-style:solid; border-width:.2em 0 .2em .34em; border-color:transparent transparent transparent currentColor}
+sub{font-size:.72em}
+.part{border-top:1px dashed var(--line); padding-top:14px; display:grid; gap:10px; min-width:0}
+.q{display:flex; gap:10px; align-items:baseline}
+.qn{font:700 13px/1 var(--f-head); color:var(--blue); min-width:1.6em}
+.q > div{min-width:0}
+textarea, input[type=text]{font:16px/1.45 var(--f-math); color:var(--blue); background:var(--paper); border:1px solid var(--line); border-radius:7px; padding:8px 10px; width:100%}
+textarea{min-height:84px; resize:vertical;
+  background-image:linear-gradient(var(--gridline) 1px, transparent 1px); background-size:100% 23.2px; background-position:0 7px}
+textarea:focus, input:focus, button:focus-visible, nav a:focus-visible, svg:focus-visible, label.opt:focus-within{outline:2px solid var(--blue); outline-offset:2px}
+.worklbl{font:500 13px/1.3 var(--f-body); color:var(--muted); display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap}
+.ansrow{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.ansrow .lbl{font-weight:500}
+.ansrow input.n{width:6.5em; text-align:center}
+.ansrow input.t{max-width:22em}
+.opts{display:grid; gap:6px}
+label.opt{display:flex; gap:10px; align-items:flex-start; padding:9px 11px; border:1px solid var(--line); border-radius:7px; cursor:pointer; background:var(--sheet)}
+label.opt:hover{border-color:var(--blue)}
+label.opt input{margin-top:.3em; accent-color:var(--blue)}
+label.opt.good{border-color:var(--green); background:var(--green-soft)}
+label.opt.bad{border-color:var(--red); background:var(--red-soft)}
+.actions{display:flex; gap:8px; flex-wrap:wrap}
+button{font:600 14px/1 var(--f-body); border-radius:7px; padding:10px 14px; cursor:pointer; border:1px solid var(--line); background:var(--sheet); color:var(--ink)}
+button:hover{border-color:var(--blue)}
+button.primary{background:var(--blue); color:var(--sheet); border-color:var(--blue)}
+button.ai{color:var(--violet); border-color:var(--violet)}
+button:disabled{opacity:.45; cursor:not-allowed}
+.ai-only{display:none}
+body.has-claude .ai-only{display:inline-block}
+.fb{display:grid; gap:8px}
+.fb:empty{display:none}
+.verdict{display:inline-flex; align-items:center; gap:6px; font:700 13px/1 var(--f-body); padding:6px 10px; border-radius:6px; width:max-content}
+.verdict.ok{background:var(--green-soft); color:var(--green)}
+.verdict.ko{background:var(--red-soft); color:var(--red)}
+.msgs{margin:0; padding-left:1.2em; display:grid; gap:5px}
+.msgs.red{color:var(--red)}
+.msgs li::marker{color:currentColor}
+.box{border-radius:8px; padding:11px 13px; display:grid; gap:6px}
+.box h4{margin:0; font:600 12px/1 var(--f-body); letter-spacing:.06em; text-transform:uppercase}
+.box.hint{background:var(--amber-soft)} .box.hint h4{color:var(--amber)}
+.box.sol{background:var(--green-soft)} .box.sol h4{color:var(--green)}
+.box.work{background:var(--blue-soft)} .box.work h4{color:var(--blue)}
+.box.claude{background:var(--violet-soft)} .box.claude h4{color:var(--violet)}
+.box.claude .txt{white-space:normal}
+.hints{margin:0; padding-left:1.2em; display:grid; gap:4px}
+.note{font-size:13px; color:var(--muted)}
+.memo{display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:10px}
+.memo .item{background:var(--sheet); border:1px solid var(--line); border-radius:8px; padding:12px 14px; display:grid; gap:4px; min-width:0}
+.memo .item b{font:600 13px/1.3 var(--f-head); color:var(--blue)}
+.qcm .opts{margin-top:4px}
+.gen-bar{display:flex; flex-wrap:wrap; gap:8px}
+.gen-bar button{font-weight:500}
+.toc{display:flex; flex-wrap:wrap; gap:6px}
+.toc button{padding:7px 10px; font-size:13px}
+.toc button.done{border-color:var(--green); color:var(--green)}
+svg text{font-family:var(--f-math); font-style:italic; fill:var(--ink)}
+.gridsvg{width:100%; max-width:520px; height:auto; touch-action:manipulation; cursor:crosshair; display:block}
+.legend{display:flex; gap:14px; align-items:center; flex-wrap:wrap}
+.legend svg{height:auto}
+.spin{display:inline-block; width:10px; height:10px; border-radius:50%; border:2px solid var(--violet); border-right-color:transparent; animation:sp 0.8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion: reduce){ .spin{animation:none} }
+.formula{font-family:var(--f-math); font-size:1.05em}
+.figsvg{width:100%; height:auto; display:block}
+svg text.grad{font-family:var(--f-body); font-style:normal; font-size:11px; fill:var(--muted)}
+.placesel{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px}
+.placesel button{padding:7px 11px; font-size:13px}
+.placesel button[aria-pressed="true"]{background:var(--blue); color:var(--sheet); border-color:var(--blue)}
+.figcap{font-size:13px; color:var(--muted)}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <span class="eyebrow">Seconde · Chapitre géométrie</span>
+    <h1>Repérage et vecteurs dans le plan</h1>
+    <p class="lead">Questions de cours, exercices de la fiche et exercices nouveaux, corrigés automatiquement. Écris ton calcul une étape par ligne (par exemple <span class="formula">x = 4 − (−2) = 6</span>) : chaque égalité est vérifiée, et en cas d'erreur la page te dit laquelle et te propose la méthode pour avancer.</p>
+    <div class="score"><span class="pill" id="score-cours">Cours : 0 / 0</span><span class="pill" id="score-fiche">Fiche : 0 / 0</span><span class="pill" id="score-gen">Nouveaux réussis : 0</span></div>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="tabs" aria-label="Sections">
+    <a href="#cours" data-v="cours">Questions de cours</a>
+    <a href="#fiche" data-v="fiche">Exercices de la fiche</a>
+    <a href="#nouveaux" data-v="nouveaux">Nouveaux exercices</a>
+  </nav>
+  <main>
+    <section class="view" id="v-cours" hidden></section>
+    <section class="view" id="v-fiche" hidden></section>
+    <section class="view" id="v-nouveaux" hidden></section>
+  </main>
+</div>
+
+<script>
+"use strict";
+/* ---------- utilitaires ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const V = n => `<span class="vec">${n}</span>`;
+const M = s => `<i class="m">${s}</i>`;
+const X = (c, p) => `${c}<sub>${p}</sub>`;
+const eq = (a, b) => Math.abs(a - b) < 1e-9;
+const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+function fmt(n) {
+  if (eq(n, Math.round(n))) { const r = Math.round(n); return r < 0 ? "−" + (-r) : String(r); }
+  for (let d = 2; d <= 12; d++) { const k = n * d; if (eq(k, Math.round(k))) return (n < 0 ? "−" : "") + Math.abs(Math.round(k)) + "/" + d; }
+  return String(+n.toFixed(3)).replace(".", ",").replace("-", "−");
+}
+const pn = n => n < 0 ? `(${fmt(n)})` : fmt(n);
+const P2 = p => `(${fmt(p[0])} ; ${fmt(p[1])})`;
+const pt = (n, x, y) => ({ n, c: [x, y] });
+const ptH = p => `${M(p.n)}${P2(p.c)}`;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function plain(html) {
+  const d = document.createElement("div"); d.innerHTML = html;
+  d.querySelectorAll(".vec").forEach(e => e.replaceWith("vec(" + e.textContent + ")"));
+  d.querySelectorAll("sub").forEach(e => e.replaceWith("_" + e.textContent));
+  d.querySelectorAll("li").forEach(e => e.prepend("- "));
+  d.querySelectorAll("br,li,p,div").forEach(e => e.append("\n"));
+  return d.textContent.replace(/[ \t]+/g, " ").replace(/\n\s*\n+/g, "\n").trim();
+}
+
+/* ---------- stockage local (confort, facultatif) ---------- */
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+};
+const solved = new Set(store.get("vec-solved", []));
+let genSolved = store.get("vec-gen", 0);
+const registry = { cours: [], fiche: [] };
+function markSolved(id) {
+  if (id.startsWith("gen-")) { if (!solved.has(id)) { solved.add(id); genSolved++; store.set("vec-gen", genSolved); } }
+  else { solved.add(id); store.set("vec-solved", [...solved].filter(x => !x.startsWith("gen-"))); }
+  updateScore();
+}
+function updateScore() {
+  const c = registry.cours.filter(id => solved.has(id)).length;
+  const f = registry.fiche.filter(id => solved.has(id)).length;
+  $("#score-cours").textContent = `Cours : ${c} / ${registry.cours.length}`;
+  $("#score-fiche").textContent = `Fiche : ${f} / ${registry.fiche.length}`;
+  $("#score-gen").textContent = `Nouveaux réussis : ${genSolved}`;
+  document.querySelectorAll(".toc button").forEach(b => {
+    const ids = b.dataset.ids.split(",");
+    b.classList.toggle("done", ids.every(i => solved.has(i)));
+  });
+}
+
+/* ---------- évaluateur d'expressions numériques ---------- */
+function normMath(s) {
+  return s.replace(/[−–—]/g, "-").replace(/[×·∙]/g, "*").replace(/÷/g, "/").replace(/(\d),(\d)/g, "$1.$2").replace(/\s+/g, "");
+}
+function evalExpr(src) {
+  const s = normMath(src);
+  if (!s || !/^[0-9.+\-*/()]+$/.test(s) || !/\d/.test(s)) return null;
+  let i = 0;
+  const num = () => { const m = /^(\d+(\.\d+)?|\.\d+)/.exec(s.slice(i)); if (!m) throw 0; i += m[0].length; return parseFloat(m[0]); };
+  const factor = () => {
+    const c = s[i];
+    if (c === "+") { i++; return factor(); }
+    if (c === "-") { i++; return -factor(); }
+    if (c === "(") { i++; const v = expr(); if (s[i] !== ")") throw 0; i++; return v; }
+    return num();
+  };
+  const term = () => {
+    let v = factor();
+    while (s[i] === "*" || s[i] === "/" || s[i] === "(") {
+      if (s[i] === "(") { v *= factor(); continue; }
+      const op = s[i++]; const r = factor();
+      if (op === "*") v *= r; else { if (r === 0) throw 0; v /= r; }
+    }
+    return v;
+  };
+  const expr = () => {
+    let v = term();
+    while (s[i] === "+" || s[i] === "-") { const op = s[i++]; const r = term(); v = op === "+" ? v + r : v - r; }
+    return v;
+  };
+  try { const v = expr(); return i === s.length ? v : null; } catch { return null; }
+}
+function evalSeg(seg) {
+  const t = seg.trim().replace(/^[:\s]+|[.\s]+$/g, "");
+  if (t.startsWith("(") && t.endsWith(")")) {
+    let depth = 0, cut = -1;
+    for (let k = 0; k < t.length; k++) {
+      const c = t[k];
+      if (c === "(") depth++; else if (c === ")") depth--;
+      else if (c === ";" && depth === 1) cut = k;
+    }
+    if (cut > 0) {
+      const a = evalExpr(t.slice(1, cut)), b = evalExpr(t.slice(cut + 1, -1));
+      if (a !== null && b !== null) return { pair: [a, b] };
+      return null;
+    }
+  }
+  const v = evalExpr(t);
+  return v === null ? null : { num: v };
+}
+const fmtVal = v => v.pair ? P2(v.pair) : fmt(v.num);
+function arithTip(expr, got, want) {
+  const s = normMath(expr);
+  if (/-\(-/.test(s) || /--/.test(s)) {
+    const alt = evalExpr(s.replace(/-\(-/g, "-(").replace(/--/g, "-"));
+    if (alt !== null && eq(alt, got)) return "Soustraire un nombre négatif revient à ajouter son opposé : a − (−b) = a + b.";
+  }
+  if (/\+\(-/.test(s)) return "Ajouter un nombre négatif revient à soustraire : a + (−b) = a − b.";
+  if (/\/2/.test(s)) { const alt = evalExpr(s.replace(/\/2/g, "")); if (alt !== null && eq(alt, got)) return "Tu as oublié de diviser par 2."; }
+  if (eq(got, -want)) return "Le nombre est bon mais le signe est faux. Reprends la règle des signes.";
+  if (/\*\(-|\(-[\d.]+\)\*/.test(s) || /\*-/.test(s)) return "Multiplication par un négatif : (+)×(−) donne (−), et (−)×(−) donne (+).";
+  return "Refais ce calcul pas à pas, en écrivant les nombres négatifs entre parenthèses.";
+}
+function checkWork(text) {
+  const issues = []; let checked = 0;
+  text.split(/\n/).forEach((line, li) => {
+    if (!line.trim()) return;
+    let prev = null;
+    line.split("=").forEach(seg => {
+      const v = evalSeg(seg);
+      if (!v) { prev = null; return; }
+      if (prev && !!prev.v.pair === !!v.pair) {
+        checked++;
+        const same = v.pair ? eq(v.pair[0], prev.v.pair[0]) && eq(v.pair[1], prev.v.pair[1]) : eq(v.num, prev.v.num);
+        if (!same) {
+          let tip;
+          if (v.pair) {
+            const bad = [0, 1].filter(i => !eq(v.pair[i], prev.v.pair[i]));
+            tip = bad.length === 2 ? "Les deux coordonnées sont fausses." : (bad[0] === 0 ? "L'abscisse est fausse." : "L'ordonnée est fausse.");
+          } else tip = arithTip(prev.seg, v.num, prev.v.num);
+          issues.push(`Ligne ${li + 1} : <span class="formula">${esc(prev.seg.trim())}</span> ne vaut pas <span class="formula">${esc(seg.trim())}</span>. ${tip}`);
+        }
+      }
+      prev = { v, seg };
+    });
+  });
+  return { issues, checked };
+}
+
+/* ---------- diagnostic par « erreurs classiques » ---------- */
+function subsetsUpTo(keys, max) {
+  const res = [];
+  const rec = (start, cur) => {
+    if (cur.length) res.push(cur.slice());
+    if (cur.length === max) return;
+    for (let j = start; j < keys.length; j++) { cur.push(keys[j]); rec(j + 1, cur); cur.pop(); }
+  };
+  rec(0, []); return res.sort((a, b) => a.length - b.length);
+}
+function diagPair(a, model, flags = [], max = 2) {
+  const exp = model(new Set());
+  if (eq(a[0], exp[0]) && eq(a[1], exp[1])) return { ok: true, msgs: [] };
+  const subs = subsetsUpTo(flags.map(f => f.k), max);
+  const fm = k => flags.find(f => f.k === k).msg;
+  const match = i => subs.find(S => { const m = model(new Set(S)); return i == null ? eq(m[0], a[0]) && eq(m[1], a[1]) : eq(m[i], a[i]); });
+  const whole = match(null);
+  if (whole) return { ok: false, msgs: whole.map(fm) };
+  if (eq(a[0], exp[1]) && eq(a[1], exp[0])) return { ok: false, msgs: ["Tu as inversé abscisse et ordonnée : on écrit toujours (x ; y), l'abscisse d'abord."] };
+  const msgs = [];
+  ["l'abscisse", "l'ordonnée"].forEach((nm, i) => {
+    const Nm = nm[0].toUpperCase() + nm.slice(1);
+    if (eq(a[i], exp[i])) { msgs.push(`${Nm} est juste.`); return; }
+    const S = match(i);
+    if (S) msgs.push(`Pour ${nm} : ` + S.map(fm).join(" "));
+    else if (eq(a[i], -exp[i])) msgs.push(`Pour ${nm} : bonne valeur absolue mais mauvais signe. Vérifie les soustractions de nombres négatifs.`);
+    else msgs.push(`Pour ${nm} : la valeur est fausse et ne correspond pas à une erreur classique. Reprends le calcul ligne par ligne.`);
+  });
+  return { ok: false, msgs };
+}
+
+/* ---------- calcul vectoriel symbolique (relation de Chasles) ---------- */
+function parseVecExpr(src) {
+  let s = src.replace(/vecteurs?|vect|vec/gi, "").replace(/[→⃗⃗]/g, "").replace(/[−–]/g, "-").replace(/\s+/g, "").toUpperCase();
+  if (!s) return null;
+  if (/^[+]?(0|NUL|0V)$/.test(s)) return { terms: [], zero: true };
+  const re = /([+-]?)(\d+(?:[.,]\d+)?)?\*?([A-Z]{2}|0)/y;
+  const terms = []; let m;
+  while (re.lastIndex < s.length) {
+    const start = re.lastIndex; m = re.exec(s);
+    if (!m || m.index !== start) return null;
+    const c = (m[1] === "-" ? -1 : 1) * (m[2] ? parseFloat(m[2].replace(",", ".")) : 1);
+    if (m[3] !== "0") terms.push({ c, a: m[3][0], b: m[3][1] });
+  }
+  return { terms, zero: terms.length === 0 };
+}
+function coefMap(terms) {
+  const m = {};
+  terms.forEach(t => { m[t.b] = (m[t.b] || 0) + t.c; m[t.a] = (m[t.a] || 0) - t.c; });
+  return m;
+}
+function mapsEqual(m1, m2) {
+  const keys = new Set([...Object.keys(m1), ...Object.keys(m2)]);
+  return [...keys].every(k => eq(m1[k] || 0, m2[k] || 0));
+}
+const negTerms = ts => ts.map(t => ({ ...t, c: -t.c }));
+function termsHTML(terms) {
+  if (!terms.length) return V("0");
+  return terms.map((t, i) => (i ? (t.c < 0 ? " − " : " + ") : (t.c < 0 ? "−" : "")) + (eq(Math.abs(t.c), 1) ? "" : fmt(Math.abs(t.c))) + V(t.a + t.b)).join("");
+}
+const T = s => parseVecExpr(s).terms;
+
+/* ---------- figure du rectangle (exercices 4 et 5) ---------- */
+const FIG = { A: [0, 0], B: [1, 0], E: [2, 0], D: [0, 1], C: [1, 1], F: [2, 1], I: [0, 2], H: [1, 2], G: [2, 2] };
+const figVec = t => [FIG[t.b][0] - FIG[t.a][0], FIG[t.b][1] - FIG[t.a][1]];
+const figSum = terms => terms.reduce((s, t) => { const v = figVec(t); return [s[0] + t.c * v[0], s[1] + t.c * v[1]]; }, [0, 0]);
+function figRect() {
+  const cw = 100, ch = 56, p = 30, W = 2 * cw + 2 * p, H = 2 * ch + 2 * p;
+  const X0 = x => p + x * cw, Y0 = y => p + (2 - y) * ch;
+  const off = { A: [-14, 16], B: [-4, 18], E: [8, 16], D: [-18, 5], C: [-16, -7], F: [8, 5], I: [-14, -8], H: [-4, -9], G: [8, -8] };
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="${W}" role="img" aria-label="Rectangle AEGI découpé en quatre rectangles par les points B, C, D, F, H"><g stroke="currentColor" fill="none" stroke-width="1.5" style="color:var(--ink)">`;
+  s += `<rect x="${X0(0)}" y="${Y0(2)}" width="${2 * cw}" height="${2 * ch}"/><line x1="${X0(1)}" y1="${Y0(0)}" x2="${X0(1)}" y2="${Y0(2)}"/><line x1="${X0(0)}" y1="${Y0(1)}" x2="${X0(2)}" y2="${Y0(1)}"/></g>`;
+  for (const k in FIG) s += `<text x="${X0(FIG[k][0]) + off[k][0]}" y="${Y0(FIG[k][1]) + off[k][1]}" font-size="16">${k}</text>`;
+  return s + "</svg>";
+}
+
+/* ---------- Claude (analyse de la démarche) ---------- */
+let sampleFn = null;
+(async () => {
+  try { if (window.claude && window.claude.use) sampleFn = await window.claude.use("sample"); } catch { sampleFn = null; }
+  if (sampleFn) document.body.classList.add("has-claude");
+})();
+function renderClaude(text) {
+  return esc(text)
+    .replace(/vec\(([A-Za-z]{1,2}|0)\)/g, (_, n) => V(n))
+    .replace(/\b([xy])_([A-Z])\b/g, (_, c, p) => X(c, p))
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\n/g, "<br>");
+}
+const aiCodes = { not_granted: "L'analyse par Claude n'a pas été autorisée sur cette page.", rate_limited: "Trop de demandes pour le moment. Réessaie dans un instant.", session_expired: "Reconnecte-toi à Claude pour utiliser l'analyse.", refused: "Claude n'a pas pu analyser ce texte. Reformule ton calcul." };
+
+/* ---------- composant « question » ---------- */
+let uid = 0;
+function renderPart(part, card) {
+  const w = document.createElement("div");
+  w.className = "part"; w.id = "p-" + part.id;
+  const id = "f" + (++uid);
+  let html = `<div class="q"><span class="qn">${part.num || ""}</span><div>${part.label}</div></div>`;
+  if (part.work) html += `<label class="worklbl" for="${id}-w"><span>Ton calcul (une étape par ligne)</span><span>ex. : x = 2 − (−3) = 5</span></label><textarea id="${id}-w" spellcheck="false" placeholder="Écris ici ta démarche…"></textarea>`;
+  if (part.type === "pair") html += `<div class="ansrow"><span class="lbl">${part.pairLabel || "Réponse"} :</span> ( <input class="n" type="text" id="${id}-x" inputmode="text" aria-label="abscisse" autocomplete="off"> ; <input class="n" type="text" id="${id}-y" aria-label="ordonnée" autocomplete="off"> )</div>`;
+  if (part.type === "text") html += `<div class="ansrow"><label class="lbl" for="${id}-t">${part.textLabel || "Réponse"} :</label><input class="t" type="text" id="${id}-t" placeholder="${part.placeholder || ""}" autocomplete="off" spellcheck="false"></div>`;
+  if (part.type === "choice") html += `<div class="opts">${part.options.map((o, i) => `<label class="opt"><input type="radio" name="${id}-c" value="${i}" id="${id}-c${i}"><span>${o.t}</span></label>`).join("")}</div>`;
+  if (part.type === "click") html += `<div class="clickzone"></div>`;
+  html += `<div class="actions"><button class="primary" data-a="check">Vérifier</button><button data-a="hint">Indice</button><button class="ai ai-only" data-a="ai">Analyser ma démarche avec Claude</button><button data-a="sol" disabled title="Disponible après un premier essai">Correction</button></div>
+  <div class="fb" aria-live="polite"></div><div class="hintzone"></div><div class="aizone"></div><div class="solzone"></div>`;
+  w.innerHTML = html;
+  const st = { attempts: 0, hints: 0, last: null };
+  if (part.type === "click") part.mount(w.querySelector(".clickzone"), st);
+  const work = () => part.work ? $("#" + id + "-w", w).value : "";
+  const getAns = () => {
+    if (part.type === "pair") {
+      const rx = $("#" + id + "-x", w).value, ry = $("#" + id + "-y", w).value;
+      const x = evalExpr(rx), y = evalExpr(ry);
+      if (!rx.trim() || !ry.trim()) return { err: "Remplis l'abscisse et l'ordonnée.", raw: `(${rx} ; ${ry})` };
+      if (x === null || y === null) return { err: "Je ne reconnais pas un nombre. Écris par exemple −3, 1,5 ou 7/2.", raw: `(${rx} ; ${ry})` };
+      return { v: [x, y], raw: `(${rx} ; ${ry})` };
+    }
+    if (part.type === "text") { const r = $("#" + id + "-t", w).value; return r.trim() ? { v: r, raw: r } : { err: "Écris ta réponse.", raw: "" }; }
+    if (part.type === "choice") { const c = w.querySelector(`input[name="${id}-c"]:checked`); return c ? { v: +c.value, raw: plain(part.options[+c.value].t) } : { err: "Choisis une réponse.", raw: "" }; }
+    if (part.type === "click" && part.getAns) return part.getAns(st);
+    if (part.type === "click") return st.pt ? { v: st.pt, raw: part.rawAns(st.pt) } : { err: "Clique sur un nœud du quadrillage pour placer le point.", raw: "" };
+  };
+  const fb = w.querySelector(".fb");
+  w.addEventListener("click", async e => {
+    const b = e.target.closest("button[data-a]"); if (!b) return;
+    const act = b.dataset.a;
+    if (act === "check") {
+      const a = getAns();
+      let out = "";
+      if (a.err) { fb.innerHTML = `<p class="note">${a.err}</p>`; return; }
+      const r = part.check(a.v);
+      st.attempts++; st.last = { ans: a.raw, r };
+      w.querySelector('[data-a="sol"]').disabled = false;
+      out += `<span class="verdict ${r.ok ? "ok" : "ko"}">${r.ok ? "✓ Juste" : "✗ À revoir"}</span>`;
+      if (r.ok && r.msgs.length) out += `<ul class="msgs">${r.msgs.map(m => `<li>${m}</li>`).join("")}</ul>`;
+      if (!r.ok && r.msgs.length) out += `<ul class="msgs red">${r.msgs.map(m => `<li>${m}</li>`).join("")}</ul>`;
+      const wt = work();
+      if (wt.trim()) {
+        const cw = checkWork(wt); st.workDiag = cw;
+        if (cw.issues.length) out += `<div class="box work"><h4>Ton calcul</h4><ul class="msgs red">${cw.issues.map(i => `<li>${i}</li>`).join("")}</ul></div>`;
+        else if (cw.checked) out += `<div class="box work"><h4>Ton calcul</h4><p>${cw.checked} égalité${cw.checked > 1 ? "s" : ""} numérique${cw.checked > 1 ? "s" : ""} vérifiée${cw.checked > 1 ? "s" : ""} : aucune erreur de calcul.${r.ok ? "" : " L'erreur vient donc de la méthode : relis les remarques ci-dessus."}</p></div>`;
+      }
+      if (!r.ok && st.hints < part.hints.length) out += `<p class="note">Bloqué ? Demande un indice${sampleFn ? " ou fais analyser ta démarche par Claude" : ""}.</p>`;
+      fb.innerHTML = out;
+      if (part.type === "choice") w.querySelectorAll("label.opt").forEach((l, i) => { l.classList.remove("good", "bad"); if (i === a.v) l.classList.add(r.ok ? "good" : "bad"); });
+      if (r.ok) markSolved(part.id);
+    }
+    if (act === "hint") {
+      if (st.hints < part.hints.length) st.hints++;
+      w.querySelector(".hintzone").innerHTML = `<div class="box hint"><h4>Indice${st.hints > 1 ? "s" : ""} ${st.hints} / ${part.hints.length}</h4><ol class="hints">${part.hints.slice(0, st.hints).map(h => `<li>${h}</li>`).join("")}</ol></div>`;
+      if (st.hints >= part.hints.length) { b.disabled = true; w.querySelector('[data-a="sol"]').disabled = false; }
+    }
+    if (act === "sol") {
+      const z = w.querySelector(".solzone");
+      z.innerHTML = z.innerHTML ? "" : `<div class="box sol"><h4>Correction</h4><div>${part.solution}</div></div>`;
+      if (part.onSolution && z.innerHTML) part.onSolution(st);
+    }
+    if (act === "ai") {
+      if (!sampleFn) return;
+      const wt = work(); const a = getAns();
+      const z = w.querySelector(".aizone");
+      if (!wt.trim() && a.err) { z.innerHTML = `<p class="note">Écris d'abord ton calcul ou ta réponse, Claude analysera ta démarche.</p>`; return; }
+      let diag = "";
+      if (!a.err) { const r = part.check(a.v); diag += r.ok ? "La réponse finale est juste. " : "Réponse finale fausse. " + plain(r.msgs.join(" ")); }
+      if (wt.trim()) { const cw = checkWork(wt); if (cw.issues.length) diag += " Erreurs de calcul détectées : " + plain(cw.issues.join(" ")); }
+      const prompt = `Tu es professeur de mathématiques au lycée (classe de Seconde, France), bienveillant et précis. Un élève travaille sur le chapitre « Repérage et vecteurs dans le plan ».
+
+EXERCICE
+${plain(card.statement)}
+Question : ${plain(part.label)}
+
+CORRECTION (pour toi seulement, ne la recopie pas)
+${plain(part.solution)}
+
+RÉPONSE FINALE DE L'ÉLÈVE
+${a.raw && !a.err ? a.raw : "(pas encore de réponse finale)"}
+
+DÉMARCHE ÉCRITE PAR L'ÉLÈVE
+${wt.trim() || "(vide)"}
+
+DIAGNOSTIC AUTOMATIQUE DE LA PAGE
+${diag.trim() || "(aucun)"}
+
+TA MISSION
+1. Dis en une phrase ce qui est juste dans sa démarche.
+2. Repère la PREMIÈRE erreur (de méthode ou de calcul) en citant le passage concerné, et explique pourquoi c'est faux en t'appuyant sur la règle du cours.
+3. Donne la prochaine étape pour se débloquer, sous forme d'indice ou de question. Ne donne pas le résultat final, sauf si sa réponse est déjà juste : dans ce cas félicite-le et propose une vérification (graphique ou par un autre calcul).
+Règles d'écriture : français, tutoiement, 130 mots au maximum, phrases courtes. Pas de titres, pas de tableaux, pas de LaTeX. Tu peux mettre quelques mots en **gras**. Écris un vecteur sous la forme vec(AB) et une coordonnée sous la forme x_A.`;
+      b.disabled = true;
+      z.innerHTML = `<div class="box claude"><h4>Analyse de Claude</h4><div class="txt"><span class="spin"></span> Claude lit ta démarche…</div></div>`;
+      const txt = z.querySelector(".txt");
+      try {
+        const r = await sampleFn(prompt, { onText: ({ text }) => { txt.innerHTML = renderClaude(text); } });
+        txt.innerHTML = renderClaude(r.text);
+      } catch (err) {
+        const code = err && err.code;
+        if (code === "not_granted" || code === "sampling_disabled" || code === "capability_disabled") { document.body.classList.remove("has-claude"); }
+        txt.innerHTML = (err && err.text ? renderClaude(err.text) + "<br>" : "") + `<span class="note">${aiCodes[code] || "L'analyse a été interrompue. Réessaie."}</span>`;
+      } finally { b.disabled = false; }
+    }
+  });
+  return w;
+}
+function renderCard(card, container) {
+  const c = document.createElement("article");
+  c.className = "card"; if (card.anchor) c.id = card.anchor;
+  c.innerHTML = `<div class="card-head"><span class="tag${card.isNew ? " new" : ""}">${card.tag}</span><h3>${card.title}</h3></div><div class="statement">${card.statement}</div>`;
+  card.parts.forEach((p, i) => { if (card.parts.length > 1 && !p.num) p.num = (card.numStyle === "alpha" ? "abcdefgh"[i] + ")" : (i + 1) + "."); c.appendChild(renderPart(p, card)); });
+  container.appendChild(c);
+  return c;
+}
+
+/* ---------- fabriques de questions ---------- */
+function vecPart(id, P, Q, extra = {}) {
+  const exp = [Q.c[0] - P.c[0], Q.c[1] - P.c[1]];
+  const flags = [
+    { k: "inv", msg: `Tu as fait origine − extrémité : ce sont les coordonnées de ${V(Q.n + P.n)}. Pour ${V(P.n + Q.n)}, on calcule <b>extrémité − origine</b> : ${X("x", Q.n)} − ${X("x", P.n)}.` },
+    { k: "sum", msg: `Tu as additionné les coordonnées. Pour un vecteur, on <b>soustrait</b> : extrémité − origine.` }
+  ];
+  const model = f => [0, 1].map(i => f.has("sum") ? Q.c[i] + P.c[i] : f.has("inv") ? P.c[i] - Q.c[i] : Q.c[i] - P.c[i]);
+  return Object.assign({
+    id, type: "pair", work: true, pairLabel: `${V(P.n + Q.n)}`,
+    label: `Calcule les coordonnées du vecteur ${V(P.n + Q.n)}.`,
+    hints: [
+      `${V(P.n + Q.n)} va de ${M(P.n)} (origine) à ${M(Q.n)} (extrémité).`,
+      `Formule : ${V(P.n + Q.n)}(${X("x", Q.n)} − ${X("x", P.n)} ; ${X("y", Q.n)} − ${X("y", P.n)}).`,
+      `Remplace : x = ${fmt(Q.c[0])} − ${pn(P.c[0])} et y = ${fmt(Q.c[1])} − ${pn(P.c[1])}. Attention aux parenthèses autour des négatifs.`
+    ],
+    solution: `${V(P.n + Q.n)}(${fmt(Q.c[0])} − ${pn(P.c[0])} ; ${fmt(Q.c[1])} − ${pn(P.c[1])}) donc ${V(P.n + Q.n)}${P2(exp)}.`,
+    check: a => diagPair(a, model, flags, 1), exp
+  }, extra);
+}
+function milieuPart(id, P, Q, K, extra = {}) {
+  const exp = [(P.c[0] + Q.c[0]) / 2, (P.c[1] + Q.c[1]) / 2];
+  const flags = [
+    { k: "nodiv", msg: "Tu as additionné les coordonnées mais oublié de diviser par 2." },
+    { k: "diff", msg: "Tu as soustrait les coordonnées : pour un milieu, on fait la <b>moyenne</b>, donc on additionne puis on divise par 2." },
+    { k: "diff2", msg: "Tu as soustrait les coordonnées : pour un milieu, on fait la <b>moyenne</b>, donc on additionne puis on divise par 2." },
+    { k: "half", msg: `On divise <b>toute la somme</b> par 2 : (${X("x", P.n)} + ${X("x", Q.n)}) / 2 avec des parenthèses, et non ${X("x", P.n)} + ${X("x", Q.n)}/2.` }
+  ];
+  const model = f => [0, 1].map(i => { const a = P.c[i], b = Q.c[i]; if (f.has("nodiv")) return a + b; if (f.has("diff")) return (b - a) / 2; if (f.has("diff2")) return (a - b) / 2; if (f.has("half")) return a + b / 2; return (a + b) / 2; });
+  return Object.assign({
+    id, type: "pair", work: true, pairLabel: `${M(K)}`,
+    label: `Calcule les coordonnées du milieu ${M(K)} du segment [${P.n}${Q.n}].`,
+    hints: [
+      "Le milieu a pour coordonnées la moyenne des coordonnées des extrémités.",
+      `${X("x", K)} = (${X("x", P.n)} + ${X("x", Q.n)}) / 2 et ${X("y", K)} = (${X("y", P.n)} + ${X("y", Q.n)}) / 2.`,
+      `Ici : ${X("x", K)} = (${fmt(P.c[0])} + ${pn(Q.c[0])}) / 2.`
+    ],
+    solution: `${X("x", K)} = (${fmt(P.c[0])} + ${pn(Q.c[0])}) / 2 = ${fmt(exp[0])} et ${X("y", K)} = (${fmt(P.c[1])} + ${pn(Q.c[1])}) / 2 = ${fmt(exp[1])}, donc ${M(K)}${P2(exp)}.`,
+    check: a => diagPair(a, model, flags, 1), exp
+  }, extra);
+}
+function paraPart(id, A, B, C, extra = {}) {
+  const D = "D";
+  const exp = [A.c[0] + C.c[0] - B.c[0], A.c[1] + C.c[1] - B.c[1]];
+  const ab = [B.c[0] - A.c[0], B.c[1] - A.c[1]];
+  const flags = [
+    { k: "abdc", msg: `Tu as utilisé ${V(A.n + B.n)} = ${V(C.n + D)} : cela construit le parallélogramme ${A.n}${B.n}${D}${C.n}, pas ${A.n}${B.n}${C.n}${D}. Dans ${A.n}${B.n}${C.n}${D}, on suit l'ordre des sommets : ${V(A.n + B.n)} = ${V(D + C.n)}.` },
+    { k: "vec", msg: `Ce sont les coordonnées du vecteur ${V(A.n + B.n)}, pas celles du point ${M(D)}. Écris ensuite ${V(D + C.n)}(${X("x", C.n)} − ${X("x", D)} ; ${X("y", C.n)} − ${X("y", D)}) et résous l'égalité.` },
+    { k: "other", msg: `Tu as mélangé l'ordre des sommets. Dans ${A.n}${B.n}${C.n}${D}, les côtés opposés sont [${A.n}${B.n}] et [${D}${C.n}], d'où ${V(A.n + B.n)} = ${V(D + C.n)}.` },
+    { k: "solve", msg: `Erreur en résolvant ${X("x", C.n)} − ${X("x", D)} = ${fmt(ab[0])} : on obtient ${X("x", D)} = ${X("x", C.n)} − ${pn(ab[0])}, et non ${pn(ab[0])} − ${X("x", C.n)}.` }
+  ];
+  const model = f => [0, 1].map(i => { const a = A.c[i], b = B.c[i], c = C.c[i]; if (f.has("abdc")) return b + c - a; if (f.has("vec")) return b - a; if (f.has("other")) return a + b - c; if (f.has("solve")) return (b - a) - c; return a + c - b; });
+  return Object.assign({
+    id, type: "pair", work: true, pairLabel: M(D),
+    label: `Détermine les coordonnées du point ${M(D)} tel que ${A.n}${B.n}${C.n}${D} soit un parallélogramme.`,
+    hints: [
+      `${A.n}${B.n}${C.n}${D} est un parallélogramme si et seulement si ${V(A.n + B.n)} = ${V(D + C.n)} (attention à l'ordre des lettres).`,
+      `Calcule ${V(A.n + B.n)}, puis écris ${V(D + C.n)}(${X("x", C.n)} − ${X("x", D)} ; ${X("y", C.n)} − ${X("y", D)}) avec ${X("x", D)} et ${X("y", D)} inconnus.`,
+      `Deux vecteurs égaux ont les mêmes coordonnées : ${fmt(C.c[0])} − ${X("x", D)} = ${fmt(ab[0])}. Résous cette équation, puis la même pour y.`
+    ],
+    solution: `${V(A.n + B.n)}${P2(ab)} et ${V(D + C.n)}(${fmt(C.c[0])} − ${X("x", D)} ; ${fmt(C.c[1])} − ${X("y", D)}).<br>${V(A.n + B.n)} = ${V(D + C.n)} donne ${fmt(C.c[0])} − ${X("x", D)} = ${fmt(ab[0])} donc ${X("x", D)} = ${fmt(exp[0])}, et ${fmt(C.c[1])} − ${X("y", D)} = ${fmt(ab[1])} donc ${X("y", D)} = ${fmt(exp[1])}.<br>Donc ${M(D)}${P2(exp)}.`,
+    check: a => diagPair(a, model, flags, 1), exp
+  }, extra);
+}
+function comboPart(id, k, P, Q, m, R, S, extra = {}) {
+  const U = [Q.c[0] - P.c[0], Q.c[1] - P.c[1]];
+  const W = m ? [S.c[0] - R.c[0], S.c[1] - R.c[1]] : [0, 0];
+  const exp = [k * U[0] + m * W[0], k * U[1] + m * W[1]];
+  const u = V(P.n + Q.n), w = m ? V(R.n + S.n) : "";
+  const coef = c => eq(c, 1) ? "" : eq(c, -1) ? "−" : fmt(c);
+  const exprH = coef(k) + u + (m ? (m < 0 ? " − " : " + ") + coef(Math.abs(m)) + w : "");
+  const flags = [
+    { k: "invU", msg: `Vérifie ${u} : tu as calculé ${V(Q.n + P.n)} (origine − extrémité au lieu d'extrémité − origine).` },
+    { k: "noK", msg: `Tu as oublié de multiplier ${u} par ${fmt(k)}. Si ${V("u")}(x ; y) alors k${V("u")}(kx ; ky) : <b>les deux</b> coordonnées sont multipliées.` }
+  ];
+  if (m) flags.push(
+    { k: "invW", msg: `Vérifie ${w} : tu as calculé ${V(S.n + R.n)} (origine − extrémité).` },
+    { k: "noM", msg: `Tu as oublié de multiplier ${w} par ${fmt(Math.abs(m))}.` },
+    { k: "signM", msg: m < 0 ? `Erreur de signe sur le second terme : ${exprH} signifie qu'on <b>soustrait</b> les coordonnées de ${fmt(Math.abs(m))}${w}.` : `Erreur de signe : on <b>ajoute</b> les coordonnées de ${fmt(m)}${w}.` }
+  );
+  const model = f => {
+    const uu = f.has("invU") ? [-U[0], -U[1]] : U, ww = f.has("invW") ? [-W[0], -W[1]] : W;
+    const kk = f.has("noK") ? Math.sign(k) : k; let mm = f.has("noM") ? Math.sign(m) : m; if (f.has("signM")) mm = -mm;
+    return [0, 1].map(i => kk * uu[i] + mm * ww[i]);
+  };
+  const ku = [k * U[0], k * U[1]], mw = [m * W[0], m * W[1]];
+  return Object.assign({
+    id, type: "pair", work: true, pairLabel: exprH,
+    label: `Calcule les coordonnées du vecteur ${exprH}.`,
+    hints: m ? [
+      `Commence par calculer ${u} et ${w} (extrémité − origine).`,
+      `Multiplie chaque coordonnée : si ${V("u")}(x ; y) alors k${V("u")}(kx ; ky).`,
+      `Termine en ${m < 0 ? "soustrayant" : "additionnant"} coordonnée par coordonnée : x = ${fmt(k)} × x<sub>1</sub> ${m < 0 ? "−" : "+"} ${fmt(Math.abs(m))} × x<sub>2</sub>.`
+    ] : [
+      `Commence par calculer ${u} (extrémité − origine).`,
+      `Si ${V("u")}(x ; y) alors k${V("u")}(kx ; ky) : multiplie les deux coordonnées par ${fmt(k)}.`
+    ],
+    solution: m
+      ? `${u}${P2(U)} donc ${coef(k)}${u}${P2(ku)} ; ${w}${P2(W)} donc ${fmt(Math.abs(m))}${w}(${fmt(Math.abs(m) * W[0])} ; ${fmt(Math.abs(m) * W[1])}).<br>${exprH} = (${fmt(ku[0])} ${m < 0 ? "−" : "+"} ${pn(Math.abs(m) * W[0])} ; ${fmt(ku[1])} ${m < 0 ? "−" : "+"} ${pn(Math.abs(m) * W[1])}) = ${P2(exp)}.`
+      : `${u}${P2(U)} donc ${exprH}(${fmt(k)} × ${pn(U[0])} ; ${fmt(k)} × ${pn(U[1])}) = ${P2(exp)}.`,
+    check: a => diagPair(a, model, flags, 2), exp
+  }, extra);
+}
+/* Simplification avec Chasles ; mode "sym" (lettres) ou "fig" (sur la figure du rectangle) */
+function chasPart(id, terms, opts = {}) {
+  const mode = opts.mode || "sym";
+  const expMap = coefMap(terms), expFig = mode === "fig" ? figSum(terms) : null;
+  const same = ts => mode === "fig" ? (s => eq(s[0], expFig[0]) && eq(s[1], expFig[1]))(figSum(ts)) : mapsEqual(coefMap(ts), expMap);
+  const allowNo = opts.allowNo;
+  return {
+    id, type: "text", work: !!opts.work, label: opts.label || `Simplifie : ${termsHTML(terms)}`,
+    textLabel: "Un seul vecteur", placeholder: allowNo ? "ex. AC, 0, ou « impossible »" : "ex. AC ou 0",
+    hints: opts.hints || [
+      "Relation de Chasles : " + V("AB") + " + " + V("BC") + " = " + V("AC") + " : l'extrémité du premier doit être l'origine du second.",
+      "Tu peux changer l'ordre des termes (l'addition est commutative) et remplacer −" + V("XY") + " par " + V("YX") + ".",
+      opts.hint3 || "Réordonne les vecteurs pour qu'ils se suivent bout à bout, puis applique Chasles plusieurs fois."
+    ],
+    solution: opts.solution,
+    check(raw) {
+      const no = /^(non|impossible|pas possible|on ne peut pas|ne s'applique pas)/i.test(raw.trim());
+      if (no) {
+        if (opts.expectNo) return { ok: true, msgs: [] };
+        return { ok: false, msgs: ["Si, c'est possible. Pense à réordonner les termes (l'addition est commutative) ou à remplacer −" + V("XY") + " par " + V("YX") + "."] };
+      }
+      const p = parseVecExpr(raw);
+      if (!p) return { ok: false, msgs: ["Écris un vecteur avec deux lettres majuscules (ex. AC), ou 0 pour le vecteur nul."] };
+      if (opts.expectNo) {
+        return { ok: false, msgs: [`Ici, ${termsHTML(terms)} : les deux vecteurs ont la <b>même origine</b>, ils ne se suivent pas. On ne peut pas appliquer Chasles directement : réponds « impossible ».`] };
+      }
+      if (mode === "fig") {
+        const bad = p.terms.find(t => !(t.a in FIG) || !(t.b in FIG));
+        if (bad) return { ok: false, msgs: [`Le point ${bad.a in FIG ? bad.b : bad.a} n'est pas sur la figure.`] };
+      }
+      const ok = same(p.terms);
+      if (ok && p.terms.length > 1) return { ok: false, msgs: ["C'est égal, mais pas simplifié : regroupe en <b>un seul</b> vecteur avec la relation de Chasles."] };
+      if (ok) {
+        const msgs = [];
+        if (mode === "fig" && p.terms.length === 1 && opts.named) {
+          const reps = Object.keys(FIG).flatMap(a => Object.keys(FIG).filter(b => b !== a).map(b => a + b)).filter(n => { const v = figVec({ a: n[0], b: n[1] }); return eq(v[0], expFig[0]) && eq(v[1], expFig[1]); });
+          if (reps.length > 1) msgs.push(`Autres écritures possibles du même vecteur : ${reps.filter(r => r !== p.terms[0].a + p.terms[0].b).map(V).join(", ")}.`);
+        }
+        return { ok: true, msgs };
+      }
+      const msgs = [];
+      if (mode === "fig") {
+        const s = figSum(p.terms);
+        if (eq(s[0], -expFig[0]) && eq(s[1], -expFig[1])) msgs.push("Ton vecteur a la bonne direction et la bonne longueur, mais il est dans le <b>mauvais sens</b> : vérifie l'ordre origine → extrémité.");
+        else {
+          const alt = figSum(terms.map(t => ({ ...t, c: Math.abs(t.c) })));
+          if (terms.some(t => t.c < 0) && eq(s[0], alt[0]) && eq(s[1], alt[1])) msgs.push(`Tu as traité la soustraction comme une addition. Rappel : ${V("u")} − ${V("v")} = ${V("u")} + (−${V("v")}), et −${V("GF")} = ${V("FG")}.`);
+          else msgs.push("Ce n'est pas le bon vecteur. Remplace chaque vecteur par un vecteur égal qui part de l'extrémité du précédent (lis la figure), puis applique Chasles.");
+        }
+      } else {
+        if (mapsEqual(coefMap(p.terms), coefMap(negTerms(terms)))) msgs.push("Tu obtiens l'<b>opposé</b> du bon vecteur : vérifie l'ordre des lettres (origine puis extrémité).");
+        else if (p.terms.length === 1) {
+          const keys = Object.keys(expMap).filter(k => !eq(expMap[k], 0));
+          const start = keys.find(k => expMap[k] < 0), end = keys.find(k => expMap[k] > 0);
+          const t = p.terms[0];
+          if (start && end && t.a === start && t.b !== end) msgs.push("Le point de départ est bon, mais pas le point d'arrivée.");
+          else if (start && end && t.b === end && t.a !== start) msgs.push("Le point d'arrivée est bon, mais pas le point de départ.");
+          else if (!start && !end) msgs.push("Les vecteurs forment une boucle : on revient au point de départ. Que vaut alors la somme ?");
+          else msgs.push("Ce n'est pas le bon vecteur. Réécris la somme pour que chaque vecteur commence là où le précédent finit.");
+        } else msgs.push("Ce n'est pas égal à la somme de départ. Réécris la somme pour que chaque vecteur commence là où le précédent finit.");
+      }
+      return { ok: false, msgs };
+    }
+  };
+}
+function choicePart(id, label, options, extra = {}) {
+  return Object.assign({
+    id, type: "choice", label, options, work: !!extra.work, hints: extra.hints || [], solution: extra.solution || "",
+    check: i => options[i].ok ? { ok: true, msgs: options[i].why ? [options[i].why] : [] } : { ok: false, msgs: [options[i].why || "Ce n'est pas la bonne réponse."] }
+  }, extra);
+}
+
+/* ---------- construction en cliquant ---------- */
+function arrowSvg(x1, y1, x2, y2, color, wdt = 2.2) {
+  const a = Math.atan2(y2 - y1, x2 - x1), L = 9;
+  const p1 = [x2 - L * Math.cos(a - .4), y2 - L * Math.sin(a - .4)], p2 = [x2 - L * Math.cos(a + .4), y2 - L * Math.sin(a + .4)];
+  return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="${wdt}"/><polygon points="${x2},${y2} ${p1} ${p2}" fill="${color}"/>`;
+}
+function clickPart(id, cfg) {
+  const { O, u, v, a, b } = cfg, GW = 16, GH = 12, s = 28, pad = 14;
+  const exp = [O[0] + a * u[0] + b * v[0], O[1] + a * u[1] + b * v[1]];
+  const sx = x => pad + x * s, sy = y => pad + (GH - y) * s;
+  const cs = c => eq(c, 1) ? "" : eq(c, -1) ? "−" : fmt(c);
+  const exprH = `${cs(a)}${V("u")} ${b < 0 ? "−" : "+"} ${cs(Math.abs(b))}${V("v")}`;
+  const { flags, model } = combDiag(O, u, v, a, b);
+  let svgEl, st0;
+  return {
+    id, type: "click", work: true,
+    label: `Construis le point ${M("A")} tel que ${V("OA")} = ${exprH}. Clique sur le quadrillage (ou utilise les flèches du clavier après avoir cliqué).`,
+    rawAns: p => `point placé ${(p[0] - O[0]) >= 0 ? "+" : ""}${p[0] - O[0]} carreaux horizontalement et ${(p[1] - O[1]) >= 0 ? "+" : ""}${p[1] - O[1]} carreaux verticalement par rapport à O`,
+    mount(zone, st) {
+      st0 = st;
+      const ls = 22, lw = 7, lh = 7;
+      const legend = (vec, name, color) => {
+        const ox = vec[0] < 0 ? lw - 1 : 1, oy = vec[1] < 0 ? lh - 1 : 1;
+        let g = `<svg viewBox="0 0 ${lw * ls} ${lh * ls}" width="${lw * ls * 0.8}" role="img" aria-label="vecteur ${name}">`;
+        for (let i = 0; i <= lw; i++) g += `<line x1="${i * ls}" y1="0" x2="${i * ls}" y2="${lh * ls}" stroke="var(--line)"/>`;
+        for (let j = 0; j <= lh; j++) g += `<line x1="0" y1="${j * ls}" x2="${lw * ls}" y2="${j * ls}" stroke="var(--line)"/>`;
+        const X1 = ox * ls, Y1 = (lh - oy) * ls, X2 = (ox + vec[0]) * ls, Y2 = (lh - oy - vec[1]) * ls;
+        g += arrowSvg(X1, Y1, X2, Y2, color) + `<text x="${(X1 + X2) / 2 + 6}" y="${(Y1 + Y2) / 2 - 6}" font-size="15">${name}</text></svg>`;
+        return g;
+      };
+      let g = `<svg class="gridsvg" tabindex="0" viewBox="0 0 ${GW * s + 2 * pad} ${GH * s + 2 * pad}" role="application" aria-label="Quadrillage : clique pour placer le point A">`;
+      for (let i = 0; i <= GW; i++) g += `<line x1="${sx(i)}" y1="${sy(0)}" x2="${sx(i)}" y2="${sy(GH)}" stroke="var(--line)"/>`;
+      for (let j = 0; j <= GH; j++) g += `<line x1="${sx(0)}" y1="${sy(j)}" x2="${sx(GW)}" y2="${sy(j)}" stroke="var(--line)"/>`;
+      g += `<g class="solg"></g><circle cx="${sx(O[0])}" cy="${sy(O[1])}" r="4.5" fill="var(--ink)"/><text x="${sx(O[0]) - 16}" y="${sy(O[1]) + 18}" font-size="16">O</text><g class="mk"></g></svg>`;
+      zone.innerHTML = `<div class="legend">${legend(u, "u", "var(--blue)")}${legend(v, "v", "var(--violet)")}</div>${g}`;
+      svgEl = zone.querySelector(".gridsvg");
+      const place = p => {
+        p = [Math.max(0, Math.min(GW, p[0])), Math.max(0, Math.min(GH, p[1]))];
+        st.pt = p;
+        svgEl.querySelector(".mk").innerHTML = `<g stroke="var(--blue)" stroke-width="2.4"><line x1="${sx(p[0]) - 7}" y1="${sy(p[1]) - 7}" x2="${sx(p[0]) + 7}" y2="${sy(p[1]) + 7}"/><line x1="${sx(p[0]) - 7}" y1="${sy(p[1]) + 7}" x2="${sx(p[0]) + 7}" y2="${sy(p[1]) - 7}"/></g><text x="${sx(p[0]) + 9}" y="${sy(p[1]) - 9}" font-size="17" style="fill:var(--blue)">A</text>`;
+      };
+      svgEl.addEventListener("click", e => {
+        const P = svgEl.createSVGPoint(); P.x = e.clientX; P.y = e.clientY;
+        const q = P.matrixTransform(svgEl.getScreenCTM().inverse());
+        place([Math.round((q.x - pad) / s), Math.round(GH - (q.y - pad) / s)]);
+      });
+      svgEl.addEventListener("keydown", e => {
+        const d = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] }[e.key];
+        if (!d) return; e.preventDefault();
+        const p = st.pt || O.slice(); place([p[0] + d[0], p[1] + d[1]]);
+      });
+    },
+    onSolution() {
+      const m1 = [O[0] + a * u[0], O[1] + a * u[1]];
+      svgEl.querySelector(".solg").innerHTML = arrowSvg(sx(O[0]), sy(O[1]), sx(m1[0]), sy(m1[1]), "var(--green)", 2.6) + arrowSvg(sx(m1[0]), sy(m1[1]), sx(exp[0]), sy(exp[1]), "var(--green)", 2.6) + `<circle cx="${sx(exp[0])}" cy="${sy(exp[1])}" r="5" fill="var(--green)"/>`;
+    },
+    hints: [
+      `Pars de ${M("O")} et trace ${fmt(a)}${V("u")} : ${Math.abs(a)} flèches ${V("u")} bout à bout${a < 0 ? ", dans le sens contraire de " + V("u") : ""}.`,
+      `Depuis l'extrémité obtenue, trace ${b < 0 ? "−" : ""}${eq(Math.abs(b), 1) ? "" : fmt(Math.abs(b))}${V("v")}${b < 0 ? " : même direction que " + V("v") + ", sens contraire" : ""}.`,
+      `Avec les coordonnées : ${V("u")}${P2(u)} et ${V("v")}${P2(v)}, donc ${V("OA")}(${fmt(a)} × ${pn(u[0])} ${b < 0 ? "−" : "+"} ${fmt(Math.abs(b))} × ${pn(v[0])} ; …). Compte ensuite les carreaux depuis ${M("O")}.`
+    ],
+    solution: `${V("u")}${P2(u)}, ${V("v")}${P2(v)}, donc ${V("OA")} = ${exprH} a pour coordonnées ${P2([a * u[0] + b * v[0], a * u[1] + b * v[1]])} : depuis ${M("O")}, on avance de ${fmt(a * u[0] + b * v[0])} carreau(x) en abscisse et ${fmt(a * u[1] + b * v[1])} en ordonnée. La construction apparaît en vert sur le quadrillage.`,
+    check: p => diagPair(p, model, flags, 1), exp
+  };
+}
+
+/* ---------- diagnostic d'une construction O + a·u + b·v ---------- */
+function combDiag(O, u, v, a, b, un = "u", vn = "v") {
+  const U = V(un), W = V(vn), flags = [];
+  if (Math.abs(a) > 1) flags.push({ k: "noA", msg: `Tu as oublié le coefficient ${fmt(a)} devant ${U} : ${fmt(a)}${U}, c'est ${Math.abs(a)} fois ${U} mis bout à bout${a < 0 ? ", dans le sens contraire" : ""}.` });
+  if (a) flags.push({ k: "signA", msg: a < 0 ? `Erreur de sens sur ${U} : le coefficient ${fmt(a)} est négatif, il faut aller dans le sens <b>contraire</b> de ${U}.` : `Erreur de sens sur ${U} : le coefficient est positif, garde le sens de ${U}.` });
+  if (Math.abs(b) > 1) flags.push({ k: "noB", msg: `Tu as oublié le coefficient ${fmt(b)} devant ${W} : il faut ${Math.abs(b)} fois ${W} bout à bout.` });
+  if (b) flags.push({ k: "signB", msg: b < 0 ? `Erreur de sens sur ${W} : −${W} a la même direction que ${W} mais le <b>sens contraire</b>.` : `Erreur de sens sur ${W} : on ajoute ${W}, on garde donc son sens.` });
+  if (a && b && a !== b) flags.push({ k: "swap", msg: `Tu as échangé les coefficients de ${U} et ${W}.` });
+  const model = f => {
+    let A = f.has("noA") ? Math.sign(a) : a, B = f.has("noB") ? Math.sign(b) : b;
+    if (f.has("signA")) A = -A; if (f.has("signB")) B = -B;
+    if (f.has("swap")) [A, B] = [B, A];
+    return [O[0] + A * u[0] + B * v[0], O[1] + A * u[1] + B * v[1]];
+  };
+  return { flags, model, exp: model(new Set()) };
+}
+
+/* ---------- quadrillages et repères dessinés ---------- */
+function vecLabel(x, y, n, color) {
+  const w = 9 * n.length;
+  return `<text x="${x}" y="${y}" font-size="16" style="fill:${color}">${n}</text><line x1="${x}" y1="${y - 14}" x2="${x + w}" y2="${y - 14}" stroke="${color}" stroke-width="1.2"/><polygon points="${x + w + 3},${y - 14} ${x + w - 2},${y - 17} ${x + w - 2},${y - 11}" fill="${color}"/>`;
+}
+function crossMark(p, n, color, off = [7, -7]) {
+  return `<g stroke="${color}" stroke-width="2"><line x1="${p[0] - 5}" y1="${p[1] - 5}" x2="${p[0] + 5}" y2="${p[1] + 5}"/><line x1="${p[0] - 5}" y1="${p[1] + 5}" x2="${p[0] + 5}" y2="${p[1] - 5}"/></g>` + (n ? `<text x="${p[0] + off[0]}" y="${p[1] + off[1]}" font-size="16" style="fill:${color}">${n}</text>` : "");
+}
+function makeGrid(cfg) {
+  const s = cfg.s || 30, e1 = cfg.e1 || [1, 0], e2 = cfg.e2 || [0, 1], pad = cfg.pad ?? 26;
+  const { xmin, xmax, ymin, ymax } = cfg;
+  const W = (x, y) => [(x * e1[0] + y * e2[0]) * s, -(x * e1[1] + y * e2[1]) * s];
+  const cs = [W(xmin, ymin), W(xmax, ymin), W(xmin, ymax), W(xmax, ymax)];
+  const mx = Math.min(...cs.map(c => c[0])) - pad, my = Math.min(...cs.map(c => c[1])) - pad;
+  const vw = Math.round(Math.max(...cs.map(c => c[0])) + pad - mx), vh = Math.round(Math.max(...cs.map(c => c[1])) + pad - my);
+  const S = (x, y) => { const w = W(x, y); return [+(w[0] - mx).toFixed(2), +(w[1] - my).toFixed(2)]; };
+  const det = e1[0] * e2[1] - e1[1] * e2[0];
+  const inv = (px, py) => { const X = (px + mx) / s, Y = -(py + my) / s; return [(X * e2[1] - Y * e2[0]) / det, (e1[0] * Y - e1[1] * X) / det]; };
+  const ln = (a, b, st) => `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" ${st}/>`;
+  let body = "";
+  if (cfg.lattice !== false) {
+    for (let i = Math.ceil(xmin); i <= xmax; i++) body += ln(S(i, ymin), S(i, ymax), 'stroke="var(--line)"');
+    for (let j = Math.ceil(ymin); j <= ymax; j++) body += ln(S(xmin, j), S(xmax, j), 'stroke="var(--line)"');
+  }
+  if (cfg.axes) {
+    const A1 = S(xmin, 0), A2 = S(xmax + .45, 0), B1 = S(0, ymin), B2 = S(0, ymax + .45);
+    body += arrowSvg(A1[0], A1[1], A2[0], A2[1], "var(--muted)", 1.4) + arrowSvg(B1[0], B1[1], B2[0], B2[1], "var(--muted)", 1.4);
+    for (let i = Math.ceil(xmin); i <= xmax; i++) if (i) { const p = S(i, 0); body += `<text class="grad" x="${p[0] - (i < 0 ? 7 : 3)}" y="${p[1] + 14}">${fmt(i)}</text>`; }
+    for (let j = Math.ceil(ymin); j <= ymax; j++) if (j) { const p = S(0, j); body += `<text class="grad" x="${p[0] - (j < 0 ? 16 : 11)}" y="${p[1] + 4}">${fmt(j)}</text>`; }
+    const o = S(0, 0); body += `<text x="${o[0] - 14}" y="${o[1] + 15}" font-size="14">O</text>`;
+  }
+  (cfg.segs || []).forEach(sg => { const a = S(...sg.a), b = S(...sg.b); body += ln(a, b, `stroke="${sg.color || "var(--muted)"}" stroke-width="${sg.w || 1.4}" ${sg.dash ? 'stroke-dasharray="5 4"' : ""}`); });
+  (cfg.polys || []).forEach(pg => { body += `<polygon points="${pg.pts.map(p => S(...p).join(",")).join(" ")}" fill="none" stroke="${pg.color || "var(--blue)"}" stroke-width="${pg.w || 2}"/>`; });
+  (cfg.vecs || []).forEach(vc => {
+    const a = S(...vc.a), b = S(...vc.b), col = vc.color || "var(--ink)";
+    body += arrowSvg(a[0], a[1], b[0], b[1], col, 2);
+    if (vc.n) { const off = vc.off || [6, -8]; body += vecLabel((a[0] + b[0]) / 2 + off[0], (a[1] + b[1]) / 2 + off[1], vc.n, col); }
+  });
+  (cfg.points || []).forEach(p => { body += crossMark(S(...p.c), p.n, p.color || "var(--ink)", p.off); });
+  return { S, inv, vw, vh, body };
+}
+function figure(cfg, caption) {
+  const g = makeGrid(cfg);
+  return `<div class="fig"><svg class="figsvg" viewBox="0 0 ${g.vw} ${g.vh}" style="max-width:${g.vw}px" role="img" aria-label="${esc(caption || "Figure de l'énoncé")}">${g.body}</svg>${caption ? `<p class="figcap">${caption}</p>` : ""}</div>`;
+}
+/* Placer un ou plusieurs points en cliquant sur un quadrillage / repère */
+function placePart(id, cfg) {
+  const targets = cfg.targets, step = cfg.step || 1, G = cfg.grid;
+  const snap = x => Math.round(x / step) * step, clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+  const rawPt = p => cfg.ref ? `${fmt(p[0] - cfg.ref.c[0])} carreau(x) en abscisse et ${fmt(p[1] - cfg.ref.c[1])} en ordonnée depuis ${cfg.ref.n}` : P2(p);
+  let svgEl, g;
+  return {
+    id, type: "click", work: cfg.work !== false, label: cfg.label, hints: cfg.hints || [], solution: cfg.solution || "",
+    getAns(st) {
+      const miss = targets.filter(t => !st.placed[t.n]);
+      if (miss.length === targets.length) return { err: "Clique sur le quadrillage pour placer " + (targets.length > 1 ? "les points." : "le point."), raw: "" };
+      if (miss.length) return { err: `Il reste à placer : ${miss.map(t => t.n).join(", ")}. Choisis le point avec les boutons au-dessus du quadrillage.`, raw: this.rawAns(st.placed) };
+      return { v: st.placed, raw: this.rawAns(st.placed) };
+    },
+    rawAns(pl) { return targets.filter(t => pl[t.n]).map(t => `${t.n} placé : ${rawPt(pl[t.n])}`).join(" ; "); },
+    check(pl) {
+      const msgs = []; let ok = true;
+      targets.forEach(t => {
+        const r = t.model ? diagPair(pl[t.n], t.model, t.flags || [], 1) : diagPair(pl[t.n], () => t.c);
+        if (r.ok) msgs.push(`${M(t.n)} est bien placé.`);
+        else { ok = false; msgs.push(`${M(t.n)} : ${r.msgs.join(" ")}`); }
+      });
+      return { ok, msgs: ok ? [] : msgs };
+    },
+    mount(zone, st) {
+      st.placed = {}; let active = 0;
+      g = makeGrid(G);
+      const sel = targets.length > 1 ? `<div class="placesel" role="group" aria-label="Point à placer">${targets.map((t, i) => `<button type="button" data-t="${i}">Placer ${t.n}</button>`).join("")}</div>` : "";
+      zone.innerHTML = sel + `<svg class="gridsvg" tabindex="0" viewBox="0 0 ${g.vw} ${g.vh}" style="max-width:${Math.round(g.vw * 1.25)}px" role="application" aria-label="Quadrillage : clique pour placer ${targets.map(t => t.n).join(", ")}">${g.body}<g class="solg"></g><g class="mk"></g></svg>`;
+      svgEl = zone.querySelector("svg");
+      const refresh = () => {
+        zone.querySelectorAll("[data-t]").forEach((b, i) => b.setAttribute("aria-pressed", String(i === active)));
+        svgEl.querySelector(".mk").innerHTML = targets.map((t, i) => st.placed[t.n] ? crossMark(g.S(...st.placed[t.n]), t.n, i === active ? "var(--blue)" : "var(--violet)") : "").join("");
+      };
+      const set = (p, adv) => {
+        const t = targets[active];
+        st.placed[t.n] = [clamp(snap(p[0]), G.xmin, G.xmax), clamp(snap(p[1]), G.ymin, G.ymax)];
+        if (adv) { const nx = targets.findIndex((t2, i) => i !== active && !st.placed[t2.n]); if (nx >= 0) active = nx; }
+        refresh();
+      };
+      zone.addEventListener("click", e => { const b = e.target.closest("[data-t]"); if (b) { active = +b.dataset.t; refresh(); } });
+      svgEl.addEventListener("click", e => {
+        const P = svgEl.createSVGPoint(); P.x = e.clientX; P.y = e.clientY;
+        const q = P.matrixTransform(svgEl.getScreenCTM().inverse());
+        set(g.inv(q.x, q.y), true);
+      });
+      svgEl.addEventListener("keydown", e => {
+        const d = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, step], ArrowDown: [0, -step] }[e.key];
+        if (!d) return; e.preventDefault();
+        const p = st.placed[targets[active].n] || (cfg.ref ? cfg.ref.c.slice() : [0, 0]); set([p[0] + d[0], p[1] + d[1]], false);
+      });
+      refresh();
+    },
+    onSolution() {
+      let h = (cfg.solDraw || []).map(([a, b]) => { const A = g.S(...a), B = g.S(...b); return arrowSvg(A[0], A[1], B[0], B[1], "var(--green)", 2.4); }).join("");
+      h += targets.map(t => { const p = g.S(...(t.model ? t.model(new Set()) : t.c)); return `<circle cx="${p[0]}" cy="${p[1]}" r="5" fill="var(--green)"/><text x="${p[0] + 7}" y="${p[1] + 17}" font-size="14" style="fill:var(--green)">${t.n}</text>`; }).join("");
+      svgEl.querySelector(".solg").innerHTML = h;
+    }
+  };
+}
+
+/* ---------- QUESTIONS DE COURS ---------- */
+const qcm = [
+  { q: `Dans un repère, ${M("A")}(${X("x", "A")} ; ${X("y", "A")}) et ${M("B")}(${X("x", "B")} ; ${X("y", "B")}). Le milieu ${M("K")} de [AB] a pour coordonnées :`,
+    o: [[`((${X("x", "A")} + ${X("x", "B")})/2 ; (${X("y", "A")} + ${X("y", "B")})/2)`, 1], [`((${X("x", "B")} − ${X("x", "A")})/2 ; (${X("y", "B")} − ${X("y", "A")})/2)`], [`(${X("x", "A")} + ${X("x", "B")} ; ${X("y", "A")} + ${X("y", "B")})`], [`((${X("x", "A")} + ${X("y", "A")})/2 ; (${X("x", "B")} + ${X("y", "B")})/2)`]],
+    e: "Le milieu est la moyenne des abscisses et la moyenne des ordonnées." },
+  { q: `Le vecteur ${V("AB")} a pour coordonnées :`,
+    o: [[`(${X("x", "B")} − ${X("x", "A")} ; ${X("y", "B")} − ${X("y", "A")})`, 1], [`(${X("x", "A")} − ${X("x", "B")} ; ${X("y", "A")} − ${X("y", "B")})`], [`(${X("x", "A")} + ${X("x", "B")} ; ${X("y", "A")} + ${X("y", "B")})`], [`(${X("x", "B")} − ${X("y", "B")} ; ${X("x", "A")} − ${X("y", "A")})`]],
+    e: `Extrémité moins origine : ${V("AB")} = ${V("OB")} − ${V("OA")}.` },
+  { q: `${V("AB")} = ${V("CD")} si et seulement si … est un parallélogramme (éventuellement aplati).`,
+    o: [["ABDC", 1], ["ABCD"], ["ACBD"], ["ADBC"]], e: `On garde A, B puis on inverse : ${V("AB")} = ${V("CD")} ⇔ ABDC parallélogramme.` },
+  { q: `Relation de Chasles : ${V("AB")} + ${V("BC")} =`, o: [[V("AC"), 1], [V("CA")], [V("BB")], [V("AB")]], e: "L'extrémité du premier vecteur est l'origine du second : on va de A à C." },
+  { q: `Le vecteur ${V("BA")} est égal à :`, o: [[`−${V("AB")}`, 1], [V("AB")], [V("0")], [`2${V("AB")}`]], e: `${V("AB")} + ${V("BA")} = ${V("AA")} = ${V("0")} : ce sont des vecteurs opposés.` },
+  { q: "Deux vecteurs sont égaux lorsqu'ils ont :", o: [["la même direction, le même sens et la même norme", 1], ["la même norme"], ["la même direction et la même norme"], ["la même origine"]], e: "Il faut les trois caractéristiques : direction, sens et norme." },
+  { q: "Un repère (O ; I, J) est orthonormé lorsque :", o: [["(OI) ⊥ (OJ) et OI = OJ", 1], ["(OI) ⊥ (OJ) seulement"], ["OI = OJ seulement"], ["O, I et J sont alignés"]], e: "Orthogonal : axes perpendiculaires. Orthonormé : en plus, même unité sur les deux axes (OIJ rectangle isocèle en O)." },
+  { q: "I est le milieu de [AB] si et seulement si :", o: [[`${V("IA")} + ${V("IB")} = ${V("0")}`, 1], [`${V("IA")} = ${V("IB")}`], [`${V("AI")} + ${V("IB")} = ${V("0")}`], [`${V("AI")} = ${V("BI")}`]], e: `${V("IA")} et ${V("IB")} ont même longueur mais des sens contraires : ils sont opposés. On a aussi ${V("IA")} = ${V("BI")}.` },
+  { q: "ABCD est un parallélogramme si et seulement si :", o: [[`${V("AC")} = ${V("AB")} + ${V("AD")}`, 1], [`${V("BD")} = ${V("AB")} + ${V("AD")}`], [`${V("AB")} = ${V("CD")}`], [`${V("AC")} = ${V("AB")} − ${V("AD")}`]], e: `C'est la règle du parallélogramme. Par Chasles, ${V("AC")} = ${V("AB")} + ${V("BC")}, et ${V("BC")} = ${V("AD")}.` },
+  { q: `Le vecteur −3${V("u")} :`, o: [[`a la même direction que ${V("u")}, le sens contraire et une norme 3 fois plus grande`, 1], [`a le même sens que ${V("u")} et une norme 3 fois plus grande`], [`n'a pas la même direction que ${V("u")}`], [`a pour norme −3‖${V("u")}‖`]], e: "Un coefficient négatif inverse le sens ; une norme est toujours positive." },
+  { q: `Si ${V("u")}(4 ; −2), alors −2${V("u")} a pour coordonnées :`, o: [["(−8 ; 4)", 1], ["(−8 ; −2)"], ["(2 ; −4)"], ["(8 ; −4)"]], e: "On multiplie les deux coordonnées : −2 × 4 = −8 et −2 × (−2) = 4." },
+  { q: `La translation de vecteur ${V("AB")} transforme M en M′ tel que :`, o: [["ABM′M est un parallélogramme", 1], ["ABMM′ est un parallélogramme"], ["AMBM′ est un parallélogramme"], ["M′ est le milieu de [AB]"]], e: `${V("MM′")} = ${V("AB")}, donc ABM′M est un parallélogramme (éventuellement aplati).` },
+  { q: `Que vaut ${V("AA")} ?`, o: [["le vecteur nul", 1], ["le point A"], ["le nombre 0"], ["il n'existe pas"]], e: "La translation de vecteur " + V("AA") + " laisse chaque point invariant : c'est le vecteur nul, noté " + V("0") + "." }
+];
+function buildCours() {
+  const v = $("#v-cours");
+  v.innerHTML = `<h2>L'essentiel du chapitre</h2>
+  <div class="memo">
+    <div class="item"><b>Milieu de [AB]</b><span>${M("K")}((${X("x", "A")} + ${X("x", "B")})/2 ; (${X("y", "A")} + ${X("y", "B")})/2)</span></div>
+    <div class="item"><b>Coordonnées d'un vecteur</b><span>${V("AB")}(${X("x", "B")} − ${X("x", "A")} ; ${X("y", "B")} − ${X("y", "A")}) : extrémité − origine</span></div>
+    <div class="item"><b>Vecteurs égaux</b><span>${V("AB")} = ${V("CD")} ⇔ ABDC parallélogramme ⇔ mêmes coordonnées</span></div>
+    <div class="item"><b>Relation de Chasles</b><span>${V("AB")} + ${V("BC")} = ${V("AC")} ; ${V("BA")} = −${V("AB")}</span></div>
+    <div class="item"><b>Parallélogramme</b><span>ABCD parallélogramme ⇔ ${V("AB")} = ${V("DC")} ⇔ ${V("AC")} = ${V("AB")} + ${V("AD")}</span></div>
+    <div class="item"><b>Produit par un réel</b><span>${V("u")}(x ; y) ⇒ k${V("u")}(kx ; ky). Si k &lt; 0, le sens s'inverse.</span></div>
+  </div>
+  <h2>Questions de cours</h2><p class="note">Choisis une réponse : la correction s'affiche aussitôt.</p>`;
+  qcm.forEach((item, qi) => {
+    const id = "cours-" + qi; registry.cours.push(id);
+    const c = document.createElement("article"); c.className = "card qcm";
+    const opts = shuffle(item.o.map((o, i) => ({ t: o[0], ok: !!o[1], i })));
+    c.innerHTML = `<div class="q"><span class="qn">${qi + 1}.</span><div>${item.q}</div></div><div class="opts">${opts.map((o, i) => `<label class="opt"><input type="radio" name="${id}" value="${i}"><span>${o.t}</span></label>`).join("")}</div><div class="fb" aria-live="polite"></div>`;
+    c.addEventListener("change", e => {
+      const i = +e.target.value, o = opts[i];
+      c.querySelectorAll("label.opt").forEach((l, j) => { l.classList.remove("good", "bad"); if (j === i) l.classList.add(o.ok ? "good" : "bad"); });
+      c.querySelector(".fb").innerHTML = `<span class="verdict ${o.ok ? "ok" : "ko"}">${o.ok ? "✓ Juste" : "✗ Ce n'est pas ça"}</span><p>${item.e}</p>`;
+      if (o.ok) markSolved(id);
+    });
+    v.appendChild(c);
+  });
+}
+
+/* ---------- EXERCICES DE LA FICHE ---------- */
+function cyc(s) { const out = []; for (let i = 0; i < 4; i++) { const r = s.slice(i) + s.slice(0, i); out.push(r, [...r].reverse().join("")); } return out; }
+function buildFiche() {
+  const v = $("#v-fiche");
+  v.innerHTML = `<h2>Exercices de la fiche</h2><p class="note">Les figures de la fiche sont reproduites sur des quadrillages. Pour les constructions, clique directement sur le quadrillage (ou utilise les flèches du clavier après avoir cliqué).</p><div class="toc"></div>`;
+  const cards = [];
+  // Exercice 1
+  const A1 = pt("A", 0, 0), B1 = pt("B", 1, 0), C1 = pt("C", 1, 1), D1 = pt("D", 0, 1);
+  const simple = (id, P, lab, hints, sol) => ({ id, type: "pair", work: false, pairLabel: M(P.n), label: lab, hints, solution: sol, check: a => diagPair(a, () => P.c) });
+  const g1 = { xmin: -2, xmax: 3, ymin: -1, ymax: 3, s: 62, e1: [1, 0], e2: [0.45, 0.82],
+    segs: [{ a: [-2, 0], b: [3, 0], w: 1.8 }, { a: [0, -1], b: [0, 3], w: 1.8 }],
+    polys: [{ pts: [[0, 0], [1, 0], [1, 1], [0, 1]] }],
+    points: [{ n: "A", c: [0, 0], off: [-18, 18] }, { n: "B", c: [1, 0], off: [5, 18] }, { n: "C", c: [1, 1], off: [7, -7] }, { n: "D", c: [0, 1], off: [-18, -4] }] };
+  cards.push({ anchor: "ex1", tag: "Fiche · Ex. 1", title: "Parallélogramme et repère",
+    statement: `<p>On rappelle qu'un parallélogramme est un quadrilatère qui a ses côtés opposés parallèles, et dont les diagonales se coupent en leur milieu.</p><p>ABCD est un parallélogramme. On se place dans le repère (A ; B ; D) : A est l'origine, la droite (AB) est l'axe des abscisses avec AB = 1 unité, la droite (AD) est l'axe des ordonnées avec AD = 1 unité. Les lignes du quadrillage sont parallèles aux axes.</p>${figure(g1, "Le parallélogramme ABCD (en bleu) et le quadrillage du repère (A ; B ; D). Ce repère n'est ni orthogonal ni orthonormé.")}`,
+    parts: [
+      simple("f1-b", B1, `Coordonnées de ${M("B")} dans le repère (A ; B ; D).`, ["Dans un repère (O ; I ; J), I a pour coordonnées (1 ; 0) et J (0 ; 1)."], `B joue le rôle de I : ${M("B")}(1 ; 0).`),
+      simple("f1-d", D1, `Coordonnées de ${M("D")}.`, ["D joue le rôle de J dans le repère (A ; B ; D)."], `${M("D")}(0 ; 1).`),
+      simple("f1-c", C1, `Coordonnées de ${M("C")}.`, [`ABCD est un parallélogramme, donc ${V("AC")} = ${V("AB")} + ${V("AD")}.`, `Pour aller de A à C : on se déplace de 1 unité selon (AB) puis de 1 unité selon (AD).`], `${V("AC")} = ${V("AB")} + ${V("AD")}, donc ${M("C")}(1 ; 1).`),
+      placePart("f1-e", { grid: g1, targets: [{ n: "E", c: [-1, 2] }], work: false,
+        label: `Place le point ${M("E")} de coordonnées (−1 ; 2) dans le repère (A ; B ; D). Clique sur un nœud du quadrillage.`,
+        hints: ["L'abscisse se lit parallèlement à (AB), l'ordonnée parallèlement à (AD).", "Pars de A, recule d'une unité le long de (AB) (vers la gauche), puis monte de 2 unités parallèlement à (AD)."],
+        solution: `${V("AE")} = −${V("AB")} + 2${V("AD")} : depuis A, on recule d'une unité selon (AB) puis on avance de 2 unités selon (AD).`,
+        solDraw: [[[0, 0], [-1, 0]], [[-1, 0], [-1, 2]]] })
+    ] });
+  // Exercice 2
+  const A2 = pt("A", -2, 1), B2 = pt("B", 4, -3), C2 = pt("C", 3, 4);
+  cards.push({ anchor: "ex2", tag: "Fiche · Ex. 2", title: "Milieux dans un repère orthonormé",
+    statement: `<p>Dans un repère orthonormé (O ; I, J), on donne ${ptH(A2)}, ${ptH(B2)} et ${ptH(C2)}.</p>`,
+    parts: [
+      placePart("f2-p", { grid: { xmin: -4, xmax: 6, ymin: -4, ymax: 5, axes: true }, targets: [{ n: "A", c: A2.c }, { n: "B", c: B2.c }, { n: "C", c: C2.c }], work: false,
+        label: "Place les points A, B et C dans le repère (choisis le point avec les boutons, puis clique sur le quadrillage).",
+        hints: ["On lit d'abord l'abscisse sur l'axe horizontal, puis l'ordonnée sur l'axe vertical.", "A(−2 ; 1) : 2 unités à gauche de O, puis 1 unité vers le haut."],
+        solution: `${ptH(A2)}, ${ptH(B2)} et ${ptH(C2)} sont placés en vert.` }),
+      milieuPart("f2-d", A2, B2, "D"), milieuPart("f2-j", A2, C2, "J"),
+      placePart("f2-v", { grid: { xmin: -4, xmax: 6, ymin: -4, ymax: 5, axes: true, segs: [{ a: A2.c, b: B2.c, dash: true }, { a: A2.c, b: C2.c, dash: true }], points: [{ n: "A", c: A2.c }, { n: "B", c: B2.c }, { n: "C", c: C2.c }] },
+        targets: [{ n: "D", c: [1, -1] }, { n: "J", c: [0.5, 2.5] }], step: 0.5, work: false,
+        label: "Place D et J sur la figure, puis vérifie graphiquement que ce sont bien les milieux de [AB] et [AC]. (On peut cliquer sur les demi-carreaux.)",
+        hints: ["Utilise les coordonnées que tu as calculées.", "J a des coordonnées non entières : il se place au milieu d'un carreau ou d'un côté de carreau."],
+        solution: "D(1 ; −1) est au milieu de [AB] et J(0,5 ; 2,5) au milieu de [AC] : on le voit sur les segments en pointillés." })
+    ] });
+  // Exercice 3
+  const quad = { id: "f3-1", type: "text", label: `Complète : ${V("RS")} = ${V("KL")} si et seulement si <b>……</b> est un parallélogramme.`, textLabel: "Quadrilatère", placeholder: "4 lettres",
+    hints: [`Propriété du cours : ${V("AB")} = ${V("CD")} ⇔ ABDC est un parallélogramme.`, "On garde les deux premières lettres et on inverse les deux dernières."],
+    solution: `${V("RS")} = ${V("KL")} ⇔ <b>RSLK</b> est un parallélogramme.`,
+    check(r) {
+      const s = r.toUpperCase().replace(/[^A-Z]/g, "");
+      if (cyc("RSLK").includes(s)) return { ok: true, msgs: s === "RSLK" ? [] : ["Juste : c'est le même quadrilatère que RSLK, nommé autrement."] };
+      if (cyc("RSKL").includes(s)) return { ok: false, msgs: ["RSKL n'est pas un parallélogramme ici : ses diagonales seraient [RK] et [SL]. Rappel : " + V("AB") + " = " + V("CD") + " ⇔ ABDC, on inverse les deux dernières lettres."] };
+      if (s.length !== 4) return { ok: false, msgs: ["Écris le nom d'un quadrilatère avec les 4 lettres R, S, K, L."] };
+      return { ok: false, msgs: ["Ce n'est pas le bon ordre des sommets. Dessine R, S puis K, L avec la même flèche, et lis le tour du quadrilatère."] };
+    } };
+  const Gp = { E: [0, 0], F: [1, 0], G: [1.3, 1], H: [0.3, 1] };
+  const eqPart = { id: "f3-2", type: "text", label: "Complète : EFGH est un parallélogramme si et seulement si <b>……</b> (une égalité de vecteurs).", textLabel: "Égalité", placeholder: "ex. XY = ZT",
+    hints: ["Dans un parallélogramme, deux côtés opposés sont représentés par des vecteurs égaux, de même sens.", "Les côtés [EF] et [HG] sont opposés. Dans quel sens faut-il les lire pour avoir le même sens ?"],
+    solution: `EFGH est un parallélogramme ⇔ ${V("EF")} = ${V("HG")} (ou ${V("EH")} = ${V("FG")}).`,
+    check(r) {
+      const parts = r.toUpperCase().replace(/[→⃗⃗\s]|VEC(TEUR)?/g, "").split("=");
+      if (parts.length !== 2 || !/^[EFGH]{2}$/.test(parts[0]) || !/^[EFGH]{2}$/.test(parts[1])) return { ok: false, msgs: ["Écris une égalité de deux vecteurs avec les lettres E, F, G, H, par exemple XY = ZT."] };
+      const vv = n => [Gp[n[1]][0] - Gp[n[0]][0], Gp[n[1]][1] - Gp[n[0]][1]];
+      const p = vv(parts[0]), q = vv(parts[1]);
+      if (parts[0][0] === parts[0][1] || parts[1][0] === parts[1][1]) return { ok: false, msgs: ["Un vecteur s'écrit avec deux points différents."] };
+      if (eq(p[0], q[0]) && eq(p[1], q[1])) return { ok: true, msgs: [] };
+      if (eq(p[0], -q[0]) && eq(p[1], -q[1])) return { ok: false, msgs: [`Ces vecteurs sont <b>opposés</b>, pas égaux. Par exemple ${V("EF")} = ${V("GH")} est faux : ce serait le parallélogramme EFHG. Inverse les lettres d'un des deux vecteurs.`] };
+      return { ok: false, msgs: ["Ces deux vecteurs ne représentent pas des côtés opposés. Choisis deux côtés opposés de EFGH."] };
+    } };
+  cards.push({ anchor: "ex3", tag: "Fiche · Ex. 3", title: "Vecteurs égaux et parallélogramme",
+    statement: `<p>Complète les phrases. Aide-toi de la figure du cours ci-dessous.</p>${figure({ xmin: 0, xmax: 6, ymin: 0, ymax: 3, s: 48, lattice: false,
+      segs: [{ a: [0, 0], b: [1.2, 1.6], dash: true }, { a: [4.6, 0.7], b: [5.8, 2.3], dash: true }],
+      vecs: [{ a: [0, 0], b: [4.6, 0.7], color: "var(--blue)", off: [0, 22] }, { a: [1.2, 1.6], b: [5.8, 2.3], color: "var(--blue)" }],
+      points: [{ n: "A", c: [0, 0], off: [-16, 16] }, { n: "B", c: [4.6, 0.7], off: [6, 16] }, { n: "C", c: [1.2, 1.6], off: [-16, -6] }, { n: "D", c: [5.8, 2.3], off: [6, -6] }] },
+      `Rappel du cours : la translation qui envoie A en B envoie aussi C en D, donc ${V("AB")} = ${V("CD")} et ABDC est un parallélogramme.`)}`, parts: [quad, eqPart] });
+  // Exercice 4
+  const listPart = (id, given, expected) => ({ id, type: "text", label: `Liste tous les vecteurs égaux à ${V(given)}.`, textLabel: `${V(given)} =`, placeholder: "ex. XY, ZT",
+    hints: [`Un vecteur égal à ${V(given)} a la même direction, le même sens et la même longueur.`, `Sur la figure, ${V(given)} correspond à un déplacement précis (nombre de cases à droite / en haut). Cherche tous les couples de points qui font le même déplacement.`, `Il y en a ${expected.length}.`],
+    solution: `${V(given)} = ${expected.map(V).join(" = ")}.`,
+    check(r) {
+      const names = (r.toUpperCase().replace(/[→⃗⃗]|VEC(TEUR)?/g, "").match(/[A-Z]{2}/g) || []).filter(n => n !== given);
+      if (!names.length) return { ok: false, msgs: ["Écris des vecteurs séparés par des virgules, par exemple BE, DC."] };
+      const gv = figVec({ a: given[0], b: given[1] });
+      const msgs = [];
+      const bad = names.filter(n => !(n[0] in FIG) || !(n[1] in FIG));
+      if (bad.length) return { ok: false, msgs: [`Point(s) absent(s) de la figure : ${bad.join(", ")}.`] };
+      const wrong = names.filter(n => { const x = figVec({ a: n[0], b: n[1] }); return !(eq(x[0], gv[0]) && eq(x[1], gv[1])); });
+      const opp = wrong.filter(n => { const x = figVec({ a: n[0], b: n[1] }); return eq(x[0], -gv[0]) && eq(x[1], -gv[1]); });
+      const found = new Set(names.filter(n => !wrong.includes(n)));
+      const missing = expected.filter(n => !found.has(n));
+      if (opp.length) msgs.push(`${opp.map(V).join(", ")} : bonne direction et bonne longueur, mais <b>sens contraire</b>. Ce sont des vecteurs opposés à ${V(given)}.`);
+      const other = wrong.filter(n => !opp.includes(n));
+      if (other.length) msgs.push(`${other.map(V).join(", ")} : pas égal à ${V(given)} (direction ou longueur différente).`);
+      if (missing.length) msgs.push(`Il en manque ${missing.length}. Cherche dans toute la figure.`);
+      if (!wrong.length && !missing.length) return { ok: true, msgs: [] };
+      if (found.size) msgs.unshift(`${[...found].map(V).join(", ")} : juste.`);
+      return { ok: false, msgs };
+    } });
+  cards.push({ anchor: "ex4", tag: "Fiche · Ex. 4", title: "Lire des vecteurs égaux sur une figure",
+    statement: `<p>La figure est un rectangle AEGI partagé en quatre rectangles identiques.</p><div class="fig">${figRect()}</div>`,
+    parts: [listPart("f4-1", "AB", ["BE", "DC", "CF", "IH", "HG"]), listPart("f4-2", "AD", ["DI", "BC", "CH", "EF", "FG"]), listPart("f4-3", "IC", ["DB", "HF", "CE"])] });
+  // Exercice 5
+  const ex5 = [
+    ["AB+DH", `${V("DH")} = ${V("BF")}, donc ${V("AB")} + ${V("BF")} = ${V("AF")}.`],
+    ["BC+DC", `${V("DC")} = ${V("CF")}, donc ${V("BC")} + ${V("CF")} = ${V("BF")}.`],
+    ["DF+AD", `${V("AD")} + ${V("DF")} = ${V("AF")}.`],
+    ["IH+FB", `${V("FB")} = ${V("HD")}, donc ${V("IH")} + ${V("HD")} = ${V("ID")}.`],
+    ["GC+GH+AE", `${V("GH")} = ${V("CD")} et ${V("AE")} = ${V("DF")}, donc ${V("GC")} + ${V("CD")} + ${V("DF")} = ${V("GF")}.`],
+    ["AE-GF", `−${V("GF")} = ${V("FG")} = ${V("EF")}, donc ${V("AE")} + ${V("EF")} = ${V("AF")}.`],
+    ["AB-IC", `−${V("IC")} = ${V("CI")} = ${V("BD")}, donc ${V("AB")} + ${V("BD")} = ${V("AD")}.`],
+    ["DC-BF", `−${V("BF")} = ${V("FB")} = ${V("CA")}, donc ${V("DC")} + ${V("CA")} = ${V("DA")}.`]
+  ];
+  cards.push({ anchor: "ex5", tag: "Fiche · Ex. 5", title: "Simplifier des sommes à l'aide de la figure",
+    statement: `<p>À l'aide de la figure, simplifie chaque somme en un seul vecteur (tu peux nommer n'importe quel représentant).</p><div class="fig">${figRect()}</div>`,
+    parts: ex5.map(([e, sol], i) => chasPart("f5-" + i, T(e), { mode: "fig", named: true, solution: sol, hint3: "Remplace le second vecteur par un vecteur égal qui part de l'extrémité du premier (lis la figure), puis applique Chasles." })) });
+  // Exercice 6
+  const ex61 = [
+    ["AC+CF", false, `Oui : ${V("AC")} + ${V("CF")} = ${V("AF")}.`],
+    ["AB+AE", true, `Non : ${V("AB")} et ${V("AE")} ont la même origine, ils ne se suivent pas.`],
+    ["AD+BA", false, `Oui, après avoir changé l'ordre : ${V("BA")} + ${V("AD")} = ${V("BD")}.`],
+    ["AB+BF+DA", false, `Oui : ${V("DA")} + ${V("AB")} + ${V("BF")} = ${V("DF")}.`]
+  ];
+  cards.push({ anchor: "ex6a", tag: "Fiche · Ex. 6 (1)", title: "Peut-on appliquer Chasles ?",
+    statement: `<p>Étudie dans chaque cas si l'on peut appliquer la relation de Chasles. Si oui, écris le vecteur obtenu ; sinon réponds « impossible ».</p>`,
+    parts: ex61.map(([e, no, sol], i) => chasPart("f6a-" + i, T(e), { allowNo: true, expectNo: no, label: termsHTML(T(e)), solution: sol })) });
+  const ex62 = [["AM+MN", `${V("AN")}`], ["MP+AM", `${V("AM")} + ${V("MP")} = ${V("AP")}`], ["OP+KO+NK", `${V("NK")} + ${V("KO")} + ${V("OP")} = ${V("NP")}`], ["MN+NM", `${V("MM")} = ${V("0")}`], ["MO+PM+OP", `${V("PM")} + ${V("MO")} + ${V("OP")} = ${V("PP")} = ${V("0")}`], ["KN-ON+OK", `−${V("ON")} = ${V("NO")}, donc ${V("KN")} + ${V("NO")} + ${V("OK")} = ${V("KK")} = ${V("0")}`]];
+  cards.push({ anchor: "ex6b", tag: "Fiche · Ex. 6 (2)", title: "Simplifier les écritures", numStyle: "alpha",
+    statement: "<p>Simplifie chaque écriture en un seul vecteur (écris 0 pour le vecteur nul).</p>",
+    parts: ex62.map(([e, sol], i) => chasPart("f6b-" + i, T(e), { label: termsHTML(T(e)), solution: sol })) });
+  // Exercice 7
+  const u7 = [2, 3], v7 = [7, 0], O7 = [8, 1];
+  const d7 = (a, b) => combDiag(O7, u7, v7, a, b);
+  cards.push({ anchor: "ex7", tag: "Fiche · Ex. 7 (1)", title: "Représenter 2u, −v et 2u − v",
+    statement: `<p>Voici la figure de la fiche, avec les vecteurs ${V("u")} et ${V("v")} :</p>${figure({ xmin: 0, xmax: 9, ymin: 0, ymax: 5, s: 30, vecs: [{ a: [1, 2], b: [3, 5], n: "u", off: [-26, -2] }, { a: [1, 2], b: [8, 2], n: "v", off: [30, -8] }] })}<p>Sur le quadrillage de réponse, on part du point ${M("O")}.</p>`,
+    parts: [placePart("f7-1", { grid: { xmin: 0, xmax: 14, ymin: 0, ymax: 8, s: 28, points: [{ n: "O", c: O7, off: [-14, 18] }] }, ref: { n: "O", c: O7 },
+      targets: [{ n: "P", ...d7(2, 0) }, { n: "Q", ...d7(0, -1) }, { n: "R", ...d7(2, -1) }],
+      label: `Place les points ${M("P")}, ${M("Q")} et ${M("R")} tels que ${V("OP")} = 2${V("u")}, ${V("OQ")} = −${V("v")} et ${V("OR")} = 2${V("u")} − ${V("v")}.`,
+      hints: [`Compte les carreaux sur la figure : ${V("u")} fait 2 carreaux vers la droite et 3 vers le haut ; ${V("v")} fait 7 carreaux vers la droite.`, `2${V("u")} : deux fois ${V("u")} bout à bout. −${V("v")} : même longueur que ${V("v")} mais vers la gauche.`, `2${V("u")} − ${V("v")} = 2${V("u")} + (−${V("v")}) : depuis P, trace −${V("v")}.`],
+      solution: `2${V("u")}(4 ; 6), −${V("v")}(−7 ; 0) et 2${V("u")} − ${V("v")}(−3 ; 6) en carreaux. La construction de R est tracée en vert : 2${V("u")} puis −${V("v")} au bout.`,
+      solDraw: [[O7, [12, 7]], [[12, 7], [5, 7]], [O7, [1, 1]]] })] });
+  const A7 = pt("A", 1, 1), B7 = pt("B", 1, 3), C7 = pt("C", 3, 4);
+  const d72 = combDiag(C7.c, [2, 1], [2, 3], 1, -3, "BC", "AC");
+  cards.push({ anchor: "ex7b", tag: "Fiche · Ex. 7 (2)", title: "Représenter BC − 3AC",
+    statement: `<p>Les points A, B et C sont placés sur le quadrillage (un carreau = une unité).</p>`,
+    parts: [comboPart("f7-2a", 1, B7, C7, -3, A7, C7, { label: `Lis sur le quadrillage les déplacements ${V("BC")} et ${V("AC")}, puis calcule les coordonnées (en carreaux) de ${V("BC")} − 3${V("AC")}.` }),
+      placePart("f7-2b", { grid: { xmin: -3, xmax: 6, ymin: -5, ymax: 6, s: 28, points: [{ n: "A", c: A7.c, off: [8, 16] }, { n: "B", c: B7.c, off: [-18, -4] }, { n: "C", c: C7.c, off: [8, -6] }] }, ref: { n: "C", c: C7.c },
+        targets: [{ n: "M", ...d72 }],
+        label: `Représente ${V("BC")} − 3${V("AC")} en plaçant le point ${M("M")} tel que ${V("CM")} = ${V("BC")} − 3${V("AC")}.`,
+        hints: [`${V("BC")} − 3${V("AC")} = ${V("BC")} + 3${V("CA")} : depuis C, trace ${V("BC")}, puis 3 fois ${V("CA")}.`, `${V("BC")} : 2 carreaux à droite, 1 en haut. ${V("CA")} : 2 carreaux à gauche, 3 en bas.`],
+        solution: `${V("BC")}(2 ; 1), ${V("AC")}(2 ; 3), donc ${V("BC")} − 3${V("AC")}(2 − 6 ; 1 − 9) = (−4 ; −8). Depuis C, M est 4 carreaux à gauche et 8 carreaux plus bas.`,
+        solDraw: [[C7.c, [5, 5]], [[5, 5], [-1, -4]]] })] });
+  // Exercice 8
+  const O8 = [4, 1], u8 = [1, -2], v8 = [-3, -1];
+  const A8 = pt("A", 3, 0), B8 = pt("B", 3, 4), C8 = pt("C", 1, 1);
+  cards.push({ anchor: "ex8", tag: "Fiche · Ex. 8", title: "Construire des points", numStyle: "alpha",
+    statement: "<p>Reproduis les figures et construis les points demandés : ici, clique directement sur le quadrillage.</p>",
+    parts: [
+      placePart("f8-a", { grid: { xmin: 0, xmax: 12, ymin: -5, ymax: 5, s: 28, vecs: [{ a: [4, 4], b: [5, 2], n: "u", off: [-30, 0] }, { a: [8, 4], b: [5, 3], n: "v", off: [8, 16] }], points: [{ n: "O", c: O8, off: [-16, 16] }] }, ref: { n: "O", c: O8 },
+        targets: [{ n: "A", ...combDiag(O8, u8, v8, 3, -1) }],
+        label: `Soit deux vecteurs ${V("u")} et ${V("v")} et un point ${M("O")}. Construis le point ${M("A")} tel que ${V("OA")} = 3${V("u")} − ${V("v")}.`,
+        hints: [`${V("u")} : 1 carreau à droite, 2 en bas. ${V("v")} : 3 carreaux à gauche, 1 en bas.`, `3${V("u")} − ${V("v")} = 3${V("u")} + (−${V("v")}) : depuis O, trace 3 fois ${V("u")}, puis −${V("v")} (3 carreaux à droite, 1 en haut).`],
+        solution: `3${V("u")}(3 ; −6) et −${V("v")}(3 ; 1), donc ${V("OA")}(6 ; −5) : A est 6 carreaux à droite et 5 carreaux plus bas que O.`,
+        solDraw: [[O8, [7, -5]], [[7, -5], [10, -4]]] }),
+      placePart("f8-b", { grid: { xmin: -4, xmax: 5, ymin: -2, ymax: 5, s: 28, points: [{ n: "A", c: A8.c, off: [8, 16] }, { n: "B", c: B8.c, off: [-18, -6] }, { n: "C", c: C8.c, off: [-18, -6] }] }, ref: { n: "A", c: A8.c },
+        targets: [{ n: "M", ...combDiag(A8.c, [0, 4], [-2, 1], -1, 3, "AB", "AC") }],
+        label: `Soit trois points A, B, C. Construis le point ${M("M")} tel que ${V("AM")} = −${V("AB")} + 3${V("AC")}.`,
+        hints: [`−${V("AB")} = ${V("BA")} : depuis A, descends de la longueur AB (4 carreaux).`, `Puis trace 3 fois ${V("AC")} (chaque fois 2 carreaux à gauche et 1 en haut).`],
+        solution: `−${V("AB")}(0 ; −4) et 3${V("AC")}(−6 ; 3), donc ${V("AM")}(−6 ; −1) : M est 6 carreaux à gauche et 1 carreau plus bas que A.`,
+        solDraw: [[A8.c, [3, -4]], [[3, -4], [-3, -1]]] })
+    ] });
+  // Exercice 9
+  cards.push({ anchor: "ex9", tag: "Fiche · Ex. 9", title: "Lire et représenter des vecteurs",
+    statement: `<p>Voici la figure du cours, dans le repère (O ; ${V("i")}, ${V("j")}) :</p>${figure({ xmin: -4, xmax: 9, ymin: -3, ymax: 4, s: 30, axes: true,
+      vecs: [{ a: [0, 0], b: [1, 0], n: "i", color: "var(--violet)", off: [-8, 22] }, { a: [0, 0], b: [0, 1], n: "j", color: "var(--violet)", off: [-22, 4] }, { a: [0, 0], b: [3, 2], n: "u", color: "var(--blue)", off: [-22, -6] }, { a: [5, 1], b: [8, 3], n: "u", color: "var(--blue)", off: [-22, -8] }, { a: [-4, 4], b: [-2, 1], n: "v", color: "var(--red)", off: [10, -6] }],
+      points: [{ n: "M", c: [3, 2], off: [6, -8] }] }, `${V("u")}(3 ; 2) : on a ${V("u")} = 3${V("i")} + 2${V("j")}, et ${V("OM")} = ${V("u")}.`)}`,
+    parts: [
+      { id: "f9-1", type: "pair", work: true, pairLabel: V("v"), label: `Quelles sont les coordonnées du vecteur ${V("v")} (en rouge) ?`,
+        hints: ["Repère l'origine de la flèche (le début) et son extrémité (la pointe).", `Compte le déplacement horizontal puis vertical pour aller de l'origine à la pointe, comme pour ${V("u")}(3 ; 2).`],
+        solution: `${V("v")} part du point (−4 ; 4) et arrive au point (−2 ; 1) : ${V("v")}(−2 − (−4) ; 1 − 4) = (2 ; −3).`,
+        check: a => diagPair(a, f => f.has("inv") ? [-2, 3] : [2, -3], [{ k: "inv", msg: "Tu as lu le déplacement à l'envers : on va de l'origine de la flèche vers la pointe." }], 1) },
+      placePart("f9-2", { grid: { xmin: -3, xmax: 6, ymin: -3, ymax: 4, s: 30, axes: true }, targets: [{ n: "P", c: [4, -1] }, { n: "Q", c: [-1, 2] }],
+        label: `Place un représentant de ${V("a")}(4 ; −1) et de ${V("b")}(−1 ; 2) en partant de O : place ${M("P")} tel que ${V("OP")} = ${V("a")} et ${M("Q")} tel que ${V("OQ")} = ${V("b")}.`,
+        hints: [`Les coordonnées de ${V("OP")} sont celles du point P, puisque O est l'origine.`, `${V("a")}(4 ; −1) : 4 vers la droite, 1 vers le bas.`],
+        solution: `P(4 ; −1) et Q(−1 ; 2). Les représentants ${V("OP")} et ${V("OQ")} sont tracés en vert.`,
+        solDraw: [[[0, 0], [4, -1]], [[0, 0], [-1, 2]]] })
+    ] });
+  // Exercice 10
+  const A10 = pt("A", 5, -1), B10 = pt("B", 2, 3), C10 = pt("C", 1, 2), D10 = pt("D", 4, -2);
+  cards.push({ anchor: "ex10", tag: "Fiche · Ex. 10", title: "Coordonnées de vecteurs",
+    statement: `<p>On donne ${ptH(A10)}, ${ptH(B10)}, ${ptH(C10)} et ${ptH(D10)}.</p>${figure({ xmin: -1, xmax: 6, ymin: -3, ymax: 4, s: 30, axes: true, points: [A10, B10, C10, D10].map(p => ({ n: p.n, c: p.c })) })}`,
+    parts: [vecPart("f10-1", A10, B10), vecPart("f10-2", D10, C10),
+      choicePart("f10-3", "Que peut-on en déduire ?", [
+        { t: `${V("AB")} = ${V("DC")}, donc ABCD est un parallélogramme.`, ok: true },
+        { t: `${V("AB")} = ${V("DC")}, donc ABDC est un parallélogramme.`, why: `Attention à l'ordre : ${V("AB")} = ${V("DC")} ⇔ AB<b>CD</b> parallélogramme (on garde A, B puis on inverse D et C).` },
+        { t: "Les points A, B, C, D sont alignés.", why: "Des vecteurs égaux ne signifient pas que les points sont alignés : ils donnent un parallélogramme." },
+        { t: "On ne peut rien conclure.", why: `Si : deux vecteurs qui ont les mêmes coordonnées sont égaux, et ${V("AB")} = ${V("DC")} caractérise un parallélogramme.` }
+      ], { hints: ["Compare les coordonnées obtenues aux questions 1 et 2.", `Propriété : ${V("AB")} = ${V("CD")} ⇔ ABDC parallélogramme. Ici on a ${V("AB")} = ${V("DC")}.`], solution: `${V("AB")}(−3 ; 4) et ${V("DC")}(−3 ; 4) : ces vecteurs sont égaux, donc ABCD est un parallélogramme.` })] });
+  // Exercice 11
+  const A11 = pt("A", -4, 1), B11 = pt("B", -1, 0), C11 = pt("C", 1, 2);
+  cards.push({ anchor: "ex11", tag: "Fiche · Ex. 11", title: "Quatrième sommet d'un parallélogramme",
+    statement: `<p>Dans un repère du plan, on donne ${ptH(A11)}, ${ptH(B11)} et ${ptH(C11)}.</p>`,
+    parts: [paraPart("f11", A11, B11, C11),
+      placePart("f11-v", { grid: { xmin: -5, xmax: 3, ymin: -1, ymax: 4, s: 32, axes: true, segs: [{ a: A11.c, b: B11.c, color: "var(--blue)", w: 2 }, { a: B11.c, b: C11.c, color: "var(--blue)", w: 2 }], points: [A11, B11, C11].map(p => ({ n: p.n, c: p.c })) },
+        targets: [{ n: "D", c: [-2, 3] }], work: false,
+        label: "Place D sur la figure et vérifie que ABCD a bien l'allure d'un parallélogramme.",
+        hints: [`Depuis C, trace le vecteur ${V("BA")} : tu arrives en D, car ${V("CD")} = ${V("BA")} dans un parallélogramme ABCD.`],
+        solution: "D(−2 ; 3) : ABCD est bien un parallélogramme.", solDraw: [[C11.c, [-2, 3]], [[-2, 3], A11.c]] })] });
+  // Exercice 12
+  const A12 = pt("A", 2, 1), B12 = pt("B", 5, 3), C12 = pt("C", -1, -2), D12 = pt("D", -2, 3);
+  cards.push({ anchor: "ex12", tag: "Fiche · Ex. 12", title: "Produit d'un vecteur par un réel",
+    statement: `<p>Dans un repère, on considère ${ptH(A12)}, ${ptH(B12)}, ${ptH(C12)} et ${ptH(D12)}.</p>${figure({ xmin: -3, xmax: 6, ymin: -3, ymax: 4, s: 30, axes: true, vecs: [{ a: A12.c, b: B12.c, color: "var(--blue)" }, { a: C12.c, b: D12.c, color: "var(--violet)" }], points: [A12, B12, C12, D12].map(p => ({ n: p.n, c: p.c, off: p.n === "D" ? [-18, -6] : undefined })) }, `Les vecteurs ${V("AB")} (bleu) et ${V("CD")} (violet).`)}`,
+    parts: [comboPart("f12-1", 3, A12, B12, 0), comboPart("f12-2", 4, C12, D12, 0), comboPart("f12-3", 3, A12, B12, -4, C12, D12)] });
+
+  const toc = v.querySelector(".toc");
+  cards.forEach(c => {
+    renderCard(c, v);
+    const ids = c.parts.map(p => p.id); ids.forEach(i => registry.fiche.push(i));
+    const b = document.createElement("button"); b.textContent = c.tag.replace("Fiche · ", ""); b.dataset.ids = ids.join(",");
+    b.addEventListener("click", () => document.getElementById(c.anchor).scrollIntoView({ behavior: "smooth", block: "start" }));
+    toc.appendChild(b);
+  });
+}
+
+/* ---------- NOUVEAUX EXERCICES (générés) ---------- */
+let genN = 0;
+const LETTERS = "ABCDEFGHKLMNPRST".split("");
+function distinctPts(names, lo = -6, hi = 6) {
+  const used = new Set(); return names.map(n => { let x, y; do { x = rnd(lo, hi); y = rnd(lo, hi); } while (used.has(x + "," + y)); used.add(x + "," + y); return pt(n, x, y); });
+}
+const gens = {
+  vec() { const [P, Q] = distinctPts(shuffle(LETTERS).slice(0, 2)); return { tag: "Nouveau", title: "Coordonnées d'un vecteur", statement: `<p>Dans un repère, on donne ${ptH(P)} et ${ptH(Q)}.</p>`, parts: [vecPart("gen-" + (++genN), P, Q)] }; },
+  milieu() { const [P, Q] = distinctPts(shuffle(LETTERS.filter(l => l !== "K")).slice(0, 2), -7, 7); return { tag: "Nouveau", title: "Milieu d'un segment", statement: `<p>Dans un repère, on donne ${ptH(P)} et ${ptH(Q)}.</p>`, parts: [milieuPart("gen-" + (++genN), P, Q, "K")] }; },
+  para() {
+    let A, B, C; do { [A, B, C] = distinctPts(["A", "B", "C"], -5, 5); } while (eq((B.c[0] - A.c[0]) * (C.c[1] - A.c[1]) - (B.c[1] - A.c[1]) * (C.c[0] - A.c[0]), 0));
+    return { tag: "Nouveau", title: "Quatrième sommet d'un parallélogramme", statement: `<p>Dans un repère, on donne ${ptH(A)}, ${ptH(B)} et ${ptH(C)}.</p>`, parts: [paraPart("gen-" + (++genN), A, B, C)] };
+  },
+  combo() {
+    const [P, Q, R, S] = distinctPts(["A", "B", "C", "D"], -5, 5);
+    const k = pick([2, 3, -2, 4]), m = pick([-3, -2, 2, 3, -1]);
+    return { tag: "Nouveau", title: "Combinaison de vecteurs", statement: `<p>Dans un repère, on donne ${ptH(P)}, ${ptH(Q)}, ${ptH(R)} et ${ptH(S)}.</p>`, parts: [comboPart("gen-" + (++genN), k, P, Q, m, R, S)] };
+  },
+  chasles() {
+    const n = rnd(3, 4), L = shuffle(LETTERS).slice(0, n), closed = Math.random() < 0.3;
+    let terms = []; for (let i = 0; i < n - 1; i++) terms.push({ a: L[i], b: L[i + 1], c: 1 });
+    if (closed) terms.push({ a: L[n - 1], b: L[0], c: 1 });
+    terms = shuffle(terms).map(t => Math.random() < 0.35 ? { a: t.b, b: t.a, c: -1 } : t);
+    if (terms.length > 1 && terms.every(t => t.c === 1) && Math.random() < 0.5) { const t = terms[1]; terms[1] = { a: t.b, b: t.a, c: -1 }; }
+    const res = closed ? V("0") : V(L[0] + L[n - 1]);
+    const steps = terms.map(t => t.c < 0 ? `−${V(t.a + t.b)} = ${V(t.b + t.a)}` : null).filter(Boolean);
+    const chain = L.slice(0, n - 1).map((l, i) => V(l + L[i + 1])).join(" + ") + (closed ? " + " + V(L[n - 1] + L[0]) : "");
+    return { tag: "Nouveau", title: "Relation de Chasles", statement: "<p>Simplifie en un seul vecteur (écris 0 pour le vecteur nul).</p>",
+      parts: [chasPart("gen-" + (++genN), terms, { work: true, solution: `${steps.length ? steps.join(" ; ") + ".<br>" : ""}On réordonne : ${chain} = ${res}.` })] };
+  },
+  construction() {
+    for (let tries = 0; tries < 400; tries++) {
+      const u = [rnd(-3, 3), rnd(-3, 3)], v = [rnd(-3, 3), rnd(-3, 3)];
+      if ((!u[0] && !u[1]) || (!v[0] && !v[1]) || u[0] * v[1] - u[1] * v[0] === 0) continue;
+      const a = pick([2, 3, -2]), b = pick([1, -1, 2, -1]);
+      const O = [rnd(2, 14), rnd(2, 10)], m1 = [O[0] + a * u[0], O[1] + a * u[1]], r = [m1[0] + b * v[0], m1[1] + b * v[1]];
+      const inside = p => p[0] >= 0 && p[0] <= 16 && p[1] >= 0 && p[1] <= 12;
+      if (!inside(m1) || !inside(r) || (r[0] === O[0] && r[1] === O[1])) continue;
+      return { tag: "Nouveau", title: "Construire un point", statement: `<p>Les vecteurs ${V("u")} et ${V("v")} sont représentés ci-dessous. Le point ${M("O")} est placé sur le quadrillage.</p>`, parts: [clickPart("gen-" + (++genN), { O, u, v, a, b })] };
+    }
+    return gens.vec();
+  },
+  test() {
+    let A, B, C; do { [A, B, C] = distinctPts(["A", "B", "C"], -5, 5); } while (eq((B.c[0] - A.c[0]) * (C.c[1] - A.c[1]) - (B.c[1] - A.c[1]) * (C.c[0] - A.c[0]), 0));
+    const yes = Math.random() < 0.5;
+    const Dc = [A.c[0] + C.c[0] - B.c[0], A.c[1] + C.c[1] - B.c[1]]; if (!yes) Dc[rnd(0, 1)] += pick([-1, 1, 2]);
+    const D = pt("D", Dc[0], Dc[1]);
+    const ab = [B.c[0] - A.c[0], B.c[1] - A.c[1]], dc = [C.c[0] - D.c[0], C.c[1] - D.c[1]];
+    return { tag: "Nouveau", title: "Est-ce un parallélogramme ?", statement: `<p>Dans un repère, on donne ${ptH(A)}, ${ptH(B)}, ${ptH(C)} et ${ptH(D)}.</p>`,
+      parts: [choicePart("gen-" + (++genN), "ABCD est-il un parallélogramme ? Justifie dans ton calcul.", [
+        { t: "Oui", ok: yes, why: yes ? "" : `Non : calcule ${V("AB")} et ${V("DC")}, ils n'ont pas les mêmes coordonnées.` },
+        { t: "Non", ok: !yes, why: !yes ? "" : `Calcule ${V("AB")} et ${V("DC")} : ils ont les mêmes coordonnées, donc ils sont égaux.` }
+      ], { work: true, hints: [`ABCD est un parallélogramme si et seulement si ${V("AB")} = ${V("DC")}.`, `Calcule ${V("AB")} et ${V("DC")} (extrémité − origine), puis compare leurs coordonnées.`],
+        solution: `${V("AB")}${P2(ab)} et ${V("DC")}${P2(dc)}. ${yes ? "Ces vecteurs sont égaux, donc ABCD est un parallélogramme." : "Ces vecteurs ne sont pas égaux, donc ABCD n'est pas un parallélogramme."}` })] };
+  }
+};
+const genLabels = { vec: "Coordonnées d'un vecteur", milieu: "Milieu", para: "Parallélogramme", combo: "Combinaison k·u + m·v", chasles: "Relation de Chasles", construction: "Construction à cliquer", test: "Est-ce un parallélogramme ?" };
+function buildNouveaux() {
+  const v = $("#v-nouveaux");
+  v.innerHTML = `<h2>Nouveaux exercices</h2><p class="note">Chaque bouton crée un exercice avec de nouvelles valeurs. Entraîne-toi autant que tu veux : le correcteur reconnaît les erreurs classiques (ordre des lettres, oubli d'un coefficient, signe…).</p>
+  <div class="gen-bar">${Object.keys(gens).map(k => `<button data-g="${k}">+ ${genLabels[k]}</button>`).join("")}<button class="primary" data-g="any">+ Au hasard</button></div><div class="genlist" style="display:grid;gap:18px"></div>`;
+  const list = v.querySelector(".genlist");
+  const add = k => { const key = k === "any" ? pick(Object.keys(gens)) : k; const card = gens[key](); card.isNew = true; const el = renderCard(card, document.createDocumentFragment()); list.prepend(el); return el; };
+  v.querySelector(".gen-bar").addEventListener("click", e => { const b = e.target.closest("button[data-g]"); if (!b) return; const el = add(b.dataset.g); el.scrollIntoView({ behavior: "smooth", block: "start" }); });
+  add("construction"); add("vec");
+}
+function renderCardTo(card, frag) { return renderCard(card, frag); }
+
+/* ---------- navigation ---------- */
+function show(view) {
+  if (!["cours", "fiche", "nouveaux"].includes(view)) view = "fiche";
+  ["cours", "fiche", "nouveaux"].forEach(k => { $("#v-" + k).hidden = k !== view; });
+  document.querySelectorAll("nav.tabs a").forEach(a => a.setAttribute("aria-current", a.dataset.v === view ? "page" : "false"));
+}
+buildCours(); buildFiche(); buildNouveaux(); updateScore();
+show(location.hash.slice(1));
+window.addEventListener("hashchange", () => show(location.hash.slice(1)));
+</script>
+
+</body>
+</html>
