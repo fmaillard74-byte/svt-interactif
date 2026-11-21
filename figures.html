@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Les figures de style — Révisions interactives</title>
+<style>
+:root{--bg:#faf6ee;--ink:#1f2a44;--muted:#66708a;--card:#fff;--line:#e6dfd0;--acc:#c8553d;--acc2:#1f2a44;--good:#2f855a;--goodbg:#e6f6ec;--bad:#c53030;--badbg:#fdeaea;--gold:#d69e2e}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;line-height:1.5;-webkit-tap-highlight-color:transparent}
+header{background:var(--acc2);color:#fff;padding:14px 16px 12px}
+.hwrap{max-width:820px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+h1{font-family:Georgia,"Times New Roman",serif;font-size:1.25rem;margin:0;font-weight:700}
+h1 small{display:block;font-family:inherit;font-weight:400;font-size:.78rem;opacity:.75}
+.pills{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pill{background:rgba(255,255,255,.14);border-radius:20px;padding:4px 11px;font-size:.82rem;white-space:nowrap}
+.pill b{color:#ffd978}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+#tabs{max-width:820px;margin:0 auto;display:flex;gap:6px;overflow-x:auto;padding:10px 12px;scrollbar-width:none}
+#tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;border:1.5px solid var(--line);background:#fff;color:var(--ink);border-radius:22px;padding:8px 14px;font-size:.9rem;cursor:pointer;font-family:inherit}
+.tab.on{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}
+main{max-width:820px;margin:0 auto;padding:16px 14px 60px}
+h2{font-family:Georgia,serif;margin:.2em 0 .4em;font-size:1.35rem}
+p.lead{color:var(--muted);margin:0 0 14px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 2px 8px rgba(31,42,68,.05)}
+.btn{display:inline-block;border:0;border-radius:12px;padding:11px 18px;font-size:1rem;font-weight:600;cursor:pointer;background:var(--acc);color:#fff;font-family:inherit}
+.btn.alt{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.btn.good{background:var(--good)}
+.btn.warn{background:#dd6b20}
+.btn:active{transform:scale(.98)}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+.chip{border:1.5px solid var(--line);background:#fff;border-radius:16px;padding:5px 11px;font-size:.82rem;cursor:pointer;font-family:inherit;color:var(--ink)}
+.chip.on{background:var(--acc2);color:#fff;border-color:var(--acc2)}
+.top{display:flex;justify-content:space-between;color:var(--muted);font-size:.88rem;margin-bottom:6px}
+.bar{height:8px;background:#e9e2d2;border-radius:6px;overflow:hidden;margin-bottom:14px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--acc),var(--gold));transition:width .35s}
+.prompt{font-size:1.12rem;font-weight:600;margin:4px 0 14px}
+.pre{font-size:.82rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:4px}
+blockquote{margin:0 0 6px;padding:12px 16px;background:#fbf4e4;border-left:4px solid var(--gold);border-radius:6px;font-family:Georgia,serif;font-size:1.12rem;line-height:1.7}
+blockquote u,.ex u{text-decoration-color:var(--acc);text-decoration-thickness:2px;text-underline-offset:3px;font-weight:600}
+.cite{font-size:.85rem;color:var(--muted);text-align:right;margin:0 0 14px;font-style:italic}
+.opts{display:grid;gap:9px;grid-template-columns:1fr}
+.opts.two{grid-template-columns:1fr 1fr}
+.opts.many{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:7px}
+.opts.many .opt{padding:9px 8px;font-size:.88rem}
+.opt{border:2px solid var(--line);background:#fff;border-radius:12px;padding:13px 14px;text-align:left;font-size:1rem;cursor:pointer;font-family:inherit;color:var(--ink);transition:.15s}
+.opts.two .opt{text-align:center;font-weight:700;font-size:1.1rem}
+.opt:hover:not(:disabled){border-color:var(--acc)}
+.opt.good{background:var(--goodbg);border-color:var(--good);color:#1c5a3a;font-weight:700}
+.opt.bad{background:var(--badbg);border-color:var(--bad);color:#8b1f1f;animation:shake .35s}
+.opt:disabled{cursor:default}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.fb{margin-top:14px;padding:12px 14px;border-radius:12px;font-size:.96rem}
+.fb.ok{background:var(--goodbg);border:1px solid #b7e2c8}
+.fb.ko{background:var(--badbg);border:1px solid #f4b9b9}
+.fb .ex{margin-top:6px;font-family:Georgia,serif}
+/* flashcards */
+.scene{perspective:1200px;margin:6px 0 14px}
+.fc{display:grid;cursor:pointer;transition:transform .55s;transform-style:preserve-3d;min-height:270px}
+.fc.flipped{transform:rotateY(180deg)}
+.face{grid-area:1/1;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:18px;padding:22px 20px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;border:1px solid var(--line);box-shadow:0 4px 14px rgba(31,42,68,.08)}
+.front{background:linear-gradient(160deg,#fff,#fbf4e4)}
+.back{background:#fff;transform:rotateY(180deg);align-items:stretch;text-align:left}
+.badge{display:inline-block;font-size:.76rem;border-radius:12px;padding:3px 10px;color:#fff;margin-bottom:12px;align-self:center}
+.big{font-family:Georgia,serif;font-size:2rem;font-weight:700}
+.hint{color:var(--muted);font-size:.85rem;margin-top:14px}
+.back h3{font-family:Georgia,serif;margin:0 0 6px;font-size:1.3rem}
+.back .def{margin:0 0 10px}
+.back .ex{background:#fbf4e4;border-left:4px solid var(--gold);padding:9px 12px;border-radius:6px;font-family:Georgia,serif;font-size:.98rem}
+.back .ex .au{display:block;font-size:.82rem;color:var(--muted);font-style:italic;font-family:inherit;margin-top:3px}
+.acts{display:flex;gap:10px}
+.acts .btn{flex:1}
+.hide{visibility:hidden}
+/* end */
+.score{font-size:3rem;font-family:Georgia,serif;font-weight:700;text-align:center;margin:4px 0}
+.center{text-align:center}
+.errlist{margin:14px 0 0;padding:0;list-style:none}
+.errlist li{padding:9px 12px;border-radius:10px;background:var(--badbg);margin-bottom:8px;font-size:.92rem}
+.errlist b{color:var(--good)}
+.fam{border-radius:14px;margin-bottom:12px;overflow:hidden;border:1px solid var(--line);background:#fff}
+.fam h3{margin:0;padding:9px 14px;color:#fff;font-size:1rem}
+.fam div.it{padding:9px 14px;border-top:1px solid var(--line);font-size:.92rem}
+.fam div.it b{font-family:Georgia,serif}
+.fam .ex{font-family:Georgia,serif;color:#4a5370;font-size:.88rem;margin-top:2px}
+.fam u{text-decoration-color:var(--acc);text-underline-offset:2px}
+#fx{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:50}
+#fx span{position:absolute;top:-30px;font-size:1.6rem;animation:fall 2.4s ease-in forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:.2}}
+@media (prefers-reduced-motion:reduce){.fc{transition:none}#fx{display:none}.opt.bad{animation:none}}
+@media(max-width:480px){.big{font-size:1.65rem}.opts.two .opt{font-size:1rem}}
+</style>
+</head>
+<body>
+<header><div class="hwrap">
+  <h1>Les figures de style<small>Révisions interactives et autocorrectives</small></h1>
+  <div class="pills"><span class="pill" id="lvl">🎓 Lecteur novice</span><span class="pill">⭐ <b id="xp">0</b> XP</span><span class="pill">🔥 série <b id="streak">0</b></span></div>
+</div></header>
+<nav><div id="tabs"></div></nav>
+<main id="app"></main>
+<div id="fx" aria-hidden="true"></div>
+
+<script>
+/* ================= DONNÉES (d'après la fiche « Les figures de style les plus courantes ») ================= */
+const FAM = {
+  analogie:{n:"Analogie (rapprochement)",c:"#2b6cb0",e:"🔗"},
+  substitution:{n:"Substitution (remplacement)",c:"#6b46c1",e:"🔄"},
+  opposition:{n:"Opposition",c:"#c53030",e:"⚔️"},
+  amplification:{n:"Amplification",c:"#c05621",e:"📣"},
+  attenuation:{n:"Atténuation",c:"#2f855a",e:"🤫"},
+  construction:{n:"Construction (symétrie)",c:"#4a5568",e:"🪞"}
+};
+const FIGS = [
+ {id:"comparaison",nom:"Une comparaison",fam:"analogie",def:"Rapprochement, grâce à un mot-outil (comme, pareil à, tel, ressembler à, plus… que, autant…), de deux éléments en mettant en évidence un point commun. Elle explicite, illustre un énoncé, le rend plus clair et plus vivant.",ex:"Sur le clocher jauni, la <u>lune</u> comme <u>un point sur un i</u>.",au:"Musset"},
+ {id:"metaphore",nom:"Une métaphore",fam:"analogie",def:"Rapprochement implicite, sans mot-outil. Le comparé peut être présent (in praesentia) ou absent (in absentia).",ex:"<u>La lampe</u> est <u>une étoile</u>. / <u>Une étoile</u> brille sur le bureau.",au:""},
+ {id:"metaphore_filee",nom:"Une métaphore filée",fam:"analogie",def:"Métaphore qui se poursuit sur plusieurs lignes, vers ou paragraphes, en tissant un réseau d'images.",ex:"Sur <u>ce géant</u>… le malheur, <u>bûcheron</u> sinistre, était monté ; et lui, <u>chêne vivant</u>, par <u>la hache</u> insultée… il regardait tomber autour de lui <u>ses branches</u>.",au:"Hugo (Napoléon III est comparé à un arbre abattu)"},
+ {id:"personnification",nom:"Une personnification",fam:"analogie",def:"Cas particulier de la métaphore : elle attribue à une chose ou à un animal des caractéristiques humaines.",ex:"Les arbres sur ma route <u>fuyaient</u>.",au:"Nerval"},
+ {id:"allegorie",nom:"Une allégorie",fam:"analogie",def:"Représente une idée abstraite, une notion, un concept sous la forme d'une autre chose (souvent un personnage qui l'incarne). Valeur symbolique et parfois pouvoir fédérateur.",ex:"« <u>Marianne</u> » incarne la République en France. La <u>colombe</u> représente la paix.",au:""},
+ {id:"periphrase",nom:"Une périphrase",fam:"substitution",def:"Remplace un mot par une expression (GN) de sens équivalent, afin de désigner quelque chose ou quelqu'un en plusieurs mots sans le nommer. Elle peut mettre en relief une particularité.",ex:"Le <u>roi des animaux</u> = le lion ; le <u>Stagirite</u> = Aristote (né à Stagire).",au:""},
+ {id:"metonymie",nom:"Une métonymie",fam:"substitution",def:"Remplace un mot par un autre entretenant avec le premier un rapport logique ou de contiguïté : contenu / contenant ; création / créateur ; effet / cause…",ex:"Boire <u>un verre</u> (contenant pour contenu) ; <u>Le Quai d'Orsay</u> a exprimé son désaccord (lieu pour institution) ; Il a lu tout <u>Zola</u> (auteur pour œuvre).",au:""},
+ {id:"synecdoque",nom:"Une synecdoque",fam:"substitution",def:"Remplace un mot par un autre entretenant avec le premier un rapport d'inclusion : tout / partie ; objet / matière.",ex:"Faire <u>de la voile</u> (partie pour le tout) ; Croiser <u>le fer</u> (matière pour objet).",au:""},
+ {id:"antithese",nom:"Une antithèse",fam:"opposition",def:"Oppose deux éléments, deux idées d'un énoncé. Elle peut associer de véritables antonymes, des antonymes impropres ou des antonymes purement contextuels. Valeur descriptive ou argumentative.",ex:"<u>Lui</u> regarde <u>en avant</u>, <u>je</u> regarde <u>en arrière</u>.",au:"Hugo"},
+ {id:"oxymore",nom:"Un oxymore",fam:"opposition",def:"Réunit dans une même expression deux termes opposés, en apparence contradictoires. Il peut exprimer l'harmonie des contraires ou marquer une argumentation polémique (figure de l'ironie).",ex:"Cette <u>obscure clarté</u> qui tombe des étoiles.",au:"Corneille"},
+ {id:"paradoxe",nom:"Un paradoxe",fam:"opposition",def:"Crée un effet de surprise au moyen d'un énoncé contredisant l'opinion commune.",ex:"La tradition et le progrès sont les deux grands fléaux du genre humain.",au:"Valéry"},
+ {id:"antiphrase",nom:"Une antiphrase",fam:"opposition",def:"Procédé ironique qui exprime une idée en disant le contraire de ce qui doit être compris.",ex:"…ils ne se couchent jamais sans s'être acquittés <u>d'un emploi si sérieux et si utile à la république</u>.",au:"à propos des courtisans"},
+ {id:"repetition",nom:"Une répétition",fam:"amplification",def:"Reproduit plusieurs fois le même mot, la même idée, la même situation. Elle marque l'intensité et peut aussi avoir une fonction incantatoire.",ex:"Et toujours ce parfum de foin coupé qui venait de <u>Bérénice</u>, qui résumait <u>Bérénice</u>, qui le pénétrait de <u>Bérénice</u>.",au:"Aragon"},
+ {id:"anaphore",nom:"Une anaphore",fam:"amplification",def:"Répétition d'un terme en début de vers / phrases / groupes de mots.",ex:"<u>Rome</u>, l'unique objet de mon ressentiment ! <u>Rome</u>, à qui vient ton bras d'immoler mon amant !…",au:"Corneille"},
+ {id:"accumulation",nom:"Une accumulation",fam:"amplification",def:"Juxtapose plusieurs mots de même fonction pour former une longue liste.",ex:"Frère Jean aux uns écrabouillait la cervelle, aux autres rompait bras et jambes, aux autres démettait les vertèbres du cou, aux autres disloquait les reins…",au:"Rabelais"},
+ {id:"gradation",nom:"Une gradation",fam:"amplification",def:"Succession de termes dans une progression ascendante ou descendante, dans un ordre tel que celui qui suit dise toujours un peu plus ou un peu moins que celui qui précède.",ex:"C'en est fait, <u>je n'en puis plus</u>, <u>je me meurs</u>, <u>je suis mort</u>, <u>je suis enterré</u> !",au:"Molière"},
+ {id:"hyperbole",nom:"Une hyperbole",fam:"amplification",def:"Exagération qui dépasse la réalité, met en valeur une idée, une émotion, une personne ou un objet pour frapper l'imagination.",ex:"<u>Botté jusqu'au nombril</u>, <u>ganté jusqu'aux épaules</u>.",au:"Rostand"},
+ {id:"euphemisme",nom:"Un euphémisme",fam:"attenuation",def:"Permet d'adoucir une idée désagréable, une réalité brutale, afin de ne pas choquer.",ex:"<u>Elle a vécu</u>, Myrto, la jeune Tarentine… ; Il <u>s'est éteint</u> hier.",au:"Chénier"},
+ {id:"litote",nom:"Une litote",fam:"attenuation",def:"Consiste à dire le moins pour faire comprendre le plus.",ex:"Va, <u>je ne te hais point</u> !",au:"Corneille"},
+ {id:"chiasme",nom:"Un chiasme",fam:"construction",def:"Deux expressions se suivent avec des éléments qui vont bien ensemble (opposition possible), placés selon un ordre A, B, B, A.",ex:"Il faut <u>manger</u> pour <u>vivre</u> et non pas <u>vivre</u> pour <u>manger</u>.",au:"Molière, L'Avare"}
+];
+const F = Object.fromEntries(FIGS.map(f=>[f.id,f]));
+
+/* Extraits : ok = autres réponses acceptées (figures voisines) */
+const EXTRAITS = [
+ {t:"Cette <u>obscure clarté</u> qui tombe des étoiles.",a:"Corneille, <i>Le Cid</i>",f:"oxymore",n:"Deux termes contradictoires réunis dans un seul groupe : obscure + clarté."},
+ {t:"Le <u>Soleil noir</u> de la mélancolie.",a:"Nerval, <i>El Desdichado</i>",f:"oxymore",ok:["metaphore"],n:"Soleil (lumière) et noir s'opposent dans la même expression : c'est un oxymore (qui fonctionne aussi comme image)."},
+ {t:"<u>Rome</u>, l'unique objet de mon ressentiment !<br><u>Rome</u>, à qui vient ton bras d'immoler mon amant !<br><u>Rome</u>, qui t'a vu naître et que ton cœur adore !",a:"Corneille, <i>Horace</i>",f:"anaphore",ok:["repetition"],n:"« Rome » ouvre chaque vers : répétition en début de vers = anaphore."},
+ {t:"Va, <u>je ne te hais point</u> !",a:"Corneille, <i>Le Cid</i>",f:"litote",n:"Chimène dit le moins (« je ne te hais point ») pour faire entendre le plus (« je t'aime »)."},
+ {t:"<u>Botté jusqu'au nombril</u>, <u>ganté jusqu'aux épaules</u>.",a:"Rostand",f:"hyperbole",n:"Exagération qui dépasse la réalité pour frapper l'imagination."},
+ {t:"C'en est fait, <u>je n'en puis plus</u>, <u>je me meurs</u>, <u>je suis mort</u>, <u>je suis enterré</u> !",a:"Molière",f:"gradation",n:"Chaque terme dit un peu plus que le précédent : gradation ascendante."},
+ {t:"Les arbres sur ma route <u>fuyaient</u>.",a:"Nerval",f:"personnification",ok:["metaphore"],n:"Les arbres agissent comme des êtres humains qui s'enfuient."},
+ {t:"La nuit s'épaissit <u>ainsi qu'</u>une cloison.",a:"Baudelaire",f:"comparaison",n:"Le mot-outil « ainsi que » rapproche la nuit et une cloison."},
+ {t:"Le soleil s'est noyé dans <u>son sang qui se fige</u>.",a:"Baudelaire",f:"metaphore",ok:["personnification"],n:"Le coucher de soleil est assimilé à un sang qui se fige, sans mot-outil."},
+ {t:"<u>Lui</u> regarde <u>en avant</u>, <u>je</u> regarde <u>en arrière</u>.",a:"Hugo",f:"antithese",n:"Deux idées opposées : en avant / en arrière."},
+ {t:"Boire <u>un verre</u>.",a:"expression courante",f:"metonymie",n:"Le contenant (le verre) désigne le contenu (la boisson)."},
+ {t:"Faire <u>de la voile</u>.",a:"expression courante",f:"synecdoque",n:"Partie pour le tout : la voile désigne le bateau."},
+ {t:"Croiser <u>le fer</u>.",a:"expression courante",f:"synecdoque",n:"Matière pour objet : le fer désigne l'épée."},
+ {t:"<u>Le Quai d'Orsay</u> a exprimé son désaccord.",a:"presse",f:"metonymie",n:"Le lieu désigne l'institution (le ministère des Affaires étrangères)."},
+ {t:"Le <u>roi des animaux</u> rugit dans la savane.",a:"exemple de la fiche",f:"periphrase",n:"Un groupe nominal remplace le mot « lion »."},
+ {t:"Il <u>s'est éteint</u> hier.",a:"exemple de la fiche",f:"euphemisme",n:"On adoucit la réalité brutale de la mort."},
+ {t:"<u>Elle a vécu</u>, Myrto, la jeune Tarentine…",a:"Chénier, <i>La Jeune Tarentine</i>",f:"euphemisme",n:"« Elle a vécu » : manière douce de dire qu'elle est morte."},
+ {t:"Leur profession est d'être vus et revus, et ils ne se couchent jamais sans s'être acquittés <u>d'un emploi si sérieux et si utile à la république</u>.",a:"à propos des courtisans",f:"antiphrase",n:"L'auteur dit le contraire de ce qu'il pense : cet « emploi » est futile et inutile."},
+ {t:"Candide, qui tremblait comme un philosophe, se cacha du mieux qu'il put pendant <u>cette boucherie héroïque</u>.",a:"Voltaire, <i>Candide</i>",f:"oxymore",ok:["antiphrase"],n:"Boucherie + héroïque : termes contradictoires, à valeur ironique."},
+ {t:"<u>La tradition et le progrès sont les deux grands fléaux du genre humain.</u>",a:"Valéry",f:"paradoxe",n:"Énoncé qui surprend en contredisant l'opinion commune (le progrès est d'ordinaire valorisé)."},
+ {t:"Et toujours ce parfum de foin coupé qui venait de <u>Bérénice</u>, qui résumait <u>Bérénice</u>, qui le pénétrait de <u>Bérénice</u>.",a:"Aragon, <i>Aurélien</i>",f:"repetition",n:"Le même nom est reproduit plusieurs fois pour marquer l'intensité."},
+ {t:"Frère Jean aux uns écrabouillait la cervelle, aux autres rompait bras et jambes, aux autres démettait les vertèbres du cou, aux autres disloquait les reins…",a:"Rabelais, <i>Gargantua</i>",f:"accumulation",n:"Longue liste d'actions de même fonction juxtaposées."},
+ {t:"Sur <u>ce géant</u>, grandeur jusqu'alors épargnée,<br>Le malheur, <u>bûcheron</u> sinistre, était monté ;<br>Et lui, <u>chêne vivant</u>, par <u>la hache</u> insultée,<br>Tressaillant sous le spectre aux lugubres revanches,<br>Il regardait tomber autour de lui <u>ses branches</u>.",a:"Hugo",f:"metaphore_filee",ok:["metaphore"],n:"L'image de l'arbre abattu se poursuit sur plusieurs vers (chêne, hache, branches)."},
+ {t:"Et de longs corbillards, sans tambours ni musique,<br>Défilent lentement dans mon âme ; l'<u>Espoir</u>,<br>Vaincu, pleure, et l'<u>Angoisse</u> atroce, despotique,<br>Sur mon crâne incliné plante son drapeau noir.",a:"Baudelaire, <i>Spleen</i>",f:"allegorie",ok:["personnification","metaphore"],n:"Espoir et Angoisse (idées abstraites, majuscules) sont représentés comme des personnages."},
+ {t:"Sur le clocher jauni,<br>La <u>lune</u><br><u>Comme un point sur un i</u>.",a:"Musset, <i>Ballade à la lune</i>",f:"comparaison",n:"Le mot-outil « comme » rapproche la lune et un point sur un i."},
+ {t:"Il faut <u>manger</u> pour <u>vivre</u> et non pas <u>vivre</u> pour <u>manger</u>.",a:"Molière, <i>L'Avare</i>",f:"chiasme",ok:["antithese"],n:"Ordre A (manger) B (vivre) B (vivre) A (manger) : c'est un chiasme."},
+ {t:"Je t'aimais <u>inconstant</u>, qu'aurais-je fait <u>fidèle</u> ?",a:"Racine, <i>Andromaque</i>",f:"antithese",n:"Inconstant / fidèle : deux antonymes mis en opposition."},
+ {t:"Cette <u>faucille d'or</u> dans le champ des étoiles.",a:"Hugo, <i>Booz endormi</i>",f:"metaphore",n:"La lune est désignée sans mot-outil comme une faucille d'or (métaphore in absentia : la lune n'est pas nommée)."},
+ {t:"Cueillez dès aujourd'hui <u>les roses de la vie</u>.",a:"Ronsard",f:"metaphore",n:"Les plaisirs de la jeunesse sont assimilés à des roses, sans mot-outil."},
+ {t:"C'est un trou de verdure où <u>chante</u> une rivière.",a:"Rimbaud, <i>Le Dormeur du val</i>",f:"personnification",ok:["metaphore"],n:"La rivière « chante » : on lui prête une capacité humaine."},
+ {t:"Heureux qui, <u>comme</u> Ulysse, a fait un beau voyage.",a:"Du Bellay, <i>Les Regrets</i>",f:"comparaison",n:"Mot-outil « comme » : le poète se compare à Ulysse."}
+];
+
+const VF = [
+ {t:"Une comparaison utilise obligatoirement un mot-outil (comme, tel, pareil à…).",v:true,e:"Oui : c'est ce qui la distingue de la métaphore."},
+ {t:"Une métaphore s'appuie sur un mot-outil comme « comme » ou « pareil à ».",v:false,e:"Non : la métaphore est un rapprochement <b>implicite</b>, sans mot-outil."},
+ {t:"La personnification est un cas particulier de la métaphore.",v:true,e:"Oui : elle attribue des caractéristiques humaines à une chose ou à un animal."},
+ {t:"L'allégorie représente une idée abstraite sous la forme d'un personnage ou d'une image.",v:true,e:"Oui : Marianne incarne la République, la colombe la paix."},
+ {t:"Une périphrase désigne une chose en la nommant directement.",v:false,e:"Non : elle la désigne <b>sans la nommer</b>, avec une expression équivalente (« le roi des animaux »)."},
+ {t:"« Croiser le fer » est une synecdoque (matière pour objet).",v:true,e:"Oui : le fer (la matière) désigne l'épée (l'objet)."},
+ {t:"« Boire un verre » est une synecdoque.",v:false,e:"C'est une <b>métonymie</b> : le contenant (le verre) pour le contenu."},
+ {t:"L'antithèse peut associer de véritables antonymes ou des antonymes seulement contextuels.",v:true,e:"Oui, et elle a une valeur descriptive ou argumentative."},
+ {t:"L'oxymore réunit deux termes opposés dans une même expression.",v:true,e:"Oui : « obscure clarté », « soleil noir »."},
+ {t:"L'antiphrase exprime exactement ce que pense l'auteur.",v:false,e:"Non : elle dit le <b>contraire</b> de ce qui doit être compris. C'est un procédé ironique."},
+ {t:"La litote consiste à exagérer pour frapper l'imagination.",v:false,e:"Non, c'est la définition de l'<b>hyperbole</b>. La litote dit le moins pour faire comprendre le plus."},
+ {t:"L'euphémisme permet d'adoucir une réalité brutale.",v:true,e:"Oui : « il s'est éteint » pour « il est mort »."},
+ {t:"L'anaphore est la répétition d'un terme en fin de phrase.",v:false,e:"Non : l'anaphore répète un terme en <b>début</b> de vers, de phrases ou de groupes de mots."},
+ {t:"Une gradation peut être ascendante ou descendante.",v:true,e:"Oui : chaque terme en dit toujours un peu plus (ou un peu moins) que le précédent."},
+ {t:"Un chiasme suit l'ordre A, B, B, A.",v:true,e:"Oui : « manger pour vivre / vivre pour manger »."},
+ {t:"Une accumulation juxtapose plusieurs mots de même fonction pour former une longue liste.",v:true,e:"Oui : voir Rabelais et Frère Jean."},
+ {t:"Une métaphore filée ne porte que sur un seul mot.",v:false,e:"Non : elle se poursuit sur <b>plusieurs lignes</b>, vers ou paragraphes."},
+ {t:"Les figures d'opposition n'existent que dans la poésie.",v:false,e:"Non : on les trouve aussi dans les textes argumentatifs, le roman et le théâtre."},
+ {t:"« Va, je ne te hais point ! » est une litote.",v:true,e:"Oui : dire le moins (« je ne te hais point ») pour faire comprendre le plus (« je t'aime »)."},
+ {t:"Une hyperbole exagère une réalité pour mettre en valeur une idée ou une émotion.",v:true,e:"Oui : « botté jusqu'au nombril, ganté jusqu'aux épaules »."},
+ {t:"Le paradoxe énonce une idée qui contredit l'opinion commune.",v:true,e:"Oui : il crée un effet de surprise."},
+ {t:"« Le Quai d'Orsay a exprimé son désaccord » est une métonymie (lieu pour institution).",v:true,e:"Oui : le lieu désigne le ministère."}
+];
+
+const QCM = [
+ {q:"Quelle figure réunit, dans <b>une même expression</b>, deux termes opposés en apparence contradictoires ?",c:"Un oxymore",w:["Une litote","Un chiasme","Une gradation"],e:"Exemple : « cette obscure clarté ». L'antithèse oppose deux éléments, mais pas forcément dans une même expression."},
+ {q:"Quelle figure consiste à <b>dire le moins pour faire comprendre le plus</b> ?",c:"Une litote",w:["Une hyperbole","Une accumulation","Une personnification"],e:"« Va, je ne te hais point ! » = je t'aime."},
+ {q:"Lequel de ces mots n'est <b>pas</b> un mot-outil de comparaison ?",c:"donc",w:["comme","pareil à","autant"],e:"« Donc » est un connecteur logique de conséquence."},
+ {q:"« Boire <u>un verre</u> » : quelle figure ?",c:"Une métonymie",w:["Une synecdoque","Une métaphore","Une périphrase"],e:"Contenant pour contenu : rapport de contiguïté."},
+ {q:"« Faire <u>de la voile</u> » : quelle figure ?",c:"Une synecdoque",w:["Une métonymie","Une comparaison","Une antiphrase"],e:"Partie pour le tout : la voile (partie) désigne le bateau (tout)."},
+ {q:"Quelle est la différence entre une métaphore et une comparaison ?",c:"La métaphore n'a pas de mot-outil",w:["La comparaison n'a pas de mot-outil","La métaphore oppose deux idées","La comparaison remplace un mot par un autre"],e:"Comparaison : mot-outil présent. Métaphore : rapprochement implicite."},
+ {q:"Quelle figure dit le <b>contraire</b> de ce qu'il faut comprendre, avec une intention ironique ?",c:"Une antiphrase",w:["Un paradoxe","Un euphémisme","Une litote"],e:"C'est un procédé ironique."},
+ {q:"« Le <u>roi des animaux</u> » pour désigner le lion : quelle figure ?",c:"Une périphrase",w:["Une allégorie","Une métonymie","Une hyperbole"],e:"Un groupe nominal de sens équivalent remplace le mot, sans le nommer."},
+ {q:"Qu'est-ce qu'une métaphore filée ?",c:"Une métaphore qui se poursuit sur plusieurs lignes ou vers",w:["Une métaphore sans comparé","Une comparaison très longue","Une répétition de la même image dans deux phrases identiques"],e:"Elle tisse un réseau d'images (l'arbre abattu chez Hugo)."},
+ {q:"Quelle figure donne des caractéristiques humaines à une chose ou à un animal ?",c:"Une personnification",w:["Une antiphrase","Une litote","Une gradation"],e:"« Les arbres sur ma route fuyaient »."},
+ {q:"« Marianne » qui incarne la République : quelle figure ?",c:"Une allégorie",w:["Une métonymie","Une litote","Une accumulation"],e:"Une idée abstraite est représentée sous la forme d'un personnage."},
+ {q:"Quelle figure permet d'<b>adoucir</b> une réalité brutale ?",c:"Un euphémisme",w:["Une litote","Une antiphrase","Une accumulation"],e:"« Il s'est éteint hier » plutôt que « il est mort »."},
+ {q:"« Je n'en puis plus, je me meurs, je suis mort, je suis enterré ! » : quelle figure ?",c:"Une gradation",w:["Une accumulation","Un chiasme","Une anaphore"],e:"Chaque terme dit un peu plus que le précédent."},
+ {q:"Qu'est-ce qui caractérise une anaphore ?",c:"La répétition d'un terme en début de vers ou de phrase",w:["La répétition d'un terme en fin de vers","Un ordre A B B A","L'opposition de deux idées"],e:"« Rome… Rome… Rome… » en début de vers."},
+ {q:"« Il faut manger pour vivre et non pas vivre pour manger » : quelle figure ?",c:"Un chiasme",w:["Une anaphore","Une accumulation","Une litote"],e:"Ordre A (manger) B (vivre) B (vivre) A (manger). Il y a aussi une opposition d'idées."},
+ {q:"Quelle famille regroupe l'antithèse, l'oxymore, le paradoxe et l'antiphrase ?",c:"Les figures d'opposition",w:["Les figures d'analogie","Les figures de substitution","Les figures d'atténuation"],e:"Elles soulignent ce qu'il y a de contraire, d'opposé ou de paradoxal."},
+ {q:"Quelle figure crée un effet de <b>surprise</b> en contredisant l'opinion commune ?",c:"Un paradoxe",w:["Une périphrase","Une anaphore","Une synecdoque"],e:"« La tradition et le progrès sont les deux grands fléaux du genre humain »."},
+ {q:"Quelle figure exagère la réalité pour frapper l'imagination ?",c:"Une hyperbole",w:["Une litote","Un euphémisme","Une métonymie"],e:"« Botté jusqu'au nombril, ganté jusqu'aux épaules »."},
+ {q:"Quelle figure remplace un mot par une expression (GN) de sens équivalent ?",c:"Une périphrase",w:["Une métaphore","Une comparaison","Une synecdoque"],e:"« Le Stagirite » = Aristote."},
+ {q:"« Le Quai d'Orsay a exprimé son désaccord » : que représente la figure ?",c:"Le lieu pour l'institution (métonymie)",w:["Une partie pour le tout (synecdoque)","Un contenant pour un contenu (métaphore)","Une idée abstraite incarnée (allégorie)"],e:"Le lieu désigne le ministère qui s'y trouve."},
+ {q:"Parmi ces figures, laquelle appartient à la famille des figures d'<b>amplification</b> ?",c:"L'accumulation",w:["L'oxymore","La périphrase","La litote"],e:"Répétition, anaphore, accumulation, gradation et hyperbole sont des figures d'amplification."}
+];
+
+/* ================= OUTILS ================= */
+const $ = s => document.querySelector(s);
+const app = $('#app');
+const shuffle = a => { a = a.slice(); for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const store = {
+  get(k,d){ try{ const v=localStorage.getItem('ff_'+k); return v==null?d:JSON.parse(v); }catch(e){ return d; } },
+  set(k,v){ try{ localStorage.setItem('ff_'+k,JSON.stringify(v)); }catch(e){} }
+};
+let xp = store.get('xp',0), streak = 0, best = store.get('best',{});
+const LEVELS = [[0,"Lecteur novice"],[100,"Apprenti poète"],[250,"Rhéteur"],[500,"Maître des figures"],[800,"Académicien"]];
+function lvl(){ let l=LEVELS[0][1]; for(const [m,n] of LEVELS) if(xp>=m) l=n; return l; }
+function header(){ $('#xp').textContent=xp; $('#streak').textContent=streak; $('#lvl').textContent='🎓 '+lvl(); }
+function addXP(n){ xp+=n; store.set('xp',xp); header(); }
+function burst(){
+  const fx=$('#fx'); const em=['🎉','✨','📚','🌟','🖋️','🎊'];
+  for(let i=0;i<34;i++){ const s=document.createElement('span'); s.textContent=em[i%em.length]; s.style.left=Math.random()*100+'%'; s.style.animationDelay=(Math.random()*.9)+'s'; fx.appendChild(s); setTimeout(()=>s.remove(),3600); }
+}
+const PRAISE=["Bravo !","Exact !","Bien vu !","Parfait !","Excellent !","Oui !"];
+const pick = a => a[Math.floor(Math.random()*a.length)];
+
+/* ================= ONGLETS ================= */
+const TABS=[["cards","🃏 Flashcards"],["vf","✅ Vrai / Faux"],["quiz","🎯 Quiz"],["ext","📖 Extraits"],["fam","🗂️ Familles"],["memo","📋 Mémo"]];
+let current='cards';
+function renderTabs(){
+  $('#tabs').innerHTML=TABS.map(([k,l])=>`<button class="tab ${k===current?'on':''}" data-k="${k}">${l}</button>`).join('');
+  document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>go(b.dataset.k));
+}
+function go(k){ current=k; renderTabs(); window.scrollTo(0,0); ({cards:cardsIntro,vf:vfIntro,quiz:quizIntro,ext:extIntro,fam:famIntro,memo:memo})[k](); }
+
+/* ================= FLASHCARDS ================= */
+let C={fam:'all',dir:'fn',queue:[],total:0,known:0};
+function cardsIntro(){ cardsStart(); }
+function cardsStart(){
+  const pool=FIGS.filter(f=>C.fam==='all'||f.fam===C.fam);
+  C.queue=shuffle(pool.map(f=>f.id)); C.total=pool.length; C.known=0; renderCard();
+}
+function cardControls(){
+  const fams=[['all','Toutes']].concat(Object.entries(FAM).map(([k,v])=>[k,v.e+' '+v.n.split(' (')[0]]));
+  return `<div class="chips">${fams.map(([k,l])=>`<button class="chip ${C.fam===k?'on':''}" data-fam="${k}">${l}</button>`).join('')}</div>
+  <div class="chips"><button class="chip ${C.dir==='fn'?'on':''}" data-dir="fn">Nom → définition</button><button class="chip ${C.dir==='nf'?'on':''}" data-dir="nf">Exemple → nom (plus dur)</button></div>`;
+}
+function bindControls(){
+  document.querySelectorAll('[data-fam]').forEach(b=>b.onclick=()=>{C.fam=b.dataset.fam;cardsStart();});
+  document.querySelectorAll('[data-dir]').forEach(b=>b.onclick=()=>{C.dir=b.dataset.dir;cardsStart();});
+}
+function renderCard(){
+  if(!C.queue.length){
+    app.innerHTML=`<h2>Flashcards</h2>${cardControls()}<div class="panel center"><div class="score">🎉</div><h2>Paquet maîtrisé !</h2><p class="lead">Tu connais les ${C.total} figures de ce paquet.</p><div class="row" style="justify-content:center"><button class="btn" id="again">Recommencer</button><button class="btn alt" id="toquiz">Passer au quiz</button></div></div>`;
+    bindControls(); $('#again').onclick=cardsStart; $('#toquiz').onclick=()=>go('quiz'); burst(); return;
+  }
+  const f=F[C.queue[0]], fm=FAM[f.fam];
+  const back=`<h3>${f.nom}</h3><p class="def">${f.def}</p><div class="ex">${f.ex}${f.au?`<span class="au">— ${f.au}</span>`:''}</div>`;
+  const front = C.dir==='fn'
+    ? `<span class="badge" style="background:${fm.c}">${fm.e} ${fm.n}</span><div class="big">${f.nom}</div><div class="hint">Touche la carte pour la retourner</div>`
+    : `<span class="badge" style="background:${fm.c}">Quelle figure ?</span><div class="ex" style="font-family:Georgia,serif;font-size:1.15rem;line-height:1.7">${f.ex}</div><div class="hint">Touche la carte pour la retourner</div>`;
+  const backFull = C.dir==='fn' ? back : `<span class="badge" style="background:${fm.c};align-self:flex-start">${fm.e} ${fm.n}</span>`+back;
+  app.innerHTML=`<h2>Flashcards</h2>${cardControls()}
+  <div class="top"><span>${C.known} / ${C.total} maîtrisées</span><span>${C.queue.length} restantes</span></div>
+  <div class="bar"><i style="width:${C.known/C.total*100}%"></i></div>
+  <div class="scene"><div class="fc" id="fc"><div class="face front">${front}</div><div class="face back">${backFull}</div></div></div>
+  <div class="acts hide" id="acts"><button class="btn warn" id="redo">🔁 À revoir</button><button class="btn good" id="know">✅ Je savais</button></div>`;
+  bindControls();
+  $('#fc').onclick=()=>{ $('#fc').classList.toggle('flipped'); $('#acts').classList.remove('hide'); };
+  $('#know').onclick=()=>{ C.queue.shift(); C.known++; streak++; addXP(5); renderCard(); };
+  $('#redo').onclick=()=>{ C.queue.push(C.queue.shift()); streak=0; header(); renderCard(); };
+}
+
+/* ================= MOTEUR DE QUESTIONS ================= */
+let S=null;
+function startSession(title,qs,key){ S={title,key:key||title,qs,i:0,score:0,wrong:[],done:false}; renderQ(); }
+function renderQ(){
+  const q=S.qs[S.i];
+  app.innerHTML=`<div class="top"><span>${S.title}</span><span>Question ${S.i+1} / ${S.qs.length} · ${S.score} ✔</span></div>
+  <div class="bar"><i style="width:${S.i/S.qs.length*100}%"></i></div>
+  <section class="panel">${q.pre?`<div class="pre">${q.pre}</div>`:''}${q.quote?`<blockquote>${q.quote}</blockquote><p class="cite">${q.cite||''}</p>`:''}
+  <div class="prompt">${q.prompt}</div>
+  <div class="opts ${q.cls||''}">${q.opts.map((o,k)=>`<button class="opt" data-k="${k}">${o.label}</button>`).join('')}</div>
+  <div id="fb"></div></section>`;
+  document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>answer(+b.dataset.k));
+}
+function answer(k){
+  if(S.done) return; S.done=true;
+  const q=S.qs[S.i], chosen=q.opts[k], good=q.ok.includes(chosen.id);
+  document.querySelectorAll('.opt').forEach((b,i)=>{
+    b.disabled=true;
+    if(q.opts[i].id===q.main || (i===k&&good)) b.classList.add('good');
+    else if(i===k) b.classList.add('bad');
+  });
+  if(good){ S.score++; streak++; addXP(10+Math.min(streak,5)); } else { S.wrong.push(q); streak=0; header(); }
+  const last=S.i===S.qs.length-1;
+  $('#fb').innerHTML=`<div class="fb ${good?'ok':'ko'}"><b>${good?pick(PRAISE):'Pas tout à fait.'}</b> ${q.explain}${good&&q.main!==chosen.id?` <i>(Réponse principale attendue : ${q.opts.find(o=>o.id===q.main).label}.)</i>`:''}</div>
+  <div class="row"><button class="btn" id="next">${last?'Voir mon résultat':'Suivant →'}</button></div>`;
+  $('#next').scrollIntoView({block:'nearest',behavior:'smooth'});
+  $('#next').onclick=()=>{ S.done=false; if(last) renderEnd(); else { S.i++; renderQ(); } };
+}
+function renderEnd(){
+  const n=S.qs.length, pct=Math.round(S.score/n*100);
+  const prev=best[S.key]||0; if(pct>prev){ best[S.key]=pct; store.set('best',best); }
+  const msg=pct===100?"Sans faute, bravo ! 🏆":pct>=80?"Très solide ! 👏":pct>=60?"Bien, encore un petit effort. 💪":"Reviens aux flashcards et réessaie. 📚";
+  if(pct>=80) burst();
+  addXP(pct>=80?20:5);
+  const wrong=S.wrong;
+  app.innerHTML=`<div class="panel"><div class="score">${S.score} / ${n}</div><p class="center lead">${msg}<br><small>Meilleur score : ${best[S.key]}%</small></p>
+  ${wrong.length?`<h3>À retravailler</h3><ul class="errlist">${wrong.map(q=>`<li>${q.quote?q.quote.replace(/<br>/g,' / '):q.prompt}<br>→ <b>${q.opts.find(o=>o.id===q.main).label}</b></li>`).join('')}</ul>`:''}
+  <div class="row" style="justify-content:center">
+  ${wrong.length?`<button class="btn warn" id="redoErr">🔁 Rejouer mes erreurs</button>`:''}
+  <button class="btn" id="newS">🎲 Nouvelle série</button><button class="btn alt" id="toCards">🃏 Flashcards</button></div></div>`;
+  if($('#redoErr')) $('#redoErr').onclick=()=>startSession(S.title+' (erreurs)',shuffle(wrong),S.key+'-err');
+  const redo=S.redo; $('#newS').onclick=()=>({vf:vfStart,quiz:quizStart,ext:()=>extStart(extLevel),fam:famStart})[current]();
+  $('#toCards').onclick=()=>go('cards');
+}
+function intro(title,lead,btns){
+  app.innerHTML=`<h2>${title}</h2><p class="lead">${lead}</p><div class="panel center"><p>Une série = 10 questions · correction immédiate · XP à gagner</p><div class="row" style="justify-content:center">${btns}</div></div>`;
+}
+
+/* ===== Vrai / Faux ===== */
+function vfIntro(){ intro('Vrai ou faux ?','Des affirmations tirées de ta fiche : à toi de trancher.','<button class="btn" id="go">Commencer</button>'); $('#go').onclick=vfStart; }
+function vfStart(){
+  const qs=shuffle(VF).slice(0,10).map(s=>({prompt:s.t,cls:'two',opts:[{id:'v',label:'✔ Vrai'},{id:'f',label:'✘ Faux'}],main:s.v?'v':'f',ok:[s.v?'v':'f'],explain:s.e}));
+  startSession('Vrai / Faux',qs,'vf');
+}
+
+/* ===== Quiz ===== */
+function quizIntro(){ intro('Quiz','Définitions, effets et notions-clés : choisis la bonne réponse.','<button class="btn" id="go">Commencer</button>'); $('#go').onclick=quizStart; }
+function quizStart(){
+  const qs=shuffle(QCM).slice(0,10).map(s=>{
+    const opts=shuffle([s.c,...s.w]).map(t=>({id:t,label:t}));
+    return {prompt:s.q,opts,main:s.c,ok:[s.c],explain:s.e};
+  });
+  startSession('Quiz',qs,'quiz');
+}
+
+/* ===== Extraits ===== */
+let extLevel='easy';
+function extIntro(){
+  intro('Reconnaître la figure','Un extrait d'+"'"+'œuvre, un passage souligné : quelle figure de style reconnais-tu ?','<button class="btn" id="e1">😊 Facile · 4 choix</button><button class="btn alt" id="e2">🔥 Expert · les 20 figures</button>');
+  $('#e1').onclick=()=>extStart('easy'); $('#e2').onclick=()=>extStart('hard');
+}
+function extStart(level){
+  extLevel=level;
+  const qs=shuffle(EXTRAITS).slice(0,10).map(x=>{
+    const f=F[x.f], accepted=[x.f,...(x.ok||[])];
+    let opts;
+    if(level==='easy'){
+      const dist=shuffle(FIGS.filter(g=>!accepted.includes(g.id))).slice(0,3);
+      opts=shuffle([f,...dist]).map(g=>({id:g.id,label:g.nom.replace(/^(Une?) /,'')}));
+      opts=opts.map(o=>({id:o.id,label:o.label.charAt(0).toUpperCase()+o.label.slice(1)}));
+    } else {
+      opts=FIGS.map(g=>({id:g.id,label:g.nom.replace(/^(Une?) /,'').replace(/^./,c=>c.toUpperCase())}));
+    }
+    const mainLabel=f.nom.replace(/^(Une?) /,'');
+    return {pre:'Extrait',quote:x.t,cite:'— '+x.a,prompt:'Quelle est la figure de style <u>soulignée</u> ?',opts,cls:level==='easy'?'':'many',main:x.f,ok:accepted,
+      explain:`<b>${f.nom.replace(/^Une? /,m=>m)}</b> — ${x.n}`};
+  });
+  startSession(level==='easy'?'Extraits · facile':'Extraits · expert',qs,'ext-'+level);
+}
+
+/* ===== Familles ===== */
+function famIntro(){ intro('Classer les figures','Dans quelle grande famille de la fiche ranger chaque figure ?','<button class="btn" id="go">Commencer</button>'); $('#go').onclick=famStart; }
+function famStart(){
+  const qs=shuffle(FIGS).slice(0,10).map(f=>({
+    pre:'Figure à classer',prompt:`Dans quelle famille range-t-on <b>${f.nom.toLowerCase()}</b> ?`,cls:'',
+    opts:Object.entries(FAM).map(([k,v])=>({id:k,label:v.e+' '+v.n})),main:f.fam,ok:[f.fam],
+    explain:`${f.nom} → ${FAM[f.fam].n}. <div class="ex">${f.ex}</div>`}));
+  startSession('Familles de figures',qs,'fam');
+}
+
+/* ===== Mémo ===== */
+function memo(){
+  app.innerHTML=`<h2>Mémo de la fiche</h2><p class="lead">Toutes les figures, rangées par famille, pour un dernier coup d'œil.</p>`+
+  Object.entries(FAM).map(([k,v])=>`<div class="fam"><h3 style="background:${v.c}">${v.e} ${v.n}</h3>${FIGS.filter(f=>f.fam===k).map(f=>`<div class="it"><b>${f.nom}</b> — ${f.def}<div class="ex">${f.ex}</div></div>`).join('')}</div>`).join('');
+}
+
+/* ================= DÉMARRAGE ================= */
+header(); go('cards');
+</script>
+</body>
+</html>
