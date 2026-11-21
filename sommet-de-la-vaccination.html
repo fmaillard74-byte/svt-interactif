@@ -1,0 +1,473 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Le Sommet de la vaccination</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Mise en page : une colonne lisible (max 980px), onglets en tête ; correction = cartes qui se débloquent une à une ; débat = grandes cartes à projeter */
+:root{
+  --bg:#F2F5FA; --surface:#FFFFFF; --ink:#14213D; --muted:#55627A; --line:#D5DCE8;
+  --brand:#2744D8; --brand-ink:#FFFFFF; --a:#D62839; --b:#1B8F63; --hl:#F5A400; --soft:#E8EEFB;
+  --ok:#1B8F63; --mid:#B87400; --bad:#C23147;
+  --f-display:"Barlow Condensed","Arial Narrow",sans-serif;
+  --f-body:"Atkinson Hyperlegible","Segoe UI",Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E1424; --surface:#172036; --ink:#E8EEFB; --muted:#9AA8C4; --line:#2A3652;
+  --brand:#8FA5FF; --brand-ink:#0E1424; --a:#FF6B7A; --b:#46D19B; --hl:#FFC24A; --soft:#1F2A45;
+  --ok:#46D19B; --mid:#FFC24A; --bad:#FF7A8C; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1424; --surface:#172036; --ink:#E8EEFB; --muted:#9AA8C4; --line:#2A3652;
+  --brand:#8FA5FF; --brand-ink:#0E1424; --a:#FF6B7A; --b:#46D19B; --hl:#FFC24A; --soft:#1F2A45;
+  --ok:#46D19B; --mid:#FFC24A; --bad:#FF7A8C; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:17px/1.5 var(--f-body);
+  padding-block:20px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:980px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-display);font-weight:700;line-height:1.05;margin:0;text-wrap:balance}
+h1{font-size:clamp(2rem,6vw,3.2rem);text-transform:uppercase;letter-spacing:.01em}
+h2{font-size:clamp(1.5rem,4vw,2.1rem)}
+h3{font-size:1.35rem}
+p{margin:0}
+.kicker{font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:6px}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--hl);outline-offset:2px}
+
+.top{display:flex;flex-direction:column;gap:18px;margin-bottom:22px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{border:2px solid var(--ink);background:transparent;border-radius:999px;padding:8px 18px;font-weight:700}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+
+.btn{border:2px solid var(--ink);background:var(--surface);border-radius:10px;padding:9px 16px;font-weight:700}
+.btn:hover{background:var(--soft)}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.ghost{border-color:var(--line);font-weight:400}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+/* ---------- Correction ---------- */
+.progress{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+.dot{width:34px;height:34px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;
+  font:700 .95rem var(--f-display);font-size:1.1rem;color:var(--muted);background:var(--surface)}
+.dot.now{border-color:var(--brand);color:var(--brand)}
+.dot.s-ok{background:var(--ok);border-color:var(--ok);color:var(--bg)}
+.dot.s-mid{background:var(--mid);border-color:var(--mid);color:var(--bg)}
+.dot.s-bad{background:var(--bad);border-color:var(--bad);color:var(--bg)}
+.legend{font-size:.85rem;color:var(--muted);margin:-8px 0 18px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:18px;
+  display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+.card.locked{display:none}
+.qhead{display:flex;gap:12px;align-items:baseline}
+.qnum{font:700 2.4rem/1 var(--f-display);color:var(--brand)}
+.qtext{font-size:1.15rem;font-weight:700;min-width:0}
+.fig{border:1px solid var(--line);border-radius:10px;padding:8px;background:var(--bg);min-width:0}
+.fig svg{display:block;width:100%;height:auto}
+.fig figcaption{font-size:.8rem;color:var(--muted);padding:4px 6px 0}
+.work{display:grid;gap:12px;min-width:0}
+.part{display:grid;gap:8px}
+.part>.plabel{font-weight:700;font-size:.95rem;color:var(--muted)}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;text-align:left;border:2px solid var(--line);background:var(--surface);
+  border-radius:10px;padding:10px 12px;width:100%}
+.opt:hover{border-color:var(--brand)}
+.opt[aria-pressed="true"]{border-color:var(--brand);background:var(--soft)}
+.opt.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 16%,var(--surface))}
+.opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 14%,var(--surface))}
+.nums{display:flex;gap:12px;flex-wrap:wrap}
+.num{display:grid;gap:4px}
+.num label{font-size:.9rem;color:var(--muted);font-weight:700}
+.num .inp{display:flex;align-items:center;gap:8px}
+.num input{width:110px;font:700 1.2rem var(--f-body);padding:8px 10px;border:2px solid var(--line);border-radius:10px;
+  background:var(--surface);color:var(--ink);font-variant-numeric:tabular-nums}
+.num input.right{border-color:var(--ok)} .num input.wrong{border-color:var(--bad)}
+.unit{color:var(--muted)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px;text-align:left}
+.chip:hover{border-color:var(--brand)}
+.chip[disabled]{opacity:.35;cursor:default}
+.line{min-height:56px;border:2px dashed var(--line);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:6px}
+.line .chip{border-color:var(--brand);background:var(--soft);border-radius:10px}
+.line .ph{color:var(--muted);font-size:.9rem;padding:6px}
+.fb{border-radius:10px;padding:10px 14px;background:var(--soft);font-size:.98rem}
+.fb.hint{border-left:6px solid var(--hl)}
+.fb.err{border-left:6px solid var(--bad)}
+.fb.good{border-left:6px solid var(--ok)}
+.corr{border:2px solid var(--ok);border-radius:12px;padding:14px 16px;display:grid;gap:8px;background:color-mix(in srgb,var(--ok) 8%,var(--surface))}
+.corr h3{color:var(--ok)}
+.corr .tip{font-size:.92rem;color:var(--muted)}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.bilan{background:var(--ink);color:var(--bg);border-radius:14px;padding:24px;display:grid;gap:12px}
+.bilan .btn{color:var(--ink)}
+@media (min-width:820px){
+  .card{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);align-items:start}
+  .card .qhead{grid-column:1/-1}
+}
+</style>
+<style>
+/* ---------- Débat ---------- */
+.manches{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.mtab{border:2px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 14px;font-weight:700}
+.mtab[aria-selected="true"]{border-color:var(--brand);background:var(--soft);color:var(--brand)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px;display:grid;gap:16px}
+.panel .lead{color:var(--muted);max-width:62ch}
+.stage{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:14px}
+.big{border-radius:16px;padding:22px;min-height:190px;display:grid;align-content:start;gap:10px;border:3px solid var(--ink);background:var(--bg);min-width:0}
+.big.pour{border-color:var(--b)} .big.contre{border-color:var(--a)} .big.arbitre{border-color:var(--hl)}
+.camp{font:700 .85rem var(--f-body);letter-spacing:.12em;text-transform:uppercase}
+.pour .camp{color:var(--b)} .contre .camp{color:var(--a)} .arbitre .camp{color:var(--mid)}
+.big h3{font-size:clamp(1.6rem,5vw,2.4rem)}
+.big .say{font-style:italic;color:var(--muted)}
+.big.flip{animation:flip .5s ease}
+@keyframes flip{from{transform:rotateY(90deg);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.big.flip{animation:none}}
+.words{display:flex;gap:10px;flex-wrap:wrap}
+.word{border:3px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 16px;font:700 1.5rem var(--f-display);letter-spacing:.02em}
+.word[aria-pressed="true"]{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 16%,var(--surface));text-decoration:line-through;text-decoration-thickness:2px}
+.hint-small{font-size:.9rem;color:var(--muted)}
+.timer{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.clock{font:700 clamp(3rem,12vw,5.5rem)/1 var(--f-display);font-variant-numeric:tabular-nums;min-width:2.6ch}
+.clock.low{color:var(--bad)}
+.score{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.score th,.score td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left}
+.score th{font-size:.85rem;color:var(--muted)}
+.score td.c{text-align:center}
+.score .tot td{font:700 1.8rem var(--f-display);border-bottom:0}
+.pm{display:inline-flex;align-items:center;gap:6px}
+.pm button{width:34px;height:34px;border-radius:8px;border:2px solid var(--line);background:var(--surface);font-weight:700}
+.pm output{min-width:1.6ch;text-align:center;font-weight:700}
+.scorewrap{overflow-x:auto}
+.proof{border:2px solid var(--line);background:var(--surface);border-radius:12px;padding:14px;text-align:left;display:grid;gap:4px}
+.proof:hover{border-color:var(--brand)}
+.proof .src{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.proof .fact{font-weight:700}
+.proof[aria-pressed="true"]{border-color:var(--brand);background:var(--soft)}
+.reply{border-left:6px solid var(--hl);background:var(--soft);padding:12px 14px;border-radius:10px}
+.fields{display:grid;gap:10px}
+.fields label{font-weight:700;display:grid;gap:4px}
+.fields textarea{font:inherit;color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:10px;padding:10px;min-height:70px;resize:vertical;width:100%}
+</style>
+<style>
+/* ---------- Débat par groupes (tablettes + écran de classe) ---------- */
+.modes{display:flex;gap:6px;flex-wrap:wrap}
+.fieldrow{align-items:flex-end}
+.f{display:grid;gap:4px;font-weight:700;font-size:.9rem;color:var(--muted)}
+.f input,.f select{font:700 1.3rem var(--f-body);padding:9px 12px;border:2px solid var(--line);border-radius:10px;
+  background:var(--surface);color:var(--ink);min-width:150px;max-width:100%}
+.f input{text-transform:uppercase}
+.codeshow{font:700 clamp(2.4rem,9vw,4.5rem)/1 var(--f-display);letter-spacing:.08em;color:var(--brand);overflow-wrap:anywhere}
+.grid12{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:10px}
+.gbtn{border:3px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 8px;display:grid;gap:2px;justify-items:center}
+.gbtn b{font:700 2rem/1 var(--f-display)}
+.gbtn small{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700}
+.gbtn.pour{border-color:var(--b)} .gbtn.pour small{color:var(--b)}
+.gbtn.contre{border-color:var(--a)} .gbtn.contre small{color:var(--a)}
+.gbtn.cur{background:var(--soft);box-shadow:0 0 0 3px var(--hl)}
+.gbtn.done{opacity:.55}
+.gbtn:disabled{opacity:.35;cursor:not-allowed}
+.proof.static{cursor:default}
+.proof.static:hover{border-color:var(--line)}
+span.word{display:inline-block}
+.memo{background:var(--soft);border-radius:12px;padding:14px 18px}
+.memo ol{margin:6px 0 0;padding-left:1.2em;display:grid;gap:4px}
+.stagehead{display:grid;gap:4px}
+.phase{font-weight:700;color:var(--muted)}
+.codebox{border:2px dashed var(--line);border-radius:12px;padding:12px 16px}
+.score.mini th,.score.mini td{padding:6px 8px}
+</style>
+<div class="wrap">
+<header class="top">
+  <div>
+    <p class="kicker">SVT · La protection de l'organisme · Débat en groupes de 3</p>
+    <h1>Le Sommet de la vaccination</h1>
+  </div>
+</header>
+<section id="tab-debat">
+  <div class="panel" style="margin-bottom:16px">
+    <p class="kicker">12 groupes · 6 POUR et 6 CONTRE</p>
+    <p class="lead">Chaque groupe prépare sa prise de parole pendant 5 minutes avec les cartes tirées sur sa tablette, puis parle pendant 60 secondes. Un rebondissement apparaît, et le groupe a 60 secondes de plus pour conclure. Le camp est donné par le numéro du groupe : les numéros impairs défendent le POUR, les numéros pairs le CONTRE.</p>
+    <div class="modes" role="tablist" aria-label="Choix de l'écran">
+      <button class="mtab" role="tab" id="md-tab" aria-selected="true">Tablette de mon groupe</button>
+      <button class="mtab" role="tab" id="md-class" aria-selected="false">Écran de la classe (enseignant)</button>
+    </div>
+  </div>
+
+  <!-- Vue élèves -->
+  <div id="view-tab">
+    <div class="panel">
+      <div class="row fieldrow">
+        <label class="f" for="sCode">Code de la séance
+          <input id="sCode" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Code au tableau"></label>
+        <label class="f" for="sGroup">Numéro du groupe
+          <select id="sGroup"></select></label>
+        <button class="btn primary" id="sGo">Voir mes cartes</button>
+      </div>
+      <div class="fb err" id="sErr" hidden></div>
+    </div>
+    <div id="sOut" hidden></div>
+  </div>
+
+  <!-- Vue enseignant -->
+  <div id="view-class" hidden>
+    <div class="panel" style="margin-bottom:16px">
+      <div class="row fieldrow">
+        <label class="f" for="tCode">Code de la séance
+          <input id="tCode" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Ex. SVT-K7P"></label>
+        <button class="btn" id="tGen">Générer un code</button>
+      </div>
+      <div class="codebox"><p class="hint-small">Les élèves saisissent ce code sur leur tablette (majuscules, tirets et espaces sans importance) :</p><div class="codeshow" id="codeShow">—</div></div>
+    </div>
+
+    <div class="panel" style="margin-bottom:16px">
+      <h3>1 · Préparation</h3>
+      <div class="timer">
+        <div class="clock" id="prepClock" role="timer">5:00</div>
+        <div class="row"><button class="btn primary" id="prepGo">Lancer les 5 minutes</button><button class="btn" id="prepReset">Remettre à 5:00</button></div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-bottom:16px">
+      <h3>2 · Donner la parole à un groupe</h3>
+      <div class="grid12" id="grid"></div>
+    </div>
+
+    <div class="panel" id="stagePanel" hidden style="margin-bottom:16px"></div>
+
+    <div class="panel">
+      <h3>Tableau des points</h3>
+      <div class="scorewrap" id="summary"></div>
+      <div class="row"><button class="btn ghost" id="allReset">Tout remettre à zéro</button></div>
+    </div>
+  </div>
+</section>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+/* ===== Le Sommet de la vaccination : tirage à code ===== */
+const NGROUPS=12;
+const ROLES_POUR=[
+ {name:'Médecin généraliste',say:'« Je vois chaque semaine ce que les maladies évitables font aux enfants non protégés. »',tip:'Appuyez-vous sur le rappel et la mémoire immunitaire.'},
+ {name:'Épidémiologiste de l’OMS',say:'« Je compte les cas avant et après chaque vaccin, pays par pays. »',tip:'Utilisez des chiffres : cas avant, cas après.'},
+ {name:'Historien de la variole',say:'« En 1980, l’OMS a certifié l’éradication d’une maladie qui tuait depuis des siècles. »',tip:'Racontez ce que la vaccination a changé dans le temps.'},
+ {name:'Infirmière scolaire',say:'« Une classe vaccinée protège aussi l’élève qui ne peut pas l’être. »',tip:'Parlez de la protection de tout le groupe.'},
+ {name:'Pédiatre de maternité',say:'« Je conseille les parents dès les premières semaines de vie. »',tip:'Expliquez pourquoi on commence tôt et pourquoi on refait des rappels.'},
+ {name:'Directrice d’école',say:'« Quand une épidémie menace, je dois protéger 400 élèves. »',tip:'Parlez de la protection du groupe et des élèves fragiles.'}
+];
+const ROLES_CONTRE=[
+ {name:'Parent inquiet',say:'« Mon enfant a eu de la fièvre après son dernier vaccin, et cela m’a fait peur. »',tip:'Exprimez une inquiétude réelle, puis écoutez la réponse.'},
+ {name:'Défenseur des libertés',say:'« Chacun devrait pouvoir décider pour son propre corps. »',tip:'Discutez l’obligation vaccinale, pas l’efficacité.'},
+ {name:'Patient méfiant envers les rappels',say:'« Pourquoi refaire des injections si je suis déjà immunisé ? »',tip:'Posez la question : vous avez le droit de ne pas connaître la réponse.'},
+ {name:'Pharmacien prudent',say:'« Aucun médicament n’est sans effet indésirable : je lis toujours la notice. »',tip:'Parlez de la fréquence des effets, sans les exagérer.'},
+ {name:'Grand-père sceptique',say:'« À mon époque, on attrapait la rougeole et on s’en remettait. »',tip:'Opposez votre expérience personnelle aux données, puis voyez si elles vous convainquent.'},
+ {name:'Citoyen en quête de transparence',say:'« Je veux savoir qui a mesuré ces chiffres et comment. »',tip:'Questionnez les sources et le suivi des effets indésirables.'}
+];
+const WORDS=['antigène','anticorps','lymphocytes B','lymphocytes mémoire','réponse secondaire','rappel','immunisé','microbe inactivé','défenses','effets indésirables'];
+const PROOFS=[
+ {src:'Frise · diphtérie',fact:'Environ 45 000 cas avant le vaccin, 0 cas après.',use:'Un chiffre net : que peut-on en conclure, et que ne peut-on pas conclure ?'},
+ {src:'Frise · poliomyélite',fact:'Environ 4 000 cas avant le vaccin, 0 cas après.',use:'Comparez avec la diphtérie : mêmes résultats, maladies différentes.'},
+ {src:'Frise · variole',fact:'Vaccin en 1798, dernier cas connu en 1977, éradication certifiée en 1980.',use:'Une maladie a disparu. Que dit cette durée sur l’effort nécessaire ?'},
+ {src:'Frise · rougeole',fact:'Environ 550 000 cas avant le vaccin, moins de 50 000 en l’an 2000.',use:'Les cas n’ont pas disparu : à quoi peut-on attribuer ce reste ?'},
+ {src:'Doc 4 · OMS',fact:'154 millions de vies sauvées en 50 ans, dont environ 101 millions d’enfants.',use:'Un très grand nombre : que dit-il d’une vie individuelle ?'},
+ {src:'Doc 4 · OMS',fact:'Effets fréquents et bénins (douleur locale, fatigue, fièvre) : 10 % à 50 % des personnes selon le vaccin.',use:'Une donnée que le camp CONTRE peut citer. Comment le camp POUR répond-il ?'},
+ {src:'Doc 4 · OMS',fact:'Effets indésirables graves : entre 1 cas sur 10 000 et 1 cas sur 1 000 000.',use:'Pourquoi ce chiffre est-il difficile à se représenter ? Comparez-le au risque de la maladie.'},
+ {src:'Doc 2 · courbe',fact:'Après chaque rappel, le taux d’anticorps remonte plus haut et reste au-dessus du seuil « immunisé » plus longtemps.',use:'Reliez cette donnée aux lymphocytes mémoire.'}
+];
+const EVENTS=[
+ 'Une épidémie de rougeole éclate dans une école voisine.',
+ 'Un pays supprime l’obligation de vacciner les enfants.',
+ 'Les parents d’un bébé de deux mois demandent conseil au médecin.',
+ 'Un camarade non vacciné attrape une maladie évitable.',
+ 'Votre prochain rappel tombe dans dix ans : faut-il le faire ?',
+ 'La notice d’un nouveau vaccin annonce un effet grave sur un million de personnes.',
+ 'Un voyage dans un pays où la polio existe encore est prévu cet été.',
+ 'Un influenceur affirme que les rappels ne servent à rien.',
+ 'Le carnet de santé d’un camarade montre un rappel en retard.',
+ 'Une pénurie de vaccins oblige à choisir qui protéger en premier.',
+ 'Un parent demande : « Et si mon enfant a de la fièvre après l’injection ? »',
+ 'Une maladie qu’on croyait disparue réapparaît dans une ville.'
+];
+const CRITERIA=['Mot magique placé et expliqué (+1 par mot)','Preuve chiffrée bien utilisée (+2)','Reformulation de l’argument adverse (+1)','Réaction claire au rebondissement (+2)'];
+const POINTS=[1,2,1,2];
+
+/* générateur pseudo-aléatoire déterministe : même code + même groupe = mêmes cartes sur tous les appareils */
+function xmur3(str){let h=1779033703^str.length;for(let i=0;i<str.length;i++){h=Math.imul(h^str.charCodeAt(i),3432918353);h=h<<13|h>>>19;}
+  return function(){h=Math.imul(h^h>>>16,2246822507);h=Math.imul(h^h>>>13,3266489909);return(h^=h>>>16)>>>0;};}
+function rng(str){let a=xmur3(str)();return function(){a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function shuffled(arr,key){const r=rng(key),a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));const t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function normCode(s){return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toUpperCase().replace(/[^A-Z0-9]/g,'');}
+function campOf(n){return n%2===1?'pour':'contre';}
+function deal(code,n){
+  const camp=campOf(n),k=(n-1)>>1;
+  const role=shuffled(camp==='pour'?ROLES_POUR:ROLES_CONTRE,code+'|r|'+camp)[k];
+  const proof=shuffled(PROOFS,code+'|p|'+camp)[k];
+  const words=shuffled(WORDS,code+'|w|'+n).slice(0,3);
+  const event=shuffled(EVENTS,code+'|e')[(n-1)%EVENTS.length];
+  return {n,camp,role,proof,words,event};
+}
+function fmt(s){return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
+/*==PURE_END==*/
+
+/* ----- utilitaires ----- */
+let ac=null;
+function unlockAudio(){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume();}catch(e){}}
+function beep(f,d){try{if(!ac)return;const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f||880;g.gain.value=.15;o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+(d||.25));}catch(e){}}
+function makeTimer(total,onTick,onEnd){
+  let rem=total,id=null;
+  const api={
+    get rem(){return rem;},get running(){return id!==null;},
+    start(){if(id!==null||rem<=0)return;id=setInterval(()=>{rem--;onTick(rem);if(rem<=0){api.pause();if(onEnd)onEnd();}},1000);},
+    pause(){if(id!==null){clearInterval(id);id=null;}},
+    reset(){api.pause();rem=total;onTick(rem);}
+  };
+  return api;
+}
+function lsGet(k){try{return localStorage.getItem(k)||'';}catch(e){return '';}}
+function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+const campLabel=c=>c==='pour'?'POUR':'CONTRE';
+
+function roleHTML(d){return `<div class="big ${d.camp}"><p class="camp">Camp ${campLabel(d.camp)} · groupe ${d.n}</p><h3>${d.role.name}</h3><p class="say">${d.role.say}</p><p>${d.role.tip}</p></div>`;}
+function proofHTML(d){return `<div class="proof static"><span class="src">${d.proof.src}</span><span class="fact">${d.proof.fact}</span><span class="hint-small">${d.proof.use}</span></div>`;}
+
+function showMode(cls){
+  $('view-tab').hidden=cls;$('view-class').hidden=!cls;
+  $('md-tab').setAttribute('aria-selected',!cls);$('md-class').setAttribute('aria-selected',cls);
+}
+$('md-tab').onclick=()=>showMode(false);
+$('md-class').onclick=()=>showMode(true);
+
+/* ===== Tablette de groupe ===== */
+$('sGroup').innerHTML=Array.from({length:NGROUPS},(_,i)=>`<option value="${i+1}">Groupe ${i+1}</option>`).join('');
+$('sCode').value=lsGet('svt_code_eleve');
+if(lsGet('svt_groupe_eleve'))$('sGroup').value=lsGet('svt_groupe_eleve');
+let sPrep=null;
+function showMyCards(){
+  const code=normCode($('sCode').value),n=+$('sGroup').value;
+  if(code.length<3){$('sErr').hidden=false;$('sErr').textContent='Saisis le code écrit au tableau (au moins 3 caractères).';$('sOut').hidden=true;return;}
+  $('sErr').hidden=true;
+  lsSet('svt_code_eleve',$('sCode').value);lsSet('svt_groupe_eleve',String(n));
+  const d=deal(code,n);
+  if(sPrep)sPrep.pause();
+  $('sOut').hidden=false;
+  $('sOut').innerHTML=
+   `<div class="panel" style="margin-top:16px">
+      <div class="stage">${roleHTML(d)}
+        <div class="big"><p class="camp" style="color:var(--muted)">Vos 3 mots magiques</p><div class="words">${d.words.map(w=>`<span class="word">${w}</span>`).join('')}</div><p class="hint-small">Placez-les dans votre intervention en les expliquant.</p></div>
+      </div>
+      <div><p class="kicker">Votre carte preuve</p>${proofHTML(d)}</div>
+      <div class="memo"><strong>Sur votre brouillon, préparez :</strong>
+        <ol><li>Votre argument principal, en une phrase.</li><li>Comment placer chacun des 3 mots magiques.</li><li>Comment utiliser votre preuve.</li><li>Une phrase de réserve pour le rebondissement : il apparaît au bout de 60 secondes.</li></ol></div>
+      <div class="timer"><div class="clock" id="sClock" role="timer">5:00</div>
+        <div class="row"><button class="btn primary" id="sPrepGo">Lancer mes 5 minutes</button><button class="btn" id="sPrepReset">Remettre à 5:00</button></div></div>
+      <p class="hint-small">Vous défendez ce point de vue même s'il n'est pas le vôtre. Le jury note ce que vous dites, pas ce que vous pensez.</p>
+    </div>`;
+  const upd=r=>{$('sClock').textContent=fmt(r);$('sClock').classList.toggle('low',r<=30);};
+  sPrep=makeTimer(300,r=>{upd(r);$('sPrepGo').textContent=sPrep.running?'Pause':(r===300?'Lancer mes 5 minutes':'Reprendre');},()=>{$('sPrepGo').textContent='Terminé';});
+  $('sPrepGo').onclick=()=>{if(sPrep.running)sPrep.pause();else sPrep.start();$('sPrepGo').textContent=sPrep.running?'Pause':(sPrep.rem===300?'Lancer mes 5 minutes':sPrep.rem<=0?'Terminé':'Reprendre');};
+  $('sPrepReset').onclick=()=>{sPrep.reset();$('sPrepGo').textContent='Lancer mes 5 minutes';};
+  $('sOut').scrollIntoView({block:'start'});
+}
+$('sGo').onclick=showMyCards;
+$('sCode').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();showMyCards();}});
+
+/* ===== Écran de la classe ===== */
+const sc={},wd={},doneG=new Set();
+for(let n=1;n<=NGROUPS;n++){sc[n]=[0,0,0,0];wd[n]=new Set();}
+let cur=null,tcode='';
+const gTotal=n=>sc[n].reduce((a,v,r)=>a+v*POINTS[r],0);
+
+function setCode(raw){
+  $('tCode').value=raw;lsSet('svt_code_prof',raw);
+  tcode=normCode(raw);
+  $('codeShow').textContent=tcode.length>=3?raw.toUpperCase().trim():'—';
+  drawGrid();
+}
+$('tCode').addEventListener('input',e=>{setCode(e.target.value);});
+$('tGen').onclick=()=>{
+  const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';
+  for(let i=0;i<3;i++)s+=A[Math.floor(Math.random()*A.length)];
+  setCode('SVT-'+s);cur=null;$('stagePanel').hidden=true;
+};
+
+function drawGrid(){
+  const ok=tcode.length>=3;
+  $('grid').innerHTML=Array.from({length:NGROUPS},(_,i)=>{
+    const n=i+1,c=campOf(n);
+    return `<button class="gbtn ${c}${doneG.has(n)?' done':''}${cur===n?' cur':''}" data-n="${n}" ${ok?'':'disabled'} aria-label="Groupe ${n}, camp ${campLabel(c)}${doneG.has(n)?', déjà passé':''}"><b>${n}</b><small>${campLabel(c)}</small>${doneG.has(n)?'<small>passé ✓</small>':''}</button>`;
+  }).join('');
+}
+function drawSummary(){
+  let rows='',tp=0,tc=0;
+  for(let n=1;n<=NGROUPS;n++){
+    const c=campOf(n),t=gTotal(n);if(c==='pour')tp+=t;else tc+=t;
+    rows+=`<tr><td>Groupe ${n}</td><td>${campLabel(c)}</td><td class="c">${doneG.has(n)?'✓':'—'}</td><td class="c">${t}</td></tr>`;
+  }
+  $('summary').innerHTML=`<table class="score mini"><thead><tr><th>Groupe</th><th>Camp</th><th class="c">Passé</th><th class="c">Points</th></tr></thead><tbody>${rows}</tbody>`+
+    `<tfoot><tr class="tot"><td colspan="3">Total camp POUR</td><td class="c">${tp}</td></tr><tr class="tot"><td colspan="3">Total camp CONTRE</td><td class="c">${tc}</td></tr></tfoot></table>`;
+}
+
+/* préparation 5 min */
+const prep=makeTimer(300,r=>{$('prepClock').textContent=fmt(r);$('prepClock').classList.toggle('low',r<=30);},()=>{beep(660,.6);$('prepGo').textContent='Terminé';});
+function prepBtn(){ $('prepGo').textContent=prep.running?'Pause':(prep.rem===300?'Lancer les 5 minutes':prep.rem<=0?'Terminé':'Reprendre'); }
+$('prepGo').onclick=()=>{unlockAudio();if(prep.running)prep.pause();else prep.start();prepBtn();};
+$('prepReset').onclick=()=>{prep.reset();prepBtn();};
+
+/* prise de parole : 60 s + rebondissement + 60 s */
+const sp=makeTimer(120,()=>updateSp(),()=>{beep(660,.6);if(cur!==null){doneG.add(cur);drawGrid();drawSummary();}updateSp();});
+let lastRem=120;
+function updateSp(){
+  const r=sp.rem;if(r===60&&lastRem>60)beep(990,.4);lastRem=r;
+  const clk=$('spClock');if(!clk)return;
+  const part1=r>60,shown=part1?r-60:r;
+  clk.textContent=fmt(shown);clk.classList.toggle('low',shown<=10&&r>0||r===0);
+  $('spPhase').textContent=r===0?'Temps écoulé. Passez à la notation du jury.':part1?'Partie 1 · le groupe expose ses arguments':'Partie 2 · le groupe réagit au rebondissement';
+  $('spEvent').hidden=r>60;
+  $('spGo').textContent=sp.running?'Pause':(r===120?'Démarrer la parole':r<=0?'Terminé':'Reprendre');
+}
+function scoreHTML(n){
+  return `<table class="score mini"><thead><tr><th>Critère du jury</th><th class="c">Nombre</th></tr></thead><tbody>`+
+  CRITERIA.map((c,r)=>`<tr><td>${c}</td><td class="c"><span class="pm"><button data-g="${n}" data-r="${r}" data-d="-1" aria-label="Retirer">−</button><output>${sc[n][r]}</output><button data-g="${n}" data-r="${r}" data-d="1" aria-label="Ajouter">+</button></span></td></tr>`).join('')+
+  `</tbody><tfoot><tr class="tot"><td>Points du groupe ${n}</td><td class="c">${gTotal(n)}</td></tr></tfoot></table>`;
+}
+function wordsHTML(n,d){return d.words.map((w,k)=>`<button class="word" data-w="${k}" aria-pressed="${wd[n].has(k)}">${w}</button>`).join('');}
+function selectGroup(n){
+  if(tcode.length<3)return;
+  unlockAudio();sp.reset();lastRem=120;cur=n;
+  const d=deal(tcode,n);
+  const P=$('stagePanel');P.hidden=false;
+  P.innerHTML=
+   `<div class="stagehead"><p class="kicker">3 · La parole est au groupe ${n}</p></div>
+    <div class="stage">${roleHTML(d)}
+      <div class="big"><p class="camp" style="color:var(--muted)">Mots magiques (cliquez pour barrer)</p><div class="words" id="spWords">${wordsHTML(n,d)}</div></div>
+    </div>
+    <div><p class="kicker">Carte preuve</p>${proofHTML(d)}</div>
+    <div class="timer"><div class="clock" id="spClock" role="timer">1:00</div>
+      <div><p class="phase" id="spPhase"></p>
+      <div class="row"><button class="btn primary" id="spGo">Démarrer la parole</button><button class="btn" id="spReset">Remettre à zéro</button><button class="btn ghost" id="spEnd">Terminer ce groupe</button></div></div></div>
+    <div class="big arbitre" id="spEvent" hidden><p class="camp">Rebondissement</p><h3>${d.event}</h3><p class="say">Réagissez maintenant : intégrez-le à votre conclusion.</p></div>
+    <div id="scoreArea">${scoreHTML(n)}</div>`;
+  updateSp();drawGrid();
+  P.scrollIntoView({block:'start'});
+}
+$('grid').addEventListener('click',e=>{const b=e.target.closest('.gbtn');if(b&&!b.disabled)selectGroup(+b.dataset.n);});
+$('stagePanel').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  if(b.id==='spGo'){unlockAudio();if(sp.running)sp.pause();else sp.start();updateSp();}
+  else if(b.id==='spReset'){sp.reset();lastRem=120;updateSp();}
+  else if(b.id==='spEnd'){sp.pause();doneG.add(cur);drawGrid();drawSummary();updateSp();}
+  else if(b.dataset.w!==undefined){const k=+b.dataset.w;if(wd[cur].has(k))wd[cur].delete(k);else wd[cur].add(k);$('spWords').innerHTML=wordsHTML(cur,deal(tcode,cur));}
+  else if(b.dataset.r!==undefined){const g=+b.dataset.g,r=+b.dataset.r;sc[g][r]=Math.max(0,sc[g][r]+(+b.dataset.d));$('scoreArea').innerHTML=scoreHTML(g);drawSummary();}
+});
+$('allReset').onclick=()=>{
+  sp.reset();prep.reset();prepBtn();doneG.clear();cur=null;$('stagePanel').hidden=true;
+  for(let n=1;n<=NGROUPS;n++){sc[n]=[0,0,0,0];wd[n]=new Set();}
+  drawGrid();drawSummary();
+};
+
+/* démarrage */
+setCode(lsGet('svt_code_prof'));
+drawSummary();
+
+</script>
+
+</body></html>

@@ -1,0 +1,744 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Chapitre Les séismes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Mise en page : une colonne de cours (largeur de lecture), barre de progression collante,
+   chaque partie = texte à trous + un outil interactif de l'activité correspondante. */
+:root {
+  --bg:#F3F5F8; --surface:#FFFFFF; --ink:#1B2A41; --muted:#586577; --line:#D6DDE6;
+  --accent:#C94A0A; --on-accent:#FFFFFF; --teal:#0B7285; --teal-soft:#E3F2F5; --sand:#FFF1E2;
+  --ok:#2B8A3E; --ok-soft:#E3F5E7; --bad:#C92A2A; --bad-soft:#FDE8E8;
+  --gap:#FFF6EA; --sea:#E6F1F6; --land:#F2E7D2; --coast:#A8927A;
+  --d4:#BDBDBD; --d5:#8CF000; --d6:#FFF000; --d7:#FBCB8B; --d8:#F7861B; --d9:#8A5A2B; --d10:#8B1A10;
+  --f-display:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;
+  --f-body:'Source Sans 3','Segoe UI',system-ui,sans-serif;
+  --f-mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg:#0E1520; --surface:#162131; --ink:#E7ECF3; --muted:#9AA7B8; --line:#2A384B;
+  --accent:#FF8A4C; --on-accent:#1A1209; --teal:#4CC3D9; --teal-soft:#13303A; --sand:#2B2016;
+  --ok:#6FD487; --ok-soft:#16301E; --bad:#FF8E8E; --bad-soft:#3A1B1B;
+  --gap:#2B2016; --sea:#10202E; --land:#2E2A22; --coast:#7C6D5A; color-scheme:dark; } }
+:root[data-theme="dark"] {
+  --bg:#0E1520; --surface:#162131; --ink:#E7ECF3; --muted:#9AA7B8; --line:#2A384B;
+  --accent:#FF8A4C; --on-accent:#1A1209; --teal:#4CC3D9; --teal-soft:#13303A; --sand:#2B2016;
+  --ok:#6FD487; --ok-soft:#16301E; --bad:#FF8E8E; --bad-soft:#3A1B1B;
+  --gap:#2B2016; --sea:#10202E; --land:#2E2A22; --coast:#7C6D5A; color-scheme:dark; }
+
+* { box-sizing:border-box; }
+body { background:var(--bg); color:var(--ink); font-family:var(--f-body); font-size:17px; line-height:1.55; padding-inline:16px; padding-block:0 56px; }
+.wrap { max-width:860px; margin-inline:auto; }
+h1,h2,h3 { font-family:var(--f-display); line-height:1.15; text-wrap:balance; margin:0; }
+h2 { font-size:1.65rem; }
+h3 { font-size:1.12rem; margin-bottom:.4rem; }
+p { margin:0 0 .8rem; }
+a { color:var(--teal); }
+button { font:inherit; cursor:pointer; }
+:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
+
+/* barre du haut */
+.bar { position:sticky; top:env(safe-area-inset-top,0px); z-index:5; background:var(--bg); border-bottom:1px solid var(--line); margin-inline:-16px; padding:8px 16px; }
+.bar-in { max-width:860px; margin-inline:auto; display:flex; flex-wrap:wrap; align-items:center; gap:8px 18px; }
+.bar nav { display:flex; flex-wrap:wrap; gap:4px; flex:1 1 360px; }
+.bar nav a { text-decoration:none; color:var(--ink); font-size:.9rem; font-weight:600; padding:4px 9px; border-radius:99px; border:1px solid var(--line); background:var(--surface); }
+.bar nav a:hover { border-color:var(--teal); color:var(--teal); }
+.meter { display:flex; align-items:center; gap:8px; font-size:.85rem; color:var(--muted); font-variant-numeric:tabular-nums; }
+.track { width:130px; height:8px; border-radius:99px; background:var(--line); overflow:hidden; }
+.track i { display:block; height:100%; width:0; background:var(--ok); transition:width .3s; }
+
+/* en-tête */
+.hero { padding-block:34px 18px; }
+.eyebrow { font-family:var(--f-mono); font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin-bottom:.5rem; }
+h1 { font-size:clamp(2.1rem,6vw,3.3rem); }
+.lede { color:var(--muted); max-width:60ch; margin-top:.7rem; }
+.trace { display:block; width:100%; height:44px; margin-top:14px; }
+.badges { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:10px; margin-top:16px; }
+.badge { display:flex; gap:10px; align-items:center; padding:10px 12px; border:1px dashed var(--line); border-radius:12px; background:var(--surface); color:var(--muted); text-decoration:none; }
+.badge b { display:block; color:var(--ink); font-size:.95rem; line-height:1.2; }
+.badge small { font-size:.8rem; }
+.badge .dot { flex:none; width:34px; height:34px; border-radius:50%; border:2px dashed var(--line); display:grid; place-items:center; font-family:var(--f-display); font-weight:700; }
+.badge.got { border:1px solid var(--ok); background:var(--ok-soft); }
+.badge.got .dot { border:2px solid var(--ok); background:var(--ok); color:var(--surface); }
+
+/* parties */
+section.part { margin-top:34px; padding:22px clamp(14px,3vw,26px); background:var(--surface); border:1px solid var(--line); border-radius:16px; }
+.ph { display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 12px; margin-bottom:14px; }
+.code { font-family:var(--f-mono); font-size:.85rem; font-weight:600; color:var(--teal); border:1px solid var(--teal); border-radius:6px; padding:0 7px; }
+.act { margin-left:auto; font-size:.8rem; font-weight:700; color:var(--on-accent); background:var(--accent); border-radius:99px; padding:2px 11px; }
+.bilan { border:1.5px solid var(--ink); border-radius:12px; padding:14px 16px 8px; background:var(--surface); }
+.bilan p { line-height:2.15; }
+.bilan p.num { padding-left:1.4rem; text-indent:-1.4rem; }
+
+.gap { display:inline-block; vertical-align:baseline; max-width:100%; text-indent:0; }
+.gap input { font:600 .95em var(--f-body); color:var(--ink); background:var(--gap); border:0; border-bottom:2px dotted var(--muted); border-radius:4px 4px 0 0; padding:0 4px; text-align:center; max-width:100%; min-width:3.2em; }
+.gap input::placeholder { color:var(--muted); opacity:.9; }
+.gap input.ok { border-bottom:2px solid var(--ok); background:var(--ok-soft); color:var(--ok); }
+.gap input.bad { border-bottom:2px solid var(--bad); background:var(--bad-soft); color:var(--bad); }
+.gap input.rev { border-bottom:2px solid var(--accent); color:var(--accent); }
+
+.tools { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:12px 0 4px; }
+.btn { border:1.5px solid var(--ink); background:transparent; color:var(--ink); border-radius:9px; padding:6px 13px; font-weight:600; font-size:.92rem; }
+.btn:hover { background:var(--teal-soft); }
+.btn.main { background:var(--ink); color:var(--surface); }
+.btn.main:hover { background:var(--teal); border-color:var(--teal); }
+.btn.sm { padding:3px 10px; font-size:.85rem; }
+.score { margin-left:auto; font-size:.9rem; color:var(--muted); font-variant-numeric:tabular-nums; }
+.score.done { color:var(--ok); font-weight:700; }
+
+.tool { margin-top:20px; padding-top:16px; border-top:1px solid var(--line); }
+.tool .tag { font-family:var(--f-mono); font-size:.75rem; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); margin-bottom:.35rem; }
+.tool h3 small { font-weight:500; color:var(--muted); font-size:.9rem; }
+.note { color:var(--muted); font-size:.92rem; }
+
+/* schéma */
+.coupe-grid { display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:14px 22px; align-items:center; }
+.coupe-grid svg { width:100%; height:auto; border:1px solid var(--line); border-radius:10px; }
+.leg { list-style:none; padding:0; margin:0; display:grid; gap:12px; }
+.leg li { display:flex; align-items:center; gap:10px; }
+.mk { flex:none; width:26px; height:26px; border-radius:50%; background:var(--ink); color:var(--surface); display:grid; place-items:center; font:700 .85rem var(--f-display); }
+
+/* EMS */
+.ems { width:100%; border-collapse:collapse; margin:14px 0 4px; }
+.ems td { border:1px solid var(--ink); padding:5px 10px; }
+.ems td:first-child { width:64px; text-align:center; font:700 1.05rem var(--f-display); }
+.ems td.dg { color:#111; } .ems td.dg.l { color:#fff; }
+@media (max-width:520px){ .coupe-grid { grid-template-columns:1fr; } }
+
+/* carte Alvéra */
+.mapbox { display:grid; grid-template-columns:minmax(0,1.6fr) minmax(0,1fr); gap:14px 20px; margin-top:10px; }
+@media (max-width:760px){ .mapbox { grid-template-columns:1fr; } }
+#map { width:100%; height:auto; border:1px solid var(--line); border-radius:10px; background:var(--sea); touch-action:manipulation; }
+#map .city { cursor:pointer; }
+#map .city circle { stroke:var(--surface); stroke-width:.5; }
+#map .city text { font:600 2.5px var(--f-body); fill:var(--ink); paint-order:stroke; stroke:var(--land); stroke-width:.7px; pointer-events:none; }
+#map .city.sel circle { stroke:var(--accent); stroke-width:.9; }
+.chips { display:flex; flex-wrap:wrap; gap:5px; margin-top:10px; }
+.chip { border:1.5px solid var(--line); background:var(--surface); color:var(--ink); border-radius:99px; padding:2px 10px; font-size:.85rem; display:inline-flex; align-items:center; gap:6px; }
+.chip i { width:11px; height:11px; border-radius:50%; background:var(--line); border:1px solid var(--muted); }
+.chip.sel { border-color:var(--accent); }
+.card { border:1.5px solid var(--ink); border-radius:12px; padding:12px 14px; background:var(--surface); }
+.card h4 { font:700 1.15rem var(--f-display); margin:0 0 6px; }
+.card ul { margin:0 0 10px; padding-left:1.1rem; }
+.card li { margin-bottom:3px; }
+.degs { display:flex; flex-wrap:wrap; gap:6px; }
+.deg { min-width:46px; border:2px solid var(--ink); border-radius:8px; padding:4px 8px; font:700 .95rem var(--f-display); color:#111; }
+.deg.l { color:#fff; }
+.deg:disabled { opacity:.55; cursor:default; }
+.fb { margin:10px 0 0; padding:8px 10px; border-radius:8px; font-size:.95rem; }
+.fb.ok { background:var(--ok-soft); color:var(--ok); } .fb.bad { background:var(--bad-soft); color:var(--bad); }
+.rule { margin-top:10px; padding:8px 12px; border-radius:10px; background:var(--sand); border:1px solid var(--accent); font-size:.92rem; }
+.legend { display:flex; flex-wrap:wrap; gap:4px 12px; margin-top:8px; font-size:.82rem; color:var(--muted); }
+.legend span i { display:inline-block; width:11px; height:11px; vertical-align:-1px; margin-right:4px; border:1px solid var(--muted); }
+
+/* labo */
+.lab { display:grid; gap:10px; }
+canvas { width:100%; display:block; border:1px solid var(--line); border-radius:10px; background:var(--surface); }
+.sl { display:flex; flex-wrap:wrap; align-items:center; gap:6px 12px; }
+.sl label { font-weight:600; }
+.sl input[type=range] { flex:1 1 180px; accent-color:var(--accent); }
+.sl select { font:inherit; padding:3px 6px; border-radius:8px; border:1.5px solid var(--ink); background:var(--surface); color:var(--ink); }
+.val { font-family:var(--f-mono); font-size:.9rem; min-width:5ch; }
+
+/* tri aléa + chaîne */
+.sort { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:10px; margin-top:8px; }
+.si { border:1.5px solid var(--line); border-radius:12px; padding:10px 12px; background:var(--surface); }
+.si.ok { border-color:var(--ok); background:var(--ok-soft); } .si.bad { border-color:var(--bad); background:var(--bad-soft); }
+.si b { display:block; }
+.si .row { display:flex; gap:6px; margin-top:6px; }
+.si p { margin:6px 0 0; font-size:.88rem; color:var(--muted); }
+.pool, .slots { display:grid; gap:8px; margin-top:8px; }
+.slots { counter-reset:s; }
+.slot { border:1.5px dashed var(--muted); border-radius:10px; padding:9px 12px 9px 44px; position:relative; min-height:44px; color:var(--muted); }
+.slot::before { counter-increment:s; content:counter(s); position:absolute; left:10px; top:8px; width:24px; height:24px; border-radius:50%; background:var(--ink); color:var(--surface); display:grid; place-items:center; font:700 .85rem var(--f-display); }
+.slot.full { border-style:solid; border-color:var(--ok); background:var(--ok-soft); color:var(--ink); }
+.pc { text-align:left; border:1.5px solid var(--ink); border-radius:10px; padding:8px 12px; background:var(--surface); color:var(--ink); }
+.pc:hover { background:var(--teal-soft); }
+.pc.shake { animation:sh .3s; border-color:var(--bad); }
+@keyframes sh { 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+@media (prefers-reduced-motion: reduce) { .pc.shake { animation:none; } .track i { transition:none; } }
+
+/* glossaire + liens */
+details { border-bottom:1px solid var(--line); padding:8px 0; }
+details summary { font-weight:700; cursor:pointer; }
+details p { margin:6px 0 0; color:var(--muted); }
+.links { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:10px; margin-top:12px; }
+.links a { display:block; text-decoration:none; color:var(--ink); border:1px solid var(--line); border-radius:12px; padding:12px 14px; background:var(--surface); }
+.links a:hover { border-color:var(--teal); }
+.links b { display:block; color:var(--teal); margin-bottom:2px; }
+.links span { font-size:.9rem; color:var(--muted); }
+.links small { display:block; margin-top:4px; font-family:var(--f-mono); font-size:.72rem; color:var(--muted); overflow-wrap:anywhere; }
+footer { margin-top:30px; color:var(--muted); font-size:.88rem; }
+.sr { position:absolute; left:-9999px; }
+</style>
+
+<div class="bar"><div class="bar-in">
+  <nav aria-label="Parties du chapitre">
+    <a href="#s1">I · 511</a><a href="#s2">II · 512</a><a href="#s3">III · 513</a><a href="#s4">IV · 514</a><a href="#s5">V · 515</a><a href="#glossaire">Mots</a><a href="#liens">Liens</a>
+  </nav>
+  <div class="meter"><span id="meterTxt">0 / 0 mots</span><div class="track" aria-hidden="true"><i id="meterBar"></i></div></div>
+</div></div>
+
+<div class="wrap">
+<header class="hero">
+  <div class="eyebrow">SVT · 5ème · Chapitre 1</div>
+  <h1>Les séismes</h1>
+  <p class="lede">Complète les bilans de chaque activité, teste-toi avec les mini-jeux et ouvre les outils des vrais sismologues. Un bilan est réussi quand tous ses mots sont justes.</p>
+  <svg class="trace" id="heroTrace" viewBox="0 0 800 44" preserveAspectRatio="none" aria-hidden="true"></svg>
+  <div class="badges" id="badges">
+    <a class="badge" href="#s1" data-b="s1"><span class="dot">1</span><span><b>Enquêteur·rice</b><small>Bilan I : manifestations</small></span></a>
+    <a class="badge" href="#s2" data-b="s2"><span class="dot">2</span><span><b>Cartographe</b><small>Bilan II : échelle EMS98</small></span></a>
+    <a class="badge" href="#s3" data-b="s3"><span class="dot">3</span><span><b>Sismologue</b><small>Bilan III : ondes sismiques</small></span></a>
+    <a class="badge" href="#s4" data-b="s4"><span class="dot">4</span><span><b>Expert·e aléa</b><small>Bilan IV : répartition, aléa</small></span></a>
+  </div>
+</header>
+
+<!-- ===================== I ===================== -->
+<section class="part" id="s1">
+  <div class="ph"><h2>I- Les manifestations d’un séisme</h2><span class="code">511</span><span class="act">Activité 1</span></div>
+  <div class="bilan">
+    <p>Un séisme se manifeste en surface par des <span class="gap" data-a="secousses|secousse"></span> du sol, parfois accompagnées de <span class="gap" data-a="dégâts|dégats|dégât|dégat"></span> : bâtiments fissurés ou écroulés, routes coupées, ponts effondrés…</p>
+    <p>Les secousses sont causées par des <span class="gap" data-a="ondes sismiques|ondes"></span> qui partent du <span class="gap" data-a="foyer"></span>, l’endroit en profondeur où les roches se sont brutalement cassées, et qui se propagent dans <span class="gap" data-a="toutes les directions"></span>.</p>
+    <p>Le point de la surface situé à la verticale du foyer est l’<span class="gap" data-a="épicentre|epicentre"></span> : c’est généralement là que les effets sont les plus <span class="gap" data-a="forts|fort|importants|grands"></span>.</p>
+  </div>
+  <div class="tools" data-sec="s1"></div>
+
+  <div class="tool">
+    <div class="tag">Schéma à légender</div>
+    <h3>Où est quoi ?</h3>
+    <div class="coupe-grid">
+      <svg viewBox="0 0 330 190" role="img" aria-label="Coupe du sol : une faille, un foyer en profondeur, des ondes en cercles et l’épicentre à la surface">
+        <rect x="0" y="30" width="330" height="160" fill="var(--land)"/>
+        <line x1="0" y1="30" x2="330" y2="30" stroke="var(--ink)" stroke-width="2.4"/>
+        <g fill="none" stroke="var(--accent)" stroke-width="1.2" stroke-dasharray="4 3">
+          <circle cx="188" cy="104" r="26"/><circle cx="188" cy="104" r="52"/><circle cx="188" cy="104" r="80"/><circle cx="188" cy="104" r="110"/>
+        </g>
+        <line x1="132" y1="30" x2="213" y2="180" stroke="var(--ink)" stroke-width="3"/>
+        <line x1="188" y1="30" x2="188" y2="104" stroke="var(--ink)" stroke-width="1" stroke-dasharray="3 3"/>
+        <circle cx="188" cy="30" r="3.5" fill="var(--ink)"/>
+        <polygon points="188,92 192,101 202,102 194,108 197,118 188,112 179,118 182,108 174,102 184,101" fill="var(--accent)"/>
+        <g stroke="var(--ink)" stroke-width="1" fill="var(--surface)">
+          <rect x="116" y="19" width="18" height="11"/><polygon points="114,19 125,10 136,19"/>
+          <rect x="179" y="19" width="18" height="11"/><polygon points="177,19 188,10 199,19"/>
+          <rect x="246" y="19" width="18" height="11"/><polygon points="244,19 255,10 266,19"/>
+        </g>
+        <path d="M187 19 l3 -4 l-2 -4 l3 -4" stroke="var(--accent)" stroke-width="1.3" fill="none"/>
+        <g font-family="Bricolage Grotesque, sans-serif" font-weight="700" font-size="12" text-anchor="middle">
+          <circle cx="206" cy="108" r="9" fill="var(--ink)"/><text x="206" y="112.3" fill="var(--surface)">1</text>
+          <circle cx="206" cy="50" r="9" fill="var(--ink)"/><text x="206" y="54.3" fill="var(--surface)">2</text>
+          <circle cx="146" cy="58" r="9" fill="var(--ink)"/><text x="146" y="62.3" fill="var(--surface)">3</text>
+          <circle cx="116" cy="140" r="9" fill="var(--ink)"/><text x="116" y="144.3" fill="var(--surface)">4</text>
+        </g>
+      </svg>
+      <ul class="leg">
+        <li><span class="mk">1</span><span class="gap" data-a="foyer"></span></li>
+        <li><span class="mk">2</span><span class="gap" data-a="épicentre|epicentre"></span></li>
+        <li><span class="mk">3</span><span class="gap" data-a="faille"></span></li>
+        <li><span class="mk">4</span><span class="gap" data-a="ondes sismiques|ondes|ondes sismique"></span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== II ===================== -->
+<section class="part" id="s2">
+  <div class="ph"><h2>II- Mesurer les effets : l’échelle EMS98</h2><span class="code">512</span><span class="act">Activité 2</span></div>
+  <div class="bilan">
+    <p>L’échelle d’<span class="gap" data-a="intensité|intensite"></span> EMS98 classe les effets d’un séisme en un lieu donné : plus le degré est <span class="gap" data-a="élevé|eleve|grand|haut|fort"></span>, plus les dégâts sont <span class="gap" data-a="importants|grands|graves|forts"></span>. Ici, l’échelle est simplifiée de IV à X.</p>
+  </div>
+  <table class="ems" aria-label="Échelle EMS98 simplifiée">
+    <tr><td class="dg l" style="background:var(--d10)">X</td><td><span class="gap" data-a="ponts"></span> et <span class="gap" data-a="digues"></span> détruits, <span class="gap" data-a="rails|rail"></span> de train tordus</td></tr>
+    <tr><td class="dg l" style="background:var(--d9)">IX</td><td>maisons <span class="gap" data-a="écroulées|ecroulees|effondrées|détruites"></span>, canalisations souterraines cassées</td></tr>
+    <tr><td class="dg" style="background:var(--d8)">VIII</td><td><span class="gap" data-a="cheminées|cheminee|cheminees"></span> des maisons qui tombent</td></tr>
+    <tr><td class="dg" style="background:var(--d7)">VII</td><td>édifices <span class="gap" data-a="lézardés|lezardes|fissurés|lézardées"></span> (fissurés)</td></tr>
+    <tr><td class="dg" style="background:var(--d6)">VI</td><td><span class="gap" data-a="meubles|meuble"></span> déplacés</td></tr>
+    <tr><td class="dg" style="background:var(--d5)">V</td><td>séisme ressenti, capable de <span class="gap" data-a="réveiller|reveiller"></span> les habitants</td></tr>
+    <tr><td class="dg" style="background:var(--d4)">IV</td><td>vibrations comparables au passage d’un <span class="gap" data-a="camion"></span></td></tr>
+  </table>
+  <div class="bilan" style="margin-top:12px">
+    <p>En reliant sur la carte les villes de même degré, on trace des courbes <span class="gap" data-a="isoséistes|isoseistes|isoséiste"></span>. Elles sont <span class="gap" data-a="emboîtées|emboitees|emboitées|concentriques"></span> autour de l’<span class="gap" data-a="épicentre|epicentre"></span>, où l’intensité est <span class="gap" data-a="maximale|la plus forte|max"></span> ; les effets <span class="gap" data-a="diminuent|baissent|s’affaiblissent|decroissent"></span> quand on s’éloigne.</p>
+    <p><b>Ne pas confondre :</b> la <span class="gap" data-a="magnitude"></span> (échelle de Richter) mesure l’énergie libérée au <span class="gap" data-a="foyer"></span> (une seule valeur par séisme) ; l’<span class="gap" data-a="intensité|intensite"></span> mesure les effets en un lieu donné et dépend de la <span class="gap" data-a="distance"></span> à l’épicentre.</p>
+  </div>
+  <div class="tools" data-sec="s2"></div>
+
+  <div class="tool">
+    <div class="tag">Mini-jeu · séisme fictif</div>
+    <h3>L’île d’Alvéra : donne un degré à chaque ville <small>(séisme de 4 h 07)</small></h3>
+    <p class="note">Touche une ville sur la carte ou dans la liste, lis les observations, choisis un degré. Quand 8 villes sont justes, tu peux tracer les courbes isoséistes et chercher l’épicentre.</p>
+    <div class="mapbox">
+      <div>
+        <svg id="map" viewBox="0 0 160 100" role="img" aria-label="Carte de l’île d’Alvéra avec seize villes"></svg>
+        <div class="legend" id="mapLegend"></div>
+      </div>
+      <div id="cityPanel"></div>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="tools">
+      <button class="btn" id="btnIso" disabled>Tracer les isoséistes</button>
+      <button class="btn" id="btnEpi" disabled>Où est l’épicentre ?</button>
+      <button class="btn sm" id="btnMapReset">Recommencer</button>
+      <span class="score" id="mapScore">0 / 16 villes</span>
+    </div>
+    <div class="rule"><b>Règle d’or</b> : on retient le degré le plus élevé dont l’effet est réellement observé. Un effet précédé de « aucun » ou « pas de » n’a pas eu lieu.</div>
+  </div>
+</section>
+
+<!-- ===================== III ===================== -->
+<section class="part" id="s3">
+  <div class="ph"><h2>III- D’où viennent les ondes sismiques&nbsp;? Comment voyagent-elles&nbsp;?</h2><span class="code">513</span><span class="act">Activité 3</span></div>
+  <div class="tool" style="margin-top:0;padding-top:0;border:0">
+    <div class="tag">Labo virtuel 1 · une tablette</div>
+    <h3>Plie la plaque, puis regarde le sismographe</h3>
+    <div class="lab">
+      <canvas id="cvPlate" height="230" aria-label="Plaque de polystyrène pliée et sismogramme associé"></canvas>
+      <div class="sl"><label for="bend">Je plie la plaque</label><input id="bend" type="range" min="0" max="100" value="0"><span class="val" id="bendV">0 %</span><button class="btn sm" id="plateReset">Rejouer</button></div>
+      <p class="note" id="plateMsg">Ta tablette est collée sur la plaque. Plie doucement : que se passe-t-il sur le sismogramme ?</p>
+    </div>
+  </div>
+  <div class="bilan" style="margin-top:16px">
+    <p><b>Le modèle :</b> la plaque de polystyrène représente les <span class="gap" data-a="roches du sous-sol|roches|roches du sous sol"></span>, les mains qui plient la plaque représentent les <span class="gap" data-a="contraintes|contrainte"></span> et la cassure représente le <span class="gap" data-a="foyer"></span>.</p>
+    <p>Tant que la plaque est seulement pliée, le sismographe n’enregistre presque rien. Au moment de la <span class="gap" data-a="cassure brutale|cassure|rupture brutale|rupture"></span>, il enregistre de fortes <span class="gap" data-a="vibrations|vibration|ondes"></span> : le tracé obtenu est un <span class="gap" data-a="sismogramme|sismogramme"></span>.</p>
+    <p><b>Conclusion :</b> les ondes sismiques sont produites par la <span class="gap" data-a="rupture brutale|rupture|cassure brutale|cassure"></span> de roches soumises à des <span class="gap" data-a="contraintes|contrainte"></span>, le long d’une <span class="gap" data-a="faille"></span>.</p>
+  </div>
+
+  <div class="tool">
+    <div class="tag">Labo virtuel 2 · deux tablettes</div>
+    <h3>Comment voyagent les ondes ?</h3>
+    <div class="lab">
+      <canvas id="cvWave" height="300" aria-label="Deux sismogrammes enregistrés à deux distances du choc"></canvas>
+      <div class="sl"><label for="dist">Distance de T2 au choc</label><input id="dist" type="range" min="10" max="60" step="5" value="40"><span class="val" id="distV">40 cm</span></div>
+      <div class="sl"><label for="contact">T2 est posée sur</label>
+        <select id="contact"><option value="1">le même support, en contact</option><option value="0">un autre support, sans contact</option></select></div>
+      <p class="note" id="waveMsg"></p>
+    </div>
+  </div>
+  <div class="bilan" style="margin-top:16px">
+    <p><b>Avec deux tablettes, on montre que les ondes sismiques :</b></p>
+    <p class="num">1. partent dans <span class="gap" data-a="toutes les directions"></span> à partir du foyer ;</p>
+    <p class="num">2. <span class="gap" data-a="s’affaiblissent|s'affaiblissent|saffaiblissent|diminuent|faiblissent"></span> quand la distance au foyer <span class="gap" data-a="augmente|grandit|croît|croit"></span> : les secousses sont plus faibles loin de l’épicentre ;</p>
+    <p class="num">3. passent d’un matériau à l’autre quand ils sont en <span class="gap" data-a="contact"></span> : elles se propagent dans différents matériaux.</p>
+  </div>
+  <div class="tools" data-sec="s3"></div>
+</section>
+
+<!-- ===================== IV ===================== -->
+<section class="part" id="s4">
+  <div class="ph"><h2>IV- Où ont lieu les séismes&nbsp;? Aléa et zones à risque</h2><span class="code">514</span><span class="act">Activité 4</span></div>
+  <div class="bilan">
+    <p>Avec Tectoglob 3D, on constate que séismes et volcans ne sont pas répartis au <span class="gap" data-a="hasard"></span> : ils forment des <span class="gap" data-a="bandes étroites|bandes etroites|bandes|lignes|alignements"></span> qui dessinent les <span class="gap" data-a="limites des plaques|limites de plaques|frontières des plaques|frontieres des plaques"></span>. La surface de la Terre est découpée en une quinzaine de <span class="gap" data-a="plaques"></span> rigides, qui se déplacent lentement.</p>
+    <p>Les zones les plus actives entourent l’océan <span class="gap" data-a="Pacifique|pacifique"></span> (la « <span class="gap" data-a="ceinture de feu"></span> » : Japon, Chili, Californie), se trouvent au milieu des océans (Islande) et s’étendent de la Méditerranée à l’Himalaya.</p>
+    <p>L’<span class="gap" data-a="aléa|alea"></span> est la probabilité qu’un séisme ou une éruption se produise dans une région. Il est <span class="gap" data-a="fort|élevé|eleve"></span> près des limites de plaques (Japon, Chili, Haïti) et <span class="gap" data-a="faible|faibles"></span> à l’intérieur des plaques (Brésil, Russie, Guyane).</p>
+    <p>En France, l’aléa est <span class="gap" data-a="fort|élevé|eleve"></span> aux <span class="gap" data-a="Antilles|antilles"></span> (Guadeloupe, Martinique), où il y a séismes et volcans ; il est plus <span class="gap" data-a="faible|faibles"></span> en <span class="gap" data-a="métropole|metropole|france métropolitaine"></span>, mais jamais nul (Alpes, Pyrénées).</p>
+  </div>
+  <div class="tools" data-sec="s4"></div>
+
+  <div class="tool">
+    <div class="tag">Mini-jeu · après Tectoglob 3D</div>
+    <h3>Aléa fort ou aléa faible&nbsp;?</h3>
+    <p class="note">Pour chaque lieu, choisis. Vérifie ensuite avec le globe : le lieu est-il près d’une limite de plaques ?</p>
+    <div class="sort" id="sort"></div>
+    <div class="tools"><span class="score" id="sortScore" style="margin-left:0">0 / 9</span><button class="btn sm" id="sortReset">Recommencer</button></div>
+  </div>
+  <div class="tool">
+    <div class="tag">Outil</div>
+    <h3>Ouvre Tectoglob 3D</h3>
+    <p>Affiche les séismes, puis les volcans, puis les limites de plaques, et compare les trois couches. Les noms de menus varient d’une version à l’autre.</p>
+    <p><a class="btn main" style="text-decoration:none;display:inline-block" href="https://www.pedagogie.ac-nice.fr/svt/productions/tectoglob3d/" target="_blank" rel="noopener">Lancer Tectoglob 3D en ligne</a></p>
+  </div>
+</section>
+
+<!-- ===================== V ===================== -->
+<section class="part" id="s5">
+  <div class="ph"><h2>V- Du phénomène au risque : prévenir</h2><span class="code">515</span><span class="act">Bilan</span></div>
+  <div class="bilan">
+    <p>Le <span class="gap" data-a="risque"></span> est la possibilité de subir des dommages. Il dépend de l’<span class="gap" data-a="aléa|alea"></span> et de la <span class="gap" data-a="vulnérabilité|vulnerabilite"></span> : personnes, bâtiments et activités exposés au phénomène.</p>
+    <p>Un même séisme est donc un risque <span class="gap" data-a="plus grand|plus élevé|plus fort|plus important|plus eleve"></span> dans une grande ville que dans un <span class="gap" data-a="désert|desert"></span> peu peuplé, même si l’aléa est le même.</p>
+    <p>On réduit le risque par la <span class="gap" data-a="prévention|prevention"></span> : construire des bâtiments <span class="gap" data-a="parasismiques|parasismique|antisismiques|antisismique"></span>, informer la population, organiser l’<span class="gap" data-a="évacuation|evacuation"></span> et les secours.</p>
+  </div>
+  <div class="tools" data-sec="s5"></div>
+
+  <div class="tool">
+    <div class="tag">Mini-jeu · bilan</div>
+    <h3>Du sous-sol aux dégâts : remets la chaîne dans l’ordre</h3>
+    <p class="note">Touche les étapes dans l’ordre. Une erreur ne coûte rien.</p>
+    <div class="slots" id="slots"></div>
+    <div class="pool" id="pool"></div>
+    <div class="tools"><button class="btn sm" id="chainReset">Mélanger à nouveau</button><span class="score" id="chainScore" style="margin-left:0"></span></div>
+  </div>
+</section>
+
+<!-- ===================== glossaire ===================== -->
+<section class="part" id="glossaire">
+  <div class="ph"><h2>Les mots à retenir</h2></div>
+  <details><summary>secousse</summary><p>Mouvement du sol ressenti en surface lors d’un séisme.</p></details>
+  <details><summary>ondes sismiques</summary><p>Vibrations qui partent du foyer dans toutes les directions et s’affaiblissent avec la distance.</p></details>
+  <details><summary>faille</summary><p>Cassure des roches le long de laquelle deux blocs ont glissé l’un par rapport à l’autre.</p></details>
+  <details><summary>foyer</summary><p>Point, en profondeur, où les roches se rompent et d’où partent les ondes sismiques.</p></details>
+  <details><summary>épicentre</summary><p>Point de la surface situé à la verticale du foyer.</p></details>
+  <details><summary>magnitude</summary><p>Mesure de l’énergie libérée au foyer (échelle de Richter). Une seule valeur par séisme.</p></details>
+  <details><summary>intensité</summary><p>Mesure des effets d’un séisme en un lieu donné (échelle EMS98). Elle change avec la distance à l’épicentre.</p></details>
+  <details><summary>courbes isoséistes</summary><p>Courbes qui relient les lieux où l’intensité est la même.</p></details>
+  <details><summary>sismographe, sismogramme</summary><p>Le sismographe enregistre les vibrations du sol. Le tracé obtenu s’appelle un sismogramme.</p></details>
+  <details><summary>limite de plaques</summary><p>Zone étroite entre deux plaques lithosphériques, où se concentrent séismes et volcans.</p></details>
+  <details><summary>aléa</summary><p>Probabilité qu’un phénomène naturel (séisme, éruption) se produise dans une région.</p></details>
+  <details><summary>vulnérabilité</summary><p>Ce qui est exposé au phénomène et peut être endommagé : personnes, bâtiments, activités.</p></details>
+  <details><summary>risque</summary><p>Possibilité de subir des dommages : il dépend de l’aléa et de la vulnérabilité.</p></details>
+  <details><summary>prévention</summary><p>Ensemble des mesures qui réduisent le risque : constructions parasismiques, information, évacuation.</p></details>
+</section>
+
+<!-- ===================== liens ===================== -->
+<section class="part" id="liens">
+  <div class="ph"><h2>Pour aller plus loin</h2></div>
+  <div class="links">
+    <a href="https://www.pedagogie.ac-nice.fr/svt/productions/tectoglob3d/" target="_blank" rel="noopener"><b>Tectoglob 3D, en ligne</b><span>Globe virtuel : séismes, volcans, limites de plaques, sismogrammes.</span><small>pedagogie.ac-nice.fr</small></a>
+    <a href="https://acces.ens-lyon.fr/acces/logiciels/applications/tectoglob3d" target="_blank" rel="noopener"><b>Tectoglob 3D, fiche logiciel</b><span>Présentation et versions à télécharger (Windows, Mac, Linux, tablettes Android).</span><small>acces.ens-lyon.fr</small></a>
+    <a href="https://edumed.unice.fr/tools-lab/tg3d/" target="_blank" rel="noopener"><b>Tutoriels Tectoglob 3D</b><span>Documentation PDF, webinaire et jeux de données pour apprendre à s’en servir.</span><small>edumed.unice.fr</small></a>
+    <a href="https://www.franceseisme.fr" target="_blank" rel="noopener"><b>BCSF-RENASS</b><span>Séismes récents en France, cartes d’intensité, témoignages et ressources pédagogiques.</span><small>franceseisme.fr</small></a>
+    <a href="https://www.emsc-csem.org" target="_blank" rel="noopener"><b>EMSC</b><span>Séismes du monde presque en temps réel, avec cartes et témoignages.</span><small>emsc-csem.org</small></a>
+    <a href="https://earthquake.usgs.gov/earthquakes/map/" target="_blank" rel="noopener"><b>Carte des séismes de l’USGS</b><span>Les derniers séismes sur une carte interactive (en anglais).</span><small>earthquake.usgs.gov</small></a>
+    <a href="https://www.georisques.gouv.fr" target="_blank" rel="noopener"><b>Géorisques</b><span>Portail officiel des risques naturels et technologiques en France.</span><small>georisques.gouv.fr</small></a>
+    <a href="https://www.planseisme.fr" target="_blank" rel="noopener"><b>Cité du Parasismique</b><span>Plan Séisme : risque sismique, règles de construction, prévention.</span><small>planseisme.fr</small></a>
+    <a href="https://planet-terre.ens-lyon.fr" target="_blank" rel="noopener"><b>Planet-Terre</b><span>Ressources de géosciences de l’ENS de Lyon, pour approfondir.</span><small>planet-terre.ens-lyon.fr</small></a>
+    <a href="https://svtparmelan.jimdofree.com" target="_blank" rel="noopener"><b>svtparmelan</b><span>Le site du cours : capsules vidéos, fiches et autres chapitres.</span><small>svtparmelan.jimdofree.com</small></a>
+  </div>
+  <footer>Séisme d’Alvéra : événement fictif créé pour la classe. Les degrés, noms et témoignages sont inventés.</footer>
+</section>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  /* ---------- stockage (confort : peut échouer) ---------- */
+  var KEY = 'seismes5-v1', S = { v: {}, map: {}, sort: {} };
+  try { var raw = localStorage.getItem(KEY); if (raw) { var o = JSON.parse(raw); S.v = o.v || {}; S.map = o.map || {}; S.sort = o.sort || {}; } } catch (e) {}
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  function norm(s) { return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[’'`\-]/g, ' ').replace(/[^a-z0-9 ]/g, '').replace(/\s+/g, ' ').trim(); }
+  function css(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+
+  /* ---------- textes à trous ---------- */
+  var gaps = [];
+  $$('section.part').forEach(function (sec) {
+    $$('.gap', sec).forEach(function (g, i) {
+      var answers = g.getAttribute('data-a').split('|');
+      var id = sec.id + '-' + i;
+      var inp = document.createElement('input');
+      inp.type = 'text'; inp.id = 'g-' + id; inp.autocomplete = 'off'; inp.autocapitalize = 'off'; inp.spellcheck = false;
+      inp.setAttribute('aria-label', 'Mot manquant ' + (i + 1));
+      var len = Math.max.apply(null, answers.map(function (a) { return a.length; }));
+      inp.style.width = Math.max(4.2, len * 0.62 + 1.6) + 'em';
+      if (S.v[id]) inp.value = S.v[id];
+      g.appendChild(inp);
+      var o = { id: id, sec: sec.id, inp: inp, ans: answers, norm: answers.map(norm) };
+      gaps.push(o);
+      inp.addEventListener('input', function () { inp.classList.remove('ok', 'bad', 'rev'); S.v[id] = inp.value; save(); refresh(); });
+      inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { checkGap(o, true); refresh(); } });
+    });
+  });
+  function isOk(o) { return o.norm.indexOf(norm(o.inp.value)) !== -1 && norm(o.inp.value) !== ''; }
+  function checkGap(o, mark) {
+    var v = o.inp.value;
+    o.inp.classList.remove('ok', 'bad', 'rev');
+    if (norm(v) === '') return;
+    if (isOk(o)) o.inp.classList.add('ok'); else if (mark) o.inp.classList.add('bad');
+  }
+  var SEC = { s1: 'Enquêteur·rice', s2: 'Cartographe', s3: 'Sismologue', s4: 'Expert·e aléa' };
+  function secGaps(id) { return gaps.filter(function (g) { return g.sec === id; }); }
+  function refresh() {
+    var tot = gaps.length, ok = 0;
+    gaps.forEach(function (g) { if (g.inp.classList.contains('ok')) ok++; });
+    $('#meterTxt').textContent = ok + ' / ' + tot + ' mots';
+    $('#meterBar').style.width = (100 * ok / tot) + '%';
+    Object.keys(SEC).forEach(function (id) { /* badges */
+      var gs = secGaps(id), n = gs.filter(function (g) { return g.inp.classList.contains('ok'); }).length;
+      var b = $('[data-b="' + id + '"]'); if (b) b.classList.toggle('got', n === gs.length && gs.length > 0);
+    });
+    $$('.tools[data-sec]').forEach(function (t) {
+      var gs = secGaps(t.getAttribute('data-sec')), n = gs.filter(function (g) { return g.inp.classList.contains('ok'); }).length;
+      var sc = $('.score', t); sc.textContent = n === gs.length ? 'Bilan réussi' : n + ' / ' + gs.length + ' mots justes';
+      sc.classList.toggle('done', n === gs.length);
+    });
+  }
+  $$('.tools[data-sec]').forEach(function (t) {
+    var id = t.getAttribute('data-sec');
+    t.innerHTML = '<button class="btn main" data-a="check">Vérifier</button><button class="btn" data-a="hint">Indice</button><button class="btn" data-a="reveal">Corrigé</button><button class="btn sm" data-a="clear">Effacer</button><span class="score" aria-live="polite"></span>';
+    t.addEventListener('click', function (e) {
+      var a = e.target.getAttribute && e.target.getAttribute('data-a'); if (!a) return;
+      secGaps(id).forEach(function (g) {
+        if (a === 'check') checkGap(g, true);
+        if (a === 'hint' && !g.inp.classList.contains('ok')) { g.inp.placeholder = g.ans[0].charAt(0) + '…'; }
+        if (a === 'reveal' && !g.inp.classList.contains('ok')) { g.inp.value = g.ans[0]; g.inp.classList.remove('bad'); g.inp.classList.add('rev'); S.v[g.id] = g.inp.value; }
+        if (a === 'clear') { g.inp.value = ''; g.inp.placeholder = ''; g.inp.classList.remove('ok', 'bad', 'rev'); S.v[g.id] = ''; }
+      });
+      save(); refresh();
+    });
+  });
+  gaps.forEach(function (g) { checkGap(g, false); });
+  refresh();
+
+  /* ---------- trace décorative ---------- */
+  (function () {
+    var p = 'M0 22', x = 0;
+    while (x <= 800) { var b = 17 * Math.exp(-Math.pow((x - 330) / 70, 2)); p += ' L' + x + ' ' + (22 + (1.2 + b) * Math.sin(x * 0.9) + 0.9 * Math.sin(x * 0.21)).toFixed(1); x += 2; }
+    $('#heroTrace').innerHTML = '<path d="' + p + '" fill="none" stroke="var(--accent)" stroke-width="1.6" vector-effect="non-scaling-stroke"/>';
+  })();
+
+  /* ---------- carte d'Alvéra ---------- */
+  var ALPHA = 22 * Math.PI / 180, ST = 1.6, EPI = [80, 50];
+  var DEG = ['IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'], LIGHT = { IX: 1, X: 1 };
+  var BANDS = [['X', 3], ['IX', 7], ['VIII', 12], ['VII', 18], ['VI', 25], ['V', 33], ['IV', 42]];
+  function xy(r, phi) { var p = phi * Math.PI / 180, xp = ST * r * Math.cos(p), yp = r * Math.sin(p); return [EPI[0] + xp * Math.cos(ALPHA) - yp * Math.sin(ALPHA), 100 - (EPI[1] + xp * Math.sin(ALPHA) + yp * Math.cos(ALPHA))]; }
+  var CITIES = [
+    ['Sorane', 2, 200, 'X', ['Le pont de pierre sur la rivière s’est effondré.', 'La voie ferrée est tordue comme un serpent.', 'La digue du vieux moulin s’est rompue.', 'Presque toutes les maisons sont écroulées.'], 'Ponts, rails et digue détruits : ce sont les effets du degré X.'],
+    ['Rochemar', 5, 20, 'IX', ['Des dizaines de maisons anciennes se sont écroulées dans les ruelles.', 'Une canalisation d’eau souterraine s’est brisée : la rue est inondée.', 'Le pont du village, lui, est resté debout.'], 'Maisons écroulées et canalisation cassée : IX. Le pont a résisté, donc pas X.'],
+    ['Belvance', 6, 150, 'IX', ['Un quartier entier de maisons en pierre s’est effondré.', 'Les conduites d’eau et de gaz enterrées sont cassées.', 'Le pont du village a résisté.'], 'Maisons effondrées et conduites cassées : IX. Le pont a résisté, donc pas X.'],
+    ['Montéril', 9, 75, 'VIII', ['Presque toutes les cheminées sont tombées sur les toits et dans la rue.', 'Beaucoup de murs sont fissurés.', 'Aucune maison ne s’est écroulée et l’eau coule normalement.'], 'Cheminées tombées mais aucune maison écroulée : VIII.'],
+    ['Valdora', 10, 245, 'VIII', ['Plusieurs cheminées se sont abattues sur des voitures garées.', 'De profondes fissures lézardent l’église.', 'Aucune maison ne s’est écroulée.'], 'Cheminées tombées, pas de maison écroulée : VIII.'],
+    ['Tourvelle', 10.5, 330, 'VIII', ['Des cheminées sont tombées dans les jardins et sur les toits.', 'Les façades sont fissurées et du plâtre est tombé.', 'Les maisons tiennent debout.'], 'Cheminées tombées, maisons debout : VIII.'],
+    ['Saint-Elmire', 15, 105, 'VII', ['De larges fissures lézardent des façades d’immeubles et la mairie.', 'Des plâtres sont tombés dans les escaliers.', 'Les cheminées sont restées en place.'], 'Murs lézardés mais cheminées en place : VII.'],
+    ['Orlane', 16, 190, 'VII', ['L’église et plusieurs maisons sont lézardées.', 'Des objets sont tombés des étagères.', 'Les cheminées n’ont pas bougé.'], 'Édifices lézardés, cheminées intactes : VII.'],
+    ['Fontelune', 16.5, 40, 'VII', ['Des fissures en escalier lézardent les murs d’immeubles et de l’hôpital.', 'Des meubles ont glissé et de la vaisselle est tombée.', 'Aucune cheminée n’est tombée.'], 'Murs lézardés, aucune cheminée tombée : VII.'],
+    ['Alvéra', 22, 300, 'VI', ['Dans les appartements, des meubles ont glissé et des livres sont tombés.', 'Des tableaux se sont décrochés des murs.', 'Aucun mur n’est fissuré ; les commerces ouvrent normalement.'], 'Meubles déplacés, aucun mur fissuré : VI. La capitale est loin de l’épicentre.'],
+    ['Marcelane', 21, 70, 'VI', ['Des armoires se sont déplacées et des objets sont tombés.', 'Les murs et les toits n’ont aucun dégât.'], 'Meubles déplacés, murs intacts : VI.'],
+    ['Havrelune', 24, 165, 'VI', ['La table a glissé et des verres se sont renversés.', 'Pas de fissure dans les murs.'], 'Meubles qui glissent, pas de fissure : VI.'],
+    ['Aubrelle', 29, 12, 'V', ['Presque toute la population a été réveillée par la secousse.', 'Des lustres ont oscillé. Rien n’est tombé, rien n’est cassé.'], 'Habitants réveillés, rien de tombé : V.'],
+    ['Pontalier', 28, 235, 'V', ['Les habitants se sont réveillés ; certains sont sortis dans la rue.', 'Les portes ont claqué. Aucun objet n’est tombé.'], 'Habitants réveillés, aucun objet tombé : V.'],
+    ['Cap-Lorin', 37, 270, 'IV', ['Quelques personnes éveillées ont senti le sol vibrer comme au passage d’un gros camion.', 'La plupart des habitants ont continué de dormir.'], 'Vibrations de camion : IV.'],
+    ['Vauriane', 38, 85, 'IV', ['Les rares personnes éveillées ont ressenti de légères vibrations, comme au passage d’un camion.', 'Aucun dégât.'], 'Légères vibrations, aucun dégât : IV.']
+  ].map(function (c) { var p = xy(c[1], c[2]); return { n: c[0], x: p[0], y: p[1], deg: c[3], obs: c[4], clue: c[5] }; });
+  var map = $('#map'), NS = 'http://www.w3.org/2000/svg';
+  function el(t, a, par) { var e = document.createElementNS(NS, t); Object.keys(a || {}).forEach(function (k) { e.setAttribute(k, a[k]); }); if (par) par.appendChild(e); return e; }
+  (function drawMap() {
+    var pts = [];
+    for (var i = 0; i < 180; i++) {
+      var th = 2 * Math.PI * i / 180, A = 70, B = 43;
+      var rr = 1 / Math.sqrt(Math.pow(Math.cos(th) / A, 2) + Math.pow(Math.sin(th) / B, 2));
+      rr *= 1 + 0.04 * Math.sin(3 * th + 0.7) + 0.03 * Math.sin(5 * th + 2.1) + 0.018 * Math.sin(9 * th + 0.3) - 0.05 * Math.exp(-Math.pow((th - 5.1) / 0.28, 2));
+      var xp = rr * Math.cos(th), yp = rr * Math.sin(th);
+      pts.push((EPI[0] + xp * Math.cos(ALPHA) - yp * Math.sin(ALPHA)).toFixed(1) + ',' + (100 - (EPI[1] + xp * Math.sin(ALPHA) + yp * Math.cos(ALPHA))).toFixed(1));
+    }
+    var defs = el('defs', {}, map), cp = el('clipPath', { id: 'coastClip' }, defs); el('polygon', { points: pts.join(' ') }, cp);
+    el('polygon', { points: pts.join(' '), fill: 'var(--land)', stroke: 'var(--coast)', 'stroke-width': .6 }, map);
+    var so = CITIES[0], rv = [[110, 98], [102, 84], [97, 72], [90, 64], [so.x + 3.5, 100 - so.y + 5], [so.x + .5, 100 - so.y + 1], [so.x - 5, 100 - so.y - 6], [66, 33], [60, 24], [56, 14], [52, 2]];
+    el('polyline', { points: rv.map(function (p) { return p[0] + ',' + (100 - p[1]); }).join(' '), fill: 'none', stroke: '#4C9CC0', 'stroke-width': 1.1, 'stroke-linecap': 'round' }, map);
+    [[118, 78], [124, 74], [112, 70], [130, 66], [121, 62], [36, 22], [30, 28], [42, 17], [26, 17], [48, 78], [55, 72], [42, 70]].forEach(function (m) {
+      el('polygon', { points: (m[0] - 2.2) + ',' + (100 - m[1] + 1.6) + ' ' + m[0] + ',' + (100 - m[1] - 2) + ' ' + (m[0] + 2.2) + ',' + (100 - m[1] + 1.6), fill: 'var(--coast)', opacity: .55 }, map);
+    });
+    el('g', { id: 'isoG', 'clip-path': 'url(#coastClip)' }, map);
+    el('g', { id: 'cityG' }, map);
+    el('g', { id: 'epiG' }, map);
+    el('line', { x1: 8, y1: 94, x2: 28, y2: 94, stroke: 'var(--ink)', 'stroke-width': .7 }, map);
+    var t = el('text', { x: 18, y: 91.8, 'text-anchor': 'middle', 'font-size': 2.6, fill: 'var(--ink)' }, map); t.textContent = '20 km';
+    var nn = el('text', { x: 153, y: 8, 'text-anchor': 'middle', 'font-size': 3.4, 'font-weight': 700, fill: 'var(--ink)' }, map); nn.textContent = 'N ↑';
+    var lg = $('#mapLegend');
+    DEG.slice().reverse().forEach(function (d) { var s = document.createElement('span'); s.innerHTML = '<i style="background:var(--d' + ({ IV: 4, V: 5, VI: 6, VII: 7, VIII: 8, IX: 9, X: 10 })[d] + ')"></i>' + d; lg.appendChild(s); });
+  })();
+  function dcol(d) { return 'var(--d' + ({ IV: 4, V: 5, VI: 6, VII: 7, VIII: 8, IX: 9, X: 10 })[d] + ')'; }
+  var cityG = $('#cityG'), chips = $('#chips'), panel = $('#cityPanel'), sel = null;
+  CITIES.forEach(function (c, i) {
+    var g = el('g', { 'class': 'city', tabindex: 0, role: 'button', 'aria-label': c.n }, cityG);
+    el('circle', { cx: c.x, cy: c.y, r: c.n === 'Alvéra' ? 2.1 : 1.6, fill: 'var(--surface)' }, g);
+    var left = ['Belvance','Saint-Elmire','Orlane','Havrelune','Pontalier'].indexOf(c.n) >= 0;
+    var t = el('text', { x: left ? c.x - 2.6 : c.x + 2.6, y: c.y + 0.9, 'text-anchor': left ? 'end' : 'start' }, g); t.textContent = c.n;
+    c.g = g; c.circ = g.firstChild;
+    g.addEventListener('click', function () { pick(i); });
+    g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(i); } });
+    var b = document.createElement('button'); b.className = 'chip'; b.innerHTML = '<i></i>' + c.n; b.addEventListener('click', function () { pick(i); });
+    chips.appendChild(b); c.chip = b;
+  });
+  function paint() {
+    var n = 0;
+    CITIES.forEach(function (c) {
+      var ok = S.map[c.n] === c.deg; if (ok) n++;
+      c.circ.setAttribute('fill', ok ? dcol(c.deg) : 'var(--surface)');
+      c.chip.firstChild.style.background = ok ? dcol(c.deg) : '';
+    });
+    $('#mapScore').textContent = n + ' / 16 villes';
+    $('#btnIso').disabled = n < 8; $('#btnEpi').disabled = n < 8;
+    return n;
+  }
+  function pick(i) {
+    sel = i; var c = CITIES[i];
+    CITIES.forEach(function (d, j) { d.g.classList.toggle('sel', j === i); d.chip.classList.toggle('sel', j === i); });
+    var done = S.map[c.n] === c.deg;
+    var h = '<div class="card"><h4>' + c.n + '</h4><ul>' + c.obs.map(function (o) { return '<li>' + o + '</li>'; }).join('') + '</ul><div class="degs">';
+    DEG.slice().reverse().forEach(function (d) { h += '<button class="deg' + (LIGHT[d] ? ' l' : '') + '" style="background:' + dcol(d) + '" data-d="' + d + '"' + (done ? ' disabled' : '') + '>' + d + '</button>'; });
+    h += '</div><div id="fb" class="fb' + (done ? ' ok' : '') + '" aria-live="polite"' + (done ? '' : ' hidden') + '>' + (done ? 'Degré ' + c.deg + ' : ' + c.clue : '') + '</div></div>';
+    panel.innerHTML = h;
+    $$('.deg', panel).forEach(function (b) {
+      b.addEventListener('click', function () {
+        var d = b.getAttribute('data-d'), fb = $('#fb');
+        fb.hidden = false;
+        if (d === c.deg) { S.map[c.n] = d; save(); fb.className = 'fb ok'; fb.textContent = 'Bravo, degré ' + d + '. ' + c.clue; $$('.deg', panel).forEach(function (x) { x.disabled = true; }); paint(); }
+        else { fb.className = 'fb bad'; fb.textContent = 'Pas ' + d + '. Cherche l’effet le plus grave réellement observé, puis relis la règle d’or.'; }
+      });
+    });
+  }
+  panel.innerHTML = '<div class="card"><h4>Choisis une ville</h4><p class="note" style="margin:0">Commence par Sorane, au centre de l’île : ses effets sont les plus graves.</p></div>';
+  var isoOn = false, epiOn = false;
+  function iso() {
+    var g = $('#isoG'); g.innerHTML = '';
+    if (!isoOn) return;
+    BANDS.slice().reverse().forEach(function (b) {
+      var e = el('ellipse', { cx: EPI[0], cy: 100 - EPI[1], rx: ST * b[1], ry: b[1], fill: dcol(b[0]), 'fill-opacity': .28, stroke: 'var(--ink)', 'stroke-width': .35, transform: 'rotate(' + (-22) + ' ' + EPI[0] + ' ' + (100 - EPI[1]) + ')' }, g);
+    });
+  }
+  function epi() {
+    var g = $('#epiG'); g.innerHTML = '';
+    if (!epiOn) return;
+    var s = CITIES[0], cx = EPI[0], cy = 100 - EPI[1], pts = [];
+    for (var k = 0; k < 10; k++) { var r = k % 2 ? 1.1 : 2.7, a = -Math.PI / 2 + k * Math.PI / 5; pts.push((cx + r * Math.cos(a)).toFixed(2) + ',' + (cy + r * Math.sin(a)).toFixed(2)); }
+    el('polygon', { points: pts.join(' '), fill: '#E8590C', stroke: '#1B2A41', 'stroke-width': .4 }, g);
+  }
+  $('#btnIso').addEventListener('click', function () { isoOn = !isoOn; this.textContent = isoOn ? 'Masquer les isoséistes' : 'Tracer les isoséistes'; iso(); });
+  $('#btnEpi').addEventListener('click', function () { epiOn = !epiOn; this.textContent = epiOn ? 'Masquer l’épicentre' : 'Où est l’épicentre ?'; epi(); });
+  $('#btnMapReset').addEventListener('click', function () { S.map = {}; save(); isoOn = epiOn = false; iso(); epi(); $('#btnIso').textContent = 'Tracer les isoséistes'; $('#btnEpi').textContent = 'Où est l’épicentre ?'; paint(); if (sel !== null) pick(sel); });
+  paint();
+
+  /* ---------- tri aléa ---------- */
+  var SORT = [
+    ['Tokyo (Japon)', 'fort', 'Près d’une limite de plaques, dans la ceinture de feu du Pacifique.'],
+    ['Santiago (Chili)', 'fort', 'Près d’une limite de plaques, côte pacifique de l’Amérique du Sud.'],
+    ['Reykjavik (Islande)', 'fort', 'Sur la limite entre deux plaques, au milieu de l’Atlantique.'],
+    ['Los Angeles (États-Unis)', 'fort', 'Près de la faille de San Andreas, limite entre deux plaques.'],
+    ['Port-au-Prince (Haïti)', 'fort', 'Limite de plaques dans les Caraïbes : séisme de 2010.'],
+    ['Antilles (Guadeloupe, Martinique)', 'fort', 'Près d’une limite de plaques : séismes et volcans.'],
+    ['Brasília (Brésil)', 'faible', 'À l’intérieur d’une plaque, loin des limites.'],
+    ['Moscou (Russie)', 'faible', 'À l’intérieur d’une plaque, loin des limites.'],
+    ['Guyane (France)', 'faible', 'À l’intérieur d’une plaque : peu de séismes, pas de volcans.']
+  ];
+  function drawSort() {
+    var box = $('#sort'); box.innerHTML = ''; var n = 0;
+    SORT.forEach(function (s, i) {
+      var a = S.sort[i], div = document.createElement('div'); div.className = 'si' + (a ? (a === s[1] ? ' ok' : ' bad') : '');
+      if (a === s[1]) n++;
+      div.innerHTML = '<b>' + s[0] + '</b>';
+      if (a === s[1]) { div.innerHTML += '<p>Aléa ' + s[1] + '. ' + s[2] + '</p>'; }
+      else { div.innerHTML += '<div class="row"><button class="btn sm" data-v="fort">Aléa fort</button><button class="btn sm" data-v="faible">Aléa faible</button></div>' + (a ? '<p>Pas ' + a + '. Regarde où se trouve le lieu par rapport aux limites de plaques.</p>' : ''); }
+      $$('button', div).forEach(function (b) { b.addEventListener('click', function () { S.sort[i] = b.getAttribute('data-v'); save(); drawSort(); }); });
+      box.appendChild(div);
+    });
+    $('#sortScore').textContent = n + ' / ' + SORT.length;
+  }
+  $('#sortReset').addEventListener('click', function () { S.sort = {}; save(); drawSort(); });
+  drawSort();
+
+  /* ---------- chaîne ---------- */
+  var CHAIN = ['Des roches soumises à des contraintes se déforment.', 'Rupture brutale le long d’une faille : naissance du foyer.', 'Des ondes sismiques partent dans toutes les directions.', 'Des secousses en surface, plus fortes près de l’épicentre.', 'Des dégâts, mesurés par l’échelle d’intensité EMS98.'];
+  var next = 0;
+  function chain() {
+    var slots = $('#slots'), pool = $('#pool'); slots.innerHTML = ''; pool.innerHTML = ''; next = 0;
+    CHAIN.forEach(function () { var s = document.createElement('div'); s.className = 'slot'; slots.appendChild(s); });
+    var order = CHAIN.map(function (_, i) { return i; }).sort(function () { return Math.random() - .5; });
+    if (order.join() === '0,1,2,3,4') order.reverse();
+    $('#chainScore').textContent = '';
+    order.forEach(function (i) {
+      var b = document.createElement('button'); b.className = 'pc'; b.textContent = CHAIN[i];
+      b.addEventListener('click', function () {
+        if (i === next) {
+          var s = slots.children[next]; s.textContent = CHAIN[i]; s.classList.add('full'); b.remove(); next++;
+          if (next === CHAIN.length) $('#chainScore').textContent = 'Chaîne complète : bravo !';
+        } else { b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake'); }
+      });
+      pool.appendChild(b);
+    });
+  }
+  $('#chainReset').addEventListener('click', chain); chain();
+
+  /* ---------- canvas : helpers ---------- */
+  function fit(cv) { var r = cv.getBoundingClientRect(), d = window.devicePixelRatio || 1, h = +cv.getAttribute('height'); cv.width = Math.round(r.width * d); cv.height = Math.round(h * d); var x = cv.getContext('2d'); x.setTransform(d, 0, 0, d, 0, 0); return { x: x, w: r.width, h: h }; }
+  function grid(x, X, Y, w, h) {
+    x.save(); x.fillStyle = css('--surface'); x.strokeStyle = css('--line'); x.lineWidth = 1; x.fillRect(X, Y, w, h); x.strokeRect(X, Y, w, h);
+    x.beginPath(); for (var i = 1; i < 10; i++) { x.moveTo(X + w * i / 10, Y); x.lineTo(X + w * i / 10, Y + h); } for (var j = 1; j < 4; j++) { x.moveTo(X, Y + h * j / 4); x.lineTo(X + w, Y + h * j / 4); } x.stroke();
+    x.strokeStyle = css('--muted'); x.beginPath(); x.moveTo(X, Y + h / 2); x.lineTo(X + w, Y + h / 2); x.stroke(); x.restore();
+  }
+  var vis = {};
+  if ('IntersectionObserver' in window) { var io = new IntersectionObserver(function (es) { es.forEach(function (e) { vis[e.target.id] = e.isIntersecting; }); }); ['cvPlate', 'cvWave'].forEach(function (id) { io.observe(document.getElementById(id)); }); } else { vis.cvPlate = vis.cvWave = true; }
+
+  /* ---------- labo 1 : plaque ---------- */
+  var plate = { bend: 0, broken: false, t0: 0, buf: [], last: 0, acc: 0 };
+  var NB = 300;
+  for (var q = 0; q < NB; q++) plate.buf.push(0);
+  var bend = $('#bend');
+  function plateReset() { plate.broken = false; plate.bend = 0; bend.value = 0; bend.disabled = false; $('#bendV').textContent = '0 %'; $('#plateMsg').textContent = 'Ta tablette est collée sur la plaque. Plie doucement : que se passe-t-il sur le sismogramme ?'; for (var i = 0; i < NB; i++) plate.buf[i] = 0; }
+  bend.addEventListener('input', function () {
+    if (plate.broken) return;
+    var v = +bend.value, dv = Math.abs(v - plate.bend); plate.bend = v; $('#bendV').textContent = v + ' %';
+    plate.creak = dv * 0.004;
+    if (v >= 100) { plate.broken = true; plate.t0 = performance.now(); bend.disabled = true; $('#plateMsg').textContent = 'CRAC ! La plaque a cassé d’un coup : le sismographe enregistre de fortes vibrations.'; }
+    else if (v > 5) $('#plateMsg').textContent = 'La plaque se déforme mais ne casse pas : le tracé reste presque plat.';
+  });
+  $('#plateReset').addEventListener('click', plateReset);
+  function drawPlate(now) {
+    var cv = $('#cvPlate'), f = fit(cv), x = f.x, w = f.w, h = f.h;
+    var ink = css('--ink'), acc = css('--accent'), mut = css('--muted');
+    var split = Math.min(w * 0.46, 300);
+    // plaque
+    x.save(); x.fillStyle = css('--land'); x.fillRect(0, h * 0.62, 28, h * 0.38); x.fillStyle = ink; x.fillRect(0, h * 0.62, 28, 5);
+    var y0 = h * 0.5, L = split - 40, d = plate.bend / 100 * 62;
+    x.lineWidth = 14; x.lineCap = 'butt'; x.strokeStyle = '#E9ECEF'; x.fillStyle = '#E9ECEF';
+    x.strokeStyle = css('--sea');
+    function bar(c1, c2, e, wd) { x.beginPath(); x.moveTo(28, y0); x.quadraticCurveTo(c1[0], c1[1], e[0], e[1]); x.lineWidth = wd; x.strokeStyle = ink; x.stroke(); x.lineWidth = wd - 4; x.strokeStyle = '#EEF1F5'; x.stroke(); }
+    if (!plate.broken) { bar([28 + L * 0.55, y0 + d * 0.05], 0, [28 + L, y0 + d], 14); }
+    else {
+      var t = (now - plate.t0) / 1000, fall = Math.min(1, t * 1.3) * 60;
+      x.beginPath(); x.moveTo(28, y0); x.quadraticCurveTo(28 + L * .3, y0 - 4, 28 + L * .52, y0 - 8); x.lineWidth = 14; x.strokeStyle = ink; x.stroke(); x.lineWidth = 10; x.strokeStyle = '#EEF1F5'; x.stroke();
+      x.save(); x.translate(28 + L * .6, y0 + 14 + fall); x.rotate(0.35 + t * .5); x.fillStyle = ink; x.fillRect(0, -7, L * .45, 14); x.fillStyle = '#EEF1F5'; x.fillRect(2, -5, L * .45 - 4, 10); x.restore();
+      x.fillStyle = acc; x.font = '700 22px Bricolage Grotesque, sans-serif'; x.fillText('CRAC !', 28 + L * 0.45, y0 - 30);
+    }
+    // tablette
+    x.fillStyle = '#1B2A41'; x.fillRect(46, y0 - 24, 54, 10); x.fillStyle = '#9EDDE8'; x.font = '600 9px IBM Plex Mono, monospace'; x.fillText('T1', 66, y0 - 16.5);
+    // mains
+    if (!plate.broken && plate.bend > 0) { x.fillStyle = mut; x.font = '600 12px Source Sans 3, sans-serif'; x.fillText('contraintes', 28 + L * .45, y0 + d + 34); x.fillText('↑', 28 + L * 0.98, y0 + d + 30); }
+    x.fillStyle = mut; x.font = '600 12px Source Sans 3, sans-serif'; x.fillText('plaque de polystyrène', 40, h - 12);
+    x.restore();
+    // sismogramme
+    var X = split + 18, Y = 18, gw = w - X - 12, gh = h - 54;
+    grid(x, X, Y, gw, gh); x.save(); x.fillStyle = mut; x.font = '600 11px IBM Plex Mono, monospace'; x.fillText('Sismogramme', X + 6, Y + 14); x.fillText('temps →', X + gw - 62, Y + gh + 18); x.restore();
+    // échantillonnage
+    if (!plate.last) plate.last = now;
+    plate.acc += (now - plate.last) / 1000; plate.last = now;
+    while (plate.acc > 1 / 30) {
+      plate.acc -= 1 / 30; var v = (Math.random() - .5) * 0.03 + (plate.creak || 0) * (Math.random() - .5); plate.creak = (plate.creak || 0) * 0.8;
+      if (plate.broken) { var t2 = (now - plate.t0) / 1000; v += 0.95 * Math.exp(-t2 / 2.2) * Math.sin(t2 * 26) * Math.min(1, t2 * 12); }
+      plate.buf.push(Math.max(-1, Math.min(1, v))); plate.buf.shift();
+    }
+    x.save(); x.strokeStyle = plate.broken ? acc : ink; x.lineWidth = 1.5; x.beginPath();
+    for (var i = 0; i < NB; i++) { var px = X + gw * i / (NB - 1), py = Y + gh / 2 - plate.buf[i] * gh * 0.46; if (i) x.lineTo(px, py); else x.moveTo(px, py); }
+    x.stroke(); x.restore();
+  }
+
+  /* ---------- labo 2 : ondes ---------- */
+  function drawWave() {
+    var cv = $('#cvWave'), f = fit(cv), x = f.x, w = f.w, h = f.h, ink = css('--ink'), acc = css('--accent'), mut = css('--muted');
+    var d = +$('#dist').value, contact = $('#contact').value === '1';
+    $('#distV').textContent = d + ' cm';
+    var rows = [['T1 à 10 cm du choc', 10, 1], ['T2 à ' + d + ' cm du choc', d, contact ? 1 : 0]], gh = (h - 70) / 2;
+    var A2 = 0;
+    rows.forEach(function (r, k) {
+      var X = 14, Y = 22 + k * (gh + 32), gw = w - 28; grid(x, X, Y, gw, gh);
+      x.save(); x.fillStyle = mut; x.font = '600 12px Source Sans 3, sans-serif'; x.fillText(r[0], X, Y - 7); x.restore();
+      var t0 = 2 + r[1] * 0.06, amp = r[2] ? 10 / r[1] : 0.03; if (k) A2 = amp;
+      x.save(); x.strokeStyle = k ? acc : ink; x.lineWidth = 1.5; x.beginPath();
+      for (var i = 0; i <= 400; i++) { var t = 20 * i / 400, v = (Math.sin(i * 12.9) * Math.cos(i * 4.3)) * 0.02; if (t > t0) { var u = t - t0; v += amp * Math.exp(-u / 2.4) * Math.sin(u * 17) * Math.min(1, u * 8); } var px = X + gw * i / 400, py = Y + gh / 2 - Math.max(-1, Math.min(1, v)) * gh * 0.46; if (i) x.lineTo(px, py); else x.moveTo(px, py); }
+      x.stroke(); x.restore();
+    });
+    x.save(); x.fillStyle = mut; x.font = '600 11px IBM Plex Mono, monospace'; x.fillText('temps (s) : 0 → 20', 14, h - 6); x.restore();
+    $('#waveMsg').textContent = !contact ? 'Sans contact entre les supports, presque rien n’arrive à T2 : les ondes passent d’un objet à l’autre seulement s’ils se touchent.'
+      : (d === 10 ? 'À la même distance, T1 et T2 enregistrent la même chose.' : 'Plus T2 est loin du choc, plus son signal est faible (' + Math.round(100 * 10 / d) + ' % de celui de T1) et plus il arrive tard.');
+  }
+  $('#dist').addEventListener('input', drawWave); $('#contact').addEventListener('change', drawWave);
+
+  /* ---------- boucle + thème ---------- */
+  function loop(now) { if (vis.cvPlate !== false) drawPlate(now); requestAnimationFrame(loop); }
+  function all() { drawWave(); }
+  all(); requestAnimationFrame(loop);
+  window.addEventListener('resize', all);
+  try { window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', all); } catch (e) {}
+  new MutationObserver(all).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+})();
+</script>
+
+</body></html>

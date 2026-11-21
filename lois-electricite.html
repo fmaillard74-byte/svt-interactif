@@ -1,0 +1,951 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Lois de l'électricité</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Concept : carnet de labo sur papier millimétré. Bleu = tension U, rouge = intensité I (code couleur du cours). */
+:root{
+  --bg:#f1f5f0; --grid:#dfe8e0; --surface:#ffffff; --surface2:#f6f9f6; --ink:#15222b; --muted:#53656d; --line:#cdd8d0;
+  --volt:#1c5fd1; --volt-soft:#e3edfc; --cur:#d23f2a; --cur-soft:#fbe7e3; --ok:#1d7a4b; --ok-soft:#dcf3e6; --no:#b45309; --no-soft:#fdeed9;
+  --f-disp:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif; --f-body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif; --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1a20; --grid:#16262e; --surface:#16252d; --surface2:#1b2d36; --ink:#e6eef0; --muted:#97aab1; --line:#2b424d;
+  --volt:#7db0ff; --volt-soft:#1b3050; --cur:#ff8f77; --cur-soft:#3a2420; --ok:#62cd95; --ok-soft:#173a2a; --no:#f3a95b; --no-soft:#3b2c16; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1a20; --grid:#16262e; --surface:#16252d; --surface2:#1b2d36; --ink:#e6eef0; --muted:#97aab1; --line:#2b424d;
+  --volt:#7db0ff; --volt-soft:#1b3050; --cur:#ff8f77; --cur-soft:#3a2420; --ok:#62cd95; --ok-soft:#173a2a; --no:#f3a95b; --no-soft:#3b2c16; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background-color:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;color:var(--ink);font:400 16px/1.55 var(--f-body);padding-block:0 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
+.wrap{max-width:980px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-disp);line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.8rem,5vw,2.7rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.45rem;font-weight:800}h3{font-size:1.1rem;font-weight:600}
+p{margin:.4em 0}
+.mono{font-family:var(--f-mono)}
+.kicker{font:500 .78rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.U{color:var(--volt);font-weight:600}.I{color:var(--cur);font-weight:600}
+header.top{padding:28px 0 14px;display:grid;gap:14px}
+.hero-row{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between}
+.hero-row>*{min-width:0}
+.bar{height:10px;border-radius:99px;background:var(--line);overflow:hidden;min-width:200px}
+.bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--volt),var(--cur));transition:width .4s}
+.stat{display:flex;gap:18px;flex-wrap:wrap;font:500 .85rem var(--f-mono);color:var(--muted)}
+.stat b{color:var(--ink)}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:2px solid var(--ink);margin-inline:-4px;padding-inline:4px}
+nav.tabs div{display:flex;gap:2px;overflow-x:auto;scrollbar-width:thin}
+nav.tabs button{flex:0 0 auto;border:0;background:transparent;color:var(--muted);font:600 .92rem var(--f-body);padding:12px 14px;cursor:pointer;border-bottom:4px solid transparent;margin-bottom:-2px}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--volt)}
+nav.tabs button:hover{color:var(--ink)}
+button,select,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--volt);outline-offset:2px;border-radius:4px}
+section.panel{padding-top:22px;display:grid;gap:18px}
+.card{background:var(--surface);border:1.5px solid var(--ink);border-radius:6px;padding:16px 18px;box-shadow:3px 3px 0 var(--line)}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--ink);background:var(--surface);border-radius:6px;padding:8px 14px;font-weight:600;cursor:pointer;min-height:40px}
+.btn:hover{background:var(--surface2)}
+.btn.pri{background:var(--volt);border-color:var(--volt);color:#fff}
+:root[data-theme="dark"] .btn.pri{color:#07131f}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn.pri{color:#07131f}}
+.btn.pri:hover{filter:brightness(1.08)}
+.btn.ghost{border-color:var(--line)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.row>*{min-width:0}
+.chip{display:inline-block;font:500 .75rem var(--f-mono);padding:2px 8px;border-radius:99px;background:var(--volt-soft);color:var(--volt);border:1px solid currentColor}
+.chip.r{background:var(--cur-soft);color:var(--cur)}.chip.g{background:var(--ok-soft);color:var(--ok)}
+/* Planning */
+.days{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px}
+.day{padding:0;overflow:hidden;display:flex;flex-direction:column}
+.day.today{border-color:var(--volt);box-shadow:3px 3px 0 var(--volt)}
+.day-h{display:flex;gap:10px;align-items:baseline;justify-content:space-between;padding:10px 14px;background:var(--surface2);border-bottom:1.5px solid var(--line)}
+.day-h .n{font:800 1.5rem var(--f-disp);line-height:1}
+.day-b{padding:10px 14px 14px;display:grid;gap:8px}
+.day-b h3{font-size:1rem}
+.task{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:start;font-size:.92rem}
+.task input{margin-top:5px;width:18px;height:18px;accent-color:var(--volt)}
+.task .go{display:inline;border:0;background:none;color:var(--volt);font-weight:600;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px}
+.task.done span.t{color:var(--muted);text-decoration:line-through}
+/* Flashcards */
+.fc-stage{perspective:1200px}
+.fc{position:relative;width:100%;min-height:260px;cursor:pointer;transform-style:preserve-3d;transition:transform .5s;border:0;background:none;padding:0;text-align:left}
+.fc.flip{transform:rotateY(180deg)}
+.fc .face{position:absolute;inset:0;backface-visibility:hidden;border:1.5px solid var(--ink);border-radius:6px;padding:22px;display:flex;flex-direction:column;justify-content:center;gap:10px;background:var(--surface);box-shadow:3px 3px 0 var(--line);overflow:auto}
+.fc .back{transform:rotateY(180deg);background:var(--volt-soft)}
+.fc .face .q{font:600 1.25rem/1.35 var(--f-disp)}
+.fc .face .a{font-size:1.05rem}
+@media (prefers-reduced-motion:reduce){.fc{transition:none}}
+/* Quiz */
+.opt{display:block;width:100%;text-align:left;border:1.5px solid var(--line);background:var(--surface);border-radius:6px;padding:11px 14px;margin:8px 0;cursor:pointer}
+.opt:hover:not([disabled]){border-color:var(--volt);background:var(--volt-soft)}
+.opt.ok{border-color:var(--ok);background:var(--ok-soft)}.opt.no{border-color:var(--no);background:var(--no-soft)}
+.opt[disabled]{cursor:default}
+.fb{padding:10px 14px;border-radius:6px;margin-top:10px;border-left:5px solid var(--ok);background:var(--ok-soft)}
+.fb.no{border-left-color:var(--no);background:var(--no-soft)}
+.fb.hint{border-left-color:var(--volt);background:var(--volt-soft)}
+/* Exercices */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:12px}
+.ex-tile{text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:6px;border:1.5px solid var(--ink);background:var(--surface);border-radius:6px;padding:14px;box-shadow:3px 3px 0 var(--line)}
+.ex-tile:hover{border-color:var(--volt);box-shadow:3px 3px 0 var(--volt)}
+.ex-tile .d{font-size:.88rem;color:var(--muted)}
+.step{border-top:1.5px dashed var(--line);padding-top:14px;margin-top:14px}
+.step .num{font:500 .75rem var(--f-mono);color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.ans{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}
+.ans input[type=text]{border:1.5px solid var(--ink);background:var(--surface);border-radius:6px;padding:8px 10px;width:10em;max-width:100%;font:500 1rem var(--f-mono)}
+.eq{font-family:var(--f-mono);background:var(--surface2);border:1px solid var(--line);border-radius:4px;padding:1px 6px;white-space:nowrap}
+.sol{font-size:.95rem}
+svg text{font-family:var(--f-mono);fill:var(--ink)}
+.fig{overflow-x:auto;max-width:100%;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+.fig svg{display:block;max-width:100%;height:auto;margin:0 auto}
+table.t{border-collapse:collapse;width:100%;font-size:.92rem}
+table.t th,table.t td{border:1px solid var(--line);padding:6px 10px;text-align:left}
+table.t th{background:var(--surface2)}
+.k{stroke:var(--ink);stroke-width:2;fill:none;stroke-linejoin:round}.kf{stroke:var(--ink);stroke-width:2;fill:var(--surface)}
+.scroll{overflow-x:auto;max-width:100%}
+.memo{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px}
+.memo .card{display:grid;gap:6px;align-content:start}
+.big{font:500 1.15rem var(--f-mono);background:var(--surface2);border:1px solid var(--line);border-radius:4px;padding:6px 10px;display:inline-block}
+.sel{border:1.5px solid var(--ink);background:var(--surface);border-radius:6px;padding:8px 10px;min-height:40px}
+@media (max-width:520px){.fc{min-height:300px}.card{padding:14px}}
+</style>
+<div class="wrap">
+<header class="top">
+  <div class="kicker">Chapitre 16 · Ondes et signaux · Seconde</div>
+  <div class="hero-row">
+    <h1>Les lois de <span class="U">l'électricité</span></h1>
+    <div style="display:grid;gap:6px;flex:1 1 240px;max-width:360px">
+      <div class="bar" aria-hidden="true"><i id="gbar"></i></div>
+      <div class="stat"><span>Plan : <b id="s-plan">0%</b></span><span>Cartes : <b id="s-cards">0</b></span><span>Quiz : <b id="s-quiz">0%</b></span></div>
+    </div>
+  </div>
+  <p style="max-width:62ch;color:var(--muted)">14 jours pour maîtriser la loi des nœuds, la loi des mailles, la loi d'Ohm, les caractéristiques, le point de fonctionnement et les capteurs. Tout est dans cette page : cours illustré, flashcards, quiz et exercices guidés. Ta progression reste enregistrée sur cet appareil.</p>
+</header>
+<nav class="tabs" aria-label="Sections"><div role="tablist" id="tabs">
+  <button role="tab" data-tab="plan" aria-selected="true">Planning 14 jours</button>
+  <button role="tab" data-tab="cours" aria-selected="false">Cours</button>
+  <button role="tab" data-tab="cards" aria-selected="false">Flashcards</button>
+  <button role="tab" data-tab="quiz" aria-selected="false">Quiz</button>
+  <button role="tab" data-tab="ex" aria-selected="false">Exercices guidés</button>
+  <button role="tab" data-tab="memo" aria-selected="false">Fiche mémo</button>
+</div></nav>
+
+<section class="panel" id="p-plan">
+  <div class="card row" style="justify-content:space-between">
+    <div><h2>Ton planning</h2><p style="color:var(--muted);margin:0">Environ 25 à 35 minutes par jour. Coche chaque tâche faite, clique sur le lien souligné pour la lancer.</p></div>
+    <label class="row" for="startdate"><span class="kicker">Jour 1 =</span><input id="startdate" type="date" class="sel"></label>
+  </div>
+  <div class="days" id="days"></div>
+</section>
+
+<section class="panel" id="p-cours" hidden></section>
+
+<section class="panel" id="p-cards" hidden>
+  <div class="card row">
+    <label class="row" for="fc-cat"><span class="kicker">Thème</span><select id="fc-cat" class="sel"></select></label>
+    <label class="row"><input type="checkbox" id="fc-hide"> <span>Cacher les cartes sues</span></label>
+    <span class="chip" id="fc-count"></span>
+  </div>
+  <div class="fc-stage"><button class="fc" id="fc" aria-label="Retourner la carte"><div class="face front"><span class="kicker" id="fc-k"></span><div class="q" id="fc-q"></div><span class="kicker">Touche la carte pour la retourner</span></div><div class="face back"><span class="kicker">Réponse</span><div class="a" id="fc-a"></div></div></button></div>
+  <div class="row" style="justify-content:center">
+    <button class="btn" id="fc-prev">← Précédente</button>
+    <button class="btn" id="fc-again">À revoir</button>
+    <button class="btn pri" id="fc-know">Je sais ✓</button>
+    <button class="btn" id="fc-next">Suivante →</button>
+  </div>
+  <div class="row" style="justify-content:center"><button class="btn ghost" id="fc-shuffle">Mélanger</button><button class="btn ghost" id="fc-reset">Remettre à zéro ce thème</button></div>
+</section>
+
+<section class="panel" id="p-quiz" hidden>
+  <div class="card" id="quiz-setup">
+    <h2>Quiz</h2>
+    <div class="row" style="margin-top:10px">
+      <label class="row" for="q-cat"><span class="kicker">Thème</span><select id="q-cat" class="sel"></select></label>
+      <label class="row" for="q-n"><span class="kicker">Questions</span><select id="q-n" class="sel"><option>8</option><option selected>12</option><option>20</option></select></label>
+      <button class="btn pri" id="q-go">Lancer</button>
+    </div>
+    <p id="q-hist" style="color:var(--muted);font-size:.9rem"></p>
+  </div>
+  <div class="card" id="quiz-run" hidden></div>
+</section>
+
+<section class="panel" id="p-ex" hidden>
+  <div id="ex-list" style="display:grid;gap:14px"></div>
+  <div class="card" id="ex-run" hidden></div>
+</section>
+
+<section class="panel" id="p-memo" hidden></section>
+</div>
+<script>
+const CATS={multi:"Multimètre et mesures",noeuds:"Loi des nœuds",mailles:"Loi des mailles",conv:"Conventions et flèches",ohm:"Loi d'Ohm",unites:"Calculs et unités",carac:"Caractéristiques et graphiques",fonct:"Point de fonctionnement et puissance",capt:"Capteurs"};
+const C=(c,q,a)=>({c,q,a});
+const CARDS=[
+C("multi","Comment brancher un <b>ampèremètre</b> ?","<b>En série</b>, dans le circuit. Le courant entre par la borne <b>A</b> (ou mA/µA) et sort par <b>COM</b>."),
+C("multi","Comment brancher un <b>voltmètre</b> ?","<b>En dérivation</b>, aux bornes du dipôle. Borne <b>V</b> côté entrée du courant, borne <b>COM</b> côté sortie."),
+C("multi","Comment mesurer une résistance avec l'ohmmètre ?","Dipôle <b>seul, hors de tout circuit</b>, entre les bornes <b>Ω</b> et <b>COM</b>."),
+C("multi","L'affichage de U ou de I est négatif. Pourquoi ?","Les bornes de branchement du multimètre sont <b>inversées</b>."),
+C("multi","Comment choisir le calibre ?","On commence par le <b>plus grand</b>, puis on prend le calibre <b>immédiatement supérieur</b> à la mesure. Si « 1 » s'affiche, le calibre est trop petit."),
+C("multi","Dans quel sens circule le courant à l'extérieur d'un générateur ?","De la borne <b>+</b> (P) vers la borne <b>−</b> (N)."),
+C("multi","Un multimètre est réglé sur 200 mV. Peut-il mesurer 1,5 V ?","Non : il affiche « 1 ». Il faut un calibre plus grand (2 V, 20 V…)."),
+C("unites","Unités de U, I, R, P","U en <b>volt (V)</b>, I en <b>ampère (A)</b>, R en <b>ohm (Ω)</b>, P en <b>watt (W)</b>."),
+C("unites","Convertir 250 mA en A","250 mA = <b>0,250 A</b> (on divise par 1000)."),
+C("unites","Convertir 0,35 A en mA","0,35 A = <b>350 mA</b> (on multiplie par 1000)."),
+C("unites","Convertir 300 mV en V","300 mV = <b>0,3 V</b>."),
+C("unites","Convertir 4,7 kΩ en Ω","4,7 kΩ = <b>4 700 Ω</b>."),
+C("unites","Avant un calcul avec U = R × I, que dois-je vérifier ?","Que U est en V, R en Ω et I en A. Sinon, je <b>convertis d'abord</b>."),
+C("noeuds","Qu'est-ce qu'un nœud ?","Un point du circuit où se rejoignent <b>au moins 3 fils</b>."),
+C("noeuds","Énonce la loi des nœuds","La somme des intensités des courants qui <b>arrivent</b> à un nœud est égale à la somme des intensités qui en <b>repartent</b>."),
+C("noeuds","Écris la loi des nœuds pour : I₁ et I₂ arrivent, I₃ et I₄ repartent","<span class='eq'>I₁ + I₂ = I₃ + I₄</span>"),
+C("noeuds","Qu'est-ce qu'une branche ?","Une portion de circuit comprise entre <b>deux nœuds successifs</b>."),
+C("noeuds","Que dire de l'intensité dans une branche (dipôles en série) ?","C'est la <b>même intensité</b> dans tous les dipôles de la branche."),
+C("mailles","Qu'est-ce qu'une maille ?","Une <b>boucle fermée</b> dans un circuit."),
+C("mailles","Énonce la loi des mailles","Dans une maille <b>orientée</b>, la somme des tensions orientées dans le sens <b>+</b> est égale à la somme des tensions orientées dans le sens <b>−</b>."),
+C("mailles","Quelle est la loi des mailles si U₂ et U₄ vont dans le sens + et U₁ et U₃ dans le sens − ?","<span class='eq'>U₂ + U₄ = U₁ + U₃</span>"),
+C("mailles","Que dire de la tension aux bornes de dipôles montés en dérivation ?","Elle est la <b>même</b> aux bornes de chaque dipôle en dérivation."),
+C("mailles","Quelle est la tension aux bornes d'un fil de connexion ?","<b>0 V</b>."),
+C("conv","Comment représente-t-on une tension ?","Par une <b>flèche</b> placée à côté du dipôle, dont la pointe s'arrête sur le point où on mesure la tension (U<sub>AB</sub> : pointe en A)."),
+C("conv","Convention <b>récepteur</b> : flèche de U et sens de I ?","Les flèches sont de <b>sens opposés</b>. Alors U et I ont le même signe."),
+C("conv","Convention <b>générateur</b> : flèche de U et sens de I ?","Les flèches ont le <b>même sens</b>. Alors U et I ont le même signe."),
+C("ohm","Énonce la loi d'Ohm","Pour un conducteur ohmique : <span class='eq'>U = R × I</span> (U en V, R en Ω, I en A)."),
+C("ohm","Isole I dans U = R × I","<span class='eq'>I = U / R</span>"),
+C("ohm","Isole R dans U = R × I","<span class='eq'>R = U / I</span>"),
+C("ohm","Que signifie « U et I sont proportionnelles » ?","Leur rapport U/I est constant : la caractéristique est une <b>droite passant par l'origine</b>. Ce rapport est R."),
+C("ohm","On applique 220 V à 330 Ω. Quelle intensité ?","I = U/R = 220 / 330 ≈ <b>0,67 A</b>."),
+C("ohm","I = 170 mA traverse 47 Ω. Quelle tension ?","Il faut convertir : I = 0,170 A. U = 47 × 0,170 ≈ <b>8,0 V</b>."),
+C("carac","Qu'est-ce que la caractéristique d'un dipôle ?","L'ensemble des couples de valeurs mesurées (I ; U). On la représente par la courbe <b>U = f(I)</b> (I en abscisse, U en ordonnée)."),
+C("carac","Dans U = f(I), qui est en abscisse, qui est en ordonnée ?","<b>I</b> en abscisse (axe horizontal), <b>U</b> en ordonnée (axe vertical)."),
+C("carac","Que peut-on dire de la caractéristique d'un <b>récepteur</b> ?","Elle passe par l'<b>origine</b> : pour I = 0, U = 0 et inversement."),
+C("carac","Que peut-on dire de la caractéristique d'un <b>générateur</b> ?","Elle <b>ne passe pas par l'origine</b> (pile : U ≈ 6 V même quand I est petit)."),
+C("carac","Comment calculer le coefficient directeur d'une droite ?","On choisit deux points éloignés A et B <b>sur la droite</b> : <span class='eq'>k = (y<sub>B</sub> − y<sub>A</sub>) / (x<sub>B</sub> − x<sub>A</sub>)</span>. Il a une unité."),
+C("carac","Pour un conducteur ohmique, que représente le coefficient directeur de U = f(I) ?","La <b>résistance R</b>, en ohms (V/A = Ω)."),
+C("carac","Caractéristique d'un générateur idéal ?","Une droite <b>horizontale</b> : la tension reste constante quel que soit I."),
+C("carac","Caractéristique d'une pile réelle ?","Une droite <b>légèrement décroissante</b> : U = E − r × I."),
+C("fonct","Qu'est-ce que le point de fonctionnement ?","Le point P(I<sub>P</sub> ; U<sub>P</sub>), <b>intersection</b> des caractéristiques du générateur et du récepteur branchés ensemble."),
+C("fonct","Au point de fonctionnement, que valent U et I pour les deux dipôles ?","Ils sont soumis à la <b>même tension U<sub>P</sub></b> et traversés par la <b>même intensité I<sub>P</sub></b>."),
+C("fonct","Formule de la puissance reçue par un conducteur ohmique ?","<span class='eq'>P = U × I = R × I²</span> (P en W)."),
+C("fonct","Chauffage : P = 150 W, R = 1,2 Ω. Quelle intensité ?","I = √(P/R) = √(150/1,2) ≈ <b>11 A</b>."),
+C("fonct","Panneau : P(7,5 A ; 9 V). Batterie : P(9,8 A ; 12 V). Quelle puissance chacun ?","Panneau : 9 × 7,5 ≈ <b>68 W</b>. Batterie : 12 × 9,8 ≈ <b>118 W</b>. Seule la batterie s'approche de 150 W."),
+C("capt","Qu'est-ce qu'un capteur électrique ?","Un dipôle dont une <b>propriété électrique</b> (souvent sa résistance) dépend d'une <b>grandeur physique</b> extérieure."),
+C("capt","Photorésistance (LDR) : de quoi dépend sa résistance ?","De l'<b>éclairement</b>. Plus il y a de lumière, plus R <b>diminue</b>. Usages : éclairage public, ouverture de portes, alarmes."),
+C("capt","Thermistance : de quoi dépend sa résistance ?","De la <b>température</b>. Usages : four, climatiseur, thermostat d'ambiance."),
+C("capt","Grandeur d'entrée et de sortie d'une thermistance ?","Entrée : la <b>température</b> (°C). Sortie : la <b>résistance</b> (Ω)."),
+C("capt","À quoi sert la courbe d'étalonnage d'une thermistance ?","On mesure R, on la repère sur la courbe R = f(T), et on <b>lit la température</b> correspondante."),
+C("capt","La température est-elle proportionnelle à la résistance d'une thermistance ?","Non : la courbe n'est pas une droite passant par l'origine (modèle exponentiel).")
+];
+const Q=(c,q,good,bad,e)=>({c,q,o:[good,...bad],e});
+const QUIZ=[
+Q("multi","Pour mesurer une intensité, l'ampèremètre se branche…","en série",["en dérivation","aux bornes du générateur","hors du circuit"],"L'ampèremètre doit être traversé par le courant : il se place en série."),
+Q("multi","Pour mesurer une tension, le voltmètre se branche…","en dérivation aux bornes du dipôle",["en série avec le dipôle","hors du circuit","uniquement aux bornes du générateur"],"Le voltmètre se place en dérivation, aux bornes du dipôle."),
+Q("multi","On mesure une résistance. Que faut-il faire ?","Isoler le dipôle, hors de tout circuit",["Le laisser branché au générateur","Le brancher en série avec un ampèremètre","Utiliser le voltmètre"],"L'ohmmètre fournit lui-même son courant : le dipôle doit être seul."),
+Q("multi","Le voltmètre affiche −2,4 V. Cela veut dire que…","les bornes V et COM sont inversées",["la pile est usée","le calibre est trop petit","la tension vaut 2,4 mA"],"Un signe négatif indique des bornes de branchement inversées."),
+Q("multi","On doit mesurer environ 0,18 A. Calibre le plus adapté parmi 10 A, 200 mA, 20 mA, 2 mA, 200 µA ?","200 mA",["10 A","20 mA","2 mA"],"0,18 A = 180 mA. Le plus petit calibre supérieur à 180 mA est 200 mA."),
+Q("multi","L'écran affiche « 1 » en tête. Que faire ?","Choisir un calibre plus grand",["Choisir un calibre plus petit","Inverser les bornes","Changer de pile"],"« 1 » signifie dépassement : calibre trop petit."),
+Q("unites","250 mA en ampères :","0,250 A",["250 A","25 A","0,025 A"],"1 mA = 10⁻³ A."),
+Q("unites","0,04 A en milliampères :","40 mA",["4 mA","400 mA","0,4 mA"],"0,04 × 1000 = 40."),
+Q("unites","300 mV en volts :","0,3 V",["30 V","3 V","0,03 V"],"300 mV = 300 × 10⁻³ V = 0,3 V."),
+Q("unites","L'unité de la résistance est…","l'ohm (Ω)",["le volt (V)","l'ampère (A)","le watt (W)"],"R s'exprime en ohms, notés Ω."),
+Q("unites","1,2 kΩ vaut…","1 200 Ω",["120 Ω","12 000 Ω","1,2 Ω"],"k = 1000."),
+Q("noeuds","Un nœud est un point où se rejoignent…","au moins 3 fils",["2 fils exactement","un générateur et un fil","une lampe et un fil"],"Avec 2 fils, il n'y a pas de nœud : c'est juste une portion de fil."),
+Q("noeuds","Au nœud A : I₁ = 0,5 A et I₂ = 0,2 A arrivent ; I₃ repart. Que vaut I₃ ?","0,7 A",["0,3 A","0,1 A","0,35 A"],"I₃ = I₁ + I₂ = 0,5 + 0,2 = 0,7 A."),
+Q("noeuds","Au nœud B : 1,0 A arrive, I₁ et 0,3 A repartent. Que vaut I₁ ?","0,7 A",["1,3 A","0,3 A","1,0 A"],"I₁ = 1,0 − 0,3 = 0,7 A."),
+Q("noeuds","Dans une branche contenant une lampe et une résistance en série, l'intensité est…","la même dans les deux",["plus grande dans la lampe","plus grande dans la résistance","nulle dans la résistance"],"En série, le même courant traverse tous les dipôles."),
+Q("noeuds","La loi des nœuds traduit la conservation…","de la charge (le courant ne se perd pas)",["de la tension","de la résistance","de la puissance lumineuse"],"Ce qui arrive à un nœud doit en repartir."),
+Q("mailles","Dans une maille orientée, la loi des mailles dit que…","la somme des tensions dans le sens + égale la somme dans le sens −",["la somme des intensités est nulle","toutes les tensions sont égales","la tension totale vaut toujours 6 V"],"Somme(+) = somme(−)."),
+Q("mailles","Maille : U_G = 6 V, U₁ = 2,5 V, U₂ = ? (U_G dans le sens +, U₁ et U₂ dans le sens −)","3,5 V",["8,5 V","2,4 V","6 V"],"U_G = U₁ + U₂ donc U₂ = 6 − 2,5 = 3,5 V."),
+Q("mailles","Deux lampes en dérivation sont branchées sur une pile de 4,5 V. Tension aux bornes de chaque lampe ?","4,5 V",["2,25 V","9 V","0 V"],"Dipôles en dérivation : même tension, égale à celle du générateur."),
+Q("mailles","Que vaut la tension aux bornes d'un fil de connexion ?","0 V",["La tension du générateur","1 V","Elle dépend de l'intensité"],"Un fil idéal a une tension nulle."),
+Q("mailles","Maille orientée : U_G = 9 V dans le sens +, U₁ = 4 V et U₂ = 3 V dans le sens −, et U₃ aussi dans le sens −. Que vaut U₃ ?","2 V",["16 V","5 V","7 V"],"U_G = U₁ + U₂ + U₃, donc U₃ = 9 − 4 − 3 = 2 V."),
+Q("conv","En convention récepteur, les flèches de U et de I sont…","de sens opposés",["de même sens","perpendiculaires","absentes"],"Récepteur : sens opposés. Générateur : même sens."),
+Q("conv","En convention générateur, U et I ont le même signe si leurs flèches…","ont la même orientation",["ont des orientations opposées","sont absentes","sont perpendiculaires"],"Générateur : même orientation."),
+Q("conv","La flèche de U_AB a sa pointe…","en A",["en B","au milieu du dipôle","sur le fil de retour"],"La pointe s'arrête au niveau du premier point cité (A)."),
+Q("ohm","La loi d'Ohm s'écrit…","U = R × I",["U = R / I","R = U × I","I = R / U"],"U = R × I pour un conducteur ohmique."),
+Q("ohm","On applique 220 V aux bornes de 330 Ω. I ≈ ?","0,67 A",["1,5 A","72 600 A","0,0015 A"],"I = 220 / 330 ≈ 0,67 A."),
+Q("ohm","Un conducteur ohmique de 47 Ω est traversé par 170 mA. U ≈ ?","8,0 V",["7 990 V","0,0036 V","277 V"],"I = 0,170 A donc U = 47 × 0,170 = 7,99 V."),
+Q("ohm","U = 9 V et I = 33,2 mA. Résistance ?","≈ 271 Ω",["≈ 0,27 Ω","≈ 299 Ω","≈ 3,7 Ω"],"R = 9 / 0,0332 ≈ 271 Ω. Il faut convertir 33,2 mA en 0,0332 A."),
+Q("ohm","Si on double la tension aux bornes d'un conducteur ohmique, l'intensité…","double",["est divisée par 2","ne change pas","est multipliée par 4"],"U et I sont proportionnelles."),
+Q("ohm","Quelle expression est correcte ?","R = U / I",["R = U × I","R = I / U","R = U − I"],"On isole R dans U = R × I."),
+Q("carac","La caractéristique U = f(I) d'un conducteur ohmique est…","une droite passant par l'origine",["une droite horizontale","une courbe sans lien avec l'origine","une droite qui ne passe pas par l'origine"],"U et I sont proportionnelles."),
+Q("carac","Le coefficient directeur de cette droite représente…","la résistance R",["la tension du générateur","l'intensité maximale","la puissance"],"k = ΔU / ΔI = R."),
+Q("carac","Sur une caractéristique U = f(I), l'axe horizontal représente…","l'intensité I",["la tension U","la résistance R","le temps"],"U = f(I) : I en abscisse."),
+Q("carac","Quelle caractéristique ne passe pas par l'origine ?","celle d'une pile",["celle d'un conducteur ohmique","celle d'une lampe","celle d'une diode"],"Un générateur fournit une tension même quand I est faible."),
+Q("carac","La droite passe par O(0 ; 0) et M(0,100 A ; 5,00 V). R vaut…","50 Ω",["0,02 Ω","500 Ω","5 Ω"],"R = 5,00 / 0,100 = 50 Ω."),
+Q("carac","Pour I = 0, la tension aux bornes d'un récepteur vaut…","0 V",["la tension du générateur","1 V","elle dépend du récepteur"],"Un récepteur non traversé par aucun courant a une tension nulle."),
+Q("fonct","Le point de fonctionnement P(I_P ; U_P) est…","l'intersection des caractéristiques du générateur et du récepteur",["l'origine du repère","le point le plus haut de la caractéristique","la moyenne des mesures"],"Les deux dipôles ont alors même U et même I."),
+Q("fonct","La puissance d'un conducteur ohmique est…","P = R × I²",["P = R / I²","P = U / I","P = R × I"],"P = U × I = R × I² (en W)."),
+Q("fonct","Un chauffage de 150 W a R = 1,2 Ω. I ≈ ?","11 A",["125 A","180 A","0,008 A"],"I = √(150 / 1,2) ≈ 11 A."),
+Q("fonct","Pour I = 9,8 A et U = 12 V, la puissance est…","118 W",["2,2 W","0,8 W","21,8 W"],"P = U × I = 12 × 9,8 ≈ 118 W."),
+Q("capt","Une photorésistance (LDR) est un capteur de…","luminosité (éclairement)",["température","pression","vitesse"],"Sa résistance dépend de l'éclairement."),
+Q("capt","Une thermistance est un capteur de…","température",["lumière","courant","tension"],"Sa résistance dépend de la température."),
+Q("capt","Quand l'éclairement augmente, la résistance d'une LDR…","diminue",["augmente","reste constante","devient infinie"],"Avec plus de lumière, R diminue (ex. 2 400 Ω à 450 lux, 206 Ω à 4 000 lux)."),
+Q("capt","Les feux d'une voiture s'allument quand la nuit tombe : la résistance de la LDR…","augmente",["diminue","vaut 0","ne change pas"],"Moins de lumière donne une résistance plus grande."),
+Q("capt","Grandeur de sortie d'une thermistance :","la résistance (Ω)",["la température (°C)","la tension du générateur","l'éclairement"],"Entrée : température. Sortie : résistance.")
+];
+
+const PLAN=[
+{t:"Les bases : multimètre et symboles",k:[["Lire le cours « Mesurer avec un multimètre »","cours","mesure"],["Regarder les symboles normalisés","cours","symb"],["Flashcards : multimètre et mesures","cards","multi"],["Exercice guidé : lire l'afficheur","ex","affichage"],["Quiz : multimètre (8 questions)","quiz","multi",8]]},
+{t:"Intensité, tension, unités",k:[["Lire le cours « Courant, tension et conventions »","cours","conv"],["Exercice guidé : calibre et borne","ex","calibre"],["Flashcards : unités et conversions","cards","unites"],["Calculs éclair : conversions","ex","conv"]]},
+{t:"Flèches et conventions",k:[["Flashcards : conventions et flèches","cards","conv"],["Quiz : conventions (8 questions)","quiz","conv",8],["Relire le cours et refaire de mémoire les deux schémas récepteur et générateur","cours","conv"]]},
+{t:"La loi des nœuds",k:[["Lire le cours « La loi des nœuds »","cours","noeuds"],["Flashcards : loi des nœuds","cards","noeuds"],["Exercice guidé : intensité manquante","ex","noeud"]]},
+{t:"Loi des nœuds : s'entraîner",k:[["Exercice guidé : pont de résistances","ex","noeud5"],["Un nouvel énoncé de nœud","ex","noeud"],["Quiz : loi des nœuds (8 questions)","quiz","noeuds",8]]},
+{t:"La loi des mailles",k:[["Lire le cours « La loi des mailles »","cours","mailles"],["Flashcards : loi des mailles","cards","mailles"],["Exercice guidé : tension manquante","ex","maille"]]},
+{t:"Mailles : s'entraîner, premier bilan",k:[["Exercice guidé : circuit à 5 résistances","ex","maille3"],["Problème guidé : lampe frontale","ex","frontale"],["Quiz : loi des mailles (8 questions)","quiz","mailles",8],["Mini bilan : 8 questions tous thèmes","quiz","all",8]]},
+{t:"La loi d'Ohm : trois formules",k:[["Lire le cours « La loi d'Ohm »","cours","ohm"],["Flashcards : loi d'Ohm","cards","ohm"],["Exercice guidé : calculer U","ex","ohmU"],["Exercice guidé : calculer I","ex","ohmI"]]},
+{t:"Loi d'Ohm : calculs et unités",k:[["Exercice guidé : calculer R","ex","ohmR"],["Calculs éclair : conversions","ex","conv"],["Exercice guidé : puissance et intensité","ex","puiss"],["Exercice guidé : protéger un résistor","ex","fusible"]]},
+{t:"La caractéristique d'un dipôle",k:[["Lire le cours « Caractéristique d'un dipôle »","cours","carac"],["Flashcards : caractéristiques et graphiques","cards","carac"],["Exercice guidé : lire un graphique et calculer R","ex","lecture"]]},
+{t:"Droites, proportionnalité, coefficient directeur",k:[["Exercice guidé : tracer une caractéristique","ex","tracer"],["Un nouvel énoncé de lecture graphique","ex","lecture"],["Quiz : caractéristiques (8 questions)","quiz","carac",8]]},
+{t:"Point de fonctionnement et puissance",k:[["Lire le cours « Point de fonctionnement et puissance »","cours","fonct"],["Flashcards : point de fonctionnement","cards","fonct"],["Exercice guidé : point de fonctionnement","ex","fonct"],["Problème guidé : chauffage d'appoint","ex","chauf"]]},
+{t:"Les capteurs",k:[["Lire le cours « Les capteurs électriques »","cours","capt"],["Flashcards : capteurs","cards","capt"],["Exercice guidé : photorésistance","ex","ldr"],["Exercice guidé : étalonner une thermistance","ex","etalon"],["Problème guidé : ventilateur USB","ex","vent"]]},
+{t:"Bilan et DS blanc",k:[["Quiz complet : 20 questions","quiz","all",20],["Entraînement mixte : 6 exercices guidés","ex","mixte"],["Relire la fiche mémo, puis la refaire de mémoire sur une feuille","tab","memo"]]}
+];
+/* ---------- utilitaires ---------- */
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const mem={};
+const store={get(k,d){try{const v=localStorage.getItem('ch16:'+k);if(v!==null)return JSON.parse(v)}catch(e){}return k in mem?mem[k]:d},set(k,v){mem[k]=v;try{localStorage.setItem('ch16:'+k,JSON.stringify(v))}catch(e){}}};
+const S={done:store.get('done',{}),known:store.get('known',{}),qhist:store.get('qhist',[]),exs:store.get('exs',{}),start:store.get('start',null)};
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const catOpts=sel=>{sel.innerHTML='<option value="all">Tous les thèmes</option>'+Object.entries(CATS).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')};
+function showTab(n){$$('#tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===n));$$('section.panel').forEach(s=>s.hidden=s.id!=='p-'+n);window.scrollTo({top:0})}
+$$('#tabs button').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+/* ---------- progression globale ---------- */
+function stats(){
+  const total=PLAN.reduce((n,d)=>n+d.k.length,0),done=Object.values(S.done).filter(Boolean).length;
+  const pp=Math.round(100*done/total),known=Object.values(S.known).filter(Boolean).length;
+  const last=S.qhist.slice(-5),qp=last.length?Math.round(100*last.reduce((a,h)=>a+h.s/h.n,0)/last.length):0;
+  $('#s-plan').textContent=pp+'%';$('#s-cards').textContent=known+'/'+CARDS.length;$('#s-quiz').textContent=last.length?qp+'%':'–';
+  $('#gbar').style.width=Math.round((pp+100*known/CARDS.length+qp)/3)+'%';
+}
+/* ---------- planning ---------- */
+function isoToday(){const d=new Date();return new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)}
+if(!S.start){S.start=isoToday();store.set('start',S.start)}
+function renderPlan(){
+  const sd=$('#startdate');sd.value=S.start;
+  const t0=new Date(S.start+'T00:00:00'),now=new Date(isoToday()+'T00:00:00'),cur=Math.round((now-t0)/864e5);
+  $('#days').innerHTML=PLAN.map((d,i)=>{
+    const dt=new Date(t0.getTime()+i*864e5).toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'});
+    const nd=d.k.filter((_,j)=>S.done[i+'-'+j]).length;
+    return `<article class="card day${i===cur?' today':''}"><div class="day-h"><span class="n">J${i+1}</span><span class="kicker">${dt}${i===cur?' · aujourd\'hui':''}</span></div><div class="day-b"><h3>${d.t}</h3>${d.k.map((k,j)=>{const id=i+'-'+j,on=S.done[id];return `<label class="task${on?' done':''}"><input type="checkbox" data-id="${id}"${on?' checked':''}><span><span class="t">${k[0]}</span>${k[1]?` <button class="go" data-go="${k[1]}" data-arg="${k[2]}" data-n="${k[3]||8}">${k[1]==='cours'||k[1]==='tab'?'Ouvrir':'Lancer'}</button>`:''}</span></label>`}).join('')}<span class="chip${nd===d.k.length?' g':''}" style="justify-self:start">${nd}/${d.k.length} fait</span></div></article>`}).join('');
+  $$('#days input').forEach(c=>c.onchange=()=>{S.done[c.dataset.id]=c.checked;store.set('done',S.done);renderPlan();stats()});
+  $$('#days .go').forEach(b=>b.onclick=e=>{e.preventDefault();launch(b.dataset.go,b.dataset.arg,b.dataset.n)});
+}
+$('#startdate').onchange=e=>{if(e.target.value){S.start=e.target.value;store.set('start',S.start);renderPlan()}};
+function launch(kind,arg,n){
+  if(kind==='cours'){showCours(arg);return}
+  if(kind==='tab'){showTab(arg);return}
+  if(kind==='cards'){$('#fc-cat').value=arg;buildDeck();showTab('cards')}
+  else if(kind==='quiz'){showTab('quiz');$('#q-cat').value=arg;$('#q-n').value=n||'8';startQuiz()}
+  else if(kind==='ex'){showTab('ex');openEx(arg)}
+}
+/* ---------- flashcards ---------- */
+let deck=[],pos=0;
+catOpts($('#fc-cat'));
+function buildDeck(){
+  const cat=$('#fc-cat').value,hide=$('#fc-hide').checked;
+  deck=CARDS.map((c,i)=>i).filter(i=>(cat==='all'||CARDS[i].c===cat)&&!(hide&&S.known[i]));
+  pos=0;showCard();
+}
+function showCard(){
+  const f=$('#fc');f.classList.remove('flip');
+  const cat=$('#fc-cat').value,all=CARDS.filter(c=>cat==='all'||c.c===cat).length,kn=CARDS.filter((c,i)=>(cat==='all'||c.c===cat)&&S.known[i]).length;
+  $('#fc-count').textContent=kn+' sues sur '+all;
+  if(!deck.length){$('#fc-k').textContent='Terminé';$('#fc-q').textContent='Toutes les cartes de ce thème sont sues. Bravo !';$('#fc-a').textContent='Décoche « Cacher les cartes sues » pour les revoir.';return}
+  const c=CARDS[deck[pos]];
+  $('#fc-k').textContent=CATS[c.c]+' · '+(pos+1)+'/'+deck.length+(S.known[deck[pos]]?' · sue':'');
+  $('#fc-q').innerHTML=c.q;$('#fc-a').innerHTML=c.a;
+  stats();
+}
+$('#fc').onclick=()=>{if(deck.length)$('#fc').classList.toggle('flip')};
+const mv=d=>{if(!deck.length)return;pos=(pos+d+deck.length)%deck.length;showCard()};
+$('#fc-next').onclick=()=>mv(1);$('#fc-prev').onclick=()=>mv(-1);
+$('#fc-know').onclick=()=>{if(!deck.length)return;S.known[deck[pos]]=true;store.set('known',S.known);if($('#fc-hide').checked){deck.splice(pos,1);if(pos>=deck.length)pos=0;showCard()}else mv(1)};
+$('#fc-again').onclick=()=>{if(!deck.length)return;S.known[deck[pos]]=false;store.set('known',S.known);mv(1)};
+$('#fc-shuffle').onclick=()=>{deck=shuffle(deck);pos=0;showCard()};
+$('#fc-reset').onclick=()=>{const cat=$('#fc-cat').value;CARDS.forEach((c,i)=>{if(cat==='all'||c.c===cat)S.known[i]=false});store.set('known',S.known);buildDeck()};
+$('#fc-cat').onchange=buildDeck;$('#fc-hide').onchange=buildDeck;
+/* ---------- quiz ---------- */
+catOpts($('#q-cat'));
+let run=null;
+function histText(){const h=S.qhist.slice(-3).reverse();$('#q-hist').textContent=h.length?'Derniers quiz : '+h.map(x=>x.s+'/'+x.n+' ('+(x.c==='all'?'tous thèmes':CATS[x.c])+')').join(' · '):'Aucun quiz fait pour le moment.'}
+function startQuiz(ids){
+  const cat=$('#q-cat').value,n=+$('#q-n').value;
+  let pool=Array.isArray(ids)?ids:shuffle(QUIZ.map((_,i)=>i).filter(i=>cat==='all'||QUIZ[i].c===cat)).slice(0,n);
+  run={ids:pool,pos:0,score:0,wrong:[],cat};
+  $('#quiz-setup').hidden=true;$('#quiz-run').hidden=false;showQ();
+}
+function showQ(){
+  const box=$('#quiz-run'),q=QUIZ[run.ids[run.pos]],order=shuffle(q.o.map((_,i)=>i));
+  box.innerHTML=`<div class="row" style="justify-content:space-between"><span class="chip">${CATS[q.c]}</span><span class="kicker">Question ${run.pos+1} / ${run.ids.length}</span></div><h3 style="margin-top:10px">${q.q}</h3><div id="qopts">${order.map(i=>`<button class="opt" data-i="${i}">${q.o[i]}</button>`).join('')}</div><div id="qfb"></div>`;
+  $$('#qopts .opt').forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i,ok=i===0;$$('#qopts .opt').forEach(x=>{x.disabled=true;if(+x.dataset.i===0)x.classList.add('ok')});
+    if(!ok){b.classList.add('no');run.wrong.push(run.ids[run.pos])}else run.score++;
+    $('#qfb').innerHTML=`<div class="fb${ok?'':' no'}"><b>${ok?'Correct.':'Pas tout à fait.'}</b> ${q.e}</div><div style="margin-top:12px"><button class="btn pri" id="qnext">${run.pos+1<run.ids.length?'Question suivante':'Voir mon score'}</button></div>`;
+    $('#qnext').focus();$('#qnext').onclick=()=>{run.pos++;run.pos<run.ids.length?showQ():endQuiz()};
+  });
+}
+function endQuiz(){
+  const n=run.ids.length,s=run.score;S.qhist.push({s,n,c:run.cat});S.qhist=S.qhist.slice(-30);store.set('qhist',S.qhist);stats();
+  const msg=s===n?'Sans faute.':s/n>=.75?'Très bien. Relis les erreurs ci-dessous.':s/n>=.5?'C\'est en bonne voie. Refais les erreurs puis les flashcards du thème.':'Reprends les flashcards du thème, puis refais ce quiz.';
+  $('#quiz-run').innerHTML=`<h2>${s} / ${n}</h2><p>${msg}</p>${run.wrong.length?`<h3 style="margin-top:12px">À retenir</h3>`+run.wrong.map(i=>`<div class="fb no" style="margin:8px 0"><b>${QUIZ[i].q}</b><br>Réponse : ${QUIZ[i].o[0]}. ${QUIZ[i].e}</div>`).join(''):''}<div class="row" style="margin-top:14px">${run.wrong.length?'<button class="btn pri" id="qredo">Refaire mes erreurs</button>':''}<button class="btn" id="qback">Nouveau quiz</button></div>`;
+  if(run.wrong.length)$('#qredo').onclick=()=>startQuiz([...run.wrong]);
+  $('#qback').onclick=()=>{$('#quiz-run').hidden=true;$('#quiz-setup').hidden=false;histText()};
+}
+$('#q-go').onclick=()=>startQuiz();
+
+/* ---------- graphique SVG ---------- */
+const fmt=(x,d=2)=>(Math.round(x*10**d)/10**d).toLocaleString('fr-FR',{maximumFractionDigits:d});
+function graph(o){
+  const W=o.w||560,H=o.h||340,L=58,R=18,T=18,B=50,pw=W-L-R,ph=H-T-B;
+  const sx=x=>L+x/o.xmax*pw,sy=y=>H-B-y/o.ymax*ph;
+  const st='style="fill:var(--muted)"';
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="${W}" role="img" aria-label="${o.alt||'Graphique'}">`;
+  for(let x=0;x<=o.xmax+1e-9;x+=o.xt){s+=`<line x1="${sx(x)}" y1="${T}" x2="${sx(x)}" y2="${H-B}" style="stroke:var(--line)"/><text x="${sx(x)}" y="${H-B+16}" font-size="11" text-anchor="middle" ${st}>${fmt(x,2)}</text>`}
+  for(let y=0;y<=o.ymax+1e-9;y+=o.yt){s+=`<line x1="${L}" y1="${sy(y)}" x2="${W-R}" y2="${sy(y)}" style="stroke:var(--line)"/><text x="${L-6}" y="${sy(y)+4}" font-size="11" text-anchor="end" ${st}>${fmt(y,2)}</text>`}
+  s+=`<line x1="${L}" y1="${H-B}" x2="${W-R}" y2="${H-B}" style="stroke:var(--ink)" stroke-width="2"/><line x1="${L}" y1="${T}" x2="${L}" y2="${H-B}" style="stroke:var(--ink)" stroke-width="2"/>`;
+  s+=`<text x="${W-R}" y="${H-8}" font-size="12" text-anchor="end" style="fill:var(--cur)">${o.xlab}</text><text x="${L+6}" y="${T+10}" font-size="12" style="fill:var(--volt)">${o.ylab}</text>`;
+  (o.lines||[]).forEach(l=>{const p=l.pts.map(q=>sx(q[0])+','+sy(q[1])).join(' ');s+=`<polyline points="${p}" fill="none" stroke="${l.color||'var(--ink)'}" stroke-width="2.5" ${l.dash?'stroke-dasharray="6 5"':''}/>`;if(l.label)s+=`<text x="${sx(l.pts[l.pts.length-1][0])-6}" y="${sy(l.pts[l.pts.length-1][1])-8}" font-size="12" text-anchor="end" style="fill:${l.color||'var(--ink)'}">${l.label}</text>`});
+  (o.pts||[]).forEach(p=>{
+    if(p.guide)s+=`<line x1="${sx(p.x)}" y1="${sy(p.y)}" x2="${sx(p.x)}" y2="${H-B}" style="stroke:var(--cur)" stroke-dasharray="4 4"/><line x1="${sx(p.x)}" y1="${sy(p.y)}" x2="${L}" y2="${sy(p.y)}" style="stroke:var(--volt)" stroke-dasharray="4 4"/>`;
+    s+=`<circle cx="${sx(p.x)}" cy="${sy(p.y)}" r="5" style="fill:${p.color||'var(--ink)'};stroke:var(--surface)" stroke-width="1.5"/>`+(p.label?`<text x="${sx(p.x)+8}" y="${sy(p.y)-8}" font-size="13" font-weight="600">${p.label}</text>`:'')});
+  s+=`<g id="gmark"></g>${o.click?`<rect id="gclick" x="${L}" y="${T}" width="${pw}" height="${ph}" fill="transparent" style="cursor:crosshair"/>`:''}</svg>`;
+  return {svg:s,sx,sy,inv:(el,ev)=>{const sv=el.ownerSVGElement||el,pt=sv.createSVGPoint();pt.x=ev.clientX;pt.y=ev.clientY;const q=pt.matrixTransform(sv.getScreenCTM().inverse());return{x:(q.x-L)/pw*o.xmax,y:(H-B-q.y)/ph*o.ymax}}};
+}
+/* ---------- moteur d'exercices guidés ---------- */
+const EXINFO={
+ohmU:["Loi d'Ohm : calculer U","Convertir, choisir la formule, calculer la tension.","Calculs"],
+ohmI:["Loi d'Ohm : calculer I","Isoler l'intensité et la donner en A puis en mA.","Calculs"],
+ohmR:["Loi d'Ohm : calculer R","Trouver une résistance à partir de U et I.","Calculs"],
+conv:["Calculs éclair : conversions","mA, A, mV, V, kΩ, Ω : la bonne méthode.","Calculs"],
+puiss:["Puissance : P = R × I²","Trouver l'intensité puis la tension à partir de P et R.","Calculs"],
+noeud:["Loi des nœuds","Trouver une intensité manquante à un nœud.","Les lois"],
+maille:["Loi des mailles","Trouver une tension manquante dans un circuit en dérivation.","Les lois"],
+lecture:["Lire une caractéristique","Lire U, calculer le coefficient directeur et en déduire R.","Graphiques"],
+tracer:["Tracer une caractéristique","Placer un point sur le graphique d'un conducteur ohmique.","Graphiques"],
+fonct:["Point de fonctionnement","Pile et conducteur ohmique : trouver P(I ; U).","Graphiques"],
+calibre:["Multimètre : calibre et borne","Choisir le bon calibre et la bonne borne.","Mesures et capteurs"],
+ldr:["Photorésistance (LDR)","Calculer R pour un éclairement et interpréter (exercice n°11).","Mesures et capteurs"],
+chauf:["Chauffage d'appoint (activité 2)","Puissance, intensité, tension, comparaison panneau/batterie.","Problèmes du cours"],
+vent:["Ventilateur USB (exercice n°10)","Loi des nœuds, loi des mailles et loi d'Ohm dans un seul circuit.","Problèmes du cours"],
+mixte:["Entraînement mixte","6 exercices tirés au hasard dans tous les types.","Défi"]
+};
+let exId=null,ex=null,si=0,tries=0,assisted=false,mixQ=[],mixDone=0;
+function renderExList(){
+  const groups={};Object.entries(EXINFO).forEach(([k,v])=>(groups[v[2]]=groups[v[2]]||[]).push(k));
+  $('#ex-list').innerHTML=`<div class="card"><h2>Exercices guidés</h2><p style="color:var(--muted)">Chaque exercice est découpé en étapes. Si ta réponse est fausse, tu reçois un indice, puis un indice plus précis, puis la correction détaillée. Les nombres changent à chaque nouvel énoncé.</p></div>`+Object.entries(groups).map(([g,ks])=>`<div><div class="kicker" style="margin-bottom:8px">${g}</div><div class="grid">${ks.map(k=>{const r=S.exs[k]||{n:0,c:0};return `<button class="ex-tile" data-ex="${k}"><h3>${EXINFO[k][0]}</h3><span class="d">${EXINFO[k][1]}</span><span class="chip${r.c?' g':''}" style="justify-self:start;align-self:flex-start">${r.c} réussi${r.c>1?'s':''} sans aide · ${r.n} fait${r.n>1?'s':''}</span></button>`}).join('')}</div></div>`).join('');
+  $$('#ex-list .ex-tile').forEach(b=>b.onclick=()=>openEx(b.dataset.ex));
+}
+function openEx(id){
+  exId=id;if(id==='mixte'){mixQ=shuffle(Object.keys(GEN)).slice(0,6);mixDone=0}
+  $('#ex-list').hidden=true;$('#ex-run').hidden=false;newEx();
+}
+function newEx(){
+  const id=exId==='mixte'?mixQ[mixDone]:exId;ex=GEN[id]();ex.id=id;si=0;tries=0;assisted=false;ex.clean=true;
+  $('#ex-run').innerHTML=`<div class="row" style="justify-content:space-between"><button class="btn ghost" id="exback">← Tous les exercices</button><span class="chip">${exId==='mixte'?'Mixte '+(mixDone+1)+'/6 · ':''}${EXINFO[id][0]}</span></div><h2 style="margin-top:12px">${ex.title}</h2><div>${ex.intro}</div>${ex.fig?`<div class="fig" id="exfig" style="margin-top:10px">${ex.fig.svg||ex.fig}</div>`:''}<div id="steps"></div>`;
+  $('#exback').onclick=()=>{$('#ex-run').hidden=true;$('#ex-list').hidden=false;renderExList();window.scrollTo({top:0})};
+  showStep();
+}
+function showStep(){
+  const st=ex.steps[si],box=document.createElement('div');box.className='step';box.id='st'+si;tries=0;
+  box.innerHTML=`<div class="num">Étape ${si+1} sur ${ex.steps.length}</div><div style="margin-top:4px">${st.q}</div><div class="ans" id="ans${si}"></div><div id="fb${si}"></div>`;
+  $('#steps').appendChild(box);const a=$('#ans'+si);
+  if(st.type==='choice'){
+    a.style.display='block';a.innerHTML=shuffle(st.opts.map((t,i)=>i)).map(i=>`<button class="opt" data-i="${i}">${st.opts[i]}</button>`).join('');
+    $$('button',a).forEach(b=>b.onclick=()=>{const i=+b.dataset.i;if(i===st.ans){b.classList.add('ok');good()}else{b.classList.add('no');b.disabled=true;bad(st.wrong&&st.wrong[i])}});
+  }else if(st.type==='num'){
+    a.innerHTML=`<input type="text" inputmode="decimal" id="in${si}" autocomplete="off" aria-label="Ta réponse"> <span class="mono">${st.unit||''}</span> <button class="btn pri" id="ok${si}">Vérifier</button>`;
+    const inp=$('#in'+si);inp.focus({preventScroll:true});
+    const chk=()=>{const raw=inp.value.replace(/\s/g,'').replace(',','.'),v=parseFloat(raw);if(isNaN(v)||!/^[-+]?\d*\.?\d+(e[-+]?\d+)?$/i.test(raw)){return say('hint','Écris un nombre, avec une virgule ou un point (exemple : 0,25).')}
+      const tol=st.tol??0.02;if(Math.abs(v-st.ans)<=tol*Math.abs(st.ans)+1e-9){good()}else{let m=null;(st.traps||[]).forEach(t=>{if(!m&&Math.abs(v-t.v)<=0.02*Math.abs(t.v)+1e-9)m=t.msg});
+        if(!m&&st.ans!==0){const r=v/st.ans;if(Math.abs(r-1000)<30||Math.abs(r-.001)<.00003)m='Ton résultat est 1 000 fois '+(r>1?'trop grand':'trop petit')+'. Vérifie la conversion entre milli (m) et l\'unité de base.'}
+        bad(m)}};
+    $('#ok'+si).onclick=chk;inp.onkeydown=e=>{if(e.key==='Enter')chk()};
+  }else if(st.type==='click'){
+    const g=st.g(),f=$('#exfig');f.innerHTML=g.svg;const r=$('#gclick');
+    r.onclick=e=>{const p=g.inv(r,e);const okx=Math.abs(p.x-st.tx)<=st.tolx,oky=Math.abs(p.y-st.ty)<=st.toly;
+      if(okx&&oky){$('#gmark').innerHTML=`<circle cx="${g.sx(st.tx)}" cy="${g.sy(st.ty)}" r="7" style="fill:var(--ok)"/>`+(st.after?st.after(g):'');good()}
+      else{$('#gmark').innerHTML=`<circle cx="${g.sx(p.x)}" cy="${g.sy(p.y)}" r="6" style="fill:var(--no);opacity:.8"/>`;bad(st.clickMsg?st.clickMsg(p):null)}};
+  }
+  box.scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+function say(kind,html){$('#fb'+si).innerHTML=`<div class="fb ${kind==='ok'?'':kind==='no'?'no':'hint'}">${html}</div>`}
+function bad(msg){
+  const st=ex.steps[si];tries++;ex.clean=false;
+  const h=st.hints||[];let extra=h[Math.min(tries-1,h.length-1)];
+  let html=`<b>Pas encore.</b> ${msg?msg+'<br>':''}${extra?`<span class="U">Indice ${Math.min(tries,h.length)}/${h.length} :</span> ${extra}`:''}`;
+  html+=`<div style="margin-top:8px"><button class="btn" id="show${si}">${tries>=3?'Voir la correction détaillée':'Je bloque : voir la correction'}</button></div>`;
+  $('#fb'+si).innerHTML=`<div class="fb no">${html}</div>`;
+  $('#show'+si).onclick=()=>{assisted=true;ex.clean=false;lock(true)};
+}
+function good(){lock(false)}
+function lock(reveal){
+  const st=ex.steps[si];$$('#st'+si+' input, #st'+si+' .opt, #st'+si+' .btn').forEach(x=>x.disabled=true);
+  if(st.type==='choice')$$('#ans'+si+' .opt').forEach(b=>{if(+b.dataset.i===st.ans)b.classList.add('ok')});
+  const g=$('#gclick');if(g)g.style.pointerEvents='none';
+  if(reveal&&st.type==='click'){const gg=null}
+  $('#fb'+si).innerHTML=`<div class="fb${reveal?' hint':''}"><b>${reveal?'Correction.':'Exact.'}</b> <span class="sol">${st.sol}</span></div>`;
+  si++;
+  if(si<ex.steps.length){setTimeout(showStep,350)}
+  else finish();
+}
+function finish(){
+  const r=S.exs[exId]||{n:0,c:0};
+  const clean=ex.clean&&!assisted;
+  if(exId==='mixte'){mixDone++}
+  const rr=S.exs[ex.id]||{n:0,c:0};rr.n++;if(clean)rr.c++;S.exs[ex.id]=rr;store.set('exs',S.exs);
+  const box=document.createElement('div');box.className='step';
+  const more=exId==='mixte'&&mixDone<mixQ.length;
+  box.innerHTML=`<div class="fb ${clean?'':'hint'}"><b>${clean?'Réussi sans aide.':'Terminé.'}</b> ${ex.recap||''}</div><div class="row" style="margin-top:12px">${more?'<button class="btn pri" id="exnext">Exercice suivant</button>':exId==='mixte'?'<span class="chip g">Entraînement terminé</span>':'<button class="btn pri" id="exnext">Nouvel énoncé</button>'}<button class="btn" id="exback2">Tous les exercices</button></div>`;
+  $('#steps').appendChild(box);
+  const n=$('#exnext');if(n)n.onclick=newEx;$('#exback2').onclick=()=>$('#exback').click();
+  box.scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+
+/* ---------- générateurs ---------- */
+const ch=(q,good,bads,hints,sol)=>({type:'choice',q,opts:[good,...bads],ans:0,hints,sol});
+const nu=(q,ans,unit,hints,sol,traps,tol)=>({type:'num',q,ans,unit,hints,sol,traps,tol});
+const rd=(x,d)=>Math.round(x*10**d)/10**d;
+const GEN={};
+GEN.ohmU=()=>{
+  const R=pick([22,47,100,150,220,330,470,680]),m=pick([12,25,40,60,85,120,170,250]),I=m/1000,U=R*I;
+  return {title:'Calculer une tension',intro:`<p>Un conducteur ohmique de résistance <b>R = ${R} Ω</b> est traversé par un courant d'intensité <b>I = ${m} mA</b>. Quelle est la tension à ses bornes ?</p>`,
+  steps:[
+   ch('Quelle relation relie U, R et I pour un conducteur ohmique ?','U = R × I',['U = R / I','U = I / R','R = U × I'],['C\'est la loi d\'Ohm : la tension est proportionnelle à l\'intensité.','Si I double, U double aussi. Quelle écriture le traduit ?'],'Loi d\'Ohm : <span class="eq">U = R × I</span>.'),
+   nu('Avant de calculer, convertis I en ampères.',I,'A',['1 mA = 0,001 A. Pour passer des mA aux A, on divise par 1000.','Déplace la virgule de 3 rangs vers la gauche.'],`${m} mA = ${m} ÷ 1000 = <b>${fmt(I,3)} A</b>.`,[{v:m,msg:'Tu as recopié la valeur en mA.'}],.005),
+   nu(`Calcule U avec R = ${R} Ω et I = ${fmt(I,3)} A.`,U,'V',['U = R × I. Remplace R et I par leurs valeurs, avec I en ampères.',`Calcule ${R} × ${fmt(I,3)}.`],`U = ${R} × ${fmt(I,3)} = <b>${fmt(U,2)} V</b>.`,[{v:R*m,msg:'Tu as multiplié par 85 mA sans convertir : utilise I en ampères.'},{v:R/I,msg:'Tu as divisé. La loi d\'Ohm est U = R × I.'}]),
+   ch('Dans quelle unité s\'exprime ce résultat ?','Le volt (V)',['L\'ampère (A)','L\'ohm (Ω)','Le watt (W)'],['U désigne la tension.'],'Une tension se mesure en volts.')
+  ],recap:`U = R × I = ${R} × ${fmt(I,3)} ≈ ${fmt(U,2)} V.`};
+};
+GEN.ohmI=()=>{
+  const R=pick([47,100,150,220,330,470,1000]),U=pick([4.5,6,9,12]),I=U/R;
+  return {title:'Calculer une intensité',intro:`<p>On applique une tension <b>U = ${fmt(U,1)} V</b> aux bornes d'un conducteur ohmique de résistance <b>R = ${R} Ω</b>. Quelle intensité le traverse ?</p>`,
+  steps:[
+   ch('Isole I dans la loi d\'Ohm U = R × I.','I = U / R',['I = U × R','I = R / U','I = U − R'],['On divise les deux membres par R.','Pour isoler I, il faut défaire la multiplication par R.'],'<span class="eq">U = R × I</span> donc <span class="eq">I = U / R</span>.'),
+   nu(`Calcule I en ampères (U = ${fmt(U,1)} V ; R = ${R} Ω).`,I,'A',['Tout est déjà en unités de base (V et Ω) : pas de conversion.',`Calcule ${fmt(U,1)} ÷ ${R}.`],`I = ${fmt(U,1)} ÷ ${R} ≈ <b>${fmt(I,4)} A</b>.`,[{v:R/U,msg:'Tu as inversé : I = U / R, pas R / U.'},{v:R*U,msg:'Tu as multiplié. Il faut diviser U par R.'}]),
+   nu('Exprime cette intensité en milliampères (mA).',I*1000,'mA',['1 A = 1 000 mA : on multiplie par 1000.',`${fmt(I,4)} × 1000 = ?`],`${fmt(I,4)} A = <b>${fmt(I*1000,1)} mA</b>.`)
+  ],recap:`I = U / R = ${fmt(U,1)} / ${R} ≈ ${fmt(I*1000,1)} mA.`};
+};
+GEN.ohmR=()=>{
+  const U=pick([3,4.5,6,9,12]),m=pick([15,20,25,30,40,60,75,120]),I=m/1000,R=U/I;
+  return {title:'Calculer une résistance',intro:`<p>Un conducteur ohmique est soumis à une tension <b>U = ${fmt(U,1)} V</b> et traversé par un courant de <b>I = ${m} mA</b>. Quelle est sa résistance ?</p>`,
+  steps:[
+   ch('Quelle expression donne R ?','R = U / I',['R = U × I','R = I / U','R = U + I'],['Dans U = R × I, R est le facteur inconnu : on divise U par I.','R est le coefficient directeur de la droite U = f(I) : tension divisée par intensité.'],'<span class="eq">R = U / I</span>.'),
+   nu('Convertis I en ampères.',I,'A',['mA vers A : on divise par 1000.'],`${m} mA = <b>${fmt(I,3)} A</b>.`,[{v:m,msg:'Valeur en mA recopiée.'}],.005),
+   nu(`Calcule R (U = ${fmt(U,1)} V ; I = ${fmt(I,3)} A).`,R,'Ω',[`R = U / I = ${fmt(U,1)} ÷ ${fmt(I,3)}.`,'Attention : la division par un petit nombre donne un grand résultat.'],`R = ${fmt(U,1)} ÷ ${fmt(I,3)} ≈ <b>${fmt(R,1)} Ω</b>.`,[{v:I/U,msg:'Tu as inversé le rapport : R = U / I.'},{v:U*I,msg:'Tu as multiplié. R = U divisé par I.'}]),
+   ch('Si on double la tension U avec le même conducteur, que devient R ?','R ne change pas',['R double','R est divisée par 2','R devient nulle'],['R est une propriété du conducteur, pas de la tension appliquée.'],'La caractéristique est une droite passant par l\'origine : le rapport U/I reste constant. I double, R reste la même.')
+  ],recap:`R = U / I = ${fmt(U,1)} / ${fmt(I,3)} ≈ ${fmt(R,1)} Ω.`};
+};
+GEN.conv=()=>{
+  const T=[()=>{const v=pick([12,35,85,120,250,340]);return{q:`Convertis <b>${v} mA</b> en ampères.`,a:v/1000,u:'A',e:`${v} mA = ${v} ÷ 1000 = ${fmt(v/1000,3)} A`}},
+  ()=>{const v=pick([0.04,0.35,0.5,1.2]);return{q:`Convertis <b>${fmt(v,2)} A</b> en milliampères.`,a:v*1000,u:'mA',e:`${fmt(v,2)} A = ${fmt(v,2)} × 1000 = ${fmt(v*1000,0)} mA`}},
+  ()=>{const v=pick([50,120,300,750]);return{q:`Convertis <b>${v} mV</b> en volts.`,a:v/1000,u:'V',e:`${v} mV = ${v} ÷ 1000 = ${fmt(v/1000,3)} V`}},
+  ()=>{const v=pick([1.2,2.2,4.7,10]);return{q:`Convertis <b>${fmt(v,1)} kΩ</b> en ohms.`,a:v*1000,u:'Ω',e:`${fmt(v,1)} kΩ = ${fmt(v,1)} × 1000 = ${fmt(v*1000,0)} Ω`}},
+  ()=>{const v=pick([0.5,1.5,3.3,4.5]);return{q:`Convertis <b>${fmt(v,1)} V</b> en millivolts.`,a:v*1000,u:'mV',e:`${fmt(v,1)} V = ${fmt(v*1000,0)} mV`}}];
+  const steps=shuffle(T).slice(0,3).map(f=>{const o=f();return nu(o.q,o.a,o.u,['Le préfixe « m » signifie milli : 1 m = 0,001 de l\'unité. Le préfixe « k » signifie kilo : ×1000.','Passer d\'une petite unité (mA, mV) à une grande (A, V) : on divise par 1000. Dans l\'autre sens : on multiplie par 1000.'],o.e,null,.001)});
+  return {title:'Convertir sans se tromper',intro:'<p>Les erreurs de calcul viennent souvent d\'une conversion oubliée. Trois conversions rapides.</p>',steps,recap:'Avant chaque calcul : U en V, I en A, R en Ω.'};
+};
+GEN.puiss=()=>{
+  const R=pick([1.2,2,4,6.8,10,15]),P=pick([20,45,60,100,150,200]),I=Math.sqrt(P/R),U=R*I;
+  return {title:'Puissance et intensité',intro:`<p>Un conducteur ohmique de <b>R = ${fmt(R,1)} Ω</b> reçoit une puissance <b>P = ${P} W</b>. Quelle intensité le traverse, et quelle tension a-t-il à ses bornes ?</p>`,
+  steps:[
+   ch('Quelle relation lie P, R et I ?','P = R × I²',['P = R × I','P = R / I²','P = U / I'],['P = U × I et U = R × I. Remplace U.','Dans R × I × I, on reconnaît I au carré.'],'<span class="eq">P = U × I = R × I × I = R × I²</span>.'),
+   ch('Isole I.','I = √(P / R)',['I = P / R²','I = P × R','I = (P / R)²'],['Divise d\'abord par R, puis défais le carré.','L\'opération inverse du carré est la racine carrée.'],'<span class="eq">I² = P / R</span> donc <span class="eq">I = √(P / R)</span>.'),
+   nu(`Calcule I (en A) avec P = ${P} W et R = ${fmt(R,1)} Ω.`,I,'A',[`Calcule d'abord P ÷ R = ${fmt(P/R,2)}.`,'Puis prends la racine carrée avec la calculatrice (touche √).'],`I = √(${P} ÷ ${fmt(R,1)}) = √${fmt(P/R,2)} ≈ <b>${fmt(I,2)} A</b>.`,[{v:P/R,msg:'Tu as oublié la racine carrée.'}]),
+   nu('Calcule la tension U (en V) avec la loi d\'Ohm.',U,'V',['U = R × I.',`Utilise I ≈ ${fmt(I,2)} A.`],`U = ${fmt(R,1)} × ${fmt(I,2)} ≈ <b>${fmt(U,1)} V</b>. Vérification : U × I = ${fmt(U*I,0)} W.`,null,.03)
+  ],recap:`I = √(P/R) ≈ ${fmt(I,2)} A et U = R × I ≈ ${fmt(U,1)} V.`};
+};
+/* nœuds */
+GEN.noeud=()=>{
+  const nb=pick([3,4,4]);let ni,vals,dirs,u;
+  for(let t=0;t<200;t++){ni=1+Math.floor(Math.random()*(nb-1));dirs=[...Array(nb)].map((_,i)=>i<ni?'in':'out');dirs=shuffle(dirs);
+    vals=dirs.map(()=>rd(0.1+Math.floor(Math.random()*10)*0.1,1));u=Math.floor(Math.random()*nb);
+    const sIn=dirs.reduce((a,d,i)=>a+(d==='in'&&i!==u?vals[i]:0),0),sOut=dirs.reduce((a,d,i)=>a+(d==='out'&&i!==u?vals[i]:0),0);
+    const x=dirs[u]==='in'?sOut-sIn:sIn-sOut;if(x>=0.1){vals[u]=rd(x,1);break}}
+  const N=i=>`I<sub>${i+1}</sub>`,cx=170,cy=105,ang=nb===3?[90,210,330]:[135,45,225,315];
+  let s=`<svg viewBox="0 0 340 210" width="340" role="img" aria-label="Nœud A et ses branches">`;
+  dirs.forEach((d,i)=>{const a=ang[i]*Math.PI/180,dx=Math.cos(a),dy=-Math.sin(a),ex=cx+dx*110,ey=cy+dy*85,mx=cx+dx*55,my=cy+dy*42,sg=d==='in'?-1:1,px=-dy,py=dx;
+    const tx=mx+dx*sg*9,ty=my+dy*sg*7,bx=mx-dx*sg*9,by=my-dy*sg*7;
+    s+=`<line x1="${cx}" y1="${cy}" x2="${ex}" y2="${ey}" style="stroke:var(--ink)" stroke-width="2"/><polygon points="${tx},${ty} ${bx+px*5},${by+py*5} ${bx-px*5},${by-py*5}" style="fill:var(--cur)"/><text x="${ex+dx*8}" y="${ey+dy*8+4}" font-size="12" text-anchor="${dx>0.3?'start':dx<-0.3?'end':'middle'}">I${i+1}${i===u?' = ?':' = '+fmt(vals[i],1)+' A'}</text>`});
+  s+=`<circle cx="${cx}" cy="${cy}" r="5" style="fill:var(--ink)"/><text x="${cx+9}" y="${cy+16}" font-size="13" font-weight="600">A</text></svg>`;
+  const ins=dirs.map((d,i)=>d==='in'?N(i):null).filter(Boolean),outs=dirs.map((d,i)=>d==='out'?N(i):null).filter(Boolean);
+  const good=ins.join(' + ')+' = '+outs.join(' + ');
+  const all=[...Array(nb)].map((_,i)=>N(i));
+  let b2=[...ins],o2=[...outs],t=b2[0];b2[0]=o2[0];o2[0]=t;
+  const bads=[all.join(' + ')+' = 0',b2.join(' + ')+' = '+o2.join(' + '),(ins.length>1?ins.slice(1):all.filter(x=>!ins.includes(x)).slice(0,1)).join(' + ')+' = '+ins.join(' + ')].filter((x,i,a)=>x!==good&&a.indexOf(x)===i);
+  while(bads.length<3)bads.push(outs.join(' + ')+' = '+N(u)+' × 2');
+  const ans=vals[u],sumKnown=vals.reduce((a,v,i)=>a+(i!==u?v:0),0);
+  return {title:'Intensité manquante à un nœud',intro:'<p>Les flèches rouges donnent le sens du courant dans chaque branche. Trouve l\'intensité inconnue.</p>',fig:{svg:s},
+  steps:[
+   nu('Combien de courants <b>arrivent</b> au nœud A (flèche qui pointe vers A) ?',ni,'',['Compte les flèches qui se dirigent vers le point A.'],`Il y en a <b>${ni}</b> : ${ins.join(', ')}.`,null,0),
+   ch('Quelle égalité traduit la loi des nœuds ?',good,bads,['La somme des intensités qui arrivent est égale à la somme des intensités qui repartent.','Le courant ne s\'accumule pas au nœud : tout ce qui entre doit ressortir.'],`Arrivent : ${ins.join(' + ')}. Repartent : ${outs.join(' + ')}. Donc <span class="eq">${good}</span>.`),
+   nu(`Calcule ${N(u)} (en A).`,ans,'A',[`Remplace les intensités connues par leurs valeurs dans l'égalité, puis isole ${N(u)}.`,dirs[u]==='in'?'L\'inconnue est du côté « arrive » : elle vaut la somme des intensités qui repartent moins les autres intensités qui arrivent.':'L\'inconnue est du côté « repart » : elle vaut la somme des intensités qui arrivent moins les autres qui repartent.'],`${N(u)} = <b>${fmt(ans,1)} A</b>.`,[{v:sumKnown,msg:'Tu as additionné toutes les intensités connues. Sépare celles qui arrivent de celles qui repartent.'}],.01)
+  ],recap:`<span class="eq">${good}</span> donne ${N(u)} = ${fmt(ans,1)} A.`};
+};
+/* mailles */
+GEN.maille=()=>{
+  const E=pick([4.5,6,9,12]),u1=rd(Math.floor(E*0.3*2)/2||1,1),u2=rd(E-u1,1);
+  const lamp=(x,y,t)=>`<circle cx="${x}" cy="${y}" r="16" fill="none" style="stroke:var(--ink)" stroke-width="2"/><line x1="${x-11}" y1="${y-11}" x2="${x+11}" y2="${y+11}" style="stroke:var(--ink)" stroke-width="2"/><line x1="${x+11}" y1="${y-11}" x2="${x-11}" y2="${y+11}" style="stroke:var(--ink)" stroke-width="2"/><text x="${x+22}" y="${y+4}" font-size="12">${t}</text>`;
+  const rnd=(x,y,l,t)=>`<circle cx="${x}" cy="${y}" r="16" fill="none" style="stroke:var(--ink)" stroke-width="2"/><text x="${x}" y="${y+5}" font-size="14" text-anchor="middle" font-weight="600">${l}</text><text x="${x+22}" y="${y+4}" font-size="12">${t}</text>`;
+  const s=`<svg viewBox="0 0 400 200" width="400" role="img" aria-label="Circuit à trois branches"><g style="stroke:var(--ink)" stroke-width="2" fill="none"><polyline points="70,30 330,30"/><polyline points="70,170 330,170"/><line x1="70" y1="30" x2="70" y2="170"/><line x1="200" y1="30" x2="200" y2="170"/><line x1="330" y1="30" x2="330" y2="170"/></g>
+  <rect x="55" y="82" width="30" height="36" style="fill:var(--surface)"/>${rnd(70,100,'G','UG = '+fmt(E,1)+' V')}${lamp(200,70,'L1')}${lamp(200,130,'L2')}${rnd(330,100,'M','')}
+  <text x="214" y="90" font-size="12" style="fill:var(--volt)">UL1 = ${fmt(u1,1)} V</text><text x="214" y="150" font-size="12" style="fill:var(--volt)">UL2 = ?</text><text x="270" y="104" font-size="12" style="fill:var(--volt)" text-anchor="end"></text><text x="300" y="150" font-size="12" style="fill:var(--volt)" text-anchor="end">UM = ?</text></svg>`;
+  return {title:'Tension manquante dans une maille',intro:`<p>Un générateur (<b>U<sub>G</sub> = ${fmt(E,1)} V</b>) alimente une branche avec deux lampes L<sub>1</sub> et L<sub>2</sub> en série, et une autre branche avec un moteur M. On connaît <b>U<sub>L1</sub> = ${fmt(u1,1)} V</b>.</p>`,fig:{svg:s},
+  steps:[
+   ch('Quelle égalité donne la loi des mailles dans la boucle générateur, L1, L2 ?','U<sub>G</sub> = U<sub>L1</sub> + U<sub>L2</sub>',['U<sub>G</sub> = U<sub>L1</sub> − U<sub>L2</sub>','U<sub>G</sub> + U<sub>L1</sub> = U<sub>L2</sub>','U<sub>G</sub> = U<sub>M</sub> + U<sub>L1</sub>'],['Une maille est une boucle fermée. Ici : G, puis L1, puis L2, puis retour à G.','La tension du générateur se répartit entre les dipôles en série.'],'Maille G, L1, L2 : <span class="eq">U<sub>G</sub> = U<sub>L1</sub> + U<sub>L2</sub></span>.'),
+   nu('Calcule U<sub>L2</sub> (en V).',u2,'V',[`U<sub>L2</sub> = U<sub>G</sub> − U<sub>L1</sub> = ${fmt(E,1)} − ${fmt(u1,1)}.`],`U<sub>L2</sub> = ${fmt(E,1)} − ${fmt(u1,1)} = <b>${fmt(u2,1)} V</b>.`,[{v:E+u1,msg:'Tu as additionné. On cherche ce qu\'il reste : U<sub>L2</sub> = U<sub>G</sub> − U<sub>L1</sub>.'}]),
+   nu('Quelle est la tension U<sub>M</sub> aux bornes du moteur (V) ?',E,'V',['Le moteur est branché en dérivation sur le générateur : ils partagent les mêmes deux nœuds.','Que dire de la tension aux bornes de dipôles en dérivation ?'],`M est en dérivation sur G : <b>U<sub>M</sub> = U<sub>G</sub> = ${fmt(E,1)} V</b>.`,[{v:u2,msg:'Le moteur n\'est pas en série avec les lampes. Il est en dérivation.'}])
+  ],recap:`U<sub>L2</sub> = ${fmt(u2,1)} V et U<sub>M</sub> = U<sub>G</sub> = ${fmt(E,1)} V (dérivation).`};
+};
+
+/* graphiques */
+GEN.lecture=()=>{
+  const R=pick([25,50,75,100,125,150]),ym=R*0.2,Ib=pick([80,120,160]),Ub=R*Ib/1000;
+  const g=graph({xmax:200,ymax:ym,xt:40,yt:ym/5,xlab:'I (mA)',ylab:'U (V)',alt:'Caractéristique U = f(I) d\'un conducteur ohmique',
+    lines:[{pts:[[0,0],[200,ym]],color:'var(--ink)'},{pts:[[Ib,0],[Ib,ym]],dash:true,color:'var(--cur)'}],pts:[{x:0,y:0,label:'O',color:'var(--ink)'}]});
+  return {title:'Lire une caractéristique',intro:`<p>Voici la caractéristique U = f(I) d'un conducteur ohmique. La ligne pointillée rouge marque <b>I = ${Ib} mA</b>.</p>`,fig:g,
+  steps:[
+   ch('La caractéristique est une droite qui passe par l\'origine. Que peut-on en conclure ?','U et I sont proportionnelles (loi d\'Ohm)',['U et I sont inversement proportionnelles','U et I n\'ont aucun lien','La tension est constante'],['Une droite passant par O(0 ; 0) est le graphique d\'une situation de proportionnalité.'],'Droite passant par l\'origine : <b>U est proportionnelle à I</b>, donc le dipôle suit la loi d\'Ohm <span class="eq">U = R × I</span>.'),
+   nu(`Lis la tension U<sub>B</sub> sur la droite pour I<sub>B</sub> = ${Ib} mA.`,Ub,'V',['Suis la ligne pointillée rouge jusqu\'à la droite, puis va à gauche lire la valeur sur l\'axe vertical.','Les graduations de l\'axe vertical sont de '+fmt(ym/5,0)+' V en '+fmt(ym/5,0)+' V.'],`Le point B est à U<sub>B</sub> = <b>${fmt(Ub,1)} V</b>.`,null,.05),
+   nu(`Calcule le coefficient directeur k = (U<sub>B</sub> − U<sub>A</sub>) / (I<sub>B</sub> − I<sub>A</sub>) avec A = O (0 ; 0) et B (${Ib} mA ; ${fmt(Ub,1)} V). Donne k en V/A (= Ω).`,R,'Ω',['I doit être en ampères : convertis I<sub>B</sub> avant de diviser.',`k = ${fmt(Ub,1)} ÷ ${fmt(Ib/1000,3)}.`],`k = (${fmt(Ub,1)} − 0) ÷ (${fmt(Ib/1000,3)} − 0) = <b>${fmt(R,0)} V/A</b>.`,[{v:Ub/Ib,msg:'Tu as divisé par I en mA, donc k est en V/mA. Pour avoir des ohms, convertis I en A.'}],.04),
+   ch('Quelle est la résistance et l\'équation de la caractéristique ?',`R = ${R} Ω et U = ${R} × I`,[`R = ${R} Ω et U = ${R} + I`,`R = ${R} Ω et U = I / ${R}`,`R = ${fmt(Ib/1000/Ub,5)} Ω et U = I / ${R}`],['Le coefficient directeur de U = f(I) est la résistance R.','L\'équation d\'une droite passant par l\'origine est y = k × x.'],`R = k = ${R} Ω. Équation : <span class="eq">U = ${R} × I</span> (I en A).`)
+  ],recap:`k = ${fmt(Ub,1)} / ${fmt(Ib/1000,3)} = ${R} Ω, donc U = ${R} × I.`};
+};
+GEN.tracer=()=>{
+  const R=pick([25,50,75,100]),ym=R*0.2,Ip=pick([100,160]),Up=R*Ip/1000;
+  const base={xmax:200,ymax:ym,xt:40,yt:ym/5,xlab:'I (mA)',ylab:'U (V)',alt:'Repère vide pour tracer U = f(I)',pts:[{x:0,y:0,label:'O',color:'var(--ink)'}]};
+  const g=graph(base);
+  return {title:'Tracer une caractéristique',intro:`<p>Un conducteur ohmique a une résistance <b>R = ${R} Ω</b>. Tu dois placer un point de sa caractéristique U = f(I), puis la droite passera par l'origine et par ce point.</p>`,fig:g,
+  steps:[
+   nu(`Calcule la tension U pour I = ${Ip} mA (loi d'Ohm, I en ampères).`,Up,'V',[`U = R × I avec I = ${fmt(Ip/1000,3)} A.`],`U = ${R} × ${fmt(Ip/1000,3)} = <b>${fmt(Up,1)} V</b>.`,[{v:R*Ip,msg:'Utilise I en ampères : 1 mA = 0,001 A.'}],.01),
+   {type:'click',q:`Clique sur le graphique à l'endroit du point <b>(I = ${Ip} mA ; U = ${fmt(Up,1)} V)</b>.`,tx:Ip,ty:Up,tolx:9,toly:ym*0.05,
+    g:()=>graph({...base,click:true}),
+    after:g=>`<line x1="${g.sx(0)}" y1="${g.sy(0)}" x2="${g.sx(200)}" y2="${g.sy(ym)}" style="stroke:var(--volt)" stroke-width="2.5"/>`,
+    clickMsg:p=>`Tu as cliqué à I ≈ ${fmt(p.x,0)} mA et U ≈ ${fmt(p.y,1)} V.`,hints:[`Cherche ${Ip} mA sur l'axe horizontal (graduations de 40 mA).`,`Monte jusqu'à ${fmt(Up,1)} V sur l'axe vertical (graduations de ${fmt(ym/5,0)} V).`],
+    sol:`Le point (${Ip} mA ; ${fmt(Up,1)} V) est placé et la droite passe par O et par ce point.`},
+   ch('Que vaut le coefficient directeur de la droite tracée ?',`${R} Ω`,[`${fmt(1/R,3)} Ω`,`${fmt(Up,1)} Ω`,`${Ip} Ω`],['Le coefficient directeur de U = f(I) est R, la résistance donnée dans l\'énoncé.'],`Coefficient directeur = résistance = <b>${R} Ω</b>.`)
+  ],recap:`Droite passant par O et par (${Ip} mA ; ${fmt(Up,1)} V) : U = ${R} × I.`};
+};
+GEN.fonct=()=>{
+  const E=pick([6,9,12]),r=pick([2,5]),R=pick([10,15,20,25,30]),I=E/(R+r),U=R*I,raw=2.5*I,xt=raw<.8?.1:raw<1.6?.2:.5,xm=Math.ceil(raw/xt-1e-9)*xt;
+  const base={xmax:rd(xm,2),ymax:E,xt,yt:E/6,xlab:'I (A)',ylab:'U (V)',alt:'Caractéristiques de la pile et du conducteur ohmique',
+    lines:[{pts:[[0,E],[xm,E-r*xm]],color:'var(--volt)',label:'pile'},{pts:[[0,0],[Math.min(xm,E/R),Math.min(R*xm,E)]],color:'var(--cur)',label:'conducteur'}]};
+  const g=graph(base);
+  return {title:'Point de fonctionnement',intro:`<p>Une pile de caractéristique <span class="eq">U = ${E} − ${r} × I</span> alimente un conducteur ohmique de résistance <b>R = ${R} Ω</b>. Les deux caractéristiques sont tracées ci-dessous.</p>`,fig:g,
+  steps:[
+   ch('Comment obtient-on le point de fonctionnement P ?','Par l\'intersection des deux caractéristiques',['Par l\'origine du repère','En prenant la tension maximale de la pile','En additionnant les deux tensions'],['En P, la pile et le conducteur ont la même tension et sont traversés par la même intensité.'],'Le point de fonctionnement P(I<sub>P</sub> ; U<sub>P</sub>) est l\'<b>intersection</b> des deux caractéristiques.'),
+   {type:'click',q:'Clique sur le point de fonctionnement P.',tx:I,ty:U,tolx:xm*0.05,toly:E*0.05,g:()=>graph({...base,click:true}),after:()=>'',clickMsg:p=>`Tu as cliqué à I ≈ ${fmt(p.x,2)} A, U ≈ ${fmt(p.y,1)} V. Cherche l'endroit où les deux droites se croisent.`,hints:['Repère le croisement de la droite bleue et de la droite rouge.','Clique exactement à l\'endroit où elles se coupent.'],sol:`P se trouve au croisement des deux droites : environ (${fmt(I,2)} A ; ${fmt(U,1)} V).`},
+   nu(`Calcule I<sub>P</sub> : au point P, ${E} − ${r} × I = ${R} × I. Donne I en A.`,I,'A',[`Regroupe les I : ${E} = ${r} × I + ${R} × I = ${R+r} × I.`,`I = ${E} ÷ ${R+r}.`],`${E} = (${r} + ${R}) × I donc I = ${E} ÷ ${R+r} ≈ <b>${fmt(I,3)} A</b>.`,[{v:E/R,msg:'Tu as oublié la résistance de la pile dans le total.'}],.03),
+   nu('Calcule U<sub>P</sub> avec la loi d\'Ohm aux bornes du conducteur (U = R × I).',U,'V',[`U<sub>P</sub> = ${R} × ${fmt(I,3)}.`],`U<sub>P</sub> = ${R} × ${fmt(I,3)} ≈ <b>${fmt(U,2)} V</b>. Vérification avec la pile : ${E} − ${r} × ${fmt(I,3)} ≈ ${fmt(E-r*I,2)} V.`,null,.03)
+  ],recap:`P(${fmt(I,3)} A ; ${fmt(U,2)} V).`};
+};
+/* mesures et capteurs */
+GEN.calibre=()=>{
+  if(Math.random()<.6){
+    const M=pick([[0.35,'0,35 A',350],[0.01,'0,01 A',10],[0.18,'0,18 A',180],[0.00015,'0,15 mA',.15],[0.0042,'4,2 mA',4.2],[1.5,'1,5 A',1500],[0.035,'35 mA',35],[0.0012,'1,2 mA',1.2],[0.00005,'50 µA',.05]]);
+    const cal=[['10 A',10000],['200 mA',200],['20 mA',20],['2 mA',2],['200 µA',.2]],good=cal.filter(c=>c[1]>M[2]).pop();
+    const borne=good[0]==='10 A'?'La borne A':'La borne mA/µA';
+    return {title:'Mesurer une intensité',intro:`<p>On veut mesurer avec un multimètre en ampèremètre une intensité d'environ <b>${M[1]}</b>. Calibres disponibles : 10 A, 200 mA, 20 mA, 2 mA, 200 µA.</p>`,
+    steps:[
+     ch('Quel calibre est le plus adapté ?',good[0],cal.map(c=>c[0]).filter(c=>c!==good[0]).slice(0,3),['Convertis la mesure dans la même unité que les calibres (mA par exemple).','Choisis le plus petit calibre qui est supérieur à la mesure : un calibre trop petit affiche « 1 ».'],`${M[1]} = ${fmt(M[2],2)} mA. Le plus petit calibre supérieur est <b>${good[0]}</b>.`),
+     ch('Sur quelle borne brancher le fil d\'entrée du courant ?',borne,[good[0]==='10 A'?'La borne mA/µA':'La borne A','La borne V','La borne COM seule'],['Le courant entre par la borne qui correspond au calibre, et sort par COM.','Le calibre 10 A utilise la borne A ; les calibres plus petits utilisent la borne mA/µA.'],`${borne}, avec COM pour la sortie. L'ampèremètre se branche <b>en série</b>.`)
+    ],recap:`Calibre ${good[0]} sur ${borne.toLowerCase()}.`};
+  }
+  const M=pick([[0.12,'0,12 V'],[1.5,'1,5 V'],[4.5,'4,5 V'],[9,'9 V'],[12,'12 V'],[150,'150 V']]),cal=[['200 mV',.2],['2 V',2],['20 V',20],['200 V',200],['600 V',600]],good=cal.find(c=>c[1]>M[0]);
+  return {title:'Mesurer une tension',intro:`<p>On veut mesurer avec un voltmètre une tension d'environ <b>${M[1]}</b>. Calibres : 200 mV, 2 V, 20 V, 200 V, 600 V.</p>`,
+  steps:[
+   ch('Quel calibre est le plus adapté ?',good[0],cal.map(c=>c[0]).filter(c=>c!==good[0]).slice(0,3),['Convertis 200 mV en 0,2 V pour comparer.','Prends le plus petit calibre supérieur à la mesure.'],`Le plus petit calibre supérieur à ${M[1]} est <b>${good[0]}</b>.`),
+   ch('Comment brancher le voltmètre ?','En dérivation, aux bornes du dipôle',['En série dans le circuit','Hors du circuit, dipôle isolé','Aux bornes du générateur uniquement'],['On mesure une tension aux bornes d\'un dipôle : le voltmètre doit être relié à ses deux bornes.'],'Le voltmètre se branche <b>en dérivation</b>.')
+  ],recap:`Calibre ${good[0]}, voltmètre en dérivation.`};
+};
+GEN.ldr=()=>{
+  const T=[[450,2.0,4.8],[600,3.5,4.7],[800,6.2,4.4],[1400,9.6,4.0],[4000,17,3.5]],row=pick(T),R=row[2]/(row[1]/1000);
+  const tab=`<div class="scroll"><table class="t"><tr><th>Éclairement (lux)</th>${T.map(r=>`<td>${r[0]}</td>`).join('')}</tr><tr><th>I (mA)</th>${T.map(r=>`<td>${r[1]}</td>`).join('')}</tr><tr><th>U<sub>LDR</sub> (V)</th>${T.map(r=>`<td>${r[2]}</td>`).join('')}</tr></table></div>`;
+  return {title:'Contrôle de luminosité',intro:`<p>Une photorésistance (LDR) est étudiée pour différents éclairements. Calcule sa résistance pour <b>${row[0]} lux</b>.</p>`,fig:tab,
+  steps:[
+   ch('Quelle relation donne la résistance de la LDR ?','R = U / I',['R = U × I','R = I / U','R = U + I'],['La LDR se comporte comme un conducteur ohmique dont la résistance varie.'],'Loi d\'Ohm : <span class="eq">R = U / I</span>.'),
+   nu(`Convertis I = ${row[1]} mA en ampères.`,row[1]/1000,'A',['Divise par 1000.'],`${row[1]} mA = <b>${fmt(row[1]/1000,4)} A</b>.`,[{v:row[1],msg:'Valeur en mA recopiée.'}],.005),
+   nu(`Calcule R à ${row[0]} lux (U = ${row[2]} V).`,R,'Ω',[`R = ${row[2]} ÷ ${fmt(row[1]/1000,4)}.`],`R = ${row[2]} ÷ ${fmt(row[1]/1000,4)} ≈ <b>${fmt(R,0)} Ω</b>.`,[{v:row[1]/row[2],msg:'Tu as inversé le rapport.'}],.03),
+   ch('Quand l\'éclairement augmente, la résistance de la LDR…','diminue',['augmente','reste constante','est proportionnelle à l\'éclairement'],['Compare R à 450 lux (≈ 2 400 Ω) et à 4 000 lux (≈ 206 Ω).'],'R passe d\'environ 2 400 Ω à 206 Ω : elle <b>diminue</b>. Les feux s\'allument donc quand R <b>augmente</b> (il fait sombre).')
+  ],recap:`R = U / I ≈ ${fmt(R,0)} Ω à ${row[0]} lux. Plus il y a de lumière, plus R diminue.`};
+};
+/* problèmes du cours */
+GEN.chauf=()=>({title:'Chauffage d\'appoint',intro:'<p>Un chauffage de <b>150 W</b>, alimenté en <b>12 V</b>, est modélisé par un conducteur ohmique de <b>R = 1,2 Ω</b>. On étudie deux alimentations : un panneau photovoltaïque et une batterie.</p>',
+  steps:[
+   ch('Le chauffage est-il un générateur ou un récepteur ?','Un récepteur : il a besoin d\'une alimentation et se modélise par un conducteur ohmique',['Un générateur : il produit de la chaleur','Un générateur : il possède une résistance','Ni l\'un ni l\'autre'],['Un générateur fournit de l\'énergie électrique. Un récepteur en reçoit et la convertit.'],'Il reçoit de l\'énergie électrique et la transforme en chaleur : c\'est un <b>récepteur</b> (conducteur ohmique).'),
+   nu('Calcule l\'intensité I (en A) à partir de P = R × I².',Math.sqrt(150/1.2),'A',['Isole I : I = √(P / R).','Calcule 150 ÷ 1,2 = 125, puis la racine carrée.'],'I = √(150 ÷ 1,2) = √125 ≈ <b>11 A</b>.',[{v:125,msg:'Tu as oublié la racine carrée.'}],.03),
+   nu('Quelle est la tension aux bornes du chauffage (V) pour I = 10 A ? (U = R × I)',12,'V',['U = 1,2 × 10.'],'U = 1,2 × 10 = <b>12 V</b>. Les points de la caractéristique sont (0 ; 0), (1 ; 1,2), (2 ; 2,4)… : une droite passant par l\'origine.',[{v:8.33,msg:'Tu as divisé : la loi d\'Ohm est U = R × I.'}]),
+   nu('Panneau : le point de fonctionnement est P(7,5 A ; 9 V). Calcule la puissance reçue (W).',67.5,'W',['P = U × I.'],'P = 9 × 7,5 = 67,5 W, soit <b>≈ 68 W</b>.',[{v:1.2,msg:'Utilise P = U × I avec U = 9 V et I = 7,5 A.'}],.02),
+   nu('Batterie : P(9,8 A ; 12 V). Calcule la puissance reçue (W).',117.6,'W',['P = U × I.'],'P = 12 × 9,8 = 117,6 W, soit <b>≈ 118 W</b>.',null,.02),
+   ch('Quelle alimentation convient le mieux pour un chauffage de 150 W ?','La batterie : 118 W est la puissance la plus proche de 150 W',['Le panneau : 68 W est la puissance la plus élevée','Les deux conviennent de la même façon','Aucune : les deux dépassent 150 W'],['Compare 68 W et 118 W à la puissance attendue de 150 W.'],'La batterie délivre <b>118 W</b>, plus proche de 150 W que le panneau (68 W).')
+  ],recap:'Chauffage = récepteur de 1,2 Ω ; panneau 68 W ; batterie 118 W : la batterie convient mieux.'});
+GEN.vent=()=>({title:'Ventilateur USB',intro:'<p>Un ventilateur USB est modélisé ainsi : un générateur (<b>U<sub>G</sub> = 5 V</b>) alimente deux branches en dérivation : un <b>moteur M</b> (intensité I<sub>1</sub> = 300 mA) et une branche en série avec un <b>conducteur ohmique R</b> et une <b>DEL</b> (intensité I<sub>2</sub>, tension U<sub>D</sub> = 2 V). Le générateur débite <b>I<sub>0</sub> = 510 mA</b>.</p>',
+  steps:[
+   ch('Quelle loi permet de trouver I<sub>2</sub> ?','Loi des nœuds : I<sub>0</sub> = I<sub>1</sub> + I<sub>2</sub>',['Loi des mailles : I<sub>0</sub> = I<sub>1</sub> + I<sub>2</sub>','Loi d\'Ohm : I<sub>2</sub> = U<sub>D</sub> / I<sub>1</sub>','Loi des nœuds : I<sub>2</sub> = I<sub>0</sub> + I<sub>1</sub>'],['Le courant I<sub>0</sub> se partage en deux au nœud.'],'Au nœud, le courant I<sub>0</sub> se partage : <span class="eq">I<sub>0</sub> = I<sub>1</sub> + I<sub>2</sub></span>.'),
+   nu('Calcule I<sub>2</sub> (en mA).',210,'mA',['I<sub>2</sub> = I<sub>0</sub> − I<sub>1</sub> = 510 − 300.'],'I<sub>2</sub> = 510 − 300 = <b>210 mA</b>.',[{v:810,msg:'Tu as additionné. On soustrait I<sub>1</sub> à I<sub>0</sub>.'}],.01),
+   ch('Quelle égalité donne la tension U<sub>R</sub> aux bornes de R ?','U<sub>G</sub> = U<sub>R</sub> + U<sub>D</sub>',['U<sub>G</sub> = U<sub>R</sub> − U<sub>D</sub>','U<sub>R</sub> = U<sub>D</sub>','U<sub>G</sub> = U<sub>R</sub> × U<sub>D</sub>'],['Maille : générateur, R, DEL.'],'Dans la maille G, R, DEL : <span class="eq">U<sub>G</sub> = U<sub>R</sub> + U<sub>D</sub></span>.'),
+   nu('Calcule U<sub>R</sub> (en V).',3,'V',['U<sub>R</sub> = 5 − 2.'],'U<sub>R</sub> = 5 − 2 = <b>3 V</b>.',[{v:7,msg:'Tu as additionné. U<sub>R</sub> = U<sub>G</sub> − U<sub>D</sub>.'}],.01),
+   nu('Calcule R (en Ω). R est dans la branche de I<sub>2</sub>.',3/0.21,'Ω',['R = U<sub>R</sub> / I<sub>2</sub> avec I<sub>2</sub> en ampères.','I<sub>2</sub> = 210 mA = 0,210 A.'],'R = 3 ÷ 0,210 ≈ <b>14,3 Ω</b>.',[{v:10,msg:'Tu as utilisé I<sub>1</sub> (le moteur). R est traversée par I<sub>2</sub>.'}],.03)
+  ],recap:'I<sub>2</sub> = 210 mA, U<sub>R</sub> = 3 V, R ≈ 14,3 Ω.'});
+
+/* ---------- petits schémas (SVG) ---------- */
+const K='class="k"',KF='class="kf"';
+const wire=(...p)=>`<polyline points="${p.join(' ')}" ${K}/>`;
+const T=(x,y,t,o={})=>`<text x="${x}" y="${y}" font-size="${o.s||12}" text-anchor="${o.a||'middle'}"${o.c?` style="fill:${o.c}"`:''}${o.b?' font-weight="600"':''}>${t}</text>`;
+const dot=(x,y)=>`<circle cx="${x}" cy="${y}" r="3.5" style="fill:var(--ink)"/>`;
+const rectH=(x,y,t,w=36,h=16)=>`<rect x="${x-w/2}" y="${y-h/2}" width="${w}" height="${h}" ${KF}/>`+(t?T(x,y-h/2-5,t):'');
+const rectV=(x,y,t,w=16,h=36)=>`<rect x="${x-w/2}" y="${y-h/2}" width="${w}" height="${h}" ${KF}/>`+(t?T(x+w/2+6,y+4,t,{a:'start'}):'');
+const disc=(x,y,l,t,r=15)=>`<circle cx="${x}" cy="${y}" r="${r}" ${KF}/>`+(l?T(x,y+5,l,{s:14,b:1}):'')+(t?T(x,y-r-5,t):'');
+const lampe=(x,y,t,r=14)=>`<circle cx="${x}" cy="${y}" r="${r}" ${KF}/><line x1="${x-r*.7}" y1="${y-r*.7}" x2="${x+r*.7}" y2="${y+r*.7}" ${K}/><line x1="${x+r*.7}" y1="${y-r*.7}" x2="${x-r*.7}" y2="${y+r*.7}" ${K}/>`+(t?T(x,y-r-5,t):'');
+function arr(x1,y1,x2,y2,col='var(--cur)',w=2){const a=Math.atan2(y2-y1,x2-x1),h=8,c=Math.cos(a),s=Math.sin(a);
+  return `<line x1="${x1}" y1="${y1}" x2="${x2-c*h*.6}" y2="${y2-s*h*.6}" style="stroke:${col}" stroke-width="${w}"/><polygon points="${x2},${y2} ${x2-c*h-s*4},${y2-s*h+c*4} ${x2-c*h+s*4},${y2-s*h-c*4}" style="fill:${col}"/>`}
+const svg=(w,h,body,alt)=>`<svg viewBox="0 0 ${w} ${h}" width="${w}" role="img" aria-label="${alt||'Schéma'}">${body}</svg>`;
+function sym(n){/* symbole centré en (40,24), cadre 80x48 */
+  const L=wire('0,24 80,24');const c=(l)=>`<circle cx="40" cy="24" r="14" ${KF}/>`+T(40,29,l,{s:14,b:1});
+  switch(n){
+   case'pile':return wire('0,24 32,24')+`<line x1="32" y1="8" x2="32" y2="40" stroke-width="3.5" ${K}/><line x1="46" y1="15" x2="46" y2="33" stroke-width="3.5" ${K}/>`+wire('46,24 80,24')+T(22,16,'+',{s:11})+T(58,16,'−',{s:11});
+   case'lampe':return wire('0,24 26,24')+`<circle cx="40" cy="24" r="14" ${KF}/><line x1="30" y1="14" x2="50" y2="34" ${K}/><line x1="50" y1="14" x2="30" y2="34" ${K}/>`+wire('54,24 80,24');
+   case'moteur':return wire('0,24 26,24')+c('M')+wire('54,24 80,24');
+   case'ferme':return L+dot(26,24)+dot(54,24);
+   case'ouvert':return wire('0,24 26,24')+dot(26,24)+`<line x1="26" y1="24" x2="52" y2="10" ${K}/>`+dot(54,24)+wire('54,24 80,24');
+   case'fil':return L;
+   case'gen':return wire('0,24 26,24')+c('G')+wire('54,24 80,24')+T(20,16,'+',{s:11})+T(62,16,'−',{s:11});
+   case'fusible':return wire('0,24 18,24')+`<rect x="18" y="14" width="44" height="20" ${KF}/>`+wire('18,24 62,24')+wire('62,24 80,24');
+   case'diode':return wire('0,24 28,24')+`<polygon points="28,10 28,38 52,24" ${KF}/><line x1="52" y1="10" x2="52" y2="38" ${K}/>`+wire('52,24 80,24');
+   case'del':return wire('0,24 28,24')+`<polygon points="28,10 28,38 52,24" ${KF}/><line x1="52" y1="10" x2="52" y2="38" ${K}/>`+wire('52,24 80,24')+arr(34,8,46,-2,'var(--ink)',1.2)+arr(42,12,54,2,'var(--ink)',1.2);
+   case'amp':return wire('0,24 26,24')+c('A')+wire('54,24 80,24')+T(10,15,'COM',{s:8});
+   case'volt':return wire('0,24 26,24')+c('V')+wire('54,24 80,24')+T(10,15,'COM',{s:8});
+   case'res':return wire('0,24 22,24')+`<rect x="22" y="15" width="36" height="18" ${KF}/>`+wire('58,24 80,24');
+   case'ohm':return wire('0,24 26,24')+c('Ω')+wire('54,24 80,24');
+   case'poussoir':return wire('0,24 18,24')+dot(18,24)+dot(62,24)+wire('62,24 80,24')+`<line x1="26" y1="12" x2="54" y2="12" ${K}/><rect x="36" y="7" width="8" height="5" style="fill:var(--ink)"/>`;
+  }
+}
+const SYMS=[['pile','Pile'],['lampe','Lampe'],['moteur','Moteur'],['ferme','Interrupteur fermé'],['ouvert','Interrupteur ouvert'],['fil','Fil de connexion'],['gen','Générateur continu'],['fusible','Fusible'],['diode','Diode'],['del','Diode électroluminescente (DEL)'],['amp','Ampèremètre'],['volt','Voltmètre'],['res','Résistance (conducteur ohmique)'],['ohm','Ohmmètre'],['poussoir','Bouton poussoir']];
+/* nœud */
+function nodeSvg(dirs,labels,ang){
+  ang=ang||(dirs.length===3?[90,210,330]:[135,45,225,315]);const cx=170,cy=105;let s='';
+  dirs.forEach((d,i)=>{const a=ang[i]*Math.PI/180,dx=Math.cos(a),dy=-Math.sin(a),ex=cx+dx*110,ey=cy+dy*85,mx=cx+dx*55,my=cy+dy*42,sg=d==='in'?-1:1;
+    s+=`<line x1="${cx}" y1="${cy}" x2="${ex}" y2="${ey}" ${K}/>`+arr(mx-dx*sg*9,my-dy*sg*7,mx+dx*sg*9,my+dy*sg*7)+T(ex+dx*8,ey+dy*8+4,labels[i],{a:dx>.3?'start':dx<-.3?'end':'middle'})});
+  return svg(340,210,s+dot(cx,cy)+T(cx+10,cy+17,'A',{b:1,s:13}),'Nœud A');
+}
+/* modèle de circuit simple : boucle rectangulaire */
+const loopBase=(x0,y0,x1,y1)=>wire(`${x0},${y0}`,`${x1},${y0}`,`${x1},${y1}`,`${x0},${y1}`,`${x0},${y0}`);
+const maskH=(x,y,w=48,h=26)=>`<rect x="${x-w/2}" y="${y-h/2}" width="${w}" height="${h}" style="fill:var(--surface)"/>`;
+const maskV=(x,y,w=26,h=48)=>`<rect x="${x-w/2}" y="${y-h/2}" width="${w}" height="${h}" style="fill:var(--surface)"/>`;
+/* ---------- nouveaux exercices ---------- */
+GEN.affichage=()=>{
+  if(Math.random()<.5){
+    const O=[['180','200 kΩ',180e3,'180 kΩ'],['4,50','20 MΩ',4.5e6,'4,50 MΩ'],['33,0','200 Ω',33,'33,0 Ω'],['0,47','2 kΩ',470,'0,47 kΩ'],['12,5','20 kΩ',12500,'12,5 kΩ'],['1,20','2 MΩ',1.2e6,'1,20 MΩ'],['150','200 Ω',150,'150 Ω']],o=pick(O);
+    return {title:'Lire l\'afficheur d\'un ohmmètre',intro:`<p>Un multimètre en mode ohmmètre affiche <b class="mono">${o[0]}</b> sur le calibre <b>${o[1]}</b>.</p>`,
+    steps:[nu('Quelle est la résistance mesurée, exprimée en <b>ohms</b> (Ω) ?',o[2],'Ω',['Le nombre affiché se lit dans l\'unité du calibre : calibre 200 kΩ, l\'affichage est en kΩ.','k (kilo) = 1 000 ; M (méga) = 1 000 000. Convertis en ohms.'],`${o[3]} = <b>${fmt(o[2],0)} Ω</b>.`,[{v:parseFloat(o[0].replace(',','.')),msg:'Tu as recopié l\'affichage. Convertis avec le préfixe du calibre (k ou M).'}],.005)],recap:`${o[0]} sur le calibre ${o[1]} signifie ${o[3]}, soit ${fmt(o[2],0)} Ω.`};
+  }
+  const E=[['−01,2','tension','Les bornes du voltmètre sont inversées (la mesure est négative).','Les bornes V et COM sont inversées',['Le calibre est trop petit','La pile est déchargée','Il faut passer en ampèremètre']],['1.','tension','Le calibre est trop petit : l\'afficheur indique un dépassement.','Le calibre est trop petit (dépassement)',['Les bornes sont inversées','Le circuit est en court-circuit','Le multimètre est en mode ohmmètre']],['001','tension','Le calibre est beaucoup trop grand : la mesure est très imprécise.','Le calibre est beaucoup trop grand (mesure imprécise)',['Le calibre est trop petit','Les bornes sont inversées','La tension est négative']]],e=pick(E);
+  return {title:'Interpréter l\'afficheur',intro:`<p>Un voltmètre affiche <b class="mono">${e[0]}</b>. Que doit-on en conclure ?</p>`,steps:[ch('Quelle est la bonne interprétation ?',e[3],e[4],['Un signe « − » ou un « 1 » à gauche ont une signification précise : revois le cours sur le multimètre.'],e[2])],recap:e[2]};
+};
+GEN.fusible=()=>{
+  const R=pick([20,47,100,150]),Im=Math.sqrt(0.25/R),Um=Im*R,ratio=pick([.6,1.4]),Umes=rd(Um*ratio,1),I=Umes/R,P=Umes*I,ok=P<0.25;
+  return {title:'Ne pas faire griller le résistor',intro:`<p>Un résistor de <b>R = ${R} Ω</b> ne doit jamais dépasser une puissance de <b>0,25 W</b>. Pour un conducteur ohmique, <span class="eq">P = R × I²</span>.</p>`,
+  steps:[
+   ch('Quelle expression donne l\'intensité maximale I<sub>max</sub> ?','I<sub>max</sub> = √(P / R)',['I<sub>max</sub> = P / R²','I<sub>max</sub> = P × R','I<sub>max</sub> = P / R'],['Isole I dans P = R × I².'],'<span class="eq">I² = P / R</span> donc <span class="eq">I<sub>max</sub> = √(P / R)</span>.'),
+   nu('Calcule I<sub>max</sub> en <b>mA</b>.',Im*1000,'mA',[`P / R = 0,25 ÷ ${R} = ${fmt(0.25/R,5)}.`,'Prends la racine carrée, puis convertis en mA (×1000).'],`I<sub>max</sub> = √(0,25 ÷ ${R}) ≈ ${fmt(Im,4)} A = <b>${fmt(Im*1000,0)} mA</b>.`,[{v:Im,msg:'Ton résultat est en A. Convertis en mA (×1000).'},{v:0.25/R*1000,msg:'Tu as oublié la racine carrée.'}],.03),
+   nu(`Le voltmètre indique U = ${fmt(Umes,1)} V aux bornes du résistor. Calcule I en <b>mA</b> (loi d'Ohm).`,I*1000,'mA',[`I = U / R = ${fmt(Umes,1)} ÷ ${R}.`,'Pense à convertir le résultat en mA.'],`I = ${fmt(Umes,1)} ÷ ${R} ≈ ${fmt(I,4)} A = <b>${fmt(I*1000,1)} mA</b>.`,null,.03),
+   ch(`Le résistor est-il en sécurité ? (I<sub>max</sub> ≈ ${fmt(Im*1000,0)} mA)`,ok?`Oui : ${fmt(I*1000,0)} mA est inférieur à ${fmt(Im*1000,0)} mA`:`Non : ${fmt(I*1000,0)} mA dépasse ${fmt(Im*1000,0)} mA`,[ok?`Non : ${fmt(I*1000,0)} mA dépasse ${fmt(Im*1000,0)} mA`:`Oui : ${fmt(I*1000,0)} mA est inférieur à ${fmt(Im*1000,0)} mA`,'On ne peut pas savoir sans ampèremètre','Oui, la tension est inférieure à 12 V'],['Compare l\'intensité calculée à l\'intensité maximale.'],`On compare ${fmt(I*1000,1)} mA à ${fmt(Im*1000,0)} mA : ${ok?'la puissance reste sous 0,25 W':'la puissance dépasse 0,25 W'} (P = U × I ≈ ${fmt(P,2)} W). Le voltmètre suffit pour vérifier l'intensité.`)
+  ],recap:`I<sub>max</sub> = √(P/R) ≈ ${fmt(Im*1000,0)} mA. Avec U et R, on connaît I sans ampèremètre.`};
+};
+GEN.maille3=()=>{
+  const PN=pick([5,6,9,12]),PA=pick([.5,.8,1]),BN=pick([1.2,1.5,2]),AC=pick([300,400,500]),AB=rd(PN-PA-BN,1),CD=rd(AB-AC/1000,2);
+  const body=wire('60,40 340,40')+wire('340,40 340,160')+wire('200,40 200,160')+wire('340,160 60,160')+wire('60,160 60,40')+rectH(115,40,'R1')+rectH(270,40,'R2')+rectV(340,100,'R4')+rectV(200,100,'R3')+rectH(115,160,'R5')+disc(60,100,'G')+dot(200,40)+dot(200,160)+dot(340,160)+T(60,28,'P',{b:1})+T(200,28,'A',{b:1})+T(340,28,'C',{b:1})+T(214,182,'B',{b:1})+T(340,182,'D',{b:1})+T(60,182,'N',{b:1});
+  const fig=svg(420,200,body,'Circuit avec cinq résistances, un générateur G, nœuds A et B');
+  return {title:'Tensions dans un circuit à 5 résistances',intro:`<p>Le générateur impose <b>U<sub>PN</sub> = ${fmt(PN,0)} V</b>. On mesure <b>U<sub>PA</sub> = ${fmt(PA,1)} V</b> (aux bornes de R1), <b>U<sub>BN</sub> = ${fmt(BN,1)} V</b> (aux bornes de R5) et <b>U<sub>AC</sub> = ${AC} mV</b> (aux bornes de R2). Les points B et D sont reliés par un fil. Trouve U<sub>AB</sub> puis U<sub>CD</sub>.</p>`,fig:{svg:fig},
+  steps:[
+   ch('Quelle égalité donne U<sub>AB</sub> (maille P, A, B, N) ?','U<sub>PN</sub> = U<sub>PA</sub> + U<sub>AB</sub> + U<sub>BN</sub>',['U<sub>PN</sub> = U<sub>PA</sub> − U<sub>AB</sub> + U<sub>BN</sub>','U<sub>AB</sub> = U<sub>PN</sub> + U<sub>PA</sub> + U<sub>BN</sub>','U<sub>PN</sub> = U<sub>AB</sub>'],['Parcours la boucle G, R1, R3, R5 et retour au générateur.'],'La tension du générateur est égale à la somme des tensions des dipôles en série le long de la maille.'),
+   nu('Calcule U<sub>AB</sub> (en V).',AB,'V',[`U<sub>AB</sub> = ${fmt(PN,0)} − ${fmt(PA,1)} − ${fmt(BN,1)}.`],`U<sub>AB</sub> = ${fmt(PN,0)} − ${fmt(PA,1)} − ${fmt(BN,1)} = <b>${fmt(AB,1)} V</b>.`,[{v:PN+PA+BN,msg:'Tu as additionné. On cherche ce qu\'il reste après R1 et R5.'}]),
+   nu('Convertis U<sub>AC</sub> en volts.',AC/1000,'V',['1 mV = 0,001 V : divise par 1000.'],`${AC} mV = <b>${fmt(AC/1000,3)} V</b>.`,[{v:AC,msg:'Valeur en mV recopiée.'}],.005),
+   nu('Que vaut la tension U<sub>BD</sub> aux bornes du fil qui relie B et D ?',0,'V',['Que vaut la tension aux bornes d\'un fil de connexion ?'],'La tension aux bornes d\'un fil est <b>nulle</b> : U<sub>BD</sub> = 0 V.',null,0),
+   nu('Calcule U<sub>CD</sub> avec la maille A, C, D, B : U<sub>AB</sub> = U<sub>AC</sub> + U<sub>CD</sub> + U<sub>DB</sub>.',CD,'V',['U<sub>DB</sub> = 0 V.',`U<sub>CD</sub> = U<sub>AB</sub> − U<sub>AC</sub> = ${fmt(AB,1)} − ${fmt(AC/1000,3)}.`],`U<sub>CD</sub> = ${fmt(AB,1)} − ${fmt(AC/1000,3)} = <b>${fmt(CD,2)} V</b>.`,[{v:AB-AC,msg:'Tu as soustrait 300 mV sans convertir : mets tout en volts.'}],.01)
+  ],recap:`U<sub>AB</sub> = ${fmt(AB,1)} V et U<sub>CD</sub> = ${fmt(CD,2)} V.`};
+};
+GEN.noeud5=()=>{
+  const I1=pick([2,3,4]),I5=pick([.5,1,1.5]),I2=pick([3,4,5]),I=I1+I2,I3=I1-I5,I4=I2+I5;
+  const rr=(x,y,a,t)=>`<g transform="rotate(${a} ${x} ${y})"><rect x="${x-18}" y="${y-8}" width="36" height="16" ${KF}/></g>`;
+  const A=[200,40],B=[100,110],D=[300,110],C=[200,180];
+  const m=(p,q,f)=>[p[0]+(q[0]-p[0])*f,p[1]+(q[1]-p[1])*f];
+  const ang=(p,q)=>Math.atan2(q[1]-p[1],q[0]-p[0])*180/Math.PI;
+  let s=`<line x1="${A[0]}" y1="${A[1]}" x2="${B[0]}" y2="${B[1]}" ${K}/><line x1="${A[0]}" y1="${A[1]}" x2="${D[0]}" y2="${D[1]}" ${K}/><line x1="${B[0]}" y1="${B[1]}" x2="${C[0]}" y2="${C[1]}" ${K}/><line x1="${D[0]}" y1="${D[1]}" x2="${C[0]}" y2="${C[1]}" ${K}/><line x1="${B[0]}" y1="${B[1]}" x2="${D[0]}" y2="${D[1]}" ${K}/>`;
+  [[A,B,'I1'],[A,D,'I2'],[B,C,'I3'],[D,C,'I4'],[B,D,'I5']].forEach(([p,q,l])=>{const c=m(p,q,.5);s+=rr(c[0],c[1],ang(p,q));const a1=m(p,q,.3),a2=m(p,q,.42);const nx=-(q[1]-p[1]),ny=q[0]-p[0],nn=Math.hypot(nx,ny);s+=arr(a1[0],a1[1],a2[0],a2[1])+T(c[0]+nx/nn*(l==='I5'?-20:(c[0]<200?-20:20)),c[1]+ny/nn*(l==='I5'?-20:(c[0]<200?-20:20))+4,l,{c:'var(--cur)',b:1})});
+  s=s.replace(/<text x="(\d+\.?\d*)" y="(\d+\.?\d*)"/,'<text x="$1" y="$2"');
+  s+=arr(200,6,200,38)+T(214,22,'I',{c:'var(--cur)',b:1,a:'start'})+arr(200,182,200,208)+[A,B,D,C].map((p,i)=>dot(p[0],p[1])+T(p[0]+(i===1?-14:i===2?14:14),p[1]+(i===0?-6:i===3?14:-2),'ABDC'[i],{b:1,s:13})).join('');
+  const fig=svg(400,212,s,'Circuit en pont : nœuds A, B, D, C');
+  return {title:'Pont de résistances : trouver I, I3 et I4',intro:`<p>On donne <b>I<sub>1</sub> = ${I1} A</b>, <b>I<sub>2</sub> = ${I2} A</b> et <b>I<sub>5</sub> = ${fmt(I5,1)} A</b>. Pour chaque intensité cherchée, précise le nœud utilisé, écris l'expression littérale, puis calcule.</p>`,fig:{svg:fig},
+  steps:[
+   ch('Au nœud A, quelle expression donne I ?','I = I<sub>1</sub> + I<sub>2</sub>',['I = I<sub>1</sub> − I<sub>2</sub>','I = I<sub>1</sub> + I<sub>2</sub> + I<sub>5</sub>','I = I<sub>3</sub> + I<sub>4</sub> + I<sub>5</sub>'],['I arrive en A. I<sub>1</sub> et I<sub>2</sub> en repartent.'],'Au nœud A : <span class="eq">I = I<sub>1</sub> + I<sub>2</sub></span>.'),
+   nu('Calcule I (en A).',I,'A',[`${I1} + ${I2}.`],`I = ${I1} + ${I2} = <b>${I} A</b>.`),
+   ch('Au nœud B, quelle expression donne I<sub>3</sub> ?','I<sub>1</sub> = I<sub>3</sub> + I<sub>5</sub> donc I<sub>3</sub> = I<sub>1</sub> − I<sub>5</sub>',['I<sub>3</sub> = I<sub>1</sub> + I<sub>5</sub>','I<sub>3</sub> = I<sub>2</sub> − I<sub>5</sub>','I<sub>3</sub> = I<sub>1</sub> + I<sub>2</sub>'],['Au nœud B, I<sub>1</sub> arrive. I<sub>3</sub> et I<sub>5</sub> repartent.'],'Nœud B : arrive I<sub>1</sub>, repartent I<sub>3</sub> et I<sub>5</sub>, donc <span class="eq">I<sub>3</sub> = I<sub>1</sub> − I<sub>5</sub></span>.'),
+   nu('Calcule I<sub>3</sub> (en A).',I3,'A',[`${I1} − ${fmt(I5,1)}.`],`I<sub>3</sub> = ${I1} − ${fmt(I5,1)} = <b>${fmt(I3,1)} A</b>.`,[{v:I1+I5,msg:'Tu as additionné. I<sub>5</sub> repart de B : on le soustrait.'}]),
+   ch('Au nœud D, quelle expression donne I<sub>4</sub> ?','I<sub>4</sub> = I<sub>2</sub> + I<sub>5</sub>',['I<sub>4</sub> = I<sub>2</sub> − I<sub>5</sub>','I<sub>4</sub> = I<sub>1</sub> + I<sub>2</sub>','I<sub>4</sub> = I<sub>5</sub> − I<sub>2</sub>'],['En D, I<sub>2</sub> et I<sub>5</sub> arrivent ; I<sub>4</sub> repart.'],'Nœud D : arrivent I<sub>2</sub> et I<sub>5</sub>, repart I<sub>4</sub> : <span class="eq">I<sub>4</sub> = I<sub>2</sub> + I<sub>5</sub></span>.'),
+   nu('Calcule I<sub>4</sub> (en A).',I4,'A',[`${I2} + ${fmt(I5,1)}.`],`I<sub>4</sub> = ${I2} + ${fmt(I5,1)} = <b>${fmt(I4,1)} A</b>. Vérification au nœud C : I<sub>3</sub> + I<sub>4</sub> = ${fmt(I3+I4,1)} A = I.`)
+  ],recap:`I = ${I} A, I<sub>3</sub> = ${fmt(I3,1)} A, I<sub>4</sub> = ${fmt(I4,1)} A.`};
+};
+GEN.frontale=()=>{
+  const UD=pick([1.8,2,2.2]),R2=pick([80,100,200]),R3=pick([50,100,200]),UR=rd(6-UD,1),I2=UR/R2*1000,I3=UR/R3*1000,I1=I2+I3;
+  const fig=svg(330,210,wire('40,35 78,35')+`<line x1="78" y1="35" x2="100" y2="35" ${K}/>`+dot(78,35)+`<line x1="78" y1="35" x2="98" y2="22" ${K}/>`+dot(100,35)+wire('100,35 190,35')+T(89,15,'K1')+wire('190,35 190,45')+`<polygon points="180,45 200,45 190,65" ${KF}/><line x1="180" y1="65" x2="200" y2="65" ${K}/>`+wire('190,65 190,100')+T(212,58,'DEL',{a:'start'})+arr(176,48,176,62)+T(168,60,'I1',{a:'end',c:'var(--cur)',b:1})+dot(190,100)+wire('190,100 190,118')+rectV(190,136,'R2')+wire('190,154 190,170')+arr(172,110,172,126)+T(164,124,'I2',{a:'end',c:'var(--cur)',b:1})+wire('190,100 230,100')+dot(230,100)+`<line x1="230" y1="100" x2="252" y2="88" ${K}/>`+dot(252,100)+T(241,82,'K2')+wire('252,100 290,100')+wire('290,100 290,118')+rectV(290,136,'R3')+wire('290,154 290,170')+arr(272,110,272,126)+T(264,124,'I3',{a:'end',c:'var(--cur)',b:1})+wire('40,170 290,170')+wire('40,170 40,120')+disc(40,100,'G')+wire('40,85 40,35')+T(22,50,'P',{b:1,a:'end'})+T(22,160,'N',{b:1,a:'end'})+T(190,190,'C',{b:1})+T(290,190,'D',{b:1})+T(204,96,'B',{b:1,a:'start'})+T(190,28,'A',{b:1}),'Circuit de la lampe frontale');
+  return {title:'Lampe frontale : deux modes',intro:`<p>Une lampe frontale a deux modes : <b>économique</b> (K1 fermé, K2 ouvert) et <b>forte puissance</b> (K1 et K2 fermés). Le générateur donne <b>U<sub>PN</sub> = 6 V</b>. La DEL a une tension <b>U<sub>DEL</sub> = ${fmt(UD,1)} V</b>, avec <b>R<sub>2</sub> = ${R2} Ω</b> et <b>R<sub>3</sub> = ${R3} Ω</b>.</p>`,fig:{svg:fig},
+  steps:[
+   ch('Mode économique : que peut-on dire de la DEL et de R<sub>2</sub> ?','Elles sont en série : même intensité I<sub>1</sub> = I<sub>2</sub>',['Elles sont en dérivation : même tension','I<sub>1</sub> est plus petite que I<sub>2</sub>','Elles ne sont pas traversées par du courant'],['K2 est ouvert : la branche de R<sub>3</sub> est coupée. Le courant n\'a qu\'un seul chemin.'],'Avec K2 ouvert, il n\'y a qu\'une seule branche : la DEL et R<sub>2</sub> sont en série.'),
+   nu('Calcule la tension U<sub>R2</sub> aux bornes de R<sub>2</sub> (maille générateur, DEL, R<sub>2</sub>).',UR,'V',['U<sub>PN</sub> = U<sub>DEL</sub> + U<sub>R2</sub>.'],`U<sub>R2</sub> = 6 − ${fmt(UD,1)} = <b>${fmt(UR,1)} V</b>.`,[{v:6+UD,msg:'Tu as additionné. On soustrait la tension de la DEL.'}]),
+   nu('Calcule I<sub>2</sub> (en mA) avec la loi d\'Ohm.',I2,'mA',[`I<sub>2</sub> = U<sub>R2</sub> / R<sub>2</sub> = ${fmt(UR,1)} ÷ ${R2}.`,'Le résultat est en A : convertis en mA.'],`I<sub>2</sub> = ${fmt(UR,1)} ÷ ${R2} = ${fmt(UR/R2,4)} A = <b>${fmt(I2,1)} mA</b>. En mode économique, I<sub>1</sub> = I<sub>2</sub>.`,null,.03),
+   ch('Mode forte puissance (K1 et K2 fermés) : R<sub>2</sub> et R<sub>3</sub> sont…','en dérivation : elles ont la même tension à leurs bornes',['en série : elles ont la même intensité','en série : elles ont la même tension','en dérivation : elles ont la même intensité'],['Les deux branches partent du nœud B et se rejoignent en N.'],'R<sub>2</sub> et R<sub>3</sub> sont montées en dérivation entre B et N : <span class="eq">U<sub>R3</sub> = U<sub>R2</sub></span>.'),
+   nu('Calcule I<sub>3</sub> (en mA).',I3,'mA',[`U<sub>R3</sub> = U<sub>R2</sub> = ${fmt(UR,1)} V.`,`I<sub>3</sub> = ${fmt(UR,1)} ÷ ${R3}, puis convertis en mA.`],`I<sub>3</sub> = ${fmt(UR,1)} ÷ ${R3} = <b>${fmt(I3,1)} mA</b>.`,null,.03),
+   nu('Calcule I<sub>1</sub> en mode forte puissance (loi des nœuds en B, en mA).',I1,'mA',['I<sub>1</sub> arrive en B ; I<sub>2</sub> et I<sub>3</sub> en repartent.'],`I<sub>1</sub> = I<sub>2</sub> + I<sub>3</sub> = ${fmt(I2,1)} + ${fmt(I3,1)} = <b>${fmt(I1,1)} mA</b>.`,null,.03),
+   ch('Dans quel mode la DEL est-elle la plus lumineuse ?','Forte puissance : l\'intensité I<sub>1</sub> dans la DEL est plus grande',['Économique : l\'intensité dans la DEL est plus grande','Les deux modes sont identiques','Forte puissance : la tension du générateur augmente'],[`Compare I<sub>1</sub> = ${fmt(I2,1)} mA (économique) et ${fmt(I1,1)} mA (forte puissance).`],`I<sub>1</sub> passe de ${fmt(I2,1)} mA à ${fmt(I1,1)} mA : la DEL brille davantage en mode forte puissance.`)
+  ],recap:`Économique : I<sub>1</sub> = ${fmt(I2,1)} mA. Forte puissance : I<sub>1</sub> = ${fmt(I1,1)} mA.`};
+};
+const NTC=t=>18000*Math.exp(-0.045*t);
+GEN.etalon=()=>{
+  const T0=pick([20,25,30,35,40,45]),R0=NTC(T0),pts=[];for(let t=0;t<=60;t+=2)pts.push([t,NTC(t)]);
+  const dat=[];for(let t=5;t<=60;t+=5)dat.push({x:t,y:NTC(t)});
+  const base={xmax:60,ymax:20000,xt:10,yt:5000,xlab:'T (°C)',ylab:'R (Ω)',alt:'Courbe d\'étalonnage d\'une thermistance',lines:[{pts,color:'var(--volt)'}],pts:dat.map(p=>({x:p.x,y:p.y,color:'var(--cur)'}))};
+  const meas=[0,1,2,3,4].map(()=>rd(T0+(Math.random()*3-1.5),1)),mean=meas.reduce((a,b)=>a+b,0)/5,sd=Math.sqrt(meas.reduce((a,b)=>a+(b-mean)**2,0)/4);
+  return {title:'Étalonner une thermistance',intro:`<p>On a mesuré la résistance d'une thermistance (point rouge) à différentes températures, puis tracé sa courbe d'étalonnage R = f(T). <b>Grandeur d'entrée : la température T. Grandeur de sortie : la résistance R.</b></p>`,fig:graph(base),
+  steps:[
+   ch('La température est-elle proportionnelle à la résistance de la thermistance ?','Non : la courbe n\'est pas une droite passant par l\'origine',['Oui : plus T augmente, plus R augmente','Oui : la courbe passe par l\'origine','Non : R ne dépend pas de T'],['Une situation de proportionnalité donne une droite qui passe par l\'origine. Ici R diminue quand T augmente, selon une courbe.'],'La courbe est décroissante et non rectiligne : T et R ne sont <b>pas</b> proportionnelles.'),
+   {type:'click',q:`On mesure R = <b>${fmt(R0,0)} Ω</b>. Clique sur la courbe au point qui correspond à cette résistance : tu liras ainsi la température.`,tx:T0,ty:R0,tolx:2.5,toly:900,g:()=>graph({...base,click:true}),after:g=>`<line x1="${g.sx(T0)}" y1="${g.sy(R0)}" x2="${g.sx(T0)}" y2="${g.sy(0)}" style="stroke:var(--cur)" stroke-dasharray="4 4"/>`,clickMsg:p=>`Tu as cliqué à T ≈ ${fmt(p.x,0)} °C et R ≈ ${fmt(p.y,0)} Ω. Place-toi à la hauteur R = ${fmt(R0,0)} Ω et suis la courbe.`,hints:['Repère la valeur de R sur l\'axe vertical, avance horizontalement jusqu\'à la courbe.','Clique sur la courbe bleue à cette hauteur. L\'axe horizontal donne alors T.'],sol:`À R = ${fmt(R0,0)} Ω, la courbe donne T ≈ <b>${T0} °C</b>.`},
+   nu(`Plusieurs groupes mesurent la température d'un bain : ${meas.map(m=>fmt(m,1)).join(' ; ')} (°C). Calcule la valeur moyenne.`,mean,'°C',['Additionne les 5 valeurs et divise par 5.','Ou utilise le mode Stats de la calculatrice.'],`Moyenne = <b>${fmt(mean,1)} °C</b>.`,null,.02),
+   nu('Calcule l\'écart type échantillon s (touche « s » de la calculatrice, écart type avec n − 1).',sd,'°C',['Utilise le menu Stats de la calculatrice et lis la valeur de s (écart type échantillon).','s mesure la dispersion des résultats autour de la moyenne.'],`s ≈ <b>${fmt(sd,2)} °C</b>.`,null,.15),
+   ch(`Le thermomètre à alcool indique ${T0} °C. La méthode par étalonnage est-elle satisfaisante ?`,'Oui : la moyenne est proche de la valeur du thermomètre, à quelques dixièmes de degré près',['Non : la moyenne est très différente de la valeur du thermomètre','On ne peut pas conclure sans connaître le nombre de groupes','Non : l\'écart type devrait être nul'],[`Compare ${fmt(mean,1)} °C à ${T0} °C, en tenant compte de s ≈ ${fmt(sd,2)} °C.`],`L'écart entre la moyenne (${fmt(mean,1)} °C) et le thermomètre (${T0} °C) est de l'ordre de s : les deux méthodes sont cohérentes.`)
+  ],recap:`T ≈ ${T0} °C par lecture de la courbe ; moyenne ${fmt(mean,1)} °C, s ≈ ${fmt(sd,2)} °C.`};
+};
+Object.assign(EXINFO,{
+ affichage:["Lire l'afficheur du multimètre","Valeur d'une résistance, calibre, signes et dépassement.","Mesures et capteurs"],
+ fusible:["Protéger un résistor (0,25 W)","Intensité maximale et vérification avec un voltmètre.","Calculs"],
+ maille3:["Circuit à 5 résistances","Loi des mailles, conversion mV, fil de connexion.","Les lois"],
+ noeud5:["Pont de résistances","Loi des nœuds en A, B et D avec expressions littérales.","Les lois"],
+ frontale:["Lampe frontale : deux modes","Séries, dérivations, lois des mailles, des nœuds et d'Ohm.","Problèmes du cours"],
+ etalon:["Étalonner une thermistance","Courbe d'étalonnage, lecture graphique, moyenne et écart type.","Mesures et capteurs"]
+});
+EXINFO.ldr[0]='Photorésistance (LDR)';EXINFO.ldr[1]='Calculer R pour un éclairement et interpréter.';
+EXINFO.chauf[0]="Chauffage d'appoint";EXINFO.vent[0]='Ventilateur USB';
+
+/* ---------- cours intégré ---------- */
+const fig=(h,cap)=>`<figure class="fig" style="margin:10px 0;padding:6px">${h}${cap?`<figcaption class="kicker" style="text-align:center;padding:4px 6px 6px">${cap}</figcaption>`:''}</figure>`;
+const box=(t,h)=>`<div class="fb hint" style="margin:10px 0"><b>${t}</b><br>${h}</div>`;
+const twoCol=(a,b)=>`<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr))">${a}${b}</div>`;
+function circSerie(){return svg(300,190,wire('40,40 260,40')+wire('260,40 260,140')+wire('260,140 40,140')+wire('40,140 40,40')+disc(40,90,'G')+rectH(150,40,'R')+disc(150,140,'A')+T(150,182,'ampèremètre en série',{s:11})+T(172,128,'COM',{s:9,a:'start'})+T(120,128,'A',{s:9,a:'end'})+arr(205,30,225,30),'Ampèremètre branché en série');}
+function circDeriv(){return svg(300,190,wire('40,70 260,70')+wire('260,70 260,160')+wire('260,160 40,160')+wire('40,160 40,70')+wire('110,70 110,30')+wire('110,30 190,30')+wire('190,30 190,70')+disc(40,115,'G')+rectH(150,70,'R')+disc(150,30,'V')+T(150,12,'voltmètre en dérivation',{s:11})+dot(110,70)+dot(190,70)+T(100,50,'V',{s:9,a:'end'})+T(200,50,'COM',{s:9,a:'start'}),'Voltmètre branché en dérivation');}
+function convSvg(rec){const y=70;return svg(300,150,wire('30,70 100,70')+(rec?rectH(150,70,''):disc(150,70,'G'))+wire('200,70 270,70')+arr(60,56,90,56)+T(75,46,'I',{c:'var(--cur)',b:1})+(rec?arr(185,100,115,100,'var(--volt)')+T(150,120,'U',{c:'var(--volt)',b:1}):arr(115,100,185,100,'var(--volt)')+T(150,120,'U',{c:'var(--volt)',b:1})+T(125,56,'+',{s:11})+T(175,56,'−',{s:11})),rec?'Convention récepteur':'Convention générateur');}
+function maillesSvg(){return svg(380,230,wire('60,40 330,40')+wire('330,40 330,190')+wire('330,190 60,190')+wire('60,190 60,40')+disc(120,40,'M')+rectH(240,40,'R1')+lampe(60,115,'',15)+rectH(200,190,'R2')+arr(150,14,92,14,'var(--volt)')+T(121,8,'U3',{c:'var(--volt)',b:1})+arr(215,14,270,14,'var(--volt)')+T(243,8,'U4',{c:'var(--volt)',b:1})+arr(36,88,36,142,'var(--volt)')+T(22,118,'U1',{c:'var(--volt)',b:1,a:'end'})+arr(240,208,160,208,'var(--volt)')+T(200,225,'U2',{c:'var(--volt)',b:1})+`<circle cx="195" cy="115" r="30" fill="none" style="stroke:var(--muted)" stroke-width="2" stroke-dasharray="4 4"/>`+arr(225,108,225,124,'var(--muted)')+T(195,120,'sens +',{s:12}),'Maille orientée dans le sens des aiguilles d\'une montre');}
+function montage(g){const base=wire('60,80 330,80')+wire('330,80 330,180')+wire('330,180 60,180')+wire('60,180 60,80');
+  if(g)return svg(360,210,base+maskV(60,130,34,44)+`<line x1="46" y1="114" x2="74" y2="114" stroke-width="3.5" ${K}/><line x1="52" y1="126" x2="68" y2="126" stroke-width="3.5" ${K}/>`+wire('60,80 60,114')+wire('60,126 60,180')+T(80,112,'+ P',{a:'start',s:11})+T(80,136,'− N',{a:'start',s:11})+wire('60,100 24,100')+wire('24,100 24,160')+wire('24,160 60,160')+dot(60,100)+dot(60,160)+disc(24,130,'V','',12)+disc(150,80,'A')+rectH(240,180,'Rhéostat',50)+T(150,60,'A en série',{s:10}),'Montage pour la caractéristique d\'un générateur');
+  return svg(360,210,base+maskV(60,130,34,44)+disc(60,130,'~','',15)+T(82,134,'U réglable',{a:'start',s:10})+disc(120,80,'A')+rectH(250,80,'',50)+T(250,108,'Dipôle',{s:11})+wire('225,80 225,45')+wire('225,45 275,45')+wire('275,45 275,80')+dot(225,80)+dot(275,80)+disc(250,45,'V','',11),'Montage pour la caractéristique d\'un récepteur');}
+const mini=(o,t)=>fig(graph({w:300,h:210,...o}).svg,t);
+function caracGallery(){
+  const lamp=[],diode=[];for(let i=0;i<=200;i+=5)lamp.push([i,3.6*Math.pow(i/200,1.5)]);for(let u=0;u<=.9;u+=.02)diode.push([u,.3*(Math.exp(u/.1)-1)/(Math.exp(9)-1)]);
+  return `<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr))">`+
+  mini({xmax:15,ymax:5,xt:5,yt:1,xlab:'I (mA)',ylab:'U (V)',lines:[{pts:[[0,0],[15,4.4]]}]},'Conducteur ohmique : droite passant par l\'origine')+
+  mini({xmax:200,ymax:4,xt:100,yt:1,xlab:'I (mA)',ylab:'U (V)',lines:[{pts:lamp}]},'Lampe : courbe passant par l\'origine')+
+  mini({xmax:1.2,ymax:.3,xt:.4,yt:.1,xlab:'U (V)',ylab:'I (mA)',lines:[{pts:diode}]},'Diode : I = f(U), I reste nulle puis augmente vite')+
+  mini({xmax:2,ymax:8,xt:.5,yt:2,xlab:'I (A)',ylab:'U (V)',lines:[{pts:[[0,6],[2,6]]}]},'Générateur idéal : U constante (6 V)')+
+  mini({xmax:2,ymax:8,xt:.5,yt:2,xlab:'I (A)',ylab:'U (V)',lines:[{pts:[[0,6],[2,5.6]]}]},'Pile réelle : U légèrement décroissante')+`</div>`;}
+function fonctGraph(){const lamp=[];for(let i=0;i<=.14;i+=.005)lamp.push([i,386*Math.pow(i,1.82)]);
+  return fig(graph({xmax:.14,ymax:10,xt:.02,yt:2,xlab:'I (A)',ylab:'U (V)',lines:[{pts:[[0,6],[.14,6-15*.14]],color:'var(--volt)',label:'pile'},{pts:lamp,color:'var(--cur)',label:'lampe'}],pts:[{x:.089,y:4.7,label:'P',guide:true}]}).svg,'Point de fonctionnement : P(I<sub>P</sub> = 89 mA ; U<sub>P</sub> = 4,7 V)');}
+function ohmGraph(){return fig(graph({xmax:.15,ymax:8,xt:.05,yt:2,xlab:'I (A)',ylab:'U (V)',lines:[{pts:[[0,0],[.15,7.5]]}],pts:[{x:.1,y:5,label:'M',guide:true},{x:0,y:0,label:'O'}]}).svg,'Caractéristique d\'un conducteur ohmique : M(0,100 A ; 5,00 V)');}
+const GO=(l,k,a,n)=>`<button class="btn" data-go="${k}" data-arg="${a||''}" data-n="${n||8}">${l}</button>`;
+const COURS=[
+{id:'mesure',t:'Mesurer avec un multimètre',h:()=>`
+<table class="t"><tr><th>Mode</th><th>Pour mesurer</th><th>Branchement</th><th>Bornes</th></tr>
+<tr><td><b>Ampèremètre</b></td><td>l'intensité I (A)</td><td><b>en série</b>, dans le circuit</td><td>A (ou mA/µA) côté entrée du courant, COM côté sortie</td></tr>
+<tr><td><b>Voltmètre</b></td><td>la tension U (V)</td><td><b>en dérivation</b>, aux bornes du dipôle</td><td>V côté entrée du courant, COM côté sortie</td></tr>
+<tr><td><b>Ohmmètre</b></td><td>la résistance R (Ω)</td><td>dipôle <b>seul, hors de tout circuit</b></td><td>Ω et COM</td></tr></table>
+${twoCol(fig(circSerie(),'L\'ampèremètre est traversé par le courant'),fig(circDeriv(),'Le voltmètre est relié aux deux bornes du dipôle'))}
+<h3>Choisir le calibre</h3>
+<p>Le calibre est la valeur <b>maximale</b> qu'on peut mesurer. On commence par le plus grand calibre, puis on prend le <b>calibre immédiatement supérieur</b> à la mesure. Si l'afficheur indique « 1 », le calibre est trop petit.</p>
+<div class="scroll"><table class="t"><tr><th>Mesure</th><th>0,35 A</th><th>0,01 A</th><th>0,18 A</th><th>0,15 mA</th></tr><tr><th>Calibre</th><td>10 A</td><td>20 mA</td><td>200 mA</td><td>200 µA</td></tr><tr><th>Borne</th><td>A</td><td>mA/µA</td><td>mA/µA</td><td>mA/µA</td></tr></table></div>
+<p style="color:var(--muted)">Calibres d'ampèremètre : 10 A, 200 mA, 20 mA, 2 mA, 200 µA. Calibres de voltmètre : 200 mV, 2 V, 20 V, 200 V, 600 V.</p>
+<h3>Lire l'afficheur</h3>
+<ul><li><b>−01,2</b> : signe négatif, les bornes de branchement sont inversées.</li><li><b>1.</b> : dépassement, le calibre est trop petit.</li><li><b>001</b> : calibre beaucoup trop grand, mesure imprécise.</li><li>Ohmmètre : on lit dans l'unité du calibre. <b>180</b> sur 200 k vaut 180 kΩ ; <b>4,50</b> sur 20 M vaut 4,50 MΩ ; <b>33,0</b> sur 200 vaut 33,0 Ω.</li></ul>
+${box('Sécurité','On ne met jamais un montage sous tension sans vérification. Pour une mesure positive, le courant entre par la borne A ou V et sort par COM.')}
+<div class="row">${GO('Flashcards','cards','multi')}${GO('Quiz','quiz','multi')}${GO('Exercice : calibre','ex','calibre')}${GO('Exercice : afficheur','ex','affichage')}</div>`},
+{id:'conv',t:'Courant, tension et conventions',h:()=>`
+<p>À l'extérieur d'un générateur, le courant circule de la borne <b>+</b> (P) vers la borne <b>−</b> (N). On le représente par une <b>flèche</b> posée sur un fil. Pour qu'une intensité soit positive, le courant doit entrer par la borne A ou V du multimètre.</p>
+<p>La tension <b>U<sub>AB</sub></b> aux bornes d'un dipôle compris entre A et B se représente par une <b>flèche</b> placée à côté du dipôle, dont la <b>pointe s'arrête en A</b> et l'autre extrémité en B.</p>
+${twoCol(fig(convSvg(true),'Récepteur : flèches U et I en sens opposés'),fig(convSvg(false),'Générateur : flèches U et I dans le même sens'))}
+${box('À retenir','En convention <b>générateur</b>, U et I ont le même signe s\'ils ont la <b>même orientation</b>. En convention <b>récepteur</b>, U et I ont le même signe s\'ils ont des <b>orientations opposées</b>.')}
+<div class="scroll"><table class="t"><tr><th>Grandeur</th><th>Tension U</th><th>Intensité I</th><th>Résistance R</th><th>Puissance P</th></tr><tr><th>Unité</th><td>volt (V)</td><td>ampère (A)</td><td>ohm (Ω)</td><td>watt (W)</td></tr><tr><th>Appareil</th><td>voltmètre</td><td>ampèremètre</td><td>ohmmètre</td><td></td></tr></table></div>
+<p><b>Conversions</b> : 1 mA = 0,001 A ; 1 mV = 0,001 V ; 1 kΩ = 1 000 Ω. Avant tout calcul, on convertit en V, A et Ω.</p>
+<div class="row">${GO('Flashcards conventions','cards','conv')}${GO('Quiz','quiz','conv')}${GO('Flashcards unités','cards','unites')}${GO('Calculs éclair','ex','conv')}</div>`},
+{id:'noeuds',t:'La loi des nœuds',h:()=>`
+<p>Un <b>nœud</b> est un point du circuit où se rejoignent <b>au moins 3 fils</b>. Une <b>branche</b> est une portion de circuit comprise entre deux nœuds successifs. Tous les dipôles d'une même branche sont en série : ils sont traversés par la <b>même intensité</b>.</p>
+${fig(nodeSvg(['in','in','out','out'],['I1','I2','I3','I4'],[225,135,45,315]),'Au nœud A : I1 et I2 arrivent, I3 et I4 repartent')}
+${box('Loi des nœuds','La somme des intensités des courants qui <b>arrivent</b> à un nœud est égale à la somme des intensités qui en <b>repartent</b>.<br><span class="eq">I<sub>1</sub> + I<sub>2</sub> = I<sub>3</sub> + I<sub>4</sub></span>')}
+<h3>Exemple résolu</h3>
+<p>I<sub>1</sub> = 0,5 A et I<sub>2</sub> = 0,2 A arrivent en A ; I<sub>3</sub> repart. Alors I<sub>3</sub> = I<sub>1</sub> + I<sub>2</sub> = 0,5 + 0,2 = <b>0,7 A</b>.</p>
+<p>Méthode : 1) repérer le sens de chaque flèche, 2) écrire l'égalité littérale, 3) remplacer par les valeurs, 4) isoler l'inconnue.</p>
+<div class="row">${GO('Flashcards','cards','noeuds')}${GO('Quiz','quiz','noeuds')}${GO('Exercice : nœud','ex','noeud')}${GO('Exercice : pont de résistances','ex','noeud5')}</div>`},
+{id:'mailles',t:'La loi des mailles',h:()=>`
+<p>Une <b>maille</b> est une boucle fermée dans un circuit. On choisit un sens de parcours (le sens <b>+</b>), puis on regarde si chaque flèche de tension va dans ce sens ou dans le sens contraire.</p>
+${fig(maillesSvg(),'Ici : U2 et U4 dans le sens +, U1 et U3 dans le sens −')}
+${box('Loi des mailles','Dans une maille orientée, la somme des tensions orientées dans le sens <b>+</b> est égale à la somme des tensions orientées dans le sens <b>−</b>.<br><span class="eq">U<sub>2</sub> + U<sub>4</sub> = U<sub>1</sub> + U<sub>3</sub></span>')}
+<ul><li>Des dipôles montés <b>en dérivation</b> ont la <b>même tension</b> à leurs bornes.</li><li>La tension aux bornes d'un <b>fil de connexion</b> est <b>nulle</b>.</li></ul>
+<h3>Exemple résolu</h3>
+<p>Un générateur de U<sub>G</sub> = 6 V alimente deux lampes en série. U<sub>L1</sub> = 2,5 V. Maille : U<sub>G</sub> = U<sub>L1</sub> + U<sub>L2</sub>, donc U<sub>L2</sub> = 6 − 2,5 = <b>3,5 V</b>.</p>
+<div class="row">${GO('Flashcards','cards','mailles')}${GO('Quiz','quiz','mailles')}${GO('Exercice : maille','ex','maille')}${GO('Exercice : 5 résistances','ex','maille3')}${GO('Exercice : lampe frontale','ex','frontale')}</div>`},
+{id:'ohm',t:'La loi d\'Ohm',h:()=>`
+${box('Loi d\'Ohm','La caractéristique U = f(I) d\'un <b>conducteur ohmique</b> est une <b>droite passant par l\'origine</b> : <span class="eq">U = R × I</span>.<br>U et I sont donc <b>proportionnelles</b>, et la résistance R est le <b>coefficient directeur</b> de la droite. R s\'exprime en ohms (Ω).')}
+<p><span class="eq">I = U / R</span> &nbsp; <span class="eq">R = U / I</span> &nbsp; avec U en V, I en A, R en Ω.</p>
+${ohmGraph()}
+<p>Coefficient directeur de la droite (OM) : y<sub>M</sub> / x<sub>M</sub> = 5,00 / 0,100 = <b>50 Ω</b>. L'équation de la caractéristique est donc <span class="eq">U<sub>AB</sub> = 50,0 × I</span>.</p>
+<h3>Exemples résolus</h3>
+<ul><li>U = 220 V aux bornes de R = 330 Ω : I = 220 ÷ 330 ≈ <b>0,67 A</b>.</li><li>R = 47 Ω traversée par I = 170 mA = 0,170 A : U = 47 × 0,170 ≈ <b>8,0 V</b>.</li><li>I = 33,2 mA = 0,0332 A sous U = 9 V : R = 9 ÷ 0,0332 ≈ <b>271 Ω</b>.</li></ul>
+${box('Puissance','Pour un conducteur ohmique : <span class="eq">P = U × I = R × I²</span> (P en watts). Pour trouver I à partir de P : <span class="eq">I = √(P / R)</span>.')}
+<div class="row">${GO('Flashcards','cards','ohm')}${GO('Calculer U','ex','ohmU')}${GO('Calculer I','ex','ohmI')}${GO('Calculer R','ex','ohmR')}${GO('Puissance','ex','puiss')}${GO('Résistor 0,25 W','ex','fusible')}</div>`},
+{id:'carac',t:'Caractéristique d\'un dipôle',h:()=>`
+<p>La <b>caractéristique</b> d'un dipôle est l'ensemble des couples de valeurs mesurées <b>(I ; U)</b>. La caractéristique <b>tension-intensité</b> est la courbe <b>U = f(I)</b> : I en <b>abscisse</b>, U en <b>ordonnée</b>. La caractéristique <b>intensité-tension</b> est la courbe I = f(U).</p>
+${twoCol(fig(montage(true),'Générateur : ampèremètre en série, voltmètre aux bornes de la pile'),fig(montage(false),'Récepteur : générateur de tension réglable, mêmes appareils'))}
+<p>On fait varier l'intensité (rhéostat) ou la tension (générateur réglable), on relève les couples (I ; U) et on les place sur le graphique.</p>
+<h3>Quelques caractéristiques</h3>
+${caracGallery()}
+${box('À retenir','Pour un dipôle <b>récepteur</b>, la caractéristique passe par l\'origine : pour I = 0, U = 0 et inversement. Pour un dipôle <b>générateur</b>, elle ne passe pas par l\'origine.')}
+<h3>Calculer un coefficient directeur</h3>
+<p>On choisit deux points A et B <b>réellement sur la droite tracée</b>, éloignés l'un de l'autre. Si la droite passe par l'origine, on prend A = O(0 ; 0).</p>
+<p><span class="eq">k = (y<sub>B</sub> − y<sub>A</sub>) / (x<sub>B</sub> − x<sub>A</sub>)</span> &nbsp; et l'équation est <span class="eq">y = k × x</span> (droite passant par l'origine, fonction linéaire) ou <span class="eq">y = a × x + b</span> (fonction affine, b est l'ordonnée à l'origine).</p>
+<p>Le coefficient directeur <b>a une unité</b> : pour U = f(I), k s'exprime en V/A, c'est-à-dire en ohms. Il faut donc convertir I en ampères.</p>
+<div class="row">${GO('Flashcards','cards','carac')}${GO('Quiz','quiz','carac')}${GO('Lire un graphique','ex','lecture')}${GO('Tracer une caractéristique','ex','tracer')}</div>`},
+{id:'fonct',t:'Point de fonctionnement et puissance',h:()=>`
+${box('Définition','Le <b>point de fonctionnement</b> P(I<sub>P</sub> ; U<sub>P</sub>) d\'un circuit où un générateur est branché en série avec un récepteur est le point d\'<b>intersection</b> de leurs caractéristiques. À ce point, les deux dipôles ont la <b>même tension</b> U<sub>P</sub> et sont traversés par la <b>même intensité</b> I<sub>P</sub>.')}
+${fonctGraph()}
+<h3>Exemple : un chauffage d'appoint</h3>
+<p>Un chauffage de <b>150 W</b>, alimenté en <b>12 V</b>, est modélisé par un conducteur ohmique de <b>R = 1,2 Ω</b> : c'est un <b>récepteur</b>.</p>
+<ul><li><b>Intensité</b> : P = R × I² donc I = √(P / R) = √(150 ÷ 1,2) ≈ <b>11 A</b>.</li><li><b>Caractéristique</b> : U = R × I = 1,2 × I, soit 0 ; 1,2 ; 2,4 ; 3,6 ; 4,8 ; 6,0 ; 7,2 ; 8,4 ; 9,6 ; 10,8 ; 12,0 ; 13,2 V pour I = 0 ; 1 ; 2 … 11 A.</li><li><b>Avec un panneau photovoltaïque</b> : P(7,5 A ; 9 V), puissance U × I = 9 × 7,5 ≈ <b>68 W</b>.</li><li><b>Avec une batterie</b> : P(9,8 A ; 12 V), puissance 12 × 9,8 ≈ <b>118 W</b>.</li></ul>
+<p>La batterie convient mieux : la puissance reçue est plus grande et plus proche de 150 W.</p>
+<div class="row">${GO('Flashcards','cards','fonct')}${GO('Point de fonctionnement','ex','fonct')}${GO('Chauffage d\'appoint','ex','chauf')}${GO('Ventilateur USB','ex','vent')}</div>`},
+{id:'capt',t:'Les capteurs électriques',h:()=>`
+<p>Un <b>capteur</b> est un dipôle dont une propriété électrique (souvent sa résistance) dépend d'une grandeur physique du milieu.</p>
+<ul><li>La <b>photorésistance</b> (LDR) : sa résistance dépend de l'<b>éclairement</b>. Plus il y a de lumière, plus R <b>diminue</b>. Usages : éclairage public, ouverture automatique des portes, alarmes, allumage des feux d'une voiture.</li><li>La <b>thermistance</b> : sa résistance dépend de la <b>température</b>. Usages : four, climatiseur, thermostat d'ambiance, thermomètre électronique.</li></ul>
+<div class="scroll"><table class="t"><tr><th>Éclairement (lux)</th><td>450</td><td>600</td><td>800</td><td>1 400</td><td>4 000</td></tr><tr><th>I (mA)</th><td>2,0</td><td>3,5</td><td>6,2</td><td>9,6</td><td>17</td></tr><tr><th>U<sub>LDR</sub> (V)</th><td>4,8</td><td>4,7</td><td>4,4</td><td>4,0</td><td>3,5</td></tr><tr><th>R = U / I (Ω)</th><td>2 400</td><td>1 343</td><td>710</td><td>417</td><td>206</td></tr></table></div>
+<p>Pour une thermistance, la grandeur d'<b>entrée</b> est la température T (°C) et la grandeur de <b>sortie</b> est la résistance R (Ω). On <b>étalonne</b> le capteur : on mesure R à plusieurs températures (de 5 °C en 5 °C), on trace la courbe R = f(T), puis on s'en sert pour <b>lire T à partir de R</b>. La courbe n'est pas une droite passant par l'origine : T et R ne sont pas proportionnelles.</p>
+<p>Plusieurs groupes mesurent la même température : on calcule la <b>moyenne</b> et l'<b>écart type</b> s, puis on compare à la valeur du thermomètre.</p>
+<div class="row">${GO('Flashcards','cards','capt')}${GO('Photorésistance','ex','ldr')}${GO('Étalonner une thermistance','ex','etalon')}</div>`},
+{id:'symb',t:'Symboles normalisés',h:()=>`<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(min(100%,150px),1fr))">${SYMS.map(s=>`<figure class="fig" style="margin:0;padding:6px;text-align:center"><svg viewBox="0 0 80 48" width="80" role="img" aria-label="${s[1]}">${sym(s[0])}</svg><figcaption class="kicker" style="padding:2px 4px 6px;text-transform:none;letter-spacing:0">${s[1]}</figcaption></figure>`).join('')}</div>`}
+];
+function renderCours(){
+  $('#p-cours').innerHTML=`<div class="card"><h2>Le cours en une page</h2><p style="color:var(--muted)">Tout ce qu'il faut savoir est ici, avec des schémas et des exemples résolus. Aucun livre ni fiche n'est nécessaire.</p><div class="row" style="margin-top:8px">${COURS.map(c=>`<button class="btn ghost" data-sec="${c.id}">${c.t}</button>`).join('')}</div></div>`+COURS.map(c=>`<article class="card" id="c-${c.id}"><h2>${c.t}</h2><div style="display:grid;gap:8px;margin-top:8px">${c.h()}</div></article>`).join('');
+  $$('#p-cours [data-sec]').forEach(b=>b.onclick=()=>$('#c-'+b.dataset.sec).scrollIntoView({behavior:'smooth',block:'start'}));
+  $$('#p-cours [data-go]').forEach(b=>b.onclick=()=>launch(b.dataset.go,b.dataset.arg,b.dataset.n));
+}
+function showCours(id){showTab('cours');const el=$('#c-'+id);if(el)setTimeout(()=>el.scrollIntoView({block:'start'}),30)}
+
+/* ---------- fiche mémo ---------- */
+$('#p-memo').innerHTML=`<div class="memo">
+<div class="card"><span class="kicker">Loi des nœuds</span><p>Somme des intensités qui <b>arrivent</b> = somme des intensités qui <b>repartent</b>.</p><span class="big">I₁ + I₂ = I₃ + I₄</span><p>Un nœud relie au moins 3 fils. Dans une branche, I est la même partout.</p></div>
+<div class="card"><span class="kicker">Loi des mailles</span><p>Dans une maille orientée : tensions dans le sens <b>+</b> = tensions dans le sens <b>−</b>.</p><span class="big">U₂ + U₄ = U₁ + U₃</span><p>Dipôles en dérivation : même tension. Fil : U = 0 V.</p></div>
+<div class="card"><span class="kicker">Loi d'Ohm</span><span class="big">U = R × I</span><p>I = U / R &nbsp;·&nbsp; R = U / I</p><p>U en V, I en A, R en Ω. La caractéristique est une droite passant par l'origine, de coefficient directeur R.</p></div>
+<div class="card"><span class="kicker">Puissance</span><span class="big">P = U × I = R × I²</span><p>P en watts (W). I = √(P / R).</p></div>
+<div class="card"><span class="kicker">Conventions</span><p><b>Récepteur</b> : flèches de U et I en sens <b>opposés</b>.<br><b>Générateur</b> : flèches de U et I dans le <b>même sens</b>.</p><p>La pointe de la flèche U<sub>AB</sub> est en A. Le courant sort par la borne + du générateur.</p></div>
+<div class="card"><span class="kicker">Caractéristique d'un dipôle</span><p>Courbe <b>U = f(I)</b> : I en abscisse, U en ordonnée.</p><p>Récepteur : passe par l'origine. Générateur : ne passe pas par l'origine (pile : droite légèrement décroissante).</p><span class="big">k = (y<sub>B</sub> − y<sub>A</sub>) / (x<sub>B</sub> − x<sub>A</sub>)</span></div>
+<div class="card"><span class="kicker">Point de fonctionnement</span><p>P(I<sub>P</sub> ; U<sub>P</sub>) = <b>intersection</b> des caractéristiques du générateur et du récepteur branchés ensemble. Même U et même I pour les deux.</p></div>
+<div class="card"><span class="kicker">Capteurs</span><p><b>Photorésistance</b> : R dépend de l'éclairement (plus de lumière, R diminue).<br><b>Thermistance</b> : R dépend de la température.</p><p>Étalonnage : courbe R = f(T), puis lecture de T à partir de R.</p></div>
+<div class="card" style="grid-column:1/-1"><span class="kicker">Multimètre</span><div class="scroll"><table class="t"><tr><th>Mode</th><th>Grandeur</th><th>Branchement</th><th>Bornes</th></tr><tr><td>Ampèremètre</td><td>I (A)</td><td>en série</td><td>A (ou mA/µA) côté entrée du courant, COM côté sortie</td></tr><tr><td>Voltmètre</td><td>U (V)</td><td>en dérivation</td><td>V côté entrée du courant, COM côté sortie</td></tr><tr><td>Ohmmètre</td><td>R (Ω)</td><td>hors circuit, dipôle seul</td><td>Ω et COM</td></tr></table></div><p>Calibre : le plus petit calibre supérieur à la mesure. Si « 1 » s'affiche, prendre un calibre plus grand. Affichage négatif : bornes inversées.</p></div>
+<div class="card" style="grid-column:1/-1"><span class="kicker">Conversions</span><div class="scroll"><table class="t"><tr><th>1 mA = 0,001 A</th><th>1 A = 1 000 mA</th><th>1 mV = 0,001 V</th><th>1 kΩ = 1 000 Ω</th></tr></table></div><p>Avant tout calcul, convertir en V, A et Ω.</p></div>
+</div>`;
+renderCours();renderPlan();buildDeck();histText();renderExList();stats();
+
+</script>
+
+</body></html>

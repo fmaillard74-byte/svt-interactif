@@ -1,0 +1,522 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Correction Von Behring</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Familjen+Grotesk:wght@500;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Mise en page : une colonne de 46rem. Le protocole expérimental ouvre la page, puis deux onglets (Q1, Q2) dont les étapes « je vois / je sais / j'en déduis » se débloquent une à une. */
+:root{
+  --bg:#eef2f6; --surface:#fbfcfd; --ink:#14233a; --muted:#53647c; --line:#cdd7e3;
+  --accent:#2a6fb5; --accent-ink:#ffffff; --accent-soft:#dce9f6;
+  --ok:#17704d; --ok-soft:#d6eee3; --bad:#aa2b3d; --bad-soft:#f7dde1; --warn:#7a5200; --warn-soft:#faedcc;
+  --vois:#1f5fa8; --vois-soft:#dbe8f7; --sais:#11737a; --sais-soft:#d2eceb; --deduis:#94306b; --deduis-soft:#f6dcec;
+  --f-display:"Familjen Grotesk","Segoe UI",system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1826; --surface:#162235; --ink:#e6edf7; --muted:#9aabc2; --line:#2a3a52;
+    --accent:#6fb0ee; --accent-ink:#0b1522; --accent-soft:#1c3350;
+    --ok:#55c999; --ok-soft:#153a2d; --bad:#f08a98; --bad-soft:#43202a; --warn:#e8bb61; --warn-soft:#3d3014;
+    --vois:#8cc4f5; --vois-soft:#1b3452; --sais:#6fd3d9; --sais-soft:#12363a; --deduis:#f0a0cf; --deduis-soft:#43203a;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1826; --surface:#162235; --ink:#e6edf7; --muted:#9aabc2; --line:#2a3a52;
+  --accent:#6fb0ee; --accent-ink:#0b1522; --accent-soft:#1c3350;
+  --ok:#55c999; --ok-soft:#153a2d; --bad:#f08a98; --bad-soft:#43202a; --warn:#e8bb61; --warn-soft:#3d3014;
+  --vois:#8cc4f5; --vois-soft:#1b3452; --sais:#6fd3d9; --sais-soft:#12363a; --deduis:#f0a0cf; --deduis-soft:#43203a;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:1rem/1.55 var(--f-body);padding-inline:1rem;padding-block:0}
+.wrap{max-width:46rem;margin-inline:auto;padding-block:1.75rem 3.5rem;display:flex;flex-direction:column;gap:1.75rem}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+p{margin:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.kicker{font:500 .78rem/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+header.top{display:flex;flex-direction:column;gap:.7rem}
+h1{font-size:clamp(1.8rem,6vw,2.5rem);font-weight:700;letter-spacing:-.01em}
+.lede{color:var(--muted);max-width:40rem}
+
+/* protocole */
+.proto{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1.1rem;display:flex;flex-direction:column;gap:1rem}
+.proto h2{font-size:1.15rem}
+.proto .ctx{color:var(--muted);font-size:.96rem}
+.source{display:flex;flex-direction:column;gap:.35rem;padding:.8rem .9rem;border:1px dashed var(--line);border-radius:8px}
+.source b{font-family:var(--f-display)}
+.lanes{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+.lane{min-width:0;border-top:2px solid var(--line);padding-top:.7rem;display:flex;flex-direction:column;gap:.5rem}
+.lane h3{font-size:1rem}
+.chain{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.15rem}
+.chain li{padding:.45rem .65rem;background:var(--bg);border-radius:6px;font-size:.95rem}
+.chain li+li::before{content:"↓";display:block;color:var(--muted);font-size:.8rem;line-height:1;margin:-.55rem 0 .15rem;text-align:left}
+.chain li.res{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.pill{display:inline-block;font:500 .8rem/1 var(--f-mono);padding:.3rem .55rem;border-radius:999px}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.bad{background:var(--bad-soft);color:var(--bad)}
+@media (max-width:34rem){.lanes{grid-template-columns:1fr}}
+
+/* onglets */
+.tabs{display:flex;gap:.5rem;flex-wrap:wrap}
+.tab{flex:1 1 10rem;min-height:3rem;display:flex;justify-content:space-between;align-items:center;gap:.75rem;padding:.55rem .95rem;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;font:700 1rem var(--f-display);cursor:pointer;text-align:left}
+.tab small{font:500 .78rem var(--f-mono);color:var(--muted)}
+.tab[aria-selected="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.tab[aria-selected="true"] small{color:var(--ink)}
+
+/* question */
+.qhead{display:flex;flex-direction:column;gap:.5rem}
+.qhead h2{font-size:1.4rem}
+.statement{font-size:1.05rem}
+.note{font-style:italic;color:var(--muted)}
+.steps{display:flex;flex-direction:column;gap:1rem;margin-top:1.1rem}
+
+.step{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1rem;display:flex;flex-direction:column;gap:.85rem;min-width:0}
+.step.is-locked{background:transparent;border-style:dashed}
+.step-head{display:flex;justify-content:space-between;align-items:center;gap:.75rem;flex-wrap:wrap}
+.tag{display:inline-block;font:500 .9rem/1 var(--f-mono);letter-spacing:.02em;padding:.4rem .6rem;border-radius:5px}
+.tag.vois{background:var(--vois-soft);color:var(--vois)}
+.tag.sais{background:var(--sais-soft);color:var(--sais)}
+.tag.deduis{background:var(--deduis-soft);color:var(--deduis)}
+.status{font:500 .78rem var(--f-mono);letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.status.ok{color:var(--ok)}
+.status.todo{color:var(--accent)}
+.locked-msg{color:var(--muted);font-size:.95rem}
+.prompt{font-weight:700}
+fieldset{border:0;margin:0;padding:0;min-width:0;display:flex;flex-direction:column;gap:.55rem}
+
+.opt{position:relative;display:grid;grid-template-columns:auto 1fr;gap:.75rem;align-items:start;padding:.7rem .85rem;border:1.5px solid var(--line);border-radius:8px;background:var(--bg);cursor:pointer}
+.opt input{position:absolute;opacity:0;width:1px;height:1px}
+.opt:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.box{display:grid;place-items:center;width:1.4rem;height:1.4rem;margin-top:.1rem;border:2px solid var(--muted);border-radius:4px;color:var(--accent-ink);font:700 .85rem/1 var(--f-body)}
+.box.round{border-radius:50%}
+.opt.is-sel{border-color:var(--accent);background:var(--accent-soft)}
+.opt.is-sel .box{background:var(--accent);border-color:var(--accent)}
+.opt.is-sel .box::after{content:"✓"}
+.opt.is-sel .box.round::after{content:"●";font-size:.55rem}
+.opt.is-ok{border-color:var(--ok);background:var(--ok-soft);cursor:default}
+.opt.is-ok .box{background:var(--ok);border-color:var(--ok)}
+.opt.is-ok .box::after,.opt.is-ok .box.round::after{content:"✓";font-size:.85rem}
+.opt.is-bad{border-color:var(--bad);background:var(--bad-soft)}
+.opt.is-bad .box{background:var(--bad);border-color:var(--bad)}
+.opt.is-bad .box::after,.opt.is-bad .box.round::after{content:"✕";font-size:.8rem}
+.opt.is-off{opacity:.85;cursor:default}
+.otext{min-width:0;overflow-wrap:anywhere}
+.ofb{display:block;margin-top:.35rem;font-size:.93rem}
+.opt.is-ok .ofb{color:var(--ok)}
+.opt.is-bad .ofb{color:var(--bad)}
+.opt.is-off .ofb{color:var(--muted)}
+
+.actions{display:flex;gap:.6rem;flex-wrap:wrap}
+.btn{min-height:2.75rem;padding:.55rem 1.1rem;border-radius:8px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:700 .97rem var(--f-display);cursor:pointer}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent}
+.btn:disabled{opacity:.5;cursor:default}
+.hints{display:flex;flex-direction:column;gap:.4rem;padding:.7rem .85rem;background:var(--warn-soft);color:var(--warn);border-radius:8px;font-size:.95rem}
+.hints strong{font-family:var(--f-mono);font-weight:500}
+.fb{padding:.7rem .85rem;border-radius:8px;font-size:.96rem}
+.fb.ok{background:var(--ok-soft);color:var(--ok)}
+.fb.bad{background:var(--bad-soft);color:var(--bad)}
+.fb.warn,.fb.info{background:var(--warn-soft);color:var(--warn)}
+details.review summary{cursor:pointer;font:700 .93rem var(--f-display);color:var(--accent);padding:.3rem 0;margin-bottom:.5rem}
+
+/* analyse construite */
+.analysis{margin-top:1.4rem;border:1px solid var(--line);border-radius:var(--r);padding:1rem;display:flex;flex-direction:column;gap:.8rem;background:var(--surface)}
+.analysis h3{font-size:1.05rem}
+.aline{display:flex;flex-wrap:wrap;gap:.35rem .6rem;align-items:baseline}
+.aline .tag{flex:none}
+.aline span.txt{flex:1 1 16rem;min-width:0}
+.ph{color:var(--muted);font-style:italic}
+.retain{margin-top:1rem;padding:1rem;border-radius:var(--r);background:var(--accent-soft);display:flex;flex-direction:column;gap:.4rem}
+.retain .kicker{color:var(--ink)}
+.retain p{font-weight:700}
+.selfcheck{margin-top:1rem;display:flex;flex-direction:column;gap:.55rem}
+.selfcheck h3{font-size:1.05rem}
+.chk{position:relative;display:grid;grid-template-columns:auto 1fr;gap:.7rem;align-items:start;cursor:pointer}
+.chk input{position:absolute;opacity:0;width:1px;height:1px}
+.chk:has(input:focus-visible) .box{outline:2px solid var(--accent);outline-offset:2px}
+.chk input:checked + .box{background:var(--ok);border-color:var(--ok)}
+.chk input:checked + .box::after{content:"✓"}
+.count{font:500 .85rem var(--f-mono);color:var(--muted)}
+
+footer.foot{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:1rem}
+.score{font:500 .88rem var(--f-mono);color:var(--muted)}
+@media (prefers-reduced-motion: no-preference){.btn{transition:background .15s,opacity .15s}.opt{transition:border-color .15s,background .15s}}
+</style>
+
+<main class="wrap">
+  <header class="top">
+    <span class="kicker">SVT · 5ᵉ · La protection de l’organisme</span>
+    <h1>Von Behring et le sérum</h1>
+    <p class="lede">Corrige-toi pas à pas sur les questions 1 et 2. Chaque analyse se construit en trois temps : ce que je vois, ce que je sais, ce que j’en déduis. L’étape suivante s’ouvre quand la précédente est validée.</p>
+  </header>
+
+  <section class="proto" aria-labelledby="proto-title">
+    <h2 id="proto-title">Le protocole expérimental</h2>
+    <p class="ctx">Fin du XIXᵉ siècle, la diphtérie est une maladie infantile mortelle, causée par la bactérie <i>Corynebacterium diphtheriae</i>. Von Behring et Kitasato font des expériences sur des cobayes.</p>
+    <div class="source">
+      <p><b>Cobaye A</b> : a survécu à la diphtérie. On prélève son <b>sérum</b>.</p>
+      <p class="ctx">Sérum : sang dont on a éliminé les cellules (globules blancs et globules rouges).</p>
+    </div>
+    <div class="lanes">
+      <div class="lane">
+        <h3>Expérience 1 · cobaye B</h3>
+        <ol class="chain">
+          <li>Injection du sérum de A</li>
+          <li>Injection de toxines de la diphtérie</li>
+          <li class="res">Résultat <span class="pill ok">Survie</span></li>
+        </ol>
+      </div>
+      <div class="lane">
+        <h3>Expérience 2 · cobaye C</h3>
+        <ol class="chain">
+          <li>Injection du sérum de A</li>
+          <li>Injection de toxines du tétanos</li>
+          <li class="res">Résultat <span class="pill bad">Mort</span></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section aria-label="Questions">
+    <div class="tabs" role="tablist" id="tabs"></div>
+    <div id="panel" role="tabpanel" style="margin-top:1.25rem"></div>
+  </section>
+
+  <footer class="foot">
+    <span class="score" id="score"></span>
+    <button class="btn ghost" type="button" data-action="reset">Recommencer</button>
+  </footer>
+</main>
+
+<script>
+const QUESTIONS = [
+  {
+    label: 'Question 1',
+    statement: 'Analyser l’expérience 1 pour indiquer quelle nouvelle connaissance a été mise en évidence par Von Behring.',
+    note: 'Attention à bien comprendre ce qu’est le sérum avant de répondre à la question.',
+    steps: [
+      {
+        tag: 'Je vois que…', cls: 'vois', type: 'multi',
+        prompt: 'Coche toutes les observations tirées du document : ce que tu lis ou ce que tu vois, sans explication.',
+        options: [
+          { t: 'Le cobaye A a survécu à la diphtérie, puis on a prélevé son sérum.', ok: true, fb: 'Oui, c’est écrit sur le schéma.' },
+          { t: 'On a injecté le sérum de A au cobaye B, puis des toxines de la diphtérie.', ok: true, fb: 'Oui, et l’ordre des injections compte.' },
+          { t: 'Le cobaye B survit à l’expérience 1.', ok: true, fb: 'Oui, c’est le résultat observé.' },
+          { t: 'Le cobaye B a reçu des globules blancs du cobaye A.', ok: false, fb: 'Faux : dans le sérum, les globules blancs et rouges ont été éliminés (note du schéma).' },
+          { t: 'Le sérum de A contient des anticorps antidiphtériques.', ok: false, fb: 'C’est une déduction, pas une observation : aucun anticorps n’est dessiné. Garde-la pour « j’en déduis que… ».' },
+          { t: 'Le cobaye B meurt après l’injection des toxines.', ok: false, fb: 'Faux : B survit. C’est le cobaye C qui meurt, dans l’expérience 2.' }
+        ],
+        hints: [
+          'Suis la flèche de l’expérience 1, de gauche à droite : qui reçoit quoi, et dans quel ordre ?',
+          'Un « je vois » ne contient que ce que montre le schéma. Si une phrase explique pourquoi, elle appartient à l’étape suivante.'
+        ],
+        why: 'Tu as relevé uniquement les faits du schéma : qui reçoit quoi, dans quel ordre, et le résultat.',
+        model: 'le cobaye B, qui a reçu le sérum du cobaye A guéri de la diphtérie, survit à l’injection de toxines de la diphtérie (expérience 1).'
+      },
+      {
+        tag: 'Je sais que…', cls: 'sais', type: 'multi',
+        prompt: 'Coche toutes les connaissances du cours utiles pour interpréter cette expérience.',
+        options: [
+          { t: 'Le sérum est le sang débarrassé de ses cellules (globules blancs et globules rouges).', ok: true, fb: 'Oui, c’est la partie liquide du sang.' },
+          { t: 'Après une infection, des lymphocytes B activés donnent des plasmocytes qui libèrent des anticorps spécifiques dans le sang.', ok: true, fb: 'Oui, c’est l’étape 4 de la mission des lymphocytes B.' },
+          { t: 'Un anticorps se fixe sur l’antigène qu’il reconnaît et le neutralise.', ok: true, fb: 'Oui : le complexe anticorps-antigène est ensuite détruit par les phagocytes.' },
+          { t: 'Le sérum contient des lymphocytes B.', ok: false, fb: 'Faux : les cellules ont été retirées, il ne reste que des molécules dissoutes.' },
+          { t: 'Les anticorps sont des cellules du système immunitaire.', ok: false, fb: 'Faux : les anticorps sont des molécules. Ce sont les plasmocytes, des cellules, qui les fabriquent.' },
+          { t: 'Les phagocytes fabriquent les anticorps.', ok: false, fb: 'Faux : les phagocytes digèrent les complexes anticorps-antigène. Les anticorps viennent des plasmocytes.' }
+        ],
+        hints: [
+          'Relis la note du schéma : que contient le sérum, et que ne contient-il plus ?',
+          'Pense au cours : qui fabrique les anticorps, où les trouve-t-on, et que font-ils face à un antigène ?'
+        ],
+        why: 'Ces trois connaissances sont tes outils de raisonnement : ce que contient le sérum, d’où viennent les anticorps, ce qu’ils font.',
+        model: 'le sérum est le sang débarrassé de ses cellules et qu’il contient les anticorps produits lors d’une infection. Un anticorps se fixe sur l’antigène qu’il reconnaît et le neutralise.'
+      },
+      {
+        tag: 'J’en déduis que…', cls: 'deduis', type: 'single',
+        prompt: 'Choisis la déduction la plus complète et la plus précise.',
+        options: [
+          { t: 'Le sérum de A contient des anticorps antidiphtériques qui ont neutralisé les toxines injectées à B : la protection se transmet par le sérum, sans cellules.', ok: true, fb: 'Oui : tu nommes la molécule responsable et tu énonces la connaissance nouvelle.' },
+          { t: 'Le sérum de A protège le cobaye B contre la diphtérie.', ok: false, fb: 'Juste, mais incomplet : quelle molécule contenue dans le sérum assure cette protection ?' },
+          { t: 'Les globules blancs de A ont protégé le cobaye B.', ok: false, fb: 'Faux : le sérum ne contient plus de globules blancs.' },
+          { t: 'Le cobaye B a fabriqué ses propres anticorps après l’injection du sérum.', ok: false, fb: 'Peu probable : produire des anticorps prend plusieurs jours (reconnaissance, puis multiplication), et B reçoit les toxines juste après le sérum.' },
+          { t: 'Les toxines de la diphtérie sont inoffensives pour les cobayes.', ok: false, fb: 'Rien ne le montre. Au contraire, la diphtérie est une maladie mortelle (contexte historique).' }
+        ],
+        hints: [
+          'Quelle molécule du sérum a pu protéger le cobaye B ? Nomme-la.',
+          'Le sérum ne contient pas de cellules : la protection ne peut pas venir de globules blancs. Que reste-t-il ?'
+        ],
+        why: 'Tu relies l’observation (B survit) à tes connaissances (le sérum contient des anticorps) pour conclure.',
+        model: 'le sérum du cobaye A contient des anticorps antidiphtériques, qui ont neutralisé les toxines injectées à B. La protection se transmet donc d’un organisme à un autre par le sérum, sans cellules : les anticorps qui circulent dans le sang suffisent à protéger.'
+      }
+    ],
+    retain: 'Le sérum d’un organisme guéri contient des anticorps. Injecté à un autre organisme, il le protège : les anticorps circulent dans le sang et neutralisent l’antigène.',
+    checks: [
+      'J’ai écrit mes trois temps : je vois, je sais, j’en déduis.',
+      'J’ai précisé que le sérum est du sang sans cellules.',
+      'J’ai nommé les anticorps comme responsables de la protection du cobaye B.',
+      'J’ai conclu que le sérum d’un individu guéri peut protéger un autre individu.'
+    ]
+  },
+  {
+    label: 'Question 2',
+    statement: 'Analyser l’expérience 2 pour indiquer quelle propriété importante du système immunitaire est mise en évidence ici.',
+    note: 'Aide : le document 3 montre ce qui se passe quand un anticorps rencontre (ou non) l’antigène qui lui correspond.',
+    steps: [
+      {
+        tag: 'Je vois que…', cls: 'vois', type: 'multi',
+        prompt: 'Coche toutes les observations tirées du document : ce que tu lis ou ce que tu vois, sans explication.',
+        options: [
+          { t: 'Le cobaye C reçoit le même sérum que B, prélevé sur le cobaye A.', ok: true, fb: 'Oui : les deux cobayes reçoivent le sérum de A.' },
+          { t: 'On injecte ensuite à C des toxines du tétanos.', ok: true, fb: 'Oui : ce sont d’autres toxines que celles de l’expérience 1.' },
+          { t: 'Le cobaye C meurt.', ok: true, fb: 'Oui, c’est le résultat observé.' },
+          { t: 'Le cobaye C reçoit des toxines de la diphtérie.', ok: false, fb: 'Faux : ce sont celles du cobaye B. C reçoit des toxines du tétanos.' },
+          { t: 'Les anticorps antidiphtériques ne reconnaissent pas les toxines du tétanos.', ok: false, fb: 'C’est une déduction : le schéma de l’expérience ne le montre pas directement.' },
+          { t: 'Le cobaye C survit comme le cobaye B.', ok: false, fb: 'Faux : B survit, C meurt.' }
+        ],
+        hints: [
+          'Compare avec l’expérience 1 : qu’est-ce qui change pour le cobaye C ?',
+          'Regarde bien le nom des toxines injectées, puis le résultat.'
+        ],
+        why: 'Tu as comparé les deux expériences : même sérum, toxines différentes, résultats opposés.',
+        model: 'le cobaye C, qui a reçu le même sérum que B, meurt après l’injection de toxines du tétanos (expérience 2).'
+      },
+      {
+        tag: 'Je sais que…', cls: 'sais', type: 'multi',
+        prompt: 'Coche toutes les connaissances utiles pour interpréter cette expérience.',
+        options: [
+          { t: 'Le sérum du cobaye A contient des anticorps antidiphtériques (conclusion de la question 1).', ok: true, fb: 'Oui, c’est ce que tu as établi avec l’expérience 1.' },
+          { t: 'Un anticorps ne se fixe que sur l’antigène qui lui correspond, comme une clé dans une serrure.', ok: true, fb: 'Oui : c’est ce que montre le document 3.' },
+          { t: 'Les antigènes de la bactérie du tétanos sont différents de ceux de la bactérie de la diphtérie.', ok: true, fb: 'Oui : ce sont deux bactéries différentes, avec des antigènes différents.' },
+          { t: 'Le sérum du cobaye A contient des anticorps antitétaniques.', ok: false, fb: 'Faux : A a survécu à la diphtérie, il n’a pas rencontré le tétanos.' },
+          { t: 'Un même anticorps peut se fixer sur tous les antigènes.', ok: false, fb: 'Faux : dans le document 3, l’anticorps antidiphtérique ne se fixe pas sur la bactérie tétanique.' },
+          { t: 'Le sérum du cobaye A est toxique pour les cobayes.', ok: false, fb: 'Faux : le cobaye B a reçu le même sérum et a survécu.' }
+        ],
+        hints: [
+          'Rappelle-toi ce que contient le sérum de A, d’après la question 1.',
+          'Dans l’aide, l’anticorps antidiphtérique est barré d’une croix : il ne se fixe pas sur la bactérie du tétanos. Qu’est-ce que cela t’apprend ?'
+        ],
+        why: 'Ces connaissances expliquent pourquoi le même sérum donne deux résultats opposés.',
+        model: 'le sérum de A contient des anticorps antidiphtériques, et qu’un anticorps ne se fixe que sur l’antigène qu’il reconnaît, comme une clé dans sa serrure (document 3).'
+      },
+      {
+        tag: 'J’en déduis que…', cls: 'deduis', type: 'single',
+        prompt: 'Choisis la déduction la plus complète et la plus précise.',
+        options: [
+          { t: 'Les anticorps sont spécifiques : les anticorps antidiphtériques ne reconnaissent que l’antigène de la diphtérie et ne peuvent pas neutraliser les toxines du tétanos.', ok: true, fb: 'Oui : tu énonces la propriété du système immunitaire, la spécificité des anticorps.' },
+          { t: 'Le sérum de A ne protège pas le cobaye C contre le tétanos.', ok: false, fb: 'C’est le constat de l’expérience, pas encore une propriété du système immunitaire. Explique pourquoi, avec le mot « spécifique ».' },
+          { t: 'Les anticorps protègent contre toutes les maladies.', ok: false, fb: 'Faux : l’expérience montre le contraire.' },
+          { t: 'Le cobaye C est mort parce que son sérum ne contenait pas de globules blancs.', ok: false, fb: 'Le sérum ne contient jamais de globules blancs, pour B comme pour C : cela n’explique pas la différence.' }
+        ],
+        hints: [
+          'Pourquoi les anticorps du sérum n’ont-ils servi à rien contre le tétanos ?',
+          'Pense à la clé et à la serrure : une clé ouvre-t-elle toutes les serrures ?'
+        ],
+        why: 'Tu passes du constat (C meurt) à la propriété générale : un anticorps ne reconnaît qu’un seul antigène.',
+        model: 'les anticorps antidiphtériques ne reconnaissent pas les antigènes du tétanos et ne peuvent pas les neutraliser. Les anticorps sont donc spécifiques d’un seul antigène : c’est une propriété importante du système immunitaire.'
+      }
+    ],
+    retain: 'Les anticorps sont spécifiques : chacun ne reconnaît qu’un seul antigène. Le sérum anti-diphtérie ne protège donc pas contre le tétanos.',
+    checks: [
+      'J’ai écrit mes trois temps : je vois, je sais, j’en déduis.',
+      'J’ai comparé avec l’expérience 1 (même sérum, autres toxines).',
+      'J’ai utilisé le mot « spécifique » ou l’image de la clé et de la serrure.',
+      'J’ai conclu que les anticorps antidiphtériques ne reconnaissent que l’antigène de la diphtérie.'
+    ]
+  }
+];
+
+function shuffle(a){ const r=a.slice(); for(let i=r.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [r[i],r[j]]=[r[j],r[i]]; } return r; }
+const ORDERS = QUESTIONS.map(q => q.steps.map(st => shuffle(st.options.map((_,i)=>i))));
+function fresh(){
+  return QUESTIONS.map(q => ({
+    steps: q.steps.map(() => ({ done:false, first:false, attempts:0, hints:0, sel:[], marks:{}, msg:null, revealed:false, exp:true })),
+    checks: q.checks.map(() => false)
+  }));
+}
+let state = fresh();
+let activeQ = 0;
+
+const $tabs = document.getElementById('tabs');
+const $panel = document.getElementById('panel');
+const $score = document.getElementById('score');
+
+function doneCount(qi){ return state[qi].steps.filter(s=>s.done).length; }
+function plural(n, one, many){ return n + ' ' + (n>1 ? many : one); }
+
+function optHTML(qi, si, oi){
+  const st = QUESTIONS[qi].steps[si], s = state[qi].steps[si], o = st.options[oi];
+  const single = st.type === 'single';
+  const selected = s.sel.includes(oi);
+  let cls = 'opt', showFb = false, tag = '';
+  if (s.done) {
+    if (o.ok) { cls += ' is-ok'; tag = 'Correct. '; } else { cls += ' is-off'; tag = 'À écarter. '; }
+    showFb = true;
+  } else if (s.marks[oi] === 'ok') { cls += ' is-ok'; showFb = true; tag = 'Correct. '; }
+  else if (s.marks[oi] === 'bad') { cls += ' is-bad'; showFb = true; tag = 'Incorrect. '; }
+  else if (selected) cls += ' is-sel';
+  const id = `o-${qi}-${si}-${oi}`;
+  const dis = s.done || s.marks[oi] === 'ok' ? 'disabled' : '';
+  const checked = (selected || (s.done && o.ok)) ? 'checked' : '';
+  return `<label class="${cls}" for="${id}">
+    <input type="${single?'radio':'checkbox'}" ${single?`name="r-${qi}-${si}"`:''} id="${id}" data-o="${oi}" data-q="${qi}" data-s="${si}" ${checked} ${dis}>
+    <span class="box ${single?'round':''}" aria-hidden="true"></span>
+    <span class="otext">${o.t}${showFb ? `<span class="ofb"><span class="vh">${tag}</span>${o.fb}</span>` : ''}</span>
+  </label>`;
+}
+
+function stepHTML(qi, si){
+  const q = QUESTIONS[qi], st = q.steps[si], s = state[qi].steps[si];
+  const locked = si > 0 && !state[qi].steps[si-1].done;
+  const status = s.done ? '<span class="status ok">Validé</span>' : locked ? '<span class="status">Verrouillé</span>' : '<span class="status todo">À faire</span>';
+  let html = `<article class="step ${locked?'is-locked':''}" id="step-${qi}-${si}" aria-labelledby="st-${qi}-${si}">
+    <header class="step-head"><span class="tag ${st.cls}" id="st-${qi}-${si}">${st.tag}</span>${status}</header>`;
+  if (locked) {
+    html += `<p class="locked-msg">Valide d’abord l’étape précédente pour ouvrir celle-ci.</p></article>`;
+    return html;
+  }
+  html += `<p class="prompt">${st.prompt}</p>`;
+  const opts = ORDERS[qi][si].map(oi => optHTML(qi, si, oi)).join('');
+  const fieldset = `<fieldset><legend class="vh">${st.tag} ${st.prompt}</legend>${opts}</fieldset>`;
+  if (s.done) {
+    const headline = s.revealed ? 'Réponse affichée.' : s.first ? 'Bravo, du premier coup.' : `Validé en ${s.attempts} essais.`;
+    html += `<div class="fb ok" id="fb-${qi}-${si}" tabindex="-1" role="status"><strong>${headline}</strong> ${st.why}</div>`;
+    html += `<details class="review" data-q="${qi}" data-s="${si}" ${s.exp!==false?'open':''}><summary>Explications de chaque proposition</summary>${fieldset}</details>`;
+  } else {
+    html += fieldset;
+    const n = st.hints.length;
+    if (s.hints) {
+      html += `<div class="hints" id="hints-${qi}-${si}" tabindex="-1">` +
+        st.hints.slice(0, s.hints).map((h,i)=>`<p><strong>Indice ${i+1}.</strong> ${h}</p>`).join('') + `</div>`;
+    }
+    if (s.msg) html += `<div class="fb ${s.msg.kind}" id="fb-${qi}-${si}" tabindex="-1" role="status">${s.msg.text}</div>`;
+    html += `<div class="actions">
+      <button class="btn ghost" type="button" data-action="hint" data-q="${qi}" data-s="${si}" ${s.hints>=n?'disabled':''}>Un indice (${s.hints}/${n})</button>
+      <button class="btn primary" type="button" data-action="verify" data-q="${qi}" data-s="${si}">Vérifier</button>
+      ${s.attempts>=3 ? `<button class="btn ghost" type="button" data-action="reveal" data-q="${qi}" data-s="${si}">Voir la réponse</button>` : ''}
+    </div>`;
+  }
+  return html + `</article>`;
+}
+
+function panelHTML(qi){
+  const q = QUESTIONS[qi], S = state[qi];
+  let html = `<div class="qhead"><h2>${q.label}</h2><p class="statement">${q.statement}</p><p class="note">${q.note}</p></div>`;
+  html += `<div class="steps">` + q.steps.map((_,si)=>stepHTML(qi, si)).join('') + `</div>`;
+  html += `<section class="analysis" aria-label="Analyse en construction"><h3>Ton analyse, phrase après phrase</h3>` +
+    q.steps.map((st,si)=>{
+      const d = S.steps[si].done;
+      return `<p class="aline"><span class="tag ${st.cls}">${st.tag}</span><span class="txt ${d?'':'ph'}">${d ? st.model : 'Se remplit quand l’étape ' + (si+1) + ' est validée.'}</span></p>`;
+    }).join('') + `</section>`;
+  if (doneCount(qi) === q.steps.length) {
+    const nChecked = S.checks.filter(Boolean).length;
+    html += `<section class="retain"><span class="kicker">À retenir</span><p>${q.retain}</p></section>`;
+    html += `<section class="selfcheck"><h3>Compare avec ta copie</h3><p class="note">Si tu as déjà rédigé ta réponse, coche ce que tu y as retrouvé.</p>` +
+      q.checks.map((c,i)=>`<label class="chk" for="c-${qi}-${i}"><input type="checkbox" id="c-${qi}-${i}" data-check="1" data-q="${qi}" data-i="${i}" ${S.checks[i]?'checked':''}><span class="box" aria-hidden="true"></span><span>${c}</span></label>`).join('') +
+      `<p class="count" role="status">${nChecked}/${q.checks.length} critères retrouvés${nChecked===q.checks.length?' : ta réponse est complète.':'.'}</p></section>`;
+  }
+  return html;
+}
+
+function renderTabs(){
+  $tabs.innerHTML = QUESTIONS.map((q,qi)=>`<button class="tab" type="button" role="tab" id="tab-${qi}" aria-selected="${qi===activeQ}" aria-controls="panel" data-action="tab" data-q="${qi}">${q.label}<small>${doneCount(qi)}/${q.steps.length}</small></button>`).join('');
+}
+function renderScore(){
+  let done = 0, first = 0, total = 0;
+  state.forEach((S,qi)=>{ S.steps.forEach(s=>{ total++; if(s.done) done++; if(s.done && s.first) first++; }); });
+  $score.textContent = `${done}/${total} étapes validées · ${first} du premier coup`;
+}
+function render(focusId, noScroll){
+  renderTabs();
+  $panel.setAttribute('aria-labelledby', 'tab-' + activeQ);
+  $panel.innerHTML = panelHTML(activeQ);
+  renderScore();
+  if (focusId) {
+    const el = document.getElementById(focusId);
+    if (el) el.focus({ preventScroll: !!noScroll });
+  }
+}
+
+function verify(qi, si){
+  const st = QUESTIONS[qi].steps[si], s = state[qi].steps[si];
+  if (!s.sel.length) {
+    s.msg = { kind:'warn', text: st.type==='single' ? 'Choisis une réponse avant de vérifier.' : 'Coche au moins une réponse avant de vérifier.' };
+    return;
+  }
+  s.attempts++;
+  const okIdx = st.options.map((o,i)=>o.ok?i:-1).filter(i=>i>=0);
+  const wrong = s.sel.filter(i=>!okIdx.includes(i));
+  const missing = okIdx.filter(i=>!s.sel.includes(i));
+  s.marks = {};
+  s.sel.forEach(i => { s.marks[i] = okIdx.includes(i) ? 'ok' : 'bad'; });
+  if (!wrong.length && !missing.length) {
+    s.done = true; s.first = s.attempts === 1; s.exp = true; s.msg = null;
+    for (let j = 0; j < si; j++) state[qi].steps[j].exp = false;
+    return;
+  }
+  if (st.type === 'single') {
+    s.msg = { kind:'bad', text:'Ce n’est pas encore ça. Lis l’explication de ta réponse, puis essaie une autre proposition.' };
+  } else {
+    const parts = [];
+    if (wrong.length) parts.push(plural(wrong.length, 'réponse à corriger', 'réponses à corriger'));
+    if (missing.length) parts.push('il manque ' + plural(missing.length, 'bonne réponse', 'bonnes réponses'));
+    s.msg = { kind:'bad', text: parts.join(' · ').replace(/^./, c=>c.toUpperCase()) + '.' };
+  }
+}
+
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-action]');
+  if (!b) return;
+  const a = b.dataset.action, qi = +b.dataset.q, si = +b.dataset.s;
+  if (a === 'tab') { activeQ = qi; render('tab-' + qi, true); return; }
+  if (a === 'reset') { state = fresh(); activeQ = 0; render('tab-0', true); return; }
+  const st = QUESTIONS[qi].steps[si], s = state[qi].steps[si];
+  if (a === 'hint') {
+    if (s.hints < st.hints.length) s.hints++;
+    render(`hints-${qi}-${si}`, true);
+  } else if (a === 'verify') {
+    verify(qi, si);
+    const nextLocked = s.done && si + 1 < QUESTIONS[qi].steps.length;
+    render(s.done ? `fb-${qi}-${si}` : `fb-${qi}-${si}`);
+    if (nextLocked) { const nx = document.getElementById(`step-${qi}-${si+1}`); if (nx && nx.scrollIntoView) nx.scrollIntoView({ block:'nearest' }); }
+  } else if (a === 'reveal') {
+    s.sel = st.options.map((o,i)=>o.ok?i:-1).filter(i=>i>=0);
+    s.done = true; s.revealed = true; s.first = false; s.exp = true; s.msg = null;
+    for (let j = 0; j < si; j++) state[qi].steps[j].exp = false;
+    render(`fb-${qi}-${si}`);
+  }
+});
+
+document.addEventListener('change', e => {
+  const t = e.target;
+  if (t.matches && t.matches('input[data-o]')) {
+    const qi = +t.dataset.q, si = +t.dataset.s, oi = +t.dataset.o;
+    const st = QUESTIONS[qi].steps[si], s = state[qi].steps[si];
+    if (s.done) return;
+    if (st.type === 'single') { s.sel = [oi]; s.marks = {}; }
+    else {
+      s.sel = t.checked ? s.sel.concat(oi) : s.sel.filter(i => i !== oi);
+      delete s.marks[oi];
+    }
+    s.msg = null;
+    render(t.id, true);
+  } else if (t.matches && t.matches('input[data-check]')) {
+    const qi = +t.dataset.q, i = +t.dataset.i;
+    state[qi].checks[i] = t.checked;
+    render(t.id, true);
+  }
+});
+
+document.addEventListener('toggle', e => {
+  const d = e.target;
+  if (d && d.matches && d.matches('details[data-q]')) {
+    state[+d.dataset.q].steps[+d.dataset.s].exp = d.open;
+  }
+}, true);
+
+render();
+</script>
+
+</body></html>

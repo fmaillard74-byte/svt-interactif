@@ -1,0 +1,476 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Correction du graphique immunitaire</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Mise en page : une colonne lisible (max 980px), onglets en tête ; correction = cartes qui se débloquent une à une ; débat = grandes cartes à projeter */
+:root{
+  --bg:#F2F5FA; --surface:#FFFFFF; --ink:#14213D; --muted:#55627A; --line:#D5DCE8;
+  --brand:#2744D8; --brand-ink:#FFFFFF; --a:#D62839; --b:#1B8F63; --hl:#F5A400; --soft:#E8EEFB;
+  --ok:#1B8F63; --mid:#B87400; --bad:#C23147;
+  --f-display:"Barlow Condensed","Arial Narrow",sans-serif;
+  --f-body:"Atkinson Hyperlegible","Segoe UI",Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E1424; --surface:#172036; --ink:#E8EEFB; --muted:#9AA8C4; --line:#2A3652;
+  --brand:#8FA5FF; --brand-ink:#0E1424; --a:#FF6B7A; --b:#46D19B; --hl:#FFC24A; --soft:#1F2A45;
+  --ok:#46D19B; --mid:#FFC24A; --bad:#FF7A8C; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1424; --surface:#172036; --ink:#E8EEFB; --muted:#9AA8C4; --line:#2A3652;
+  --brand:#8FA5FF; --brand-ink:#0E1424; --a:#FF6B7A; --b:#46D19B; --hl:#FFC24A; --soft:#1F2A45;
+  --ok:#46D19B; --mid:#FFC24A; --bad:#FF7A8C; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:17px/1.5 var(--f-body);
+  padding-block:20px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:980px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-display);font-weight:700;line-height:1.05;margin:0;text-wrap:balance}
+h1{font-size:clamp(2rem,6vw,3.2rem);text-transform:uppercase;letter-spacing:.01em}
+h2{font-size:clamp(1.5rem,4vw,2.1rem)}
+h3{font-size:1.35rem}
+p{margin:0}
+.kicker{font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:6px}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--hl);outline-offset:2px}
+
+.top{display:flex;flex-direction:column;gap:18px;margin-bottom:22px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{border:2px solid var(--ink);background:transparent;border-radius:999px;padding:8px 18px;font-weight:700}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+
+.btn{border:2px solid var(--ink);background:var(--surface);border-radius:10px;padding:9px 16px;font-weight:700}
+.btn:hover{background:var(--soft)}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.ghost{border-color:var(--line);font-weight:400}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+/* ---------- Correction ---------- */
+.progress{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+.dot{width:34px;height:34px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;
+  font:700 .95rem var(--f-display);font-size:1.1rem;color:var(--muted);background:var(--surface)}
+.dot.now{border-color:var(--brand);color:var(--brand)}
+.dot.s-ok{background:var(--ok);border-color:var(--ok);color:var(--bg)}
+.dot.s-mid{background:var(--mid);border-color:var(--mid);color:var(--bg)}
+.dot.s-bad{background:var(--bad);border-color:var(--bad);color:var(--bg)}
+.legend{font-size:.85rem;color:var(--muted);margin:-8px 0 18px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:18px;
+  display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+.card.locked{display:none}
+.qhead{display:flex;gap:12px;align-items:baseline}
+.qnum{font:700 2.4rem/1 var(--f-display);color:var(--brand)}
+.qtext{font-size:1.15rem;font-weight:700;min-width:0}
+.fig{border:1px solid var(--line);border-radius:10px;padding:8px;background:var(--bg);min-width:0}
+.fig svg{display:block;width:100%;height:auto}
+.fig figcaption{font-size:.8rem;color:var(--muted);padding:4px 6px 0}
+.work{display:grid;gap:12px;min-width:0}
+.part{display:grid;gap:8px}
+.part>.plabel{font-weight:700;font-size:.95rem;color:var(--muted)}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;text-align:left;border:2px solid var(--line);background:var(--surface);
+  border-radius:10px;padding:10px 12px;width:100%}
+.opt:hover{border-color:var(--brand)}
+.opt[aria-pressed="true"]{border-color:var(--brand);background:var(--soft)}
+.opt.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 16%,var(--surface))}
+.opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 14%,var(--surface))}
+.nums{display:flex;gap:12px;flex-wrap:wrap}
+.num{display:grid;gap:4px}
+.num label{font-size:.9rem;color:var(--muted);font-weight:700}
+.num .inp{display:flex;align-items:center;gap:8px}
+.num input{width:110px;font:700 1.2rem var(--f-body);padding:8px 10px;border:2px solid var(--line);border-radius:10px;
+  background:var(--surface);color:var(--ink);font-variant-numeric:tabular-nums}
+.num input.right{border-color:var(--ok)} .num input.wrong{border-color:var(--bad)}
+.unit{color:var(--muted)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px;text-align:left}
+.chip:hover{border-color:var(--brand)}
+.chip[disabled]{opacity:.35;cursor:default}
+.line{min-height:56px;border:2px dashed var(--line);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:6px}
+.line .chip{border-color:var(--brand);background:var(--soft);border-radius:10px}
+.line .ph{color:var(--muted);font-size:.9rem;padding:6px}
+.fb{border-radius:10px;padding:10px 14px;background:var(--soft);font-size:.98rem}
+.fb.hint{border-left:6px solid var(--hl)}
+.fb.err{border-left:6px solid var(--bad)}
+.fb.good{border-left:6px solid var(--ok)}
+.corr{border:2px solid var(--ok);border-radius:12px;padding:14px 16px;display:grid;gap:8px;background:color-mix(in srgb,var(--ok) 8%,var(--surface))}
+.corr h3{color:var(--ok)}
+.corr .tip{font-size:.92rem;color:var(--muted)}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.bilan{background:var(--ink);color:var(--bg);border-radius:14px;padding:24px;display:grid;gap:12px}
+.bilan .btn{color:var(--ink)}
+@media (min-width:820px){
+  .card{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);align-items:start}
+  .card .qhead{grid-column:1/-1}
+}
+</style>
+<style>
+/* Graphique : classes thémées (les variables CSS ne passent pas toujours dans les attributs SVG) */
+.g-ink{fill:var(--ink)} .g-mut{fill:var(--muted)}
+.g-axis{stroke:var(--ink);stroke-width:1.5;fill:none}
+.g-grid{stroke:var(--line);stroke-width:1;fill:none}
+.g-a{stroke:var(--a);stroke-width:2.6;fill:none;stroke-linecap:round}
+.g-b{stroke:var(--b);stroke-width:2.6;fill:none;stroke-linecap:round}
+.g-hl{stroke:var(--hl);stroke-width:5;fill:none;stroke-linecap:round;opacity:.9}
+.g-hld{stroke:var(--hl);stroke-width:2.5;stroke-dasharray:6 4;fill:none}
+.g-dot{fill:var(--hl);stroke:var(--ink);stroke-width:1.5}
+.g-box{fill:var(--hl);stroke:none}
+.g-boxt{fill:#14213D;font-weight:700}
+.g-ring{fill:none;stroke:var(--hl);stroke-width:3}
+.g-fa{fill:var(--a)} .g-fb{fill:var(--b)}
+</style>
+<div class="wrap">
+<header class="top">
+  <div>
+    <p class="kicker">SVT · La protection de l'organisme · Devoir maison</p>
+    <h1>Correction du graphique : mémoire immunitaire</h1>
+  </div>
+</header>
+<section id="tab-correction">
+  <p class="legend">Réponds à chaque question, demande un indice si tu bloques. La question suivante s'ouvre quand tu as validé ou consulté la correction.
+    Pastille verte : réussi seul · orange : réussi avec indice · rouge : corrigé avec la correction.</p>
+  <div class="progress" id="progress" aria-label="Progression"></div>
+  <div id="cards"></div>
+  <div id="bilan"></div>
+</section>
+</div>
+<script>
+/* ===== Graphique des réponses immunitaires (échelle logarithmique) ===== */
+const W=760,H=400,Y0=320,YS=72;
+const L={x0:70,sx:52}, R={x0:410,sx:62};
+const ly=v=>Y0-YS*Math.log10(v);
+const lxL=w=>L.x0+L.sx*w, lxR=w=>R.x0+R.sx*w;
+const gBell=w=>Math.exp(-Math.pow(w-2.7,2)/(2*0.95*0.95));
+const prim=w=>Math.pow(10,gBell(w));
+const sec=w=>{
+  if(w<=1.3){const t=w/1.3;return Math.pow(10,3*(3*t*t-2*t*t*t));}
+  return Math.pow(10,1.75+1.25*Math.exp(-(w-1.3)/1.1));
+};
+const W100=(()=>{let w=0;while(sec(w)<100&&w<1.3)w+=0.005;return w;})();
+const f1=n=>Math.round(n*10)/10;
+function path(fn,xf){
+  let d='';
+  for(let w=0;w<=5.0001;w+=0.05){d+=(d?'L':'M')+f1(xf(w))+' '+f1(ly(fn(w)));}
+  return d;
+}
+function seg(fn,xf,a,b){
+  let d='';
+  for(let w=a;w<=b+0.0001;w+=0.05){d+=(d?'L':'M')+f1(xf(w))+' '+f1(ly(fn(w)));}
+  return d;
+}
+function tag(x,y,text,anchor){
+  const w=text.length*7+14, x0=anchor==='end'?x-w:(anchor==='middle'?x-w/2:x);
+  return `<rect class="g-box" x="${f1(x0)}" y="${f1(y-15)}" width="${w}" height="22" rx="6"/>`+
+         `<text class="g-boxt" x="${f1(x0+7)}" y="${f1(y)}" font-size="13">${text}</text>`;
+}
+function hline(v,side,label){
+  const x1=side==='L'?lxL(0):lxR(0), x2=side==='L'?lxL(5):lxR(5);
+  return `<path class="g-hld" d="M${x1} ${f1(ly(v))}H${x2}"/>`;
+}
+function vline(w,v,xf){
+  return `<path class="g-hld" d="M${f1(xf(w))} ${f1(ly(v))}V${Y0}"/>`;
+}
+function dot(x,y){return `<circle class="g-dot" cx="${f1(x)}" cy="${f1(y)}" r="6"/>`;}
+
+function overlay(kind){
+  switch(kind){
+    case 'q1':
+      return `<rect class="g-ring" x="${L.x0-12}" y="${Y0+2}" width="${L.sx*5+24}" height="68" rx="8"/>`+
+             `<rect class="g-ring" x="${R.x0-12}" y="${Y0+2}" width="${R.sx*5+24}" height="68" rx="8"/>`;
+    case 'q2':
+      return `<path class="g-hl" d="${path(prim,lxL)}"/>`+
+        tag(75,270,'1 · lent')+
+        tag(83,238,'2 · augmente')+
+        tag(184,190,'3 · maximum')+
+        tag(252,258,'4 · diminue');
+    case 'q3':
+      return hline(10,'L')+dot(lxL(2.7),ly(10))+tag(lxL(5)-6,ly(10)-12,'≈ 10 u. arb.','end');
+    case 'q4':
+      return hline(1000,'R')+dot(lxR(1.3),ly(1000))+tag(lxR(5)-6,ly(1000)-12,'≈ 1 000 u. arb.','end');
+    case 'q5':
+      return vline(2.7,10,lxL)+dot(lxL(2.7),ly(10))+tag(lxL(2.7),Y0-8,'≈ 3 sem','middle')+
+             vline(1.3,1000,lxR)+dot(lxR(1.3),ly(1000))+tag(lxR(1.3),Y0-8,'≈ 1 sem','middle');
+    case 'q6':
+      return hline(100,'R')+vline(W100,100,lxR)+dot(lxR(W100),ly(100))+tag(lxR(W100)+14,Y0-8,'≈ 1 sem');
+    case 'q7':
+      return `<rect class="g-ring" x="${L.x0-6}" y="${ly(15000)}" width="${L.sx*5+12}" height="${Y0-ly(15000)+2}" rx="8"/>`+
+             `<rect class="g-ring" x="${R.x0-6}" y="${ly(15000)}" width="${R.sx*5+12}" height="${Y0-ly(15000)+2}" rx="8"/>`+
+             tag(lxL(0.2),ly(3000),'1re exposition à A')+tag(lxR(0.2),ly(6000)+4,'2e exposition à A')+
+             `<rect class="g-ring" x="334" y="${Y0+30}" width="72" height="44" rx="8"/>`;
+    case 'q8':
+      return overlay('q3')+overlay('q4')+vline(2.7,10,lxL)+vline(1.3,1000,lxR)+
+             tag(lxR(2.6),ly(100)+4,'× 100 en 1 semaine de moins');
+    case 'q9':
+      return `<path class="g-hl" d="${path(prim,lxR)}"/>`+tag(lxR(2.7)-70,ly(10)-22,'B : 1re rencontre');
+    default: return '';
+  }
+}
+
+function graphSVG(kind){
+  const grid=[1,10,100,1000,10000].map(v=>
+    `<path class="g-grid" d="M${L.x0} ${f1(ly(v))}H${lxL(5)}M${R.x0} ${f1(ly(v))}H${lxR(5)}"/>`+
+    `<text class="g-mut" x="${L.x0-8}" y="${f1(ly(v))+4}" text-anchor="end" font-size="12">${v>=1000?String(v).replace(/(\d)(\d{3})$/,'$1 $2'):v}</text>`).join('');
+  let ticks='';
+  for(let w=0;w<=5;w++){
+    ticks+=`<path class="g-axis" d="M${lxL(w)} ${Y0}v5M${lxR(w)} ${Y0}v5"/>`+
+      `<text class="g-ink" x="${lxL(w)}" y="${Y0+19}" text-anchor="middle" font-size="12">${w}</text>`+
+      `<text class="g-ink" x="${lxR(w)}" y="${Y0+19}" text-anchor="middle" font-size="12">${w}</text>`;
+  }
+  const t=(x,y,lines,anchor='middle',size=11)=>lines.map((s,i)=>
+    `<text class="g-mut" x="${x}" y="${y+i*13}" text-anchor="${anchor}" font-size="${size}">${s}</text>`).join('');
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Graphique : quantité relative d’anticorps spécifiques dans le sang en fonction du temps, réponse primaire à l’antigène A à gauche, réponse secondaire à A et primaire à B à droite">`+
+    grid+
+    `<path class="g-axis" d="M${L.x0} ${ly(10000)}V${Y0}H${lxL(5)}M${R.x0} ${Y0}H${lxR(5)}"/>`+
+    `<path class="g-grid" d="M${lxL(5)} ${f1(ly(1))}H${R.x0}" style="stroke-dasharray:2 4"/>`+
+    ticks+
+    `<text class="g-mut" font-size="11" transform="translate(14 ${f1((ly(10000)+Y0)/2)}) rotate(-90)" text-anchor="middle">Anticorps spécifiques dans le sang (u. arb.)</text>`+
+    t(lxL(2.5),Y0+40,['Semaines après la première','exposition à l’antigène A'])+
+    t(370,Y0+40,['Intervalle','(semaines, mois,','voire années)'],'middle',10)+
+    t(lxR(2.5),Y0+40,['Semaines après la seconde exposition','à l’antigène A ou première exposition','à l’antigène B'])+
+    `<path class="g-a" d="${path(prim,lxL)}"/>`+
+    `<path class="g-a" d="${path(sec,lxR)}"/>`+
+    `<path class="g-b" d="${path(prim,lxR)}"/>`+
+    `<text class="g-fa" x="${lxL(2.7)-4}" y="${ly(10)-10}" font-size="15" font-weight="700">A</text>`+
+    `<text class="g-fa" x="${lxR(1.3)-14}" y="${ly(1000)-8}" font-size="15" font-weight="700">A</text>`+
+    `<text class="g-fb" x="${lxR(2.7)-4}" y="${ly(10)-10}" font-size="15" font-weight="700">B</text>`+
+    t(lxL(3.9),ly(30),['Réponse','immunitaire','primaire'],'middle',12).replace(/class="g-mut"/g,'class="g-ink"')+
+    t(lxR(3.9),ly(500),['Réponse','immunitaire','secondaire'],'middle',12).replace(/class="g-mut"/g,'class="g-ink"')+
+    overlay(kind)+
+  `</svg>`;
+}
+
+/* ===== Les 10 questions ===== */
+const Q=[
+{n:1,type:'choices',hl:'q1',
+ text:'Que représente l’axe des abscisses ? Quelle est son unité ?',
+ parts:[
+  {label:'Ce que représente l’axe',ans:0,opts:['Le temps écoulé après l’exposition à l’antigène','La quantité d’anticorps','Le nombre de lymphocytes','La température du corps']},
+  {label:'Son unité',ans:2,opts:['L’heure','Le jour','La semaine','L’année']}],
+ hints:['L’axe des abscisses est l’axe horizontal. Lis le titre écrit juste en dessous.','Le titre commence par « Semaines après… ». Il dit donc ce qu’on mesure et dans quelle unité.'],
+ wrong:'Relis le titre sous l’axe horizontal.',
+ corr:'L’axe des abscisses représente le temps écoulé après l’exposition à l’antigène. Son unité est la semaine.',
+ tip:'Méthode : pour lire un graphique, commence toujours par les titres des deux axes et leurs unités.'},
+
+{n:2,type:'build',hl:'q2',
+ text:'Décrire la réponse immunitaire primaire à l’antigène A.',
+ pool:['La production d’anticorps démarre lentement','Elle augmente progressivement','Elle atteint un petit maximum (environ 10) vers 3 semaines','Puis elle diminue','Elle augmente brusquement dès le premier jour','Elle reste stable à 1 000'],
+ ans:[0,1,2,3],
+ buildHelp:'Clique sur les phrases dans l’ordre où elles décrivent la courbe de gauche. Deux phrases sont fausses.',
+ hints:['Suis la courbe rouge de gauche avec le doigt, de 0 à 5 semaines. Que fait-elle d’abord, puis ensuite ?','Deux phrases ne correspondent pas à la courbe : une dit « brusquement », l’autre « stable ». Écarte-les.'],
+ wrong:'Il y a quatre phrases justes, à placer dans l’ordre de lecture de la courbe.',
+ corr:'Lors de la première exposition à l’antigène A, la production d’anticorps démarre lentement, augmente progressivement, atteint un petit maximum vers 2–3 semaines, puis diminue.',
+ tip:'Pour décrire une courbe : début, évolution, valeur maximale (avec son chiffre), fin.'},
+
+{n:3,type:'numbers',hl:'q3',
+ text:'Quelle quantité d’anticorps maximale est obtenue lors de la réponse immunitaire primaire ?',
+ fields:[{label:'Quantité maximale',range:[8,12],unit:'unités arbitraires'}],
+ hints:['Repère le sommet de la courbe rouge de gauche. Trace mentalement une ligne horizontale vers l’axe vertical.','Attention à l’échelle verticale : elle est logarithmique. Les graduations sont 1, 10, 100, 1 000, 10 000. Le sommet est exactement sur l’une d’elles.'],
+ wrong:'Relis la valeur sur l’axe vertical, au niveau du sommet de la courbe de gauche.',
+ corr:'Environ 10 unités arbitraires d’anticorps.',
+ tip:'Sur une échelle logarithmique, chaque graduation vaut 10 fois la précédente.'},
+
+{n:4,type:'numbers',hl:'q4',
+ text:'Quelle quantité d’anticorps maximale est obtenue lors de la réponse immunitaire secondaire ?',
+ fields:[{label:'Quantité maximale',range:[800,1200],unit:'unités arbitraires'}],
+ hints:['Cette fois, regarde le sommet de la courbe rouge de droite.','Il se trouve sur la graduation qui suit 100 sur l’axe vertical.'],
+ wrong:'Repère le sommet de la courbe rouge de droite, puis lis l’axe vertical.',
+ corr:'Environ 1 000 unités arbitraires d’anticorps, soit 100 fois plus que lors de la réponse primaire.',
+ tip:'Compare avec ta réponse à la question 3 : 1 000 ÷ 10 = 100.'},
+
+{n:5,type:'numbers',hl:'q5',
+ text:'Combien de temps faut-il pour obtenir cette quantité maximale dans les deux cas ?',
+ fields:[
+  {label:'Réponse primaire',range:[2,3.5],unit:'semaines'},
+  {label:'Réponse secondaire',range:[0.8,1.6],unit:'semaine(s)'}],
+ hints:['Pour chaque sommet, descends à la verticale jusqu’à l’axe des semaines.','Deux axes des semaines existent : lis celui de gauche pour la réponse primaire, celui de droite pour la secondaire.'],
+ wrong:'Descends à la verticale depuis chaque sommet et lis le bon axe des semaines.',
+ corr:'Réponse primaire : environ 3 semaines. Réponse secondaire : environ 1 semaine.',
+ tip:'La réponse secondaire est donc plus forte et plus rapide.'},
+
+{n:6,type:'numbers',hl:'q6',
+ text:'Combien de temps faut-il pour obtenir une quantité d’anticorps de 100 lors de la réponse immunitaire secondaire ?',
+ fields:[{label:'Durée',range:[0.5,1.2],unit:'semaine(s)'}],
+ hints:['Place-toi sur la graduation 100 de l’axe vertical et avance vers la courbe rouge de droite.','Quand tu touches la courbe pendant sa montée, descends à la verticale jusqu’à l’axe des semaines de droite.'],
+ wrong:'Pars de 100 sur l’axe vertical, rejoins la courbe de droite puis descends vers l’axe des semaines.',
+ corr:'Environ 1 semaine : en une semaine, la réponse secondaire atteint déjà 100 unités.',
+ tip:'En comparaison, la réponse primaire n’atteint jamais 100.'},
+
+{n:7,type:'choices',hl:'q7',
+ text:'Pourquoi appelle-t-on la courbe de droite « réponse immunitaire SECONDAIRE » ?',
+ parts:[{label:'Choisis la bonne explication',ans:0,opts:[
+  'Parce qu’elle correspond à une deuxième exposition au même antigène A',
+  'Parce qu’elle correspond à un deuxième antigène différent',
+  'Parce qu’elle est moins forte que la première réponse',
+  'Parce qu’elle se produit chez une deuxième personne']}],
+ hints:['Regarde le titre sous l’axe de droite : « seconde exposition à l’antigène A ».','Le mot « secondaire » indique un ordre dans le temps, pour un même antigène.'],
+ wrong:'Relis le titre sous l’axe de droite.',
+ corr:'Parce qu’elle correspond à une deuxième exposition au même antigène (A). Le système immunitaire le reconnaît déjà grâce aux lymphocytes mémoire.',
+ tip:'Entre les deux expositions, il peut s’écouler des semaines, des mois, voire des années.'},
+
+{n:8,type:'choices',hl:'q8',
+ text:'Quelle phrase est vraie ?',
+ parts:[{label:'Une seule phrase est vraie',ans:2,opts:[
+  'La réponse immunitaire secondaire demande une semaine de plus pour produire 100 fois plus d’anticorps que la réponse primaire.',
+  'La vitesse de production des anticorps est plus rapide lors de la réaction primaire que lors de la réaction secondaire.',
+  'La réaction immunitaire secondaire demande une semaine de moins pour produire cent fois plus d’anticorps que la réaction primaire.']}],
+ hints:['Utilise tes réponses aux questions 3, 4 et 5 : combien d’anticorps, et en combien de temps ?','Secondaire : 1 000 en 1 semaine. Primaire : 10 en 3 semaines. Qui est le plus rapide ? Qui produit le plus ?'],
+ wrong:'Compare les quantités maximales et les durées trouvées aux questions 3, 4 et 5.',
+ corr:'La réaction immunitaire secondaire demande une semaine de moins pour produire cent fois plus d’anticorps que la réaction primaire.',
+ tip:'Les valeurs lues sont approximatives : on parle de 3 semaines contre 1 semaine, soit environ 2 semaines d’écart.'},
+
+{n:9,type:'choices',hl:'q9',
+ text:'La réponse à l’antigène B est-elle une réponse immunitaire primaire ou secondaire ?',
+ parts:[
+  {label:'Type de réponse',ans:0,opts:['Primaire','Secondaire']},
+  {label:'Pourquoi ?',ans:1,opts:[
+   'Parce que la courbe B est plus basse que la courbe A secondaire',
+   'Parce que l’organisme rencontre l’antigène B pour la première fois',
+   'Parce que B est placé à droite sur le graphique']}],
+ hints:['Relis le titre de l’axe de droite : « première exposition à l’antigène B ».','Compare la courbe verte à la courbe rouge de gauche : même forme, même hauteur.'],
+ wrong:'Relis le titre sous l’axe de droite et compare la forme de la courbe verte.',
+ corr:'C’est une réponse immunitaire primaire, car l’organisme rencontre l’antigène B pour la première fois.',
+ tip:'La courbe verte B ressemble à la courbe primaire de A : environ 10 unités, atteintes en 3 semaines.'},
+
+{n:10,type:'build',hl:'',
+ text:'Avec vos connaissances sur le mode d’action des lymphocytes, expliquer pourquoi la réponse immunitaire secondaire est plus efficace.',
+ pool:['Lors de la première rencontre, l’organisme a fabriqué des lymphocytes mémoire','À la deuxième exposition, ils reconnaissent rapidement l’antigène','Ils se multiplient vite','Ils produisent beaucoup plus d’anticorps','Les anticorps restent en grande quantité entre les deux expositions','L’antigène change de forme à chaque exposition'],
+ ans:[0,1,2,3],
+ buildHelp:'Clique sur les phrases dans l’ordre de l’explication. Deux phrases sont fausses.',
+ hints:['Pense à ce que le corps garde en mémoire après la première rencontre avec l’antigène.','L’explication suit l’ordre du temps : première rencontre, deuxième exposition, puis ce que font les lymphocytes mémoire.'],
+ wrong:'Il y a quatre phrases justes, à placer dans l’ordre de l’explication.',
+ corr:'Lors de la première infection, l’organisme a créé des lymphocytes mémoire. Lors de la deuxième exposition, ils reconnaissent rapidement l’antigène, se multiplient vite et produisent beaucoup plus d’anticorps.',
+ tip:'C’est le principe du rappel de vaccin : on réveille la mémoire immunitaire pour obtenir une réponse rapide et forte.'}
+];
+
+/* ===== État et rendu ===== */
+const S=Q.map(()=>({sel:[],vals:[],seq:[],hint:0,tries:0,done:false,status:null,fb:null,unlocked:false}));
+const $=id=>document.getElementById(id);
+let current=0;
+
+function initCorrection(){
+  $('cards').innerHTML=Q.map((q,i)=>`<article class="card locked" id="card${i}" aria-label="Question ${q.n}"></article>`).join('');
+  S.forEach((s,i)=>{Object.assign(s,{sel:Q[i].parts?Q[i].parts.map(()=>null):[],vals:Q[i].fields?Q[i].fields.map(()=>''):[],seq:[],hint:0,tries:0,done:false,status:null,fb:null,unlocked:false});});
+  $('bilan').innerHTML='';
+  current=0;
+  Q.forEach((q,i)=>drawCard(i));
+  unlock(0,false);
+  drawProgress();
+}
+function unlock(i,scroll){
+  S[i].unlocked=true;current=i;
+  $('card'+i).classList.remove('locked');
+  drawProgress();
+  if(scroll)$('card'+i).scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'start'});
+}
+function drawProgress(){
+  $('progress').innerHTML=Q.map((q,i)=>{
+    const s=S[i],cls=s.status?'s-'+s.status:(i===current?'now':'');
+    const mark=s.status==='ok'?'✓':s.status==='mid'?'~':s.status==='bad'?'!':q.n;
+    return `<span class="dot ${cls}" title="Question ${q.n}">${mark}</span>`;
+  }).join('');
+}
+function drawCard(i){
+  const q=Q[i],s=S[i],el=$('card'+i);
+  const showHl=s.hint>=2||s.done;
+  let work='';
+  if(q.type==='choices'){
+    work=q.parts.map((p,pi)=>`<div class="part"><p class="plabel">${p.label}</p><div class="opts">`+
+      p.opts.map((o,oi)=>{
+        let c='opt';
+        if(s.done){if(oi===p.ans)c+=' right';else if(s.sel[pi]===oi)c+=' wrong';}
+        else if(s.fb&&s.fb.kind==='err'&&s.sel[pi]===oi&&oi!==p.ans)c+=' wrong';
+        return `<button class="${c}" data-act="pick" data-p="${pi}" data-o="${oi}" aria-pressed="${s.sel[pi]===oi}" ${s.done?'disabled':''}>${o}</button>`;
+      }).join('')+`</div></div>`).join('');
+  }else if(q.type==='numbers'){
+    work=`<div class="nums">`+q.fields.map((f,k)=>{
+      let c='';if(s.done)c=' right';else if(s.fb&&s.fb.kind==='err')c=' wrong';
+      return `<div class="num"><label for="n${i}_${k}">${f.label}</label><div class="inp"><input id="n${i}_${k}" class="${c.trim()}" type="text" inputmode="decimal" autocomplete="off" value="${s.vals[k]}" data-k="${k}" ${s.done?'disabled':''}><span class="unit">${f.unit}</span></div></div>`;
+    }).join('')+`</div>`;
+  }else{
+    const chosen=new Set(s.seq);
+    work=`<p class="plabel hint-small">${q.buildHelp}</p>`+
+      `<div class="line" aria-label="Ta réponse">`+
+      (s.seq.length?s.seq.map((pi,k)=>`<button class="chip" data-act="unpick" data-k="${k}" ${s.done?'disabled':''}>${k+1}. ${q.pool[pi]}</button>`).join(''):`<span class="ph">Ta réponse apparaît ici</span>`)+
+      `</div><div class="chips">`+
+      q.pool.map((t,pi)=>`<button class="chip" data-act="add" data-pi="${pi}" ${chosen.has(pi)||s.done?'disabled':''}>${t}</button>`).join('')+`</div>`;
+  }
+  let fb='';
+  if(s.hint>0&&!s.done)fb+=`<div class="fb hint"><strong>Indice ${s.hint}.</strong> ${q.hints[s.hint-1]}</div>`;
+  if(s.fb&&!s.done)fb+=`<div class="fb ${s.fb.kind}">${s.fb.text}</div>`;
+  let corr='';
+  if(s.done){
+    const lab=s.status==='ok'?'Bravo, réussi du premier coup.':s.status==='mid'?'Bien joué, c’est réussi avec un coup de pouce.':'Voici la correction.';
+    corr=`<div class="corr"><h3>${lab}</h3><p>${q.corr}</p><p class="tip">${q.tip}</p></div>`;
+  }
+  let acts='';
+  if(!s.done){
+    acts=`<div class="actions"><button class="btn primary" data-act="check">Vérifier</button>`+
+      (s.hint<2?`<button class="btn" data-act="hint">${s.hint===0?'Un indice':'Un indice de plus'}</button>`:'')+
+      (s.tries>=2||s.hint>=2?`<button class="btn ghost" data-act="reveal">Voir la correction</button>`:'')+`</div>`;
+  }else{
+    acts=`<div class="actions"><button class="btn primary" data-act="next">${i<Q.length-1?'Question suivante':'Voir mon bilan'}</button></div>`;
+  }
+  el.innerHTML=`<div class="qhead"><span class="qnum">${q.n}</span><p class="qtext">${q.text}</p></div>`+
+    `<figure class="fig">${graphSVG(showHl?q.hl:'')}<figcaption>Échelle verticale logarithmique : chaque graduation vaut 10 fois la précédente.${showHl&&q.hl?' Le repère orange montre où lire.':''}</figcaption></figure>`+
+    `<div class="work">${work}${fb}${corr}${acts}</div>`;
+}
+
+function parseNum(v){const n=parseFloat(String(v).replace(',','.').replace(/\s/g,''));return isFinite(n)?n:NaN;}
+function check(i){
+  const q=Q[i],s=S[i];let ok=false,incomplete=false;
+  if(q.type==='choices'){
+    incomplete=s.sel.some(v=>v===null);
+    ok=!incomplete&&q.parts.every((p,pi)=>s.sel[pi]===p.ans);
+  }else if(q.type==='numbers'){
+    const nums=s.vals.map(parseNum);
+    incomplete=nums.some(isNaN);
+    ok=!incomplete&&q.fields.every((f,k)=>nums[k]>=f.range[0]&&nums[k]<=f.range[1]);
+  }else{
+    incomplete=s.seq.length===0;
+    ok=s.seq.length===q.ans.length&&q.ans.every((a,k)=>s.seq[k]===a);
+  }
+  if(incomplete){s.fb={kind:'err',text:q.type==='numbers'?'Écris un nombre dans chaque case (par exemple 12 ou 1,5).':q.type==='build'?'Choisis d’abord tes phrases.':'Choisis une réponse sur chaque ligne.'};drawCard(i);return;}
+  if(ok){finish(i,(s.hint>0||s.tries>0)?'mid':'ok');return;}
+  s.tries++;
+  s.fb={kind:'err',text:'Pas tout à fait. '+q.wrong};
+  if(s.hint===0)s.hint=1;
+  drawCard(i);
+}
+function finish(i,status){
+  const s=S[i];s.done=true;s.status=status;s.fb=null;
+  if(Q[i].type==='build')s.seq=Q[i].ans.slice();
+  drawCard(i);drawProgress();
+}
+function showBilan(){
+  const c={ok:0,mid:0,bad:0};S.forEach(s=>c[s.status]++);
+  const msg=c.bad===0&&c.mid===0?'Parfait, tout est acquis.':c.bad>=4?'Relis le cours sur la mémoire immunitaire puis refais l’exercice.':'Les questions orange et rouges sont celles à revoir avec ton cours.';
+  $('bilan').innerHTML=`<div class="bilan"><h2>Ton bilan</h2><p>${c.ok} réussie(s) seul · ${c.mid} avec indice · ${c.bad} corrigée(s). ${msg}</p><div class="actions"><button class="btn" id="redo">Recommencer</button></div></div>`;
+  $('redo').onclick=()=>{initCorrection();window.scrollTo({top:0});};
+  $('bilan').scrollIntoView({block:'start'});
+}
+
+$('cards').addEventListener('click',e=>{
+  const b=e.target.closest('button[data-act]');if(!b)return;
+  const card=b.closest('.card');const i=+card.id.replace('card','');const s=S[i];const q=Q[i];
+  const act=b.dataset.act;
+  if(act==='pick'){s.sel[+b.dataset.p]=+b.dataset.o;s.fb=null;drawCard(i);}
+  else if(act==='add'){s.seq.push(+b.dataset.pi);s.fb=null;drawCard(i);}
+  else if(act==='unpick'){s.seq.splice(+b.dataset.k,1);s.fb=null;drawCard(i);}
+  else if(act==='check')check(i);
+  else if(act==='hint'){s.hint=Math.min(2,s.hint+1);drawCard(i);}
+  else if(act==='reveal')finish(i,'bad');
+  else if(act==='next'){if(i<Q.length-1)unlock(i+1,true);else showBilan();}
+});
+$('cards').addEventListener('input',e=>{
+  const inp=e.target.closest('input[data-k]');if(!inp)return;
+  const i=+inp.closest('.card').id.replace('card','');S[i].vals[+inp.dataset.k]=inp.value;
+});
+$('cards').addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&e.target.matches('input[data-k]')){e.preventDefault();check(+e.target.closest('.card').id.replace('card',''));}
+});
+
+initCorrection();
+</script>
+
+</body></html>

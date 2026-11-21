@@ -1,0 +1,538 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Révisions Islam et Bagdad</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@500;700&family=Nunito+Sans:wght@400;600;700;800&display=swap">
+<style>
+/* Concept : un carnet de révision à onglets, sous un bandeau à motif d'étoile à huit branches (zellige), lapis et safran. */
+:root{
+  --bg:#EEF2F3; --surface:#FFFFFF; --ink:#12303A; --muted:#51666E; --line:#CBD6DA;
+  --accent:#1F4E9C; --accent-ink:#FFFFFF; --gold:#D9A21B; --gold-soft:#FBF1D3;
+  --ok:#1E7A4F; --ok-soft:#DDF1E6; --bad:#B3362B; --bad-soft:#F7DEDA;
+  --hero:#163A6B; --hero-ink:#FFFFFF; --star:#FFFFFF;
+  --display:"Reem Kufi","Trebuchet MS",sans-serif; --body:"Nunito Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1A20; --surface:#16262E; --ink:#E6EEF0; --muted:#9DB0B7; --line:#2A3F48;
+    --accent:#6C9BEA; --accent-ink:#0E1A20; --gold:#E8B93C; --gold-soft:#3A3014;
+    --ok:#55C28A; --ok-soft:#143426; --bad:#F08A7E; --bad-soft:#3B1B17;
+    --hero:#10294A; --hero-ink:#FFFFFF; --star:#FFFFFF; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1A20; --surface:#16262E; --ink:#E6EEF0; --muted:#9DB0B7; --line:#2A3F48;
+  --accent:#6C9BEA; --accent-ink:#0E1A20; --gold:#E8B93C; --gold-soft:#3A3014;
+  --ok:#55C28A; --ok-soft:#143426; --bad:#F08A7E; --bad-soft:#3B1B17;
+  --hero:#10294A; --hero-ink:#FFFFFF; --star:#FFFFFF; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;margin:0}
+.wrap{max-width:860px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.hero{background:var(--hero);color:var(--hero-ink);position:relative;overflow:hidden}
+header.hero::before{content:"";position:absolute;inset:0;opacity:.09;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'><g fill='none' stroke='white' stroke-width='1.2'><rect x='12' y='12' width='32' height='32'/><rect x='12' y='12' width='32' height='32' transform='rotate(45 28 28)'/></g></svg>");
+  background-size:56px 56px}
+header.hero .wrap{position:relative;padding-block:28px 22px}
+.kicker{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;opacity:.85;margin:0 0 6px;font-weight:700}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(1.6rem,5.5vw,2.4rem);line-height:1.15;margin:0 0 8px;text-wrap:balance}
+.hero p.sub{margin:0;max-width:56ch;opacity:.92}
+nav.tabs{display:flex;gap:6px;overflow-x:auto;padding-block:12px;scrollbar-width:thin}
+nav.tabs button{flex:0 0 auto}
+button{font-family:inherit;font-size:.95rem;cursor:pointer}
+.tab{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:9px 15px;border-radius:999px;font-weight:700}
+.tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn{border:1.5px solid var(--accent);background:var(--accent);color:var(--accent-ink);padding:10px 18px;border-radius:10px;font-weight:700}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+.btn.bad{background:var(--bad);border-color:var(--bad);color:#fff}
+:root[data-theme="dark"] .btn.ok,:root[data-theme="dark"] .btn.bad{color:#0E1A20}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn.ok,:root:not([data-theme="light"]) .btn.bad{color:#0E1A20}}
+button:focus-visible,textarea:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+main{padding-block:8px 48px}
+section[hidden]{display:none}
+h2{font-family:var(--display);font-size:1.4rem;margin:14px 0 6px;text-wrap:balance}
+h3{font-size:1.05rem;margin:0 0 6px}
+.lead{color:var(--muted);margin:0 0 16px;max-width:62ch}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.chip{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:6px 12px;border-radius:8px;font-weight:600;font-size:.88rem}
+.chip[aria-pressed="true"]{border-color:var(--accent);background:var(--accent);color:var(--accent-ink)}
+.bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--gold);width:0;transition:width .3s}
+.meta{font-size:.88rem;color:var(--muted)}
+
+/* objectifs */
+.group{margin-bottom:14px}
+.group-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.group-head h3{margin:0;font-family:var(--display);font-size:1.1rem}
+.obj{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--line)}
+.obj input{width:20px;height:20px;margin-top:3px;accent-color:var(--accent);flex:0 0 auto}
+.obj label{cursor:pointer;min-width:0}
+
+/* cartes */
+.card{min-height:230px;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:22px 20px;display:flex;flex-direction:column;justify-content:center;cursor:pointer;width:100%;text-align:left;color:var(--ink);font-size:1.05rem;position:relative}
+.card.back{border-color:var(--gold);background:var(--gold-soft)}
+.card .cat{position:absolute;top:12px;left:16px;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.card .q{font-family:var(--display);font-size:1.3rem;line-height:1.3;text-wrap:balance}
+.card .hint{position:absolute;bottom:10px;right:16px;font-size:.78rem;color:var(--muted)}
+.card ul{margin:6px 0 0;padding-left:20px}
+.card.pop{animation:pop .22s ease}
+@keyframes pop{from{transform:translateY(6px);opacity:.4}to{transform:none;opacity:1}}
+.tag-ok{color:var(--ok);font-weight:800}.tag-redo{color:var(--bad);font-weight:800}
+
+/* quiz */
+.q-text{font-family:var(--display);font-size:1.25rem;line-height:1.3;margin:0 0 14px;text-wrap:balance}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:12px 14px;border-radius:10px;font-size:1rem}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.explain{margin-top:12px;padding:12px 14px;border-radius:10px;background:var(--gold-soft);border-left:4px solid var(--gold)}
+.score{font-family:var(--display);font-size:2.4rem;margin:0}
+.miss{border-top:1px solid var(--line);padding:10px 0}
+
+/* frises */
+.order{display:grid;gap:8px;margin-top:12px}
+.step{display:flex;gap:12px;align-items:center;text-align:left;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:11px 14px;border-radius:10px;font-size:1rem;width:100%}
+.step .n{flex:0 0 34px;height:34px;border-radius:50%;border:1.5px dashed var(--line);display:grid;place-items:center;font-weight:800;font-variant-numeric:tabular-nums}
+.step.done{border-color:var(--ok);background:var(--ok-soft)}
+.step.done .n{background:var(--ok);border:none;color:#fff}
+:root[data-theme="dark"] .step.done .n{color:#0E1A20}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .step.done .n{color:#0E1A20}}
+.step .d{margin-left:auto;font-weight:800;color:var(--ok);font-variant-numeric:tabular-nums;white-space:nowrap}
+.step.shake{animation:shake .3s;border-color:var(--bad)}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.msg{min-height:1.5em;margin:10px 0 0;font-weight:700}
+
+/* documents */
+.doc{margin-bottom:22px}
+.doc-src{font-size:.85rem;color:var(--muted);margin:0 0 8px}
+.excerpt{border-left:4px solid var(--gold);background:var(--gold-soft);padding:12px 14px;border-radius:0 10px 10px 0;margin:10px 0 14px}
+.excerpt p{margin:0 0 8px}.excerpt p:last-child{margin:0}
+.qa{border-top:1px solid var(--line);padding:12px 0}
+.qa .qq{font-weight:700;margin:0 0 6px}
+textarea{width:100%;min-height:64px;font-family:inherit;font-size:1rem;padding:10px;border:1.5px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);resize:vertical}
+.corr{margin-top:8px;padding:10px 12px;border-radius:8px;background:var(--ok-soft);border-left:4px solid var(--ok)}
+.method{display:grid;gap:4px;margin:6px 0 0;padding:10px 12px;border:1.5px dashed var(--accent);border-radius:10px;font-size:.92rem}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="kicker">Histoire 5ème · Chapitre 2</p>
+    <h1>De la naissance de l'islam à la prise de Bagdad</h1>
+    <p class="sub">Flashcards, quiz, frises et études de documents pour réviser la fiche objectifs.</p>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button class="tab" role="tab" data-tab="objectifs">Objectifs</button>
+    <button class="tab" role="tab" data-tab="cartes">Flashcards</button>
+    <button class="tab" role="tab" data-tab="quiz">Quiz</button>
+    <button class="tab" role="tab" data-tab="frises">Frises</button>
+    <button class="tab" role="tab" data-tab="documents">Documents</button>
+  </nav>
+
+  <main>
+    <section id="objectifs" hidden>
+      <h2>Ma fiche objectifs</h2>
+      <p class="lead">Coche ce que tu maîtrises. Pour chaque bloc, lance les cartes correspondantes.</p>
+      <div class="panel" style="margin-bottom:16px">
+        <div class="row" style="justify-content:space-between;margin-bottom:8px"><strong>Progression</strong><span class="meta" id="obj-count"></span></div>
+        <div class="bar"><i id="obj-bar"></i></div>
+      </div>
+      <div id="obj-list"></div>
+    </section>
+
+    <section id="cartes" hidden>
+      <h2>Flashcards</h2>
+      <p class="lead">Lis la question, réponds dans ta tête, retourne la carte, puis dis-toi la vérité.</p>
+      <div class="chips" id="fc-chips"></div>
+      <div id="fc-area"></div>
+    </section>
+
+    <section id="quiz" hidden>
+      <h2>Quiz</h2>
+      <div id="quiz-area"></div>
+    </section>
+
+    <section id="frises" hidden>
+      <h2>Remets dans l'ordre</h2>
+      <p class="lead">Clique les événements du plus ancien au plus récent.</p>
+      <div class="panel" style="margin-bottom:18px">
+        <h3>1. La vie de Mahomet</h3>
+        <div id="game-mahomet"></div>
+      </div>
+      <div class="panel">
+        <h3>2. Les grandes dates du chapitre</h3>
+        <div id="game-dates"></div>
+      </div>
+    </section>
+
+    <section id="documents" hidden>
+      <h2>Études de documents</h2>
+      <p class="lead">Écris ta réponse, puis compare avec la correction proposée.</p>
+      <div id="docs-area"></div>
+    </section>
+  </main>
+</div>
+
+<script>
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const mem={};
+const store={
+  get(k,d){try{const v=localStorage.getItem('h5-'+k);if(v!==null)return JSON.parse(v)}catch(e){}return k in mem?mem[k]:d},
+  set(k,v){mem[k]=v;try{localStorage.setItem('h5-'+k,JSON.stringify(v))}catch(e){}}
+};
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+
+/* ---------- DONNÉES ---------- */
+const OBJ={
+ "Définir":["Islam / islam","Un Coran","Un prophète","Calife","Vizir","Sunnite et chiite","Croisade","Dhimmi (dhimma)"],
+ "Expliquer":["Comment Mahomet devient le fondateur de l'islam","Comment l'islam se diffuse rapidement au VIIe-VIIIe siècle","Comment le calife gouverne l'empire abbasside et qui l'aide à gouverner","Pourquoi l'islam n'est pas uni","Les relations entre chrétiens et musulmans pendant les croisades (militaires, vie quotidienne, droits)","Les échanges culturels entre musulmans et chrétiens (monuments, objets, savoirs)"],
+ "Connaître":["Un exemple de résistance à l'expansion musulmane (la bataille de Poitiers)","Un calife abbasside et un exemple de son pouvoir (Haroun al-Rachid, la justice à travers l'histoire d'Ali Cogia)","Un exemple d'échange culturel entre chrétiens et musulmans (un monument ou un objet)"],
+ "Dater":["L'Hégire (622)","La mort de Mahomet (632)","La bataille de Poitiers (732)","Le début de la dynastie abbasside (750)","La prise de l'Égypte par les Fatimides (969)","La première croisade (1096-1099)","La prise de Bagdad par les Mongols (1258)"]
+};
+
+const CARDS=[
+ // Définir
+ {cat:"Définir",q:"islam (minuscule) et Islam (majuscule)",a:"<b>islam</b> : la religion musulmane elle-même, c'est-à-dire les croyances.<br><b>Islam</b> : la civilisation musulmane, l'ensemble des territoires et de la culture qui se développent après les conquêtes des VIIe-VIIIe siècles."},
+ {cat:"Définir",q:"Un Coran",a:"Le livre sacré des musulmans. Il rassemble le message de Dieu transmis à Mahomet par l'ange Gabriel."},
+ {cat:"Définir",q:"Un prophète",a:"Une personne choisie par Dieu pour transmettre son message au reste des hommes."},
+ {cat:"Définir",q:"Un calife",a:"Le chef politique et religieux de l'empire musulman, le « commandeur des croyants ». Il est le successeur de Mahomet."},
+ {cat:"Définir",q:"Un vizir",a:"Le conseiller du calife. Il l'aide à gouverner l'empire."},
+ {cat:"Définir",q:"Sunnites et chiites",a:"Les deux grands courants de l'islam. Ils se séparent à cause d'un désaccord sur le choix du successeur de Mahomet."},
+ {cat:"Définir",q:"Une croisade",a:"Une expédition militaire des chrétiens d'Occident, lancée en 1095 à l'appel du pape. Le but : aider les Byzantins contre les Turcs et reprendre Jérusalem."},
+ {cat:"Définir",q:"Un dhimmi (dhimma)",a:"Un chrétien ou un juif qui vit sous la domination des musulmans. Il est protégé et garde sa religion, mais il paie un impôt et a moins de droits."},
+ {cat:"Définir",q:"Un cadi",a:"Un juge dans le monde musulman de l'époque."},
+ {cat:"Définir",q:"L'Hégire",a:"Le voyage de Mahomet de La Mecque à Médine, en 622. Il marque le début du calendrier musulman."},
+ {cat:"Définir",q:"Un émir",a:"Un gouverneur nommé par le calife pour diriger une province de l'empire."},
+ // Expliquer
+ {cat:"Expliquer",q:"Comment Mahomet devient-il le fondateur de l'islam ?",a:"<ul><li>Il naît vers 570 et devient marchand caravanier.</li><li>Vers 610, l'ange Gabriel lui transmet le message de Dieu : il devient prophète.</li><li>Il prêche à La Mecque mais y est rejeté.</li><li>En 622, il part à Médine (l'Hégire), convertit les habitants et fonde le premier État musulman.</li><li>Il conquiert La Mecque et l'Arabie, puis meurt en 632.</li></ul>"},
+ {cat:"Expliquer",q:"Les 5 piliers de l'islam",a:"Les cinq obligations du croyant : la profession de foi, la prière, l'aumône, le jeûne du ramadan et le pèlerinage à La Mecque (pour ceux qui en ont les moyens)."},
+ {cat:"Expliquer",q:"Comment l'islam se diffuse-t-il rapidement (VIIe-VIIIe siècle) ?",a:"<ul><li><b>Religieux</b> : les Arabes veulent étendre l'islam ; les chrétiens et les juifs persécutés par les Byzantins préfèrent des musulmans plus tolérants ; une religion simple à comprendre.</li><li><b>Économique</b> : les marchands arabes convoitent les riches terres des empires perse et byzantin.</li><li><b>Politique</b> : les Arabes vivent sur une terre désertique et convoitent la Syrie-Palestine ; les armées byzantine et perse sont épuisées par les guerres.</li></ul>"},
+ {cat:"Expliquer",q:"Comment le calife gouverne-t-il l'empire abbasside ? Qui l'aide ?",a:"Le calife est le chef suprême. Il est aidé par un <b>vizir</b> (conseiller), des <b>cadis</b> (juges) et des <b>émirs</b> qui dirigent les provinces. Sa capitale est Bagdad."},
+ {cat:"Expliquer",q:"Pourquoi l'islam n'est-il pas uni ?",a:"Après la mort de Mahomet (632), les musulmans ne s'accordent pas sur le choix de son successeur. Cela crée deux courants, les <b>sunnites</b> et les <b>chiites</b>, et des pouvoirs rivaux, comme les Fatimides en Égypte (969)."},
+ {cat:"Expliquer",q:"Quelles relations entre chrétiens et musulmans pendant les croisades ?",a:"<ul><li><b>Militaires</b> : des guerres et des sièges, avec la prise de Jérusalem en 1099.</li><li><b>Vie quotidienne</b> : des contacts, du commerce, des périodes de cohabitation.</li><li><b>Droits</b> : les chrétiens sous domination musulmane sont des dhimmis (protégés mais avec moins de droits).</li></ul>"},
+ {cat:"Expliquer",q:"Quels échanges culturels entre musulmans et chrétiens ?",a:"<ul><li><b>Monuments</b> : la mosquée de Cordoue, devenue cathédrale, mélange les styles.</li><li><b>Objets</b> : tissus, céramiques, objets de luxe qui circulent par le commerce.</li><li><b>Savoirs</b> : mathématiques, médecine, astronomie, textes anciens traduits en latin.</li></ul>"},
+ // Connaître
+ {cat:"Connaître",q:"Un exemple de résistance à l'expansion musulmane",a:"La <b>bataille de Poitiers</b> (732) : Charles Martel et les Francs arrêtent l'avancée des musulmans venus d'Espagne."},
+ {cat:"Connaître",q:"Un calife abbasside et un exemple de son pouvoir",a:"<b>Haroun al-Rachid</b>, calife à Bagdad. Dans l'histoire d'Ali Cogia, il rend la justice et fait éclater la vérité. Il montre aussi sa force face aux Byzantins (806)."},
+ {cat:"Connaître",q:"Un exemple d'échange culturel entre chrétiens et musulmans",a:"La <b>mosquée de Cordoue</b> (Espagne) : bâtie par les musulmans, transformée en cathédrale par les chrétiens. Autre exemple : les savoirs arabes traduits en latin."},
+ {cat:"Connaître",q:"Comment est Bagdad ?",a:"Une ville <b>ronde</b>, défendue par des <b>murailles</b> et des <b>douves</b>. Ses bâtiments les plus importants sont la <b>mosquée</b> et le <b>palais</b>. Les Mongols la prennent en 1258, par la terre et par l'eau."},
+ // Dater
+ {cat:"Dater",q:"622",a:"<b>L'Hégire</b> : Mahomet quitte La Mecque pour Médine."},
+ {cat:"Dater",q:"632",a:"<b>Mort de Mahomet.</b>"},
+ {cat:"Dater",q:"732",a:"<b>Bataille de Poitiers</b> : Charles Martel arrête les musulmans."},
+ {cat:"Dater",q:"750",a:"<b>Début de la dynastie abbasside.</b>"},
+ {cat:"Dater",q:"969",a:"<b>Les Fatimides prennent l'Égypte.</b>"},
+ {cat:"Dater",q:"1096-1099",a:"<b>Première croisade.</b>"},
+ {cat:"Dater",q:"1258",a:"<b>Les Mongols prennent Bagdad.</b>"},
+ {cat:"Dater",q:"Quand a lieu l'Hégire ?",a:"En <b>622</b>."},
+ {cat:"Dater",q:"Quand a lieu la première croisade ?",a:"De <b>1096 à 1099</b>."}
+];
+
+const QUIZ=[
+ {t:"Mahomet",q:"Quel est le métier de Mahomet avant de devenir prophète ?",o:["Soldat","Marchand caravanier","Juge","Berger"],a:1,e:"Mahomet est marchand caravanier avant la révélation."},
+ {t:"Mahomet",q:"Qui s'adresse à Mahomet dans le récit de la révélation ?",o:["Le calife","Le vizir","L'ange Gabriel","Un marchand de Médine"],a:2,e:"L'ange Gabriel lui transmet le message de Dieu."},
+ {t:"Mahomet",q:"Que signifie l'Hégire ?",o:["La mort de Mahomet","Le départ de Mahomet de La Mecque vers Médine","La conquête de Jérusalem","La naissance de l'islam"],a:1,e:"En 622, Mahomet quitte La Mecque pour Médine."},
+ {t:"Mahomet",q:"En quelle année Mahomet meurt-il ?",o:["570","622","632","732"],a:2,e:"Mahomet meurt en 632."},
+ {t:"Définitions",q:"Qu'est-ce qu'un prophète ?",o:["Un chef de guerre","Une personne choisie par Dieu pour transmettre son message","Un juge","Un marchand qui voyage"],a:1,e:"Un prophète est choisi par Dieu pour transmettre son message aux hommes."},
+ {t:"Définitions",q:"Qu'est-ce que le Coran ?",o:["Un empire","Une ville sainte","Le livre sacré des musulmans","Une dynastie"],a:2,e:"Le Coran rassemble le message de Dieu transmis à Mahomet."},
+ {t:"Définitions",q:"Que désigne « Islam » avec une majuscule ?",o:["La religion seulement","La civilisation musulmane","Un calife","Une bataille"],a:1,e:"Islam (majuscule) : la civilisation. islam (minuscule) : la religion."},
+ {t:"Définitions",q:"Qu'est-ce qu'un calife ?",o:["Un juge","Un conseiller","Le chef politique et religieux des musulmans, successeur de Mahomet","Un gouverneur de province"],a:2,e:"Le calife est le « commandeur des croyants »."},
+ {t:"Définitions",q:"Qu'est-ce qu'un vizir ?",o:["Le conseiller du calife","Le juge de la ville","Un marchand","Un soldat"],a:0,e:"Le vizir aide le calife à gouverner."},
+ {t:"Définitions",q:"Qu'est-ce qu'un dhimmi ?",o:["Un chef musulman","Un chrétien ou un juif protégé sous domination musulmane","Un soldat croisé","Un cadi"],a:1,e:"Le dhimmi garde sa religion mais paie un impôt et a moins de droits."},
+ {t:"Définitions",q:"Qu'est-ce qu'une croisade ?",o:["Un pèlerinage musulman","Une expédition militaire de chrétiens d'Occident, notamment vers Jérusalem","Un traité de paix","Un impôt"],a:1,e:"La première croisade part en 1096 et prend Jérusalem en 1099."},
+ {t:"Définitions",q:"Sunnites et chiites se séparent à cause de…",o:["La langue du Coran","Le choix du successeur de Mahomet","La prise de Bagdad","Les croisades"],a:1,e:"Le désaccord sur le successeur de Mahomet divise l'islam."},
+ {t:"Expansion",q:"Quel est un facteur religieux des conquêtes ?",o:["Les armées byzantine et perse sont épuisées","Les Arabes veulent étendre leur religion","Les marchands veulent de riches terres","Les Arabes vivent dans le désert"],a:1,e:"Étendre l'islam est un facteur religieux (comme la tolérance envers les chrétiens et les juifs)."},
+ {t:"Expansion",q:"Quel est un facteur politique de l'expansion ?",o:["La religion est simple","Les armées byzantine et perse sont épuisées par les guerres","Les marchands connaissent les richesses des empires","Les juifs sont persécutés"],a:1,e:"Des armées affaiblies facilitent la conquête."},
+ {t:"Expansion",q:"Quel est un facteur économique de l'expansion ?",o:["Les marchands arabes convoitent les riches terres perses et byzantines","Les chrétiens sont persécutés","Le calife veut un palais","Les croisés arrivent"],a:0,e:"Les marchands arabes connaissent les richesses de ces empires."},
+ {t:"Expansion",q:"Comment décrire l'expansion de l'islam ?",o:["Très lente","Très rapide : un immense empire en environ un siècle","Arrêtée dès la mort de Mahomet","Limitée à l'Arabie"],a:1,e:"Entre 632 et 750, les musulmans conquièrent un immense empire."},
+ {t:"Expansion",q:"Quelle est la capitale des Omeyyades ?",o:["Bagdad","Le Caire","Damas","Cordoue"],a:2,e:"Sous les Omeyyades, l'empire est dirigé depuis Damas."},
+ {t:"Expansion",q:"Qui arrête les musulmans à Poitiers en 732 ?",o:["Haroun al-Rachid","Charles Martel","Nicéphore","Saladin"],a:1,e:"Charles Martel et les Francs arrêtent leur avancée."},
+ {t:"Abbassides",q:"À partir de quelle date règnent les Abbassides ?",o:["622","732","750","969"],a:2,e:"La dynastie abbasside commence en 750."},
+ {t:"Abbassides",q:"Quel est le rôle d'un cadi ?",o:["Chef de l'armée","Juge","Conseiller du calife","Gouverneur de province"],a:1,e:"Les cadis sont les juges."},
+ {t:"Abbassides",q:"Qui dirige une province de l'empire ?",o:["Un émir","Un vizir","Un cadi","Un dhimmi"],a:0,e:"Les émirs dirigent un territoire au nom du calife."},
+ {t:"Abbassides",q:"Quelle est la forme de Bagdad ?",o:["Carrée","Triangulaire","Ronde","Allongée le long du fleuve"],a:2,e:"Bagdad est une ville ronde, défendue par des murailles et des douves."},
+ {t:"Abbassides",q:"Quels sont les bâtiments les plus importants de Bagdad ?",o:["Le port et le marché","La mosquée et le palais","La cathédrale et le château","La bibliothèque et l'école"],a:1,e:"La mosquée et le palais du calife."},
+ {t:"Abbassides",q:"En quelle année les Mongols prennent-ils Bagdad ?",o:["969","1099","1258","1453"],a:2,e:"En 1258, par la terre et par l'eau."},
+ {t:"Abbassides",q:"Pourquoi le cadi donne-t-il raison au marchand voleur dans l'histoire d'Ali Cogia ?",o:["Il est son ami","Ali Cogia n'a ni preuve ni témoin","Le marchand a payé le cadi","Le calife l'a ordonné"],a:1,e:"Sans preuve ni témoin, le cadi fait jurer le marchand, qui jure et est déclaré innocent."},
+ {t:"Abbassides",q:"Dans l'histoire d'Ali Cogia, quelle preuve simple montre que le marchand ment ?",o:["Les olives sont fraîches alors qu'elles auraient 7 ans","Le vase est cassé","Le marchand a peur","Il n'a pas de témoin"],a:0,e:"Les marchands d'olives confirment que ces olives sont récentes."},
+ {t:"Abbassides",q:"Pourquoi le calife est-il impressionné par l'enfant ?",o:["Il joue bien","Il fait preuve d'intelligence en menant le procès","Il connaît le Coran","Il est le fils du vizir"],a:1,e:"L'enfant démasque le mensonge avec les olives."},
+ {t:"Division",q:"Qui prend l'Égypte en 969 ?",o:["Les Omeyyades","Les Fatimides","Les Mongols","Les Francs"],a:1,e:"Les Fatimides prennent l'Égypte en 969."},
+ {t:"Croisades",q:"Quand a lieu la première croisade ?",o:["622-632","732","1096-1099","1258"],a:2,e:"La première croisade dure de 1096 à 1099."},
+ {t:"Croisades",q:"Quel est un exemple d'échange culturel entre chrétiens et musulmans ?",o:["La bataille de Poitiers","La mosquée de Cordoue, devenue cathédrale","La prise de Bagdad","L'Hégire"],a:1,e:"La mosquée de Cordoue mêle les deux cultures."}
+];
+
+const ORDER_MAHOMET=[
+ {t:"Naissance de Mahomet (570)"},
+ {t:"Mahomet est marchand caravanier"},
+ {t:"Mahomet reçoit la visite de l'ange Gabriel (610) et devient prophète"},
+ {t:"Mahomet essaie de convertir les habitants de La Mecque"},
+ {t:"Mahomet quitte La Mecque pour Médine : l'Hégire (622)"},
+ {t:"Mahomet convertit les habitants de Médine"},
+ {t:"Mahomet fonde le premier État musulman"},
+ {t:"Mahomet conquiert La Mecque et l'Arabie"},
+ {t:"Mort de Mahomet (632)"}
+];
+const ORDER_DATES=[
+ {t:"L'Hégire",d:"622"},
+ {t:"Mort de Mahomet",d:"632"},
+ {t:"Bataille de Poitiers",d:"732"},
+ {t:"Début de la dynastie abbasside",d:"750"},
+ {t:"Les Fatimides prennent l'Égypte",d:"969"},
+ {t:"Première croisade",d:"1096-1099"},
+ {t:"Les Mongols prennent Bagdad",d:"1258"}
+];
+
+const DOCS=[
+ {title:"Doc 1. Le récit de la révélation",src:"Ibn Hicham, Vie de Mahomet, IXe siècle",
+  ex:["Mahomet est sur le mont Hira. L'ange Gabriel descend du ciel, se montre à lui et lui dit qu'il est l'envoyé de Dieu. Mahomet, épouvanté, croit être devenu fou.","Gabriel lui ordonne de lire, « au nom de ton seigneur qui a tout créé ». Mahomet répond qu'il ne sait pas lire."],
+  qs:[
+   {q:"De quel type de document s'agit-il ?",a:"C'est un texte, un récit écrit par un auteur musulman."},
+   {q:"Quand ce texte a-t-il été écrit ? Quand se passe la scène ?",a:"Le texte est écrit au IXe siècle, mais la scène se passe vers 610, environ 200 ans plus tôt."},
+   {q:"Qui s'adresse à Mahomet et que lui demande-t-il ?",a:"L'ange Gabriel. Il lui demande de lire au nom de Dieu, c'est-à-dire de transmettre le message divin."},
+   {q:"Ce texte est-il une vérité historique ou une croyance ? Justifie.",a:"C'est une croyance : on peut y croire ou ne pas y croire, et aucun historien ne peut prouver qu'un ange est apparu."},
+   {q:"Pourquoi Mahomet est-il différent des autres hommes ?",a:"Il est un prophète : Dieu l'a choisi pour transmettre son message au reste des hommes."}
+  ]},
+ {title:"Doc 2. La carte des conquêtes arabes",src:"Carte « Les conquêtes arabes et l'expansion territoriale de l'islam »",
+  ex:["<b>À la mort de Mahomet (632)</b> : une partie de l'Arabie est musulmane.","<b>Premiers califes (632-660)</b> : la Syrie, la Palestine, l'Égypte, l'Irak et la Perse.","<b>Omeyyades (661-749)</b> : le Maghreb, l'Espagne, l'Afghanistan et l'Asie centrale, avec Damas pour capitale."],
+  qs:[
+   {q:"Toute l'Arabie est-elle contrôlée par les musulmans à la mort de Mahomet ?",a:"Non, seulement une partie."},
+   {q:"Quels territoires les Omeyyades conquièrent-ils entre 661 et 749 ?",a:"L'Espagne, le Maghreb, l'Afghanistan et l'Asie centrale. Ils arrivent jusqu'au royaume des Francs."},
+   {q:"En combien de temps l'empire musulman se constitue-t-il ?",a:"Les premiers califes conquièrent une grande partie de l'empire en environ 28 ans (632-660). L'ensemble est constitué en un peu plus d'un siècle (632-750)."},
+   {q:"Décris l'expansion de l'islam.",a:"Elle est très rapide : un immense empire en à peine un siècle."},
+   {q:"Quels empire et royaume résistent à l'expansion de l'islam ?",a:"L'Empire byzantin et le royaume des Francs (Poitiers, 732)."}
+  ]},
+ {title:"Doc 3. Haroun al-Rachid et l'empereur byzantin",src:"D'après Tabari, Chronique des prophètes et des rois, début du Xe siècle",
+  ex:["En 806, l'empereur byzantin Nicéphore (appelé « roi de Rome » par l'auteur) attaque les frontières de la Syrie. Haroun marche contre lui avec cent mille hommes et prend plusieurs villes.","Nicéphore doit faire la paix : il promet de payer 300 000 dinars par an et de respecter le territoire musulman.","Pendant l'hiver, il viole le traité. Haroun revient, détruit de nombreuses villes, et Nicéphore doit refaire la paix."],
+  qs:[
+   {q:"Qui attaque qui au début du récit ?",a:"L'empereur byzantin (Nicéphore) attaque les frontières musulmanes de Syrie."},
+   {q:"Que doit faire Nicéphore pour obtenir la paix ?",a:"Il doit payer 300 000 dinars chaque année et respecter le territoire musulman."},
+   {q:"Pourquoi la paix est-elle fragile ?",a:"Nicéphore ne respecte pas le traité : il envahit de nouveau le territoire musulman en profitant de l'hiver."},
+   {q:"Comment Haroun al-Rachid réagit-il ?",a:"Il revient malgré l'hiver, entre dans le pays byzantin et détruit un grand nombre de villes. Nicéphore doit refaire la paix."},
+   {q:"Quand ce texte a-t-il été écrit ? Quand a lieu l'attaque ? Peut-on le croire à 100 % ?",a:"Texte écrit au début du Xe siècle. L'attaque a lieu en 806. On ne peut pas le croire à 100 % : l'auteur écrit un siècle plus tard et est musulman, donc il peut valoriser Haroun."},
+   {q:"Haroun reste-t-il une grande puissance après 749 ? Réponds en affirmant, expliquant, illustrant.",a:"<b>Affirmer</b> : oui, les musulmans restent une grande puissance. <b>Expliquer</b> : Haroun mène une grande armée, prend des villes et impose la paix. <b>Illustrer</b> : en 806, Nicéphore doit payer 300 000 dinars par an à Haroun.",method:true}
+  ]},
+ {title:"Doc 4. Ali Cogia, marchand de Bagdad",src:"Les Mille et Une Nuits, traduction d'Antoine Galland, 1704-1717",
+  ex:["Avant son pèlerinage à La Mecque, Ali Cogia confie à un ami marchand un vase d'olives, avec 1000 pièces d'or cachées dedans. Son voyage dure 7 ans.","À son retour, l'or a disparu. Le marchand nie tout. Sans témoin ni preuve, le cadi fait jurer le marchand, qui jure et est déclaré innocent.","Des enfants rejouent le procès. L'enfant-juge goûte les olives, constate qu'elles sont fraîches et fait venir des marchands d'olives, qui confirment. Le calife Haroun al-Rachid, caché, a tout vu et veut que l'enfant juge l'affaire devant lui."],
+  qs:[
+   {q:"Quel est le rôle du cadi ?",a:"C'est un juge."},
+   {q:"Quel est le rôle du calife ?",a:"C'est le chef suprême, politique et religieux."},
+   {q:"Ali Cogia décide de porter plainte auprès d'une autre personne. Qui est-ce ?",a:"Le calife Haroun al-Rachid, juge suprême de l'empire."},
+   {q:"Justifie que le lien entre la religion et la justice est fort.",a:"Le cadi demande au marchand de jurer qu'il dit la vérité, un serment religieux. De plus, le calife est à la fois chef religieux et chef politique."},
+   {q:"Quelle preuve simple montre que le marchand est un menteur ?",a:"Les olives sont fraîches alors qu'elles devraient avoir 7 ans, ce que confirment les marchands d'olives."},
+   {q:"Explique ce que cette histoire montre sur le rôle du calife dans la justice.",a:"Le calife est le juge suprême : il peut corriger l'erreur d'un cadi, intervenir quand la justice échoue et récompenser l'intelligence. Rendre la justice lui permet d'affirmer son pouvoir sur un immense empire."}
+  ]}
+];
+
+/* ---------- NAVIGATION ---------- */
+const TABS=["objectifs","cartes","quiz","frises","documents"];
+function show(id){
+  if(!TABS.includes(id))id="objectifs";
+  TABS.forEach(t=>{$("#"+t).hidden=t!==id});
+  $$(".tab").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===id));
+}
+$$(".tab").forEach(b=>b.addEventListener("click",()=>{location.hash=b.dataset.tab;show(b.dataset.tab)}));
+window.addEventListener("hashchange",()=>show(location.hash.slice(1)));
+
+/* ---------- OBJECTIFS ---------- */
+function renderObj(){
+  const done=store.get("obj",{});
+  let total=0,n=0,html="";
+  for(const [g,items] of Object.entries(OBJ)){
+    const gl=g==="Définir"?"Je sais définir":g==="Expliquer"?"Je sais expliquer":g==="Connaître"?"Je connais":"Je sais dater";
+    html+=`<div class="panel group"><div class="group-head"><h3>${gl}</h3><button class="btn ghost" data-deck="${g}">Réviser ces cartes</button></div>`;
+    items.forEach((it,i)=>{
+      const k=g+i;total++;if(done[k])n++;
+      html+=`<div class="obj"><input type="checkbox" id="o-${k}" data-k="${k}" ${done[k]?"checked":""}><label for="o-${k}">${it}</label></div>`;
+    });
+    html+=`</div>`;
+  }
+  $("#obj-list").innerHTML=html;
+  $("#obj-count").textContent=`${n} sur ${total}`;
+  $("#obj-bar").style.width=(100*n/total)+"%";
+}
+$("#obj-list").addEventListener("change",e=>{
+  const k=e.target.dataset.k;if(!k)return;
+  const d=store.get("obj",{});d[k]=e.target.checked;store.set("obj",d);renderObj();
+});
+$("#obj-list").addEventListener("click",e=>{
+  const g=e.target.dataset.deck;if(!g)return;
+  fc.filter=g;buildDeck();renderFC();location.hash="cartes";show("cartes");
+});
+
+/* ---------- FLASHCARDS ---------- */
+const fc={filter:"all",deck:[],i:0,flip:false};
+function marks(){return store.get("marks",{})}
+function buildDeck(shuf){
+  const m=marks();
+  let d=CARDS.map((c,id)=>({...c,id}));
+  if(fc.filter==="redo")d=d.filter(c=>m[c.id]==="redo");
+  else if(fc.filter!=="all")d=d.filter(c=>c.cat===fc.filter);
+  fc.deck=shuf?shuffle(d):d;fc.i=0;fc.flip=false;
+}
+function renderFC(){
+  const m=marks();
+  const redo=Object.values(m).filter(v=>v==="redo").length;
+  const cats=["all","Définir","Expliquer","Connaître","Dater","redo"];
+  const lab={all:"Toutes",redo:"À revoir ("+redo+")"};
+  $("#fc-chips").innerHTML=cats.map(c=>`<button class="chip" data-f="${c}" aria-pressed="${fc.filter===c}">${lab[c]||c}</button>`).join("")+`<button class="chip" data-f="__shuffle">Mélanger</button>`;
+  const area=$("#fc-area");
+  if(!fc.deck.length){
+    area.innerHTML=`<div class="panel"><p style="margin:0">${fc.filter==="redo"?"Aucune carte à revoir pour l'instant. Bravo !":"Aucune carte dans cette série."}</p></div>`;
+    return;
+  }
+  const c=fc.deck[fc.i];
+  const mastered=fc.deck.filter(x=>m[x.id]==="ok").length;
+  const st=m[c.id];
+  area.innerHTML=`
+   <div class="meta row" style="justify-content:space-between;margin-bottom:8px"><span>Carte ${fc.i+1} sur ${fc.deck.length}</span><span>${mastered} maîtrisée${mastered>1?"s":""}${st?` · cette carte : <span class="tag-${st}">${st==="ok"?"sue":"à revoir"}</span>`:""}</span></div>
+   <div class="bar" style="margin-bottom:12px"><i style="width:${100*(fc.i+1)/fc.deck.length}%"></i></div>
+   <button class="card ${fc.flip?"back":""} pop" id="fc-card" aria-label="Retourner la carte">
+     <span class="cat">${c.cat}</span>
+     ${fc.flip?`<div>${c.a}</div>`:`<div class="q">${c.q}</div>`}
+     <span class="hint">${fc.flip?"":"Touche pour retourner"}</span>
+   </button>
+   <div class="row" style="margin-top:14px;justify-content:space-between">
+     <button class="btn ghost" id="fc-prev">Précédente</button>
+     <div class="row">
+       <button class="btn bad" id="fc-redo" ${fc.flip?"":"disabled"}>À revoir</button>
+       <button class="btn ok" id="fc-ok" ${fc.flip?"":"disabled"}>Je savais</button>
+     </div>
+     <button class="btn ghost" id="fc-next">Suivante</button>
+   </div>`;
+}
+function fcMark(v){
+  const c=fc.deck[fc.i];const m=marks();m[c.id]=v;store.set("marks",m);fcNext();
+}
+function fcNext(){fc.i=(fc.i+1)%fc.deck.length;fc.flip=false;renderFC()}
+$("#cartes").addEventListener("click",e=>{
+  const t=e.target.closest("button");if(!t)return;
+  if(t.dataset.f){
+    if(t.dataset.f==="__shuffle"){buildDeck(true)}else{fc.filter=t.dataset.f;buildDeck()}
+    renderFC();return;
+  }
+  if(t.id==="fc-card"){fc.flip=!fc.flip;renderFC()}
+  else if(t.id==="fc-ok")fcMark("ok");
+  else if(t.id==="fc-redo")fcMark("redo");
+  else if(t.id==="fc-next")fcNext();
+  else if(t.id==="fc-prev"){fc.i=(fc.i-1+fc.deck.length)%fc.deck.length;fc.flip=false;renderFC()}
+});
+
+/* ---------- QUIZ ---------- */
+let qz=null;
+function quizHome(){
+  const themes=[...new Set(QUIZ.map(q=>q.t))];
+  $("#quiz-area").innerHTML=`
+   <p class="lead">${QUIZ.length} questions sur tout le chapitre. Choisis un thème ou lance un tirage au hasard.</p>
+   <div class="panel">
+     <div class="row" style="margin-bottom:14px">
+       <button class="btn" data-q="10">10 questions au hasard</button>
+       <button class="btn ghost" data-q="all">Les ${QUIZ.length} questions</button>
+     </div>
+     <div class="meta" style="margin-bottom:8px">Ou par thème :</div>
+     <div class="chips" style="margin:0">${themes.map(t=>`<button class="chip" data-theme="${t}">${t} (${QUIZ.filter(q=>q.t===t).length})</button>`).join("")}</div>
+   </div>`;
+}
+function quizStart(list){
+  qz={list:shuffle(list),i:0,score:0,miss:[],answered:false};quizRender();
+}
+function quizRender(){
+  const area=$("#quiz-area");
+  if(qz.i>=qz.list.length){
+    const pct=Math.round(100*qz.score/qz.list.length);
+    area.innerHTML=`<div class="panel"><p class="meta" style="margin:0">Résultat</p><p class="score">${qz.score} / ${qz.list.length}</p>
+      <div class="bar" style="margin:8px 0 14px"><i style="width:${pct}%"></i></div>
+      <p>${pct>=80?"Très bon niveau, tu maîtrises le chapitre.":pct>=50?"Bien joué, relis les points ratés.":"Pas encore solide : retourne aux flashcards, puis réessaie."}</p>
+      ${qz.miss.length?`<h3>À retravailler</h3>${qz.miss.map(q=>`<div class="miss"><strong>${q.q}</strong><br><span class="tag-ok">${q.o[q.a]}</span><br><span class="meta">${q.e}</span></div>`).join("")}`:""}
+      <div class="row" style="margin-top:14px">
+        ${qz.miss.length?`<button class="btn" id="qz-redo">Refaire mes erreurs</button>`:""}
+        <button class="btn ghost" id="qz-home">Retour au menu</button>
+      </div></div>`;
+    return;
+  }
+  const q=qz.list[qz.i];
+  area.innerHTML=`<div class="meta row" style="justify-content:space-between;margin-bottom:8px"><span>Question ${qz.i+1} sur ${qz.list.length} · ${q.t}</span><span>Score : ${qz.score}</span></div>
+   <div class="bar" style="margin-bottom:14px"><i style="width:${100*qz.i/qz.list.length}%"></i></div>
+   <div class="panel"><p class="q-text">${q.q}</p>
+   <div class="opts">${q.o.map((o,k)=>`<button class="opt" data-k="${k}">${o}</button>`).join("")}</div>
+   <div id="qz-fb"></div></div>`;
+  qz.answered=false;
+}
+$("#quiz").addEventListener("click",e=>{
+  const t=e.target.closest("button");if(!t)return;
+  if(t.dataset.q){quizStart(t.dataset.q==="all"?QUIZ:shuffle(QUIZ).slice(0,10));return}
+  if(t.dataset.theme){quizStart(QUIZ.filter(q=>q.t===t.dataset.theme));return}
+  if(t.id==="qz-home"){quizHome();return}
+  if(t.id==="qz-redo"){quizStart(qz.miss.slice());return}
+  if(t.id==="qz-next"){qz.i++;quizRender();return}
+  if(t.classList.contains("opt")&&qz&&!qz.answered){
+    qz.answered=true;
+    const q=qz.list[qz.i],k=+t.dataset.k;
+    $$(".opt").forEach((b,j)=>{b.disabled=true;if(j===q.a)b.classList.add("right");else if(j===k)b.classList.add("wrong")});
+    if(k===q.a)qz.score++;else qz.miss.push(q);
+    $("#qz-fb").innerHTML=`<div class="explain"><strong>${k===q.a?"Exact.":"Pas tout à fait."}</strong> ${q.e}</div><div style="margin-top:12px"><button class="btn" id="qz-next">${qz.i+1>=qz.list.length?"Voir mon score":"Question suivante"}</button></div>`;
+  }
+});
+
+/* ---------- FRISES ---------- */
+function orderGame(root,items){
+  let order,next,tries,placed;
+  function init(){order=shuffle(items.map((_,i)=>i));next=0;tries=0;placed={};draw("")}
+  function draw(msg,cls){
+    root.innerHTML=`<div class="order">${order.map(i=>{
+      const p=placed[i];
+      return `<button class="step ${p?"done":""}" data-i="${i}" ${p?"disabled":""}><span class="n">${p||""}</span><span>${items[i].t}</span>${p&&items[i].d?`<span class="d">${items[i].d}</span>`:""}</button>`}).join("")}</div>
+      <p class="msg ${cls||""}" aria-live="polite">${msg}</p>
+      <button class="btn ghost" data-reset="1">Recommencer</button>`;
+  }
+  root.addEventListener("click",e=>{
+    const t=e.target.closest("button");if(!t)return;
+    if(t.dataset.reset){init();return}
+    if(t.dataset.i===undefined)return;
+    const i=+t.dataset.i;
+    if(i===next){
+      placed[i]=++next;
+      if(next===items.length)draw(tries===0?"Parfait, sans aucune erreur !":`Terminé avec ${tries} erreur${tries>1?"s":""}. Recommence pour faire un sans-faute.`,"tag-ok");
+      else draw(`Bien vu. Quel est l'événement suivant ?`,"tag-ok");
+    }else{
+      tries++;draw("Pas celui-là. Cherche ce qui vient juste après.","tag-redo");
+      const b=root.querySelector(`[data-i="${i}"]`);if(b)b.classList.add("shake");
+    }
+  });
+  init();
+}
+
+/* ---------- DOCUMENTS ---------- */
+function renderDocs(){
+  $("#docs-area").innerHTML=DOCS.map((d,di)=>`
+   <div class="panel doc"><h3 style="font-family:var(--display);font-size:1.15rem">${d.title}</h3>
+    <p class="doc-src">${d.src}</p>
+    <div class="excerpt">${d.ex.map(p=>`<p>${p}</p>`).join("")}</div>
+    ${d.qs.map((q,qi)=>`<div class="qa"><p class="qq">${qi+1}. ${q.q}</p>
+      ${q.method?`<div class="method"><span><b>Affirmer</b> : donne ton idée en une phrase.</span><span><b>Expliquer</b> : justifie avec des indices.</span><span><b>Illustrer</b> : donne un exemple.</span></div>`:""}
+      <textarea id="ans-${di}-${qi}" aria-label="Ta réponse" placeholder="Ta réponse"></textarea>
+      <div class="row" style="margin-top:8px"><button class="btn ghost" data-corr="${di}-${qi}">Voir la correction</button></div>
+      <div class="corr" id="corr-${di}-${qi}" hidden>${q.a}</div></div>`).join("")}
+   </div>`).join("");
+}
+$("#docs-area").addEventListener("click",e=>{
+  const t=e.target.closest("button");if(!t||!t.dataset.corr)return;
+  const el=$("#corr-"+t.dataset.corr);el.hidden=!el.hidden;
+  t.textContent=el.hidden?"Voir la correction":"Cacher la correction";
+});
+
+/* ---------- INIT ---------- */
+renderObj();buildDeck();renderFC();quizHome();
+orderGame($("#game-mahomet"),ORDER_MAHOMET);
+orderGame($("#game-dates"),ORDER_DATES);
+renderDocs();
+show(location.hash.slice(1));
+</script>
+
+</body></html>

@@ -1,0 +1,1356 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Réviser la protection de l'organisme</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap">
+<style>
+/* Mise en page : une colonne de 920px, quatre séances en onglets, chaque séance = une pile de cartes d'activité.
+   Palette tirée d'un frottis sanguin coloré : violet des noyaux, rose des hématies, vert-bleu des anticorps. */
+:root{
+  --bg:#EEF0F8; --surface:#FFFFFF; --surface2:#E7EAF5; --ink:#1B1740; --muted:#575C80; --line:#D0D4E8; --line-strong:#8E94BD;
+  --stain:#5B2F9E; --on-stain:#FFFFFF; --stain-soft:#E8DEF7;
+  --rose:#C9456E; --rose-soft:#FBE3EB;
+  --ab:#16807F; --ab-soft:#D4EFEC;
+  --virus:#C0344B; --bact:#E2B13C; --tcell:#D07F1E; --amber-soft:#FCE9D2;
+  --cell:#DCCFF3; --lymphb:#FBE5D4; --lymphT:#CDE6F6;
+  --good:#1D7A47; --good-soft:#DCF2E4; --bad:#B3261E; --bad-soft:#FBE2DF; --warn:#7A4F00; --warn-soft:#FFEFC8;
+  --font-display:'Bricolage Grotesque','Trebuchet MS',system-ui,sans-serif;
+  --font-body:'Atkinson Hyperlegible',Verdana,system-ui,sans-serif;
+  --radius:14px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12102B; --surface:#1D1A42; --surface2:#28245A; --ink:#EDEBFC; --muted:#AEB0D6; --line:#3A3570; --line-strong:#6F6BAE;
+  --stain:#B79AF2; --on-stain:#17133A; --stain-soft:#2F2560;
+  --rose:#F28AA8; --rose-soft:#4B2238;
+  --ab:#5DD0CB; --ab-soft:#17393D;
+  --virus:#FF7088; --bact:#EBC15A; --tcell:#F2A857; --amber-soft:#45311B;
+  --cell:#53458F; --lymphb:#5E4A66; --lymphT:#385A80;
+  --good:#79D6A2; --good-soft:#143826; --bad:#FF8F85; --bad-soft:#452220; --warn:#F4C862; --warn-soft:#40321A;
+  color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#12102B; --surface:#1D1A42; --surface2:#28245A; --ink:#EDEBFC; --muted:#AEB0D6; --line:#3A3570; --line-strong:#6F6BAE;
+  --stain:#B79AF2; --on-stain:#17133A; --stain-soft:#2F2560;
+  --rose:#F28AA8; --rose-soft:#4B2238;
+  --ab:#5DD0CB; --ab-soft:#17393D;
+  --virus:#FF7088; --bact:#EBC15A; --tcell:#F2A857; --amber-soft:#45311B;
+  --cell:#53458F; --lymphb:#5E4A66; --lymphT:#385A80;
+  --good:#79D6A2; --good-soft:#143826; --bad:#FF8F85; --bad-soft:#452220; --warn:#F4C862; --warn-soft:#40321A;
+  color-scheme:dark;}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--font-body);margin:0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 56px}
+.wrap{max-width:920px;margin:0 auto}
+h1,h2,h3,h4{font-family:var(--font-display);text-wrap:balance;margin:0}
+p{margin:0 0 .8em}
+.muted{color:var(--muted)} .small{font-size:.9rem}
+:focus-visible{outline:3px solid var(--rose);outline-offset:2px}
+a{color:var(--stain)}
+
+/* en-tête */
+.hero{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;padding-block:30px 12px}
+.eyebrow{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--stain);font-weight:700;margin:0}
+.hero h1{font-size:clamp(2rem,5.5vw,3.2rem);line-height:1.04;margin:.3em 0 .4em;font-weight:800;letter-spacing:-.02em}
+.hero p.lead{max-width:54ch;color:var(--muted);margin:0}
+.hero-art{width:230px;max-width:100%;height:auto}
+@media (max-width:640px){.hero{grid-template-columns:1fr}.hero-art{display:none}}
+
+/* onglets */
+.tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-block:14px 8px}
+.tab{display:grid;gap:2px;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);text-decoration:none;position:relative;min-width:0}
+.tab .tn{font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--muted)}
+.tab .tt{font-family:var(--font-display);font-weight:700;line-height:1.15}
+.tab .tm{font-size:.82rem;color:var(--muted)}
+.tab:hover{border-color:var(--stain)}
+.tab[aria-current="page"]{background:var(--stain);border-color:var(--stain);color:var(--on-stain)}
+.tab[aria-current="page"] .tn,.tab[aria-current="page"] .tm{color:var(--on-stain);opacity:.85}
+.tab .chk{position:absolute;top:9px;right:10px;width:18px;height:18px;border-radius:50%;border:1.5px solid var(--line-strong)}
+.tab.done .chk{background:var(--good);border-color:var(--good)}
+.tab.done .chk::after{content:"";position:absolute;left:5px;top:2px;width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(40deg)}
+@media (max-width:760px){.tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.tab:last-child{grid-column:1/-1}}
+
+/* séance */
+.plan{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 20px;margin-block:12px 0}
+.plan h2{font-size:1.05rem;margin-bottom:8px}
+.plan ol{margin:0;padding-left:1.3em;display:grid;gap:3px}
+.plan li span{color:var(--muted);white-space:nowrap}
+.act{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin-block:16px}
+.act-h{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-bottom:12px}
+.act-h .n{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--stain);color:var(--on-stain);font:700 .95rem var(--font-display)}
+.act-h h2{font-size:1.3rem;line-height:1.15;flex:1 1 220px}
+.time{font-size:.8rem;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:1px 10px;white-space:nowrap}
+.lead{color:var(--muted);max-width:68ch}
+.keep{background:var(--stain-soft);border-radius:12px;padding:12px 16px;margin-top:16px}
+.keep h3{font-size:.95rem;margin-bottom:4px}
+.keep p:last-child{margin-bottom:0}
+.dayfoot{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;margin-block:18px}
+
+/* boutons */
+.btn{display:inline-flex;align-items:center;justify-content:center;font:inherit;font-weight:700;border-radius:10px;border:1.5px solid var(--stain);background:var(--stain);color:var(--on-stain);padding:8px 16px;min-height:44px;cursor:pointer;text-decoration:none}
+.btn.ghost{background:transparent;color:var(--stain)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin-bottom:14px}
+.switch{display:inline-flex;align-items:center;gap:8px;font-weight:700;cursor:pointer;min-height:44px}
+.switch input{width:20px;height:20px;accent-color:var(--stain)}
+.chip{font:inherit;font-size:.92rem;border:1.5px solid var(--line);border-radius:99px;background:var(--surface);color:var(--ink);padding:6px 14px;min-height:40px;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.chip[aria-pressed="true"]{background:var(--stain-soft);border-color:var(--stain);font-weight:700}
+.chip .sw{width:14px;height:14px;border-radius:50%;display:inline-block}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-block:8px}
+
+/* schéma-bilan */
+.flow{display:grid;gap:8px}
+.arr{height:24px;position:relative}
+.arr::before{content:"";position:absolute;left:50%;top:0;bottom:7px;width:2px;background:var(--line-strong);transform:translateX(-50%)}
+.arr::after{content:"";position:absolute;left:50%;bottom:0;transform:translateX(-50%);border:6px solid transparent;border-top:8px solid var(--line-strong);border-bottom:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:10px;align-items:start}
+.node{background:var(--surface);border:1.5px solid var(--line);border-radius:12px;min-width:0}
+.node-head{display:grid;grid-template-columns:52px minmax(0,1fr);gap:12px;align-items:center;width:100%;text-align:left;background:none;border:0;padding:10px 38px 10px 10px;font:inherit;color:inherit;cursor:pointer;position:relative;border-radius:12px}
+.node-head::after{content:"+";position:absolute;right:12px;top:10px;font:700 1.2rem var(--font-display);color:var(--stain)}
+.node.open .node-head::after{content:"–"}
+.node:hover{border-color:var(--stain)}
+.tile{display:grid;place-items:center;width:52px;height:52px;border-radius:12px;background:var(--surface2)}
+.tone-phago .tile{background:var(--stain-soft)} .tone-b .tile{background:var(--ab-soft)} .tone-t .tile{background:var(--amber-soft)}
+.ico{width:40px;height:40px}
+.txt{display:grid;gap:2px;min-width:0}
+.t{font-family:var(--font-display);font-weight:700;font-size:1.02rem;line-height:1.2}
+.g{color:var(--muted);font-size:.92rem;line-height:1.35}
+.nb{position:absolute;right:34px;top:11px;font:700 .8rem var(--font-display);color:var(--muted)}
+.more{display:none;margin:0 12px 12px;padding-top:10px;border-top:1px dashed var(--line);font-size:.96rem}
+.node.open .more{display:block}
+.test .node:not(.open) .t,.test .node:not(.open) .g{color:transparent;text-shadow:0 0 10px var(--muted);user-select:none}
+.test td.kw:not(.on){color:transparent;text-shadow:0 0 10px var(--muted);cursor:pointer;user-select:none}
+.decide{background:var(--surface2);border-radius:12px;padding:12px 16px}
+.decide b{font-family:var(--font-display)}
+.outs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:8px;margin-top:8px}
+.out{background:var(--surface);border-radius:10px;padding:8px 12px;font-size:.94rem}
+.lane{margin-top:6px;padding:14px;border-radius:14px}
+.lane.lb{background:var(--ab-soft)} .lane.lt{background:var(--amber-soft)}
+.lane h3{font-size:1.1rem;margin-bottom:2px}
+.lane .sub{margin:0 0 12px;color:var(--muted);font-size:.93rem}
+.tablewrap{overflow-x:auto;margin-top:16px}
+table{border-collapse:collapse;width:100%;min-width:520px}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:var(--surface2);font-family:var(--font-display)}
+
+/* remettre dans l'ordre */
+.picked{list-style:none;padding:0;margin:0 0 12px;display:grid;gap:6px}
+.picked li{min-width:0}
+.picked .empty{color:var(--muted);border:1.5px dashed var(--line-strong);border-radius:10px;padding:10px 14px}
+.pk,.chipstep{font:inherit;color:var(--ink);text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;cursor:pointer;min-height:44px}
+.pk{display:flex;gap:10px;width:100%;align-items:baseline}
+.pk .pn{font:700 .9rem var(--font-display);color:var(--stain);min-width:1.4em}
+.picked li.ok .pk{border-color:var(--good);background:var(--good-soft)}
+.picked li.ko .pk{border-color:var(--bad);background:var(--bad-soft)}
+.pool{display:flex;flex-wrap:wrap;gap:8px}
+.chipstep:hover,.pk:hover{border-color:var(--stain)}
+
+/* texte à trous */
+.cloze{font-size:1.06rem;line-height:2.3;max-width:70ch}
+select.blank{font:inherit;font-size:.98rem;color:var(--ink);border:0;border-bottom:2px solid var(--stain);background:var(--stain-soft);border-radius:6px 6px 0 0;padding:3px 4px;max-width:100%}
+select.blank.ok{background:var(--good-soft);border-color:var(--good)}
+select.blank.ko{background:var(--bad-soft);border-color:var(--bad)}
+
+/* quiz */
+.qhead{display:flex;align-items:center;gap:10px;font-size:.88rem;color:var(--muted);margin-bottom:8px}
+.bar{display:inline-block;width:120px;max-width:40%;height:6px;border-radius:99px;background:var(--surface2);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--stain)}
+.q{font-weight:700;font-size:1.08rem;max-width:68ch}
+.opts{display:grid;gap:8px;margin-block:8px}
+.opts.tf{grid-template-columns:1fr 1fr}
+.opts.tf .opt{text-align:center;font-weight:700}
+.opt{font:inherit;color:var(--ink);text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:11px 14px;cursor:pointer;min-height:44px}
+.opt:hover:not(:disabled){border-color:var(--stain)}
+.opt[aria-pressed="true"]{border-color:var(--stain);background:var(--stain-soft)}
+.opt:disabled{color:var(--ink);cursor:default}
+.opt.right{border-color:var(--good);background:var(--good-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.fb{margin-top:10px;padding:10px 14px;border-radius:10px;background:var(--surface2)}
+.fb.good{background:var(--good-soft)} .fb.bad{background:var(--bad-soft)}
+.score{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px;margin-bottom:10px}
+.score b{font:800 2.2rem var(--font-display);color:var(--stain)}
+.wlist{padding-left:1.2em;display:grid;gap:8px}
+
+/* flashcards */
+.fcard{display:grid;align-content:center;gap:10px;width:100%;min-height:220px;text-align:center;font:inherit;color:var(--ink);background:var(--surface);border:2px solid var(--stain);border-radius:16px;padding:24px;cursor:pointer;margin-block:8px}
+.fcard .side{font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--stain)}
+.fcard .content{font-family:var(--font-display);font-weight:700;font-size:1.5rem;line-height:1.2}
+.fcard.back .content{font-family:var(--font-body);font-weight:400;font-size:1.15rem;line-height:1.45}
+.fcard .hint{font-size:.85rem;color:var(--muted)}
+.fcard.back{background:var(--stain-soft)}
+@keyframes flipin{from{transform:rotateX(70deg);opacity:.2}to{transform:none;opacity:1}}
+.fcard.anim{animation:flipin .25s ease-out}
+@media (prefers-reduced-motion:reduce){.fcard.anim{animation:none}}
+
+/* graphique, spécificité */
+.chart{width:100%;height:auto;display:block;max-width:640px}
+.chart text{fill:var(--muted);font-family:var(--font-body);font-size:12.5px}
+.chart .gl{stroke:var(--line);stroke-width:1}
+.chart .ax{stroke:var(--line-strong);stroke-width:1.5}
+.chart .lab{fill:var(--ink);font-weight:700}
+.stepper{display:grid;gap:12px}
+.dots{display:flex;gap:8px}
+.dots i{width:28px;height:6px;border-radius:99px;background:var(--line)}
+.dots i.on{background:var(--stain)}
+.stage{background:var(--surface2);border-radius:12px;padding:14px 16px}
+.stage h3{font-size:1.15rem;margin-bottom:4px}
+.lock{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:16px}
+.pick{display:flex;flex-wrap:wrap;gap:8px}
+.pbtn{font:inherit;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:6px 8px;cursor:pointer;display:grid;justify-items:center;gap:2px;min-width:92px}
+.pbtn svg{width:70px;height:56px}
+.pbtn[aria-pressed="true"]{border-color:var(--stain);background:var(--stain-soft)}
+.pbtn span{font-size:.85rem}
+table.mx{min-width:0;max-width:420px}
+table.mx td,table.mx th{text-align:center}
+td.yes{background:var(--good-soft);color:var(--good);font-weight:700}
+td.no{background:var(--bad-soft);color:var(--bad);font-weight:700}
+
+/* expérience de Pasteur */
+.exps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:10px;margin-block:12px}
+.exp{background:var(--surface2);border-radius:12px;padding:12px 14px;display:grid;gap:4px;align-content:start}
+.exp h4{font-size:1rem}
+.exp .ar{color:var(--muted);font-size:.88rem}
+.res{display:inline-block;justify-self:start;border-radius:99px;padding:2px 12px;font-weight:700;font-size:.9rem}
+.res.live{background:var(--good-soft);color:var(--good)} .res.dead{background:var(--bad-soft);color:var(--bad)}
+.doc{border:1.5px solid var(--line);border-radius:12px;padding:12px 16px;margin-block:12px;font-size:.96rem}
+.doc h4{font-size:.9rem;margin-bottom:4px;color:var(--stain)}
+.gq{border-top:1px solid var(--line);padding-top:16px;margin-top:16px}
+textarea{width:100%;font:inherit;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;resize:vertical}
+.kwl{display:flex;flex-wrap:wrap;gap:6px;margin-block:8px}
+.kwl span{border-radius:99px;padding:2px 10px;font-size:.88rem}
+.kwl .f{background:var(--good-soft);color:var(--good)} .kwl .m{background:var(--warn-soft);color:var(--warn)}
+.model{background:var(--stain-soft);border-radius:10px;padding:10px 14px;margin-top:8px}
+.hintbox{background:var(--warn-soft);color:var(--ink);border-radius:10px;padding:8px 12px;margin-top:8px}
+
+/* bilan */
+.blist{list-style:none;padding:0;margin:0;display:grid;gap:6px}
+.blist li{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:6px 14px;align-items:center;padding:8px 12px;border:1px solid var(--line);border-radius:10px}
+.pill{border-radius:99px;padding:2px 12px;font-size:.88rem;font-weight:700;white-space:nowrap}
+.pill.good{background:var(--good-soft);color:var(--good)} .pill.mid{background:var(--warn-soft);color:var(--warn)} .pill.low{background:var(--bad-soft);color:var(--bad)} .pill.none{background:var(--surface2);color:var(--muted)}
+@media (max-width:560px){.blist li{grid-template-columns:1fr auto}.blist li a{grid-column:1/-1}}
+/* séance 5 : sujet du brevet */
+.ctx{background:var(--surface);border:1.5px solid var(--stain);border-radius:var(--radius);padding:14px 18px;margin-block:12px 0}
+.ctx h2{font-size:1.1rem;margin-bottom:6px}
+.sub-h{font-family:var(--font-display);font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--stain);margin:20px 0 6px}
+.fig{max-width:640px;width:100%;height:auto;display:block}
+.fig text{fill:var(--muted);font-family:var(--font-body);font-size:12.5px}
+.pin line{stroke:var(--muted);stroke-width:1.5}
+.pin circle{fill:var(--stain)}
+.pin text{fill:var(--on-stain);font:700 12px var(--font-display);text-anchor:middle}
+figure{margin:8px 0}
+figcaption{font-size:.88rem;color:var(--muted);max-width:68ch;margin-top:4px}
+.mt{display:grid;gap:8px}
+.mrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:8px 12px;align-items:center}
+.mrow select.blank{width:100%;white-space:normal;padding-block:6px}
+@media (max-width:560px){.mrow{grid-template-columns:1fr}}
+.strip{display:flex;flex-wrap:wrap;gap:8px;margin-block:10px}
+.strip .st{flex:1 1 120px;background:var(--surface2);border-radius:12px;padding:8px 10px;display:grid;justify-items:center;align-content:start;gap:2px;text-align:center;font-size:.86rem;min-width:0}
+.strip .st b{font-family:var(--font-display)}
+.cl{list-style:none;padding:0;margin:8px 0;display:grid;gap:6px}
+.cl label{display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;align-items:start;cursor:pointer;padding:7px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface)}
+.cl input{width:18px;height:18px;margin-top:2px;accent-color:var(--stain)}
+.cl-t{font-size:.95rem;margin:14px 0 0}
+.cl-s{margin:4px 0 0}
+table.cal{min-width:900px;font-size:.88rem}
+table.cal td,table.cal th{text-align:center;padding:6px 8px}
+table.cal th:first-child{text-align:left;min-width:150px}
+table.cal tr.dtp th,table.cal tr.dtp td{background:var(--stain-soft)}
+table.cal td.x{font-weight:800;color:var(--stain)}
+.tree{display:grid;gap:10px}
+.tq{background:var(--stain-soft);border:1.5px solid var(--stain);border-radius:12px;padding:8px 14px;font-weight:700;font-family:var(--font-display);text-align:center}
+.tbr{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px}
+.tb{display:grid;gap:8px;align-content:start;min-width:0;border-top:3px solid var(--line-strong);padding-top:8px}
+.tl{justify-self:start;font-weight:700;font-size:.85rem;border-radius:99px;padding:1px 12px;background:var(--surface2);border:1px solid var(--line)}
+.tp{background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:10px 14px}
+.tp b{font-family:var(--font-display);text-decoration:underline}
+.tp ul{margin:4px 0 0;padding-left:1.1em}
+.notes{font-size:.9rem;color:var(--muted);margin:10px 0 0;padding-left:1.4em}
+.note{background:var(--warn-soft);border-radius:10px;padding:8px 12px;margin-top:10px;font-size:.94rem}
+.skip{position:absolute;left:-999px}.skip:focus{left:16px;top:8px;background:var(--surface);padding:8px;z-index:20}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+<defs>
+<symbol id="ic-bact" viewBox="0 0 48 48"><rect x="5" y="16" width="38" height="16" rx="8" fill="var(--bact)" stroke="var(--ink)" stroke-width="1.6"/><circle cx="15" cy="24" r="1.8" fill="var(--ink)" opacity=".45"/><circle cx="24" cy="22" r="1.8" fill="var(--ink)" opacity=".45"/><circle cx="33" cy="26" r="1.8" fill="var(--ink)" opacity=".45"/></symbol>
+<symbol id="ic-virus" viewBox="0 0 48 48"><circle cx="24" cy="24" r="14.5" fill="none" stroke="var(--virus)" stroke-width="6" stroke-dasharray="2.2 4.31"/><circle cx="24" cy="24" r="11" fill="var(--virus)"/><circle cx="20" cy="22" r="1.6" fill="#fff" opacity=".6"/><circle cx="27" cy="27" r="1.6" fill="#fff" opacity=".6"/></symbol>
+<symbol id="ic-germs" viewBox="0 0 48 48"><use href="#ic-bact" x="0" y="0" width="30" height="30"/><use href="#ic-virus" x="18" y="18" width="30" height="30"/></symbol>
+<symbol id="ic-many" viewBox="0 0 48 48"><use href="#ic-bact" x="0" y="1" width="24" height="24"/><use href="#ic-virus" x="24" y="0" width="24" height="24"/><use href="#ic-virus" x="0" y="24" width="24" height="24"/><use href="#ic-bact" x="24" y="23" width="24" height="24"/></symbol>
+<symbol id="ic-phago" viewBox="0 0 48 48"><path d="M24 5c8 0 11 4 15 8s5 9 3 15-7 14-16 15-14-3-17-9-3-12 1-18S17 5 24 5z" fill="var(--cell)" stroke="var(--stain)" stroke-width="1.6"/><ellipse cx="18" cy="21" rx="6" ry="4.5" fill="var(--stain)"/><ellipse cx="29" cy="19" rx="5" ry="4" fill="var(--stain)"/><ellipse cx="25" cy="29" rx="6.5" ry="4.5" fill="var(--stain)"/></symbol>
+<symbol id="ic-lb" viewBox="0 0 48 48"><circle cx="20" cy="24" r="14" fill="var(--lymphb)" stroke="var(--stain)" stroke-width="1.6"/><circle cx="20" cy="24" r="8" fill="var(--stain)" opacity=".85"/><g fill="none" stroke="var(--ab)" stroke-width="2.4" stroke-linecap="round"><path transform="translate(30 14) rotate(45)" d="M0 0V-6M0 -6L-4 -11M0 -6L4 -11"/><path transform="translate(30 34) rotate(135)" d="M0 0V-6M0 -6L-4 -11M0 -6L4 -11"/></g><text x="20" y="27.5" text-anchor="middle" font-size="9" font-weight="700" fill="var(--on-stain)" font-family="sans-serif">B</text></symbol>
+<symbol id="ic-lt" viewBox="0 0 48 48"><circle cx="20" cy="24" r="14" fill="var(--lymphT)" stroke="var(--stain)" stroke-width="1.6"/><circle cx="20" cy="24" r="8" fill="var(--stain)" opacity=".85"/><g fill="none" stroke="var(--tcell)" stroke-width="2.4" stroke-linecap="round"><path transform="translate(30 14) rotate(45)" d="M0 0V-5M0 -5L-4 -9M0 -5L4 -9"/><path transform="translate(30 34) rotate(135)" d="M0 0V-5M0 -5L-4 -9M0 -5L4 -9"/></g><text x="20" y="27.5" text-anchor="middle" font-size="9" font-weight="700" fill="var(--on-stain)" font-family="sans-serif">T</text></symbol>
+<symbol id="ic-y" viewBox="0 0 48 48"><g fill="none" stroke="var(--ab)" stroke-width="4" stroke-linecap="round"><path d="M24 42V27M24 27L11 9M24 27L37 9"/></g></symbol>
+<symbol id="ic-complex" viewBox="0 0 48 48"><path d="M17 33L31 33M15.5 29L21 17M32.5 29L27 17" stroke="var(--ab)" stroke-width="3" stroke-linecap="round" fill="none"/><circle cx="12" cy="34" r="6" fill="var(--bact)" stroke="var(--ink)" stroke-width="1.2"/><circle cx="36" cy="34" r="6" fill="var(--bact)" stroke="var(--ink)" stroke-width="1.2"/><circle cx="24" cy="12" r="6" fill="var(--bact)" stroke="var(--ink)" stroke-width="1.2"/></symbol>
+<symbol id="ic-infected" viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" fill="var(--lymphT)" stroke="var(--line-strong)" stroke-width="2" stroke-dasharray="4 3"/><circle cx="17" cy="20" r="3.5" fill="var(--virus)"/><circle cx="29" cy="18" r="3.5" fill="var(--virus)"/><circle cx="24" cy="30" r="3.5" fill="var(--virus)"/></symbol>
+<symbol id="ic-kill" viewBox="0 0 48 48"><use href="#ic-infected" x="0" y="0" width="48" height="48"/><path d="M13 13L35 35M35 13L13 35" stroke="var(--virus)" stroke-width="3.5" stroke-linecap="round"/></symbol>
+</defs>
+</svg>
+
+<div class="wrap">
+<a class="skip" href="#main">Aller au contenu</a>
+
+<header class="hero">
+  <div>
+    <p class="eyebrow">SVT · 3ème · Chapitre 1</p>
+    <h1>La protection de l'organisme</h1>
+    <p class="lead">Quatre séances de 20 à 30 minutes pour tout reprendre : le schéma-bilan de la réponse immunitaire, la mémoire et la vaccination, le vocabulaire et une expérience historique à analyser. Une séance bonus prépare au sujet du brevet 2018 sur le tétanos.</p>
+  </div>
+  <svg class="hero-art" viewBox="0 0 240 150" aria-hidden="true">
+    <g fill="var(--rose-soft)" stroke="var(--rose)" stroke-width="2"><circle cx="38" cy="40" r="26"/><circle cx="104" cy="24" r="20"/><circle cx="198" cy="44" r="26"/><circle cx="52" cy="112" r="24"/><circle cx="176" cy="118" r="22"/><circle cx="116" cy="136" r="12"/></g>
+    <g fill="none" stroke="var(--rose)" stroke-width="2" opacity=".45"><circle cx="38" cy="40" r="10"/><circle cx="104" cy="24" r="8"/><circle cx="198" cy="44" r="10"/><circle cx="52" cy="112" r="9"/><circle cx="176" cy="118" r="8"/></g>
+    <use href="#ic-phago" x="84" y="50" width="70" height="70"/>
+    <use href="#ic-lb" x="150" y="62" width="44" height="44"/>
+  </svg>
+</header>
+
+<nav class="tabs" id="tabs" aria-label="Séances de révision">
+  <a class="tab" data-day="jour-1" href="#jour-1"><span class="tn">Jour 1</span><span class="tt">Le schéma-bilan</span><span class="tm">≈ 22 min</span><span class="chk" aria-hidden="true"></span></a>
+  <a class="tab" data-day="jour-2" href="#jour-2"><span class="tn">Jour 2</span><span class="tt">Mémoire et vaccin</span><span class="tm">≈ 25 min</span><span class="chk" aria-hidden="true"></span></a>
+  <a class="tab" data-day="jour-3" href="#jour-3"><span class="tn">Jour 3</span><span class="tt">Mots-clés</span><span class="tm">≈ 22 min</span><span class="chk" aria-hidden="true"></span></a>
+  <a class="tab" data-day="jour-4" href="#jour-4"><span class="tn">Jour 4</span><span class="tt">Expérience et bilan</span><span class="tm">≈ 25 min</span><span class="chk" aria-hidden="true"></span></a>
+  <a class="tab" data-day="jour-5" href="#jour-5"><span class="tn">Bonus · Jour 5</span><span class="tt">Sujet du brevet</span><span class="tm">≈ 35 min</span><span class="chk" aria-hidden="true"></span></a>
+</nav>
+
+<main id="main">
+
+<!-- ================= JOUR 1 ================= -->
+<section id="day-1" class="day" hidden>
+  <div class="plan"><h2>Au programme</h2><ol>
+    <li>Parcourir le schéma-bilan de la réponse immunitaire <span>10 min</span></li>
+    <li>Remettre les étapes dans l'ordre <span>6 min</span></li>
+    <li>Compléter le texte à trous <span>6 min</span></li>
+  </ol></div>
+
+  <article class="act">
+    <div class="act-h"><span class="n">1</span><h2>Le schéma-bilan de la réponse immunitaire</h2><span class="time">≈ 10 min</span></div>
+    <p class="lead">Suis le micro-organisme depuis son entrée dans le corps jusqu'à son élimination. Touche un cadre pour voir le détail. Quand tu as tout lu, active le mode entraînement : les mots disparaissent et tu dois les retrouver à partir des dessins.</p>
+    <div class="toolbar">
+      <label class="switch"><input type="checkbox" id="testmode"><span>Mode entraînement</span></label>
+      <button type="button" class="btn ghost" id="openall">Tout ouvrir</button>
+      <button type="button" class="btn ghost" id="closeall">Tout fermer</button>
+    </div>
+    <div id="flow" class="flow"></div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Cellules</th><th>Réaction</th><th>Rapidité</th><th>Spécifique ?</th></tr></thead>
+        <tbody>
+          <tr><th>Phagocytes</th><td class="kw">Phagocytose : ils digèrent les micro-organismes</td><td class="kw">Rapide</td><td class="kw">Non</td></tr>
+          <tr><th>Lymphocytes B</th><td class="kw">Production d'anticorps contre les bactéries et molécules libres</td><td class="kw">Plus lente</td><td class="kw">Oui</td></tr>
+          <tr><th>Lymphocytes T</th><td class="kw">Destruction des cellules infectées par un virus</td><td class="kw">Plus lente</td><td class="kw">Oui</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="muted small" style="margin-top:8px">Tableau récapitulatif : en mode entraînement, touche une case pour la révéler.</p>
+  </article>
+
+  <article class="act">
+    <div class="act-h"><span class="n">2</span><h2>Remets les étapes dans l'ordre</h2><span class="time">≈ 6 min</span></div>
+    <p class="lead">Touche les étapes dans l'ordre où elles se produisent. Touche une étape déjà placée pour la retirer.</p>
+    <h3 style="font-size:1.05rem;margin-bottom:6px">Parcours d'une bactérie</h3>
+    <div id="order-bact"></div>
+    <h3 style="font-size:1.05rem;margin:22px 0 6px">Parcours d'un virus</h3>
+    <div id="order-virus"></div>
+  </article>
+
+  <article class="act">
+    <div class="act-h"><span class="n">3</span><h2>Texte à trous</h2><span class="time">≈ 6 min</span></div>
+    <p class="lead">Choisis le mot qui convient dans chaque liste. Certains mots sont des pièges.</p>
+    <div id="cloze" class="cloze"></div>
+    <div class="row"><button type="button" class="btn" id="cloze-check">Vérifier</button><button type="button" class="btn ghost" id="cloze-show">Voir la correction</button><button type="button" class="btn ghost" id="cloze-reset">Recommencer</button></div>
+    <div class="fb" id="cloze-fb" aria-live="polite" hidden></div>
+  </article>
+
+  <div class="dayfoot"><button type="button" class="btn ghost donebtn" data-day="jour-1"></button><a class="btn" href="#jour-2">Séance 2 : mémoire et vaccin</a></div>
+</section>
+
+<!-- ================= JOUR 2 ================= -->
+<section id="day-2" class="day" hidden>
+  <div class="plan"><h2>Au programme</h2><ol>
+    <li>Lire les courbes de réponse primaire et secondaire <span>10 min</span></li>
+    <li>Comprendre le principe de la vaccination <span>5 min</span></li>
+    <li>Tester la spécificité des anticorps <span>5 min</span></li>
+    <li>Raisonner sur l'expérience de Von Behring <span>5 min</span></li>
+  </ol></div>
+
+  <article class="act">
+    <div class="act-h"><span class="n">1</span><h2>Réponse primaire et réponse secondaire</h2><span class="time">≈ 10 min</span></div>
+    <p class="lead">Le graphique montre la quantité d'anticorps dans le sang après un premier, puis un deuxième contact avec le même antigène. Affiche ou masque les courbes pour les comparer.</p>
+    <div class="chips" id="chart-chips">
+      <button type="button" class="chip" data-c="prim" aria-pressed="true"><i class="sw" style="background:var(--stain)"></i>1er contact avec A</button>
+      <button type="button" class="chip" data-c="sec" aria-pressed="true"><i class="sw" style="background:var(--rose)"></i>2e contact avec A</button>
+      <button type="button" class="chip" data-c="b" aria-pressed="false"><i class="sw" style="background:var(--ab)"></i>1er contact avec un antigène B</button>
+    </div>
+    <div id="chart"></div>
+    <p class="muted small">L'échelle verticale est logarithmique : chaque graduation vaut 10 fois la précédente. Unités arbitraires (u.a.).</p>
+    <div id="q-graph" style="margin-top:14px"></div>
+    <div class="keep"><h3>À retenir</h3>
+      <p>Au premier contact avec un antigène, la réponse est lente et faible : c'est la réponse primaire. L'organisme garde des lymphocytes mémoire, à longue durée de vie.</p>
+      <p>Au deuxième contact avec le même antigène, la réponse est plus rapide et plus intense : c'est la réponse secondaire. L'individu est immunisé.</p></div>
+  </article>
+
+  <article class="act">
+    <div class="act-h"><span class="n">2</span><h2>Le principe de la vaccination</h2><span class="time">≈ 5 min</span></div>
+    <p class="lead">La vaccination utilise la mémoire immunitaire. Avance étape par étape.</p>
+    <div class="stepper" id="vacc"></div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th></th><th>Vaccin</th><th>Sérothérapie</th></tr></thead>
+        <tbody>
+          <tr><th>On injecte</th><td>des antigènes inactivés ou atténués</td><td>des anticorps déjà fabriqués</td></tr>
+          <tr><th>Protection</th><td>durable : lymphocytes mémoire</td><td>immédiate mais quelques jours seulement</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="keep"><h3>À retenir</h3><p>Les vaccins protègent chaque personne vaccinée et, quand beaucoup de personnes sont vaccinées, ils protègent aussi le groupe contre les maladies infectieuses.</p></div>
+  </article>
+
+  <article class="act">
+    <div class="act-h"><span class="n">3</span><h2>La spécificité des anticorps</h2><span class="time">≈ 5 min</span></div>
+    <p class="lead">Choisis un anticorps, puis un micro-organisme, pour voir s'ils se fixent. Teste les neuf combinaisons.</p>
+    <div class="lock">
+      <div><h3 style="font-size:1rem">1. Un anticorps</h3><div class="pick" id="pick-ab"></div></div>
+      <div><h3 style="font-size:1rem">2. Un micro-organisme</h3><div class="pick" id="pick-ag"></div></div>
+    </div>
+    <div class="fb" id="spec-msg" aria-live="polite">Choisis un anticorps pour commencer.</div>
+    <div class="tablewrap"><table class="mx" id="mx"></table></div>
+    <div id="spec-keep" class="keep" hidden><h3>À retenir</h3>
+      <p>Un anticorps ne se fixe que sur l'antigène dont la forme lui correspond, comme une clé dans une serrure. Chaque lymphocyte B ne reconnaît donc qu'un seul antigène : sa réaction est spécifique.</p>
+      <p>La phagocytose, elle, agit de la même façon sur tout élément étranger : elle est non spécifique.</p></div>
+  </article>
+
+  <article class="act">
+    <div class="act-h"><span class="n">4</span><h2>L'expérience de Von Behring</h2><span class="time">≈ 5 min</span></div>
+    <p class="lead">À la fin du XIXe siècle, Von Behring et Kitasato étudient la diphtérie. Un cobaye A a survécu à la maladie. On prélève son sérum, c'est-à-dire son sang débarrassé des globules blancs et rouges.</p>
+    <div class="exps">
+      <div class="exp"><h4>Expérience 1</h4><span class="ar">Cobaye B : sérum de A, puis toxines de la diphtérie</span><span class="res live">Survie</span></div>
+      <div class="exp"><h4>Expérience 2</h4><span class="ar">Cobaye C : sérum de A, puis toxines du tétanos</span><span class="res dead">Mort</span></div>
+    </div>
+    <div id="q-behring"></div>
+  </article>
+
+  <div class="dayfoot"><button type="button" class="btn ghost donebtn" data-day="jour-2"></button><a class="btn" href="#jour-3">Séance 3 : mots-clés</a></div>
+</section>
+
+<!-- ================= JOUR 3 ================= -->
+<section id="day-3" class="day" hidden>
+  <div class="plan"><h2>Au programme</h2><ol>
+    <li>Flashcards : mots-clés et définitions <span>12 min</span></li>
+    <li>Vrai ou faux <span>10 min</span></li>
+  </ol></div>
+
+  <article class="act">
+    <div class="act-h"><span class="n">1</span><h2>Flashcards</h2><span class="time">≈ 12 min</span></div>
+    <p class="lead">Touche la carte pour la retourner, puis dis si tu savais ou si tu dois revoir. Les cartes à revoir peuvent être refaites à la fin du paquet.</p>
+    <div class="chips" id="fc-packs"></div>
+    <div class="chips" id="fc-dir"></div>
+    <div id="fc"></div>
+  </article>
+
+  <article class="act">
+    <div class="act-h"><span class="n">2</span><h2>Vrai ou faux</h2><span class="time">≈ 10 min</span></div>
+    <p class="lead">Seize affirmations, avec une explication après chaque réponse.</p>
+    <div id="vf"></div>
+  </article>
+
+  <div class="dayfoot"><button type="button" class="btn ghost donebtn" data-day="jour-3"></button><a class="btn" href="#jour-4">Séance 4 : expérience et bilan</a></div>
+</section>
+
+<!-- ================= JOUR 4 ================= -->
+<section id="day-4" class="day" hidden>
+  <div class="plan"><h2>Au programme</h2><ol>
+    <li>Analyser les expériences de Pasteur, avec correction guidée <span>15 min</span></li>
+    <li>QCM final <span>10 min</span></li>
+    <li>Faire le bilan de la semaine <span>2 min</span></li>
+  </ol></div>
+
+  <article class="act">
+    <div class="act-h"><span class="n">1</span><h2>Les expériences de Pasteur sur les poules</h2><span class="time">≈ 15 min</span></div>
+    <p class="lead">En 1796, Jenner découvre le principe de la vaccination. En 1878, Pasteur trouve une méthode pour produire des vaccins, grâce à des expériences sur des poules atteintes du choléra des poules.</p>
+    <div class="exps">
+      <div class="exp"><h4>Expérience 1</h4><span class="ar">Culture vieille de plusieurs semaines</span><span class="ar">injection aux poules A</span><span class="res live">Survivent</span></div>
+      <div class="exp"><h4>Expérience 2</h4><span class="ar">Culture fraîche, virulente</span><span class="ar">injection aux poules B, qui n'ont rien reçu avant</span><span class="res dead">Meurent en 1 à 2 jours</span></div>
+      <div class="exp"><h4>Expérience 3</h4><span class="ar">Poules C : 1re injection de culture vieille</span><span class="ar">7 à 8 jours plus tard : culture fraîche</span><span class="res live">Survivent</span></div>
+    </div>
+    <div class="doc"><h4>Document c</h4>
+      <p>Expérience 1 : Pasteur injecte à un lot A de poules des extraits d'une vieille culture de bactéries, oubliée depuis plusieurs semaines. Les poules survivent : les bactéries ont donc perdu leur virulence.</p>
+      <p>Expérience 2 : il injecte une culture fraîche à un lot B de poules n'ayant pas reçu la culture vieillie.</p>
+      <p style="margin:0">Expérience 3 : à un lot C de poules ayant eu une première injection de culture vieille, il fait une deuxième injection avec cette fois une culture fraîche.</p>
+      <p class="muted small" style="margin:8px 0 0">Virulence : pouvoir pathogène d'un micro-organisme.</p></div>
+    <div class="doc"><h4>Document d : la réponse immunitaire lors de deux contacts avec le même antigène</h4><div id="docd"></div></div>
+    <div id="pasteur"></div>
+  </article>
+
+  <article class="act">
+    <div class="act-h"><span class="n">2</span><h2>QCM final</h2><span class="time">≈ 10 min</span></div>
+    <p class="lead">Dix questions sur tout le chapitre. Certaines ont plusieurs bonnes réponses.</p>
+    <div id="qcm"></div>
+  </article>
+
+  <article class="act">
+    <div class="act-h"><span class="n">3</span><h2>Mon bilan</h2><span class="time">≈ 2 min</span></div>
+    <p class="lead">Ce tableau se remplit au fil de tes séances. Là où c'est écrit « à revoir », retourne dans la séance indiquée.</p>
+    <ul class="blist" id="bilan"></ul>
+  </article>
+
+  <div class="dayfoot"><button type="button" class="btn ghost donebtn" data-day="jour-4"></button><a class="btn" href="#jour-5">Bonus : le sujet du brevet</a></div>
+</section>
+
+<!-- ================= JOUR 5 : SUJET DU BREVET ================= -->
+<section id="day-5" class="day" hidden>
+  <div class="ctx">
+    <h2>Le sujet : un patient blessé par un outil de jardinage</h2>
+    <p>Brevet 2018, série générale, partie SVT (25 points, 30 minutes). Un médecin reçoit aux urgences un patient qui s’est sérieusement blessé avec un outil de jardinage. La plaie est nettoyée et désinfectée, et le médecin décide de prévenir rapidement le risque de tétanos. Le tétanos est une maladie provoquée par une toxine produite par une bactérie, <i>Clostridium tetani</i>. La vaccination contre le tétanos protège de cette maladie.</p>
+    <p class="muted small" style="margin:0">Pour chaque question du sujet, le parcours est toujours le même : quelques questions de cours, puis le document, puis ta réponse avec auto-correction. Tu peux t’arrêter après la question 2 et reprendre un autre jour.</p>
+  </div>
+  <div class="plan"><h2>Au programme</h2><ol>
+    <li>Échauffement : le schéma de la reconnaissance de la bactérie par un lymphocyte B <span>7 min</span></li>
+    <li>Question 1 : le calendrier vaccinal <span>7 min</span></li>
+    <li>Question 2 : le schéma de la plaquette-test <span>7 min</span></li>
+    <li>Question 3a : l’arbre décisionnel <span>6 min</span></li>
+    <li>Question 3b : justifier le protocole C <span>8 min</span></li>
+  </ol></div>
+
+  <article class="act">
+    <div class="act-h"><span class="n">0</span><h2>Échauffement : un lymphocyte B reconnaît la toxine de <i>Clostridium tetani</i></h2><span class="time">≈ 7 min</span></div>
+    <p class="lead">Dans le tétanos, c’est la toxine produite par la bactérie qui rend malade. Cette toxine est un antigène : les anticorps la reconnaissent et la neutralisent. Légende le schéma, puis refais-le sur ta feuille.</p>
+    <figure><div id="sch-fig"></div>
+      <figcaption>Triangles rouges : toxine tétanique. Y vert : anticorps. Contour pointillé : la forme que l’anticorps accepte, comme une serrure accepte sa clé.</figcaption></figure>
+    <div id="sch-leg"></div>
+    <div class="keep"><h3>À retenir</h3>
+      <p>Un lymphocyte B porte à sa surface des anticorps membranaires tous identiques. Il ne reconnaît que l’antigène dont la forme s’y ajuste parfaitement. Les autres lymphocytes B ne participent pas à cette lutte : la réaction est spécifique.</p>
+      <p>Seul le lymphocyte B qui a reconnu la toxine se multiplie, puis fabrique des anticorps spécifiques de cette toxine : des anticorps anti-toxine tétanique.</p></div>
+    <h3 class="sub-h">À toi de dessiner, sur ta feuille</h3>
+    <p class="lead">Dessine les 5 étapes de la réaction du lymphocyte B contre <i>Clostridium tetani</i>, puis compare avec ce modèle.</p>
+    <div class="strip" id="sch-strip"></div>
+    <div id="sch-draw"></div>
+  </article>
+
+  <article class="act">
+    <div class="act-h"><span class="n">1</span><h2>Question 1 : le calendrier vaccinal</h2><span class="time">≈ 7 min</span></div>
+    <h3 class="sub-h">Avant le document : questions de cours</h3>
+    <div id="q1-pre"></div>
+    <h3 class="sub-h">Le document</h3>
+    <div class="doc"><h4>Document 1 : calendrier simplifié des vaccinations</h4>
+      <p class="small">Être à jour dans ses vaccinations signifie avoir reçu les vaccins recommandés selon son âge, avec le bon nombre d’injections pour être protégé. X : injection d’un vaccin.</p>
+      <div class="tablewrap" id="cal"></div>
+      <p class="muted small" style="margin:6px 0 0">D’après Santé publique France, 2017.</p></div>
+    <p><b>Question du sujet (7 points).</b> Le carnet de santé du patient indique qu’il a été vacciné contre le tétanos à 2 mois, 4 mois, 11 mois, 6 ans et 13 ans. À partir du document 1, justifier que le patient, actuellement âgé de 33 ans, n’est plus à jour dans sa vaccination contre le tétanos.</p>
+    <h3 class="sub-h">Étape guidée : compare le carnet et le calendrier</h3>
+    <p class="lead">Le vaccin contre le tétanos est dans la ligne « Diphtérie - Tétanos - Poliomyélite ». Pour chaque âge de cette ligne, indique ce qu’il en est pour ce patient de 33 ans.</p>
+    <div id="cmp"></div>
+    <h3 class="sub-h">Ta réponse</h3>
+    <div id="w-q1"></div>
+  </article>
+
+  <article class="act">
+    <div class="act-h"><span class="n">2</span><h2>Question 2 : le schéma de la plaquette-test</h2><span class="time">≈ 7 min</span></div>
+    <h3 class="sub-h">Avant le document : questions de cours</h3>
+    <div id="q2-pre"></div>
+    <h3 class="sub-h">Le document</h3>
+    <div class="doc"><h4>Document 2 : dosage rapide des anticorps anti-toxine tétanique</h4>
+      <p class="small">Les anticorps spécifiques anti-toxine tétanique sont des molécules produites par les lymphocytes après une vaccination contre le tétanos. Ils neutralisent la toxine tétanique.</p>
+      <ul class="small" style="margin:0 0 8px;padding-left:1.2em">
+        <li>Une goutte de sang prélevée au doigt est déposée sur une plaquette-test, puis quelques gouttes de diluant sont ajoutées.</li>
+        <li>Dix minutes plus tard, une ou deux bandes colorées apparaissent dans la zone de lecture.
+          <ul><li>Une seule bande colorée : le patient n’est pas ou est insuffisamment protégé contre le tétanos. Le test est négatif.</li>
+          <li>Deux bandes colorées : la personne est immunisée contre le tétanos. Le test est positif.</li></ul></li>
+      </ul>
+      <div class="chips" id="sim-btns">
+        <button type="button" class="chip" data-k="A" aria-pressed="true">Patient A : immunisé</button>
+        <button type="button" class="chip" data-k="B" aria-pressed="false">Patient B : plus immunisé</button>
+      </div>
+      <div id="sim-fig"></div>
+      <div class="fb" id="sim-res" aria-live="polite"></div></div>
+    <p><b>Question du sujet (6 points).</b> À partir du document 2, réaliser le schéma légendé d’une plaquette-test correspondant à un résultat négatif de dosage des anticorps, obtenu pour un patient qui n’est plus immunisé contre le tétanos.</p>
+    <h3 class="sub-h">Étape guidée : légende la plaquette d’un patient non immunisé</h3>
+    <div id="q2-fig"></div>
+    <div id="q2-leg"></div>
+    <div class="note">Le document ne précise pas laquelle des deux bandes se colore. L’essentiel est de montrer qu’une seule bande est colorée, et de la légender.</div>
+    <h3 class="sub-h">À toi de dessiner, sur ta feuille</h3>
+    <div id="q2-draw"></div>
+  </article>
+
+  <article class="act">
+    <div class="act-h"><span class="n">3</span><h2>Question 3a : l’arbre décisionnel</h2><span class="time">≈ 6 min</span></div>
+    <h3 class="sub-h">Avant le document : questions de cours</h3>
+    <div id="q3-pre"></div>
+    <h3 class="sub-h">Le document</h3>
+    <div class="doc"><h4>Document 3 : arbre décisionnel pour un patient blessé par un outil de jardinage</h4>
+      <div class="tree">
+        <div class="tq">Vaccination contre le tétanos à jour ?</div>
+        <div class="tbr">
+          <div class="tb"><span class="tl">OUI</span>
+            <div class="tp"><b>Protocole A</b><ul><li>Prise d’antibiotiques (1)</li></ul></div></div>
+          <div class="tb"><span class="tl">NON</span>
+            <div class="tq">Test de dosage rapide des anticorps anti-toxine tétanique</div>
+            <div class="tbr">
+              <div class="tb"><span class="tl">Présence d’anticorps</span>
+                <div class="tp"><b>Protocole B</b><ul><li>Prise d’antibiotiques (1)</li><li>Vaccination contre le tétanos à mettre à jour (3)</li></ul></div></div>
+              <div class="tb"><span class="tl">Absence d’anticorps</span>
+                <div class="tp"><b>Protocole C</b><ul><li>Sérothérapie immédiate (2)</li><li>Vaccination immédiate contre le tétanos (3)</li><li>Prise d’antibiotiques (1)</li></ul></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ol class="notes">
+        <li>Les antibiotiques stoppent l’infection due aux nombreuses bactéries présentes sur l’outil de jardinage.</li>
+        <li>La sérothérapie est une injection d’anticorps anti-toxine tétanique, la protection est quasi immédiate et ne dure que quelques jours.</li>
+        <li>Seule la vaccination contre le tétanos assure une immunisation supérieure à 10 ans contre la toxine tétanique.</li>
+      </ol>
+      <p class="muted small" style="margin:6px 0 0">D’après E. Pilly, Maladies infectieuses et tropicales, CMIT, 2016.</p></div>
+    <p><b>Question 3a du sujet (5 points).</b> À partir du document 3, citer les étapes de l’arbre décisionnel qui amènent le médecin à appliquer le protocole C.</p>
+    <div id="w-q3a"></div>
+    <h3 class="sub-h">Pour t’entraîner : trois autres patients</h3>
+    <div id="q3-sc"></div>
+  </article>
+
+  <article class="act">
+    <div class="act-h"><span class="n">4</span><h2>Question 3b : justifier le protocole C</h2><span class="time">≈ 8 min</span></div>
+    <h3 class="sub-h">Avant la question : questions de cours</h3>
+    <div id="q3b-pre"></div>
+    <p><b>Question 3b du sujet (7 points).</b> Les trois éléments du protocole C sont : la sérothérapie immédiate, la vaccination immédiate et la prise d’antibiotiques. À partir du document 3, justifier la nécessité des trois éléments du protocole C à appliquer à ce patient qui s’est blessé avec un outil de jardinage.</p>
+    <h3 class="sub-h">Étape guidée : le rôle de chaque élément</h3>
+    <p class="lead">Relis les notes (1), (2) et (3) du document 3, puis associe chaque élément à son rôle.</p>
+    <div id="m-q3b"></div>
+    <h3 class="sub-h">Ta réponse</h3>
+    <p class="lead">Méthode : « Je vois que… Je sais que… J’en déduis que… ». Pour 7 points, explique l’utilité de chacun des trois éléments, puis dis pourquoi il faut les trois.</p>
+    <div id="w-q3b"></div>
+  </article>
+
+  <article class="act">
+    <div class="act-h"><span class="n">5</span><h2>Mon bilan de la séance</h2><span class="time">≈ 1 min</span></div>
+    <p class="lead">Là où c’est écrit « à revoir », retourne à la partie indiquée avant le prochain devoir.</p>
+    <ul class="blist" id="bilan5"></ul>
+  </article>
+
+  <div class="dayfoot"><button type="button" class="btn ghost donebtn" data-day="jour-5"></button><a class="btn ghost" href="#jour-1">Revenir au schéma-bilan</a></div>
+</section>
+
+</main>
+</div>
+
+<script>
+(function(){
+'use strict';
+var $=function(s,r){return (r||document).querySelector(s);};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+var norm=function(s){return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');};
+var shuffle=function(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=b[i];b[i]=b[j];b[j]=t;}return b;};
+var load=function(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}};
+var save=function(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}};
+var ic=function(id){return '<svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><use href="#'+id+'"/></svg>';};
+
+var RES_KEY='svt3-protection-res', DONE_KEY='svt3-protection-done';
+var R=load(RES_KEY,{}), DONE=load(DONE_KEY,[]);
+
+/* ---------- résultats et bilan ---------- */
+var BILAN=[
+ ['order-bact','Ordre des étapes, parcours d\'une bactérie',1],
+ ['order-virus','Ordre des étapes, parcours d\'un virus',1],
+ ['cloze','Texte à trous',1],
+ ['graph','Lecture des courbes de réponse',2],
+ ['behring','Expérience de Von Behring',2],
+ ['flash','Flashcards',3],
+ ['vf','Vrai ou faux',3],
+ ['pasteur','Expériences de Pasteur',4],
+ ['qcm','QCM final',4]
+];
+function setRes(k,s,t){R[k]={s:s,t:t};save(RES_KEY,R);renderBilan();}
+var BILAN5=[
+ ['d5-schema','Schéma : légendes de la reconnaissance par un lymphocyte B',5],
+ ['d5-schema-draw','Schéma : mon dessin (auto-évaluation)',5],
+ ['d5-k1','Cours avant le document 1',5],
+ ['d5-cmp','Question 1 : comparer carnet et calendrier',5],
+ ['d5-q1','Question 1 : ma réponse (auto-évaluation)',5],
+ ['d5-k2','Cours avant le document 2',5],
+ ['d5-q2l','Question 2 : légendes de la plaquette',5],
+ ['d5-q2','Question 2 : mon schéma (auto-évaluation)',5],
+ ['d5-k3','Cours avant le document 3',5],
+ ['d5-q3a','Question 3a : ma réponse (auto-évaluation)',5],
+ ['d5-s3a','Question 3a : trois patients, quel protocole ?',5],
+ ['d5-k3b','Cours avant la question 3b',5],
+ ['d5-m3b','Question 3b : rôle des trois éléments',5],
+ ['d5-q3b','Question 3b : ma réponse (auto-évaluation)',5]
+];
+function renderBilan(){ renderBilanList($('#bilan'),BILAN); renderBilanList($('#bilan5'),BILAN5); }
+function renderBilanList(box,list){
+  if(!box) return;
+  box.innerHTML=list.map(function(b){
+    var r=R[b[0]];
+    if(!r) return '<li><span>'+b[1]+'</span><span class="pill none">pas encore fait</span><a href="#jour-'+b[2]+'">Séance '+b[2]+'</a></li>';
+    var ratio=r.s/r.t, cls=ratio>=0.8?'good':ratio>=0.5?'mid':'low', lab=ratio>=0.8?'solide':ratio>=0.5?'à consolider':'à revoir';
+    var sc=(Math.round(r.s*2)/2); sc=String(sc).replace('.',',');
+    return '<li><span>'+b[1]+'</span><span class="pill '+cls+'">'+sc+' / '+r.t+' · '+lab+'</span><a href="#jour-'+b[2]+'">Séance '+b[2]+'</a></li>';
+  }).join('');
+}
+
+/* ---------- navigation par séance ---------- */
+var DAYS=['jour-1','jour-2','jour-3','jour-4','jour-5'], firstRoute=true;
+function route(){
+  var h=location.hash.slice(1); if(DAYS.indexOf(h)<0) h='jour-1';
+  DAYS.forEach(function(d,i){var s=document.getElementById('day-'+(i+1)); if(s) s.hidden=(d!==h);});
+  $$('.tab').forEach(function(t){ if(t.dataset.day===h) t.setAttribute('aria-current','page'); else t.removeAttribute('aria-current'); });
+  if(!firstRoute){ var tb=$('#tabs'); if(tb) tb.scrollIntoView({block:'start'}); }
+  firstRoute=false;
+}
+window.addEventListener('hashchange',route);
+function renderDone(){
+  $$('.tab').forEach(function(t){t.classList.toggle('done',DONE.indexOf(t.dataset.day)>=0);});
+  $$('.donebtn').forEach(function(b){var on=DONE.indexOf(b.dataset.day)>=0;b.setAttribute('aria-pressed',on?'true':'false');b.textContent=on?'Séance terminée (annuler)':'Marquer la séance comme terminée';});
+}
+document.addEventListener('click',function(e){
+  var b=e.target.closest('.donebtn'); if(!b) return;
+  var d=b.dataset.day; DONE=DONE.indexOf(d)>=0?DONE.filter(function(x){return x!==d;}):DONE.concat(d);
+  save(DONE_KEY,DONE); renderDone();
+});
+
+/* ---------- schéma-bilan ---------- */
+var NODES_TOP=[
+ {ic:'ic-germs',tone:'n',t:'Contamination',g:'Un micro-organisme pathogène franchit les barrières naturelles.',m:'Des bactéries ou des virus entrent dans l\'organisme en traversant la peau ou les muqueuses, qui sont des barrières naturelles. Les mesures d\'hygiène limitent ce risque.'},
+ {ic:'ic-many',tone:'n',t:'Infection',g:'Le micro-organisme se multiplie dans l\'organisme.',m:'La multiplication rapide des micro-organismes déclenche aussitôt une réaction inflammatoire locale : rougeur, chaleur, gonflement et douleur. Les antibiotiques agissent contre les bactéries, pas contre les virus.'}
+];
+var PHAGO={ic:'ic-phago',tone:'phago',t:'Phagocytose',g:'Première réaction : rapide et non spécifique, assurée par les phagocytes.',m:'Les phagocytes traversent la paroi des vaisseaux sanguins, puis : 1. adhésion au micro-organisme ; 2. ingestion (ils l\'entourent avec des pseudopodes et l\'enferment dans une vésicule) ; 3. digestion grâce à des enzymes ; 4. rejet des déchets. La réaction attaque n\'importe quel élément étranger de la même façon. Dans la majorité des cas, elle suffit à stopper l\'infection.'};
+var LB=[
+ {b:'1',ic:'ic-lb',tone:'b',t:'Reconnaissance',g:'Un lymphocyte B reconnaît un antigène précis.',m:'Chaque lymphocyte B porte à sa surface des anticorps membranaires tous identiques. Il ne reconnaît que l\'antigène sur lequel ils s\'accrochent parfaitement, comme une clé dans une serrure. Les autres lymphocytes B ne participent pas. La reconnaissance peut prendre plusieurs jours.'},
+ {b:'2',ic:'ic-lb',tone:'b',t:'Multiplication',g:'Seuls les lymphocytes B spécifiques se multiplient.',m:'Quand un lymphocyte B rencontre son antigène, il s\'active et se multiplie. La multiplication prend aussi du temps. Tous les lymphocytes B produits reconnaissent le même antigène.'},
+ {b:'3a',ic:'ic-lb',tone:'b',t:'Cellules mémoire',g:'Une partie des lymphocytes B devient mémoire.',m:'Certains lymphocytes B deviennent des cellules mémoire, à longue durée de vie. Elles gardent la trace de l\'antigène pour réagir plus vite s\'il revient (séance 2).'},
+ {b:'3b',ic:'ic-y',tone:'b',t:'Production d\'anticorps',g:'Les autres deviennent des usines à anticorps.',m:'D\'autres lymphocytes B se transforment en plasmocytes. Ils libèrent dans le sang de grandes quantités d\'anticorps spécifiques, des molécules en forme de Y.'},
+ {b:'4',ic:'ic-complex',tone:'b',t:'Complexe antigène-anticorps',g:'Les anticorps se fixent sur l\'antigène et le neutralisent.',m:'Chaque anticorps possède deux sites de fixation : il s\'accroche à deux antigènes. Cela forme un complexe qui neutralise les bactéries.'},
+ {b:'5',ic:'ic-phago',tone:'b',t:'Phagocytose finale',g:'Les phagocytes éliminent le complexe.',m:'Les phagocytes reconnaissent et englobent les complexes antigène-anticorps, puis les digèrent. L\'infection est vaincue.'}
+];
+var LT=[
+ {b:'1',ic:'ic-infected',tone:'t',t:'Un virus à l\'abri',g:'Le virus se reproduit à l\'intérieur des cellules.',m:'Les virus sont des parasites : ils se reproduisent à l\'intérieur des cellules de l\'organisme. Ils sont donc à l\'abri des anticorps produits par les lymphocytes B. Il faut une autre réaction spécifique.'},
+ {b:'2',ic:'ic-lt',tone:'t',t:'Reconnaissance',g:'Un lymphocyte T reconnaît les cellules infectées par un virus précis.',m:'Les lymphocytes T sont spécifiques : un lymphocyte T ne peut reconnaître une cellule que si elle est infectée par un virus précis.'},
+ {b:'3',ic:'ic-lt',tone:'t',t:'Multiplication',g:'Les lymphocytes T choisis se multiplient avant d\'agir.',m:'Pour être nombreux à lutter contre le même virus, les lymphocytes T doivent être sélectionnés puis multipliés avant de passer à l\'action.'},
+ {b:'4',ic:'ic-kill',tone:'t',t:'Destruction des cellules infectées',g:'Elles sont détruites dès le contact avec un lymphocyte T.',m:'Les cellules infectées sont détruites juste après qu\'un lymphocyte T est entré en contact avec elles. Ce mode d\'action est parfois appelé le « baiser de la mort ».'}
+];
+function nodeHTML(n){
+  return '<article class="node tone-'+n.tone+'"><button type="button" class="node-head" aria-expanded="false">'+(n.b?'<span class="nb">'+n.b+'</span>':'')+'<span class="tile">'+ic(n.ic)+'</span><span class="txt"><span class="t">'+n.t+'</span><span class="g">'+n.g+'</span></span></button><div class="more">'+n.m+'</div></article>';
+}
+function renderFlow(){
+  $('#flow').innerHTML=
+   '<div class="grid">'+NODES_TOP.map(nodeHTML).join('')+'</div><div class="arr" aria-hidden="true"></div>'+
+   nodeHTML(PHAGO)+'<div class="arr" aria-hidden="true"></div>'+
+   '<div class="decide"><b>L\'infection est-elle stoppée ?</b><div class="outs"><span class="out"><b>Oui.</b> La phagocytose a suffi, l\'organisme guérit.</span><span class="out"><b>Non.</b> Des réactions spécifiques, plus lentes, se mettent en place dans les ganglions. Elles dépendent du micro-organisme.</span></div></div>'+
+   '<div class="arr" aria-hidden="true"></div>'+
+   '<section class="lane lb"><h3>Bactéries et molécules libres : les lymphocytes B</h3><p class="sub">Réaction spécifique, plus lente, qui passe par la production d\'anticorps.</p><div class="grid">'+LB.map(nodeHTML).join('')+'</div></section>'+
+   '<section class="lane lt"><h3>Virus cachés dans les cellules : les lymphocytes T</h3><p class="sub">Réaction spécifique, plus lente, qui détruit les cellules infectées.</p><div class="grid">'+LT.map(nodeHTML).join('')+'</div></section>';
+}
+renderFlow();
+$('#flow').addEventListener('click',function(e){
+  var h=e.target.closest('.node-head'); if(!h) return;
+  var n=h.parentNode; n.classList.toggle('open'); h.setAttribute('aria-expanded',n.classList.contains('open')?'true':'false');
+});
+function setAll(open){$$('.node').forEach(function(n){n.classList.toggle('open',open);var h=$('.node-head',n);if(h)h.setAttribute('aria-expanded',open?'true':'false');});}
+$('#openall').addEventListener('click',function(){setAll(true);});
+$('#closeall').addEventListener('click',function(){setAll(false);});
+$('#testmode').addEventListener('change',function(e){
+  var on=e.target.checked; document.getElementById('day-1').classList.toggle('test',on);
+  setAll(false); $$('td.kw').forEach(function(c){c.classList.remove('on');});
+});
+document.addEventListener('click',function(e){var c=e.target.closest('td.kw'); if(c) c.classList.toggle('on');});
+
+/* ---------- remettre dans l'ordre ---------- */
+function orderGame(root,steps,key){
+  var order=[], pool=shuffle(steps.map(function(s,i){return i;})), checked=false, score=0;
+  function render(){
+    var fb='';
+    if(checked){
+      fb='<div class="fb '+(score===steps.length?'good':'bad')+'" aria-live="polite">'+(score===steps.length?'<b>Parfait.</b> Le parcours est dans le bon ordre.':'<b>'+score+' / '+steps.length+' étapes bien placées.</b> Les étapes en rouge sont mal placées : retire-les et reprends à partir de la première erreur.')+'</div>';
+    }
+    root.innerHTML='<ol class="picked">'+(order.length?order.map(function(k,p){return '<li class="'+(checked?(k===p?'ok':'ko'):'')+'"><button type="button" class="pk" data-k="'+k+'"><span class="pn">'+(p+1)+'</span><span>'+steps[k]+'</span></button></li>';}).join(''):'<li class="empty">Touche les étapes ci-dessous dans le bon ordre.</li>')+'</ol>'+
+     '<div class="pool">'+pool.map(function(k){return '<button type="button" class="chipstep" data-k="'+k+'">'+steps[k]+'</button>';}).join('')+'</div>'+
+     '<div class="row"><button type="button" class="btn" data-a="check"'+(pool.length?' disabled':'')+'>Vérifier</button><button type="button" class="btn ghost" data-a="reset">Recommencer</button></div>'+fb;
+  }
+  root.addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return;
+    var k=+b.dataset.k;
+    if(b.classList.contains('chipstep')){order.push(k);pool=pool.filter(function(x){return x!==k;});checked=false;render();}
+    else if(b.classList.contains('pk')){order=order.filter(function(x){return x!==k;});pool.push(k);checked=false;render();}
+    else if(b.dataset.a==='reset'){order=[];pool=shuffle(steps.map(function(s,i){return i;}));checked=false;render();}
+    else if(b.dataset.a==='check'){score=order.filter(function(x,p){return x===p;}).length;checked=true;setRes(key,score,steps.length);render();}
+  });
+  render();
+}
+orderGame($('#order-bact'),[
+ 'Contamination : le micro-organisme franchit les barrières naturelles',
+ 'Infection : le micro-organisme se multiplie',
+ 'Phagocytose par les phagocytes, rapide et non spécifique',
+ 'Un lymphocyte B reconnaît l\'antigène',
+ 'Les lymphocytes B spécifiques se multiplient',
+ 'Les plasmocytes produisent des anticorps',
+ 'Les anticorps forment un complexe avec l\'antigène',
+ 'Les phagocytes éliminent le complexe'
+],'order-bact');
+orderGame($('#order-virus'),[
+ 'Le virus entre dans des cellules et s\'y reproduit',
+ 'Les anticorps sont inefficaces : le virus est à l\'abri dans les cellules',
+ 'Un lymphocyte T reconnaît les cellules infectées par ce virus',
+ 'Les lymphocytes T spécifiques se multiplient',
+ 'Les lymphocytes T détruisent les cellules infectées'
+],'order-virus');
+
+/* ---------- texte à trous ---------- */
+var CZ=["Quand un micro-organisme franchit les barrières naturelles, c'est la ",["contamination"],". S'il se multiplie dans l'organisme, c'est l'",["infection"],". Les ",["phagocytes"]," réalisent alors la ",["phagocytose"],", une réaction ",["rapide"]," et ",["non spécifique"],". Si cela ne suffit pas, les lymphocytes ",["B"]," reconnaissent un ",["antigène"]," précis, se multiplient, puis fabriquent des ",["anticorps"],". Ceux-ci se fixent sur l'antigène et forment un ",["complexe"]," qui est ensuite éliminé par les ",["phagocytes"],". Contre un virus, qui se reproduit à l'intérieur des cellules, ce sont les lymphocytes ",["T"]," qui détruisent les cellules ",["infectées"],"."];
+var BANK=["anticorps","antigène","antibiotiques","B","complexe","contamination","hématies","infectées","infection","lente","mémoire","non spécifique","phagocytes","phagocytose","rapide","saines","spécifique","T"].sort(function(a,b){return a.localeCompare(b,'fr');});
+function clozeBuild(){
+  var n=0;
+  $('#cloze').innerHTML=CZ.map(function(p){
+    if(typeof p==='string') return p;
+    n++; return '<select class="blank" data-a="'+p[0]+'" aria-label="Mot manquant '+n+'"><option value="">…</option>'+BANK.map(function(w){return '<option value="'+w+'">'+w+'</option>';}).join('')+'</select>';
+  }).join('');
+  $('#cloze-fb').hidden=true;
+}
+clozeBuild();
+$('#cloze-check').addEventListener('click',function(){
+  var sels=$$('select.blank'), ok=0;
+  sels.forEach(function(s){var good=s.value===s.dataset.a; if(good) ok++; s.classList.toggle('ok',good); s.classList.toggle('ko',!good);});
+  var fb=$('#cloze-fb'); fb.hidden=false; fb.className='fb '+(ok===sels.length?'good':'bad');
+  fb.innerHTML=ok===sels.length?'<b>Texte complet et juste.</b>':'<b>'+ok+' mots justes sur '+sels.length+'.</b> Les mots en rouge sont à corriger.';
+  setRes('cloze',ok,sels.length);
+});
+$('#cloze-show').addEventListener('click',function(){$$('select.blank').forEach(function(s){s.value=s.dataset.a;s.classList.add('ok');s.classList.remove('ko');});});
+$('#cloze-reset').addEventListener('click',clozeBuild);
+
+/* ---------- moteur de quiz ---------- */
+function stepQuiz(root,items,opt){
+  opt=opt||{};
+  var shuffleItems=!!opt.shuffleItems, onDone=opt.onDone||function(){}, label=opt.label||'Question';
+  var list=[], i=0, score=0, wrong=[], locked=false, sel=new Set(), first=true;
+  function start(arr){list=shuffleItems?shuffle(arr):arr.slice();i=0;score=0;wrong=[];draw();}
+  function draw(){
+    if(i>=list.length) return summary();
+    var it=list[i]; locked=false; sel=new Set();
+    var ord=it.type==='tf'?[0,1]:shuffle(it.options.map(function(o,k){return k;}));
+    var multi=it.type==='multi';
+    root.innerHTML='<div class="qhead"><span>'+label+' '+(i+1)+' / '+list.length+'</span><span class="bar"><i style="width:'+Math.round(i/list.length*100)+'%"></i></span></div>'+
+      '<p class="q">'+it.q+'</p>'+(multi?'<p class="muted small">Plusieurs réponses possibles.</p>':'')+
+      '<div class="opts'+(it.type==='tf'?' tf':'')+'">'+ord.map(function(k){return '<button type="button" class="opt" data-k="'+k+'" aria-pressed="false">'+it.options[k]+'</button>';}).join('')+'</div>'+
+      '<div class="row">'+(multi?'<button type="button" class="btn" data-a="valid">Valider</button>':'')+'<button type="button" class="btn" data-a="next" hidden>'+(i===list.length-1?'Voir mon score':'Question suivante')+'</button></div>'+
+      '<div class="fb" aria-live="polite" hidden></div>';
+  }
+  function finish(){
+    locked=true; var it=list[i];
+    var ans=new Set(Array.isArray(it.answer)?it.answer:[it.answer]);
+    var ok=sel.size===ans.size; sel.forEach(function(k){if(!ans.has(k)) ok=false;});
+    if(ok) score++; else wrong.push(it);
+    $$('.opt',root).forEach(function(o){var k=+o.dataset.k;o.disabled=true;if(ans.has(k)) o.classList.add('right'); else if(sel.has(k)) o.classList.add('wrong');});
+    var fb=$('.fb',root); fb.hidden=false; fb.className='fb '+(ok?'good':'bad'); fb.innerHTML='<b>'+(ok?'Exact.':'Pas tout à fait.')+'</b> '+it.why;
+    var v=$('[data-a="valid"]',root); if(v) v.hidden=true;
+    var nx=$('[data-a="next"]',root); nx.hidden=false; nx.focus();
+  }
+  function summary(){
+    var t=list.length, pct=score/t;
+    if(first){first=false;onDone(score,t);}
+    var msg=pct===1?'Sans faute.':pct>=0.8?'Très bien : quelques détails à reprendre.':pct>=0.5?'Les bases sont là, il reste des points à consolider.':'Relis la séance correspondante, puis reviens essayer.';
+    root.innerHTML='<div class="score"><b>'+score+' / '+t+'</b><span>'+msg+'</span></div>'+
+      (wrong.length?'<h3 style="font-size:1.05rem">À revoir</h3><ul class="wlist">'+wrong.map(function(w){return '<li><b>'+w.q+'</b><br><span class="muted">'+w.why+'</span></li>';}).join('')+'</ul>':'')+
+      '<div class="row">'+(wrong.length?'<button type="button" class="btn" data-a="redo">Refaire mes erreurs</button>':'')+'<button type="button" class="btn ghost" data-a="restart">Tout recommencer</button></div>';
+  }
+  root.addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b||!root.contains(b)) return;
+    if(b.classList.contains('opt')){
+      if(locked) return; var it=list[i], k=+b.dataset.k;
+      if(it.type==='multi'){ if(sel.has(k)){sel.delete(k);b.setAttribute('aria-pressed','false');} else {sel.add(k);b.setAttribute('aria-pressed','true');} }
+      else { sel=new Set([k]); finish(); }
+    } else if(b.dataset.a==='valid'){ if(!locked&&sel.size) finish(); }
+    else if(b.dataset.a==='next'){ i++; draw(); }
+    else if(b.dataset.a==='redo'){ var w=wrong.slice(); first=false; list=w; i=0; score=0; wrong=[]; draw(); }
+    else if(b.dataset.a==='restart'){ first=true; start(items); }
+  });
+  start(items);
+}
+
+/* ---------- courbes : réponse primaire et secondaire ---------- */
+function smooth(pts){
+  var d='M'+pts[0][0].toFixed(1)+' '+pts[0][1].toFixed(1);
+  for(var i=0;i<pts.length-1;i++){
+    var p0=pts[i-1]||pts[i], p1=pts[i], p2=pts[i+1], p3=pts[i+2]||p2;
+    var c1x=p1[0]+(p2[0]-p0[0])/6, c1y=p1[1]+(p2[1]-p0[1])/6, c2x=p2[0]-(p3[0]-p1[0])/6, c2y=p2[1]-(p3[1]-p1[1])/6;
+    d+=' C'+c1x.toFixed(1)+' '+c1y.toFixed(1)+' '+c2x.toFixed(1)+' '+c2y.toFixed(1)+' '+p2[0].toFixed(1)+' '+p2[1].toFixed(1);
+  }
+  return d;
+}
+function buildChart(){
+  var X=function(w){return 60+94*w;}, Y=function(v){return 290-65*Math.log10(v);};
+  var P=function(a){return a.map(function(q){return [X(q[0]),Y(q[1])];});};
+  var prim=[[0,1],[0.6,1.15],[1.2,2.2],[1.8,5.5],[2.3,8.8],[2.7,10],[3.2,8.8],[3.8,5],[4.4,2.2],[5,1.3]];
+  var sec=[[0,1],[0.3,2.2],[0.6,14],[0.9,100],[1.15,550],[1.35,1000],[1.7,800],[2.3,420],[3.2,200],[4.2,100],[5,62]];
+  var grid=[1,10,100,1000,10000].map(function(v){return '<line class="gl" x1="60" x2="530" y1="'+Y(v)+'" y2="'+Y(v)+'"/><text x="52" y="'+(Y(v)+4)+'" text-anchor="end">'+(v>=10000?'10 000':v)+'</text>';}).join('');
+  var ticks=[0,1,2,3,4,5].map(function(w){return '<line class="ax" x1="'+X(w)+'" x2="'+X(w)+'" y1="290" y2="296"/><text x="'+X(w)+'" y="312" text-anchor="middle">'+w+'</text>';}).join('');
+  $('#chart').innerHTML='<svg class="chart" viewBox="0 0 560 350" role="img" aria-label="Quantité d\'anticorps spécifiques en fonction du temps : la réponse primaire culmine vers 10 unités après environ 3 semaines, la réponse secondaire vers 1000 unités après environ 1 semaine.">'+
+    grid+'<line class="ax" x1="60" x2="530" y1="290" y2="290"/><line class="ax" x1="60" x2="60" y1="30" y2="290"/>'+ticks+
+    '<text x="295" y="338" text-anchor="middle">Semaines après le contact avec l\'antigène</text>'+
+    '<text transform="rotate(-90 14 160)" x="14" y="160" text-anchor="middle">Anticorps spécifiques (u.a.)</text>'+
+    '<g data-c="b"  hidden><path d="'+smooth(P(prim))+'" fill="none" stroke="var(--ab)" stroke-width="3" stroke-dasharray="7 5"/></g>'+
+    '<g data-c="prim"><path d="'+smooth(P(prim))+'" fill="none" stroke="var(--stain)" stroke-width="3.5"/><circle cx="'+X(2.7)+'" cy="'+Y(10)+'" r="5" fill="var(--stain)"/><text class="lab" x="'+(X(2.7)+10)+'" y="'+(Y(10)-10)+'">≈ 10 u.a. · ≈ 3 semaines</text></g>'+
+    '<g data-c="sec"><path d="'+smooth(P(sec))+'" fill="none" stroke="var(--rose)" stroke-width="3.5"/><circle cx="'+X(1.35)+'" cy="'+Y(1000)+'" r="5" fill="var(--rose)"/><text class="lab" x="'+(X(1.35)+10)+'" y="'+(Y(1000)-8)+'">≈ 1 000 u.a. · ≈ 1 semaine</text></g></svg>';
+}
+buildChart();
+$('#chart-chips').addEventListener('click',function(e){
+  var b=e.target.closest('.chip'); if(!b) return;
+  var on=b.getAttribute('aria-pressed')!=='true'; b.setAttribute('aria-pressed',on?'true':'false');
+  var g=$('#chart g[data-c="'+b.dataset.c+'"]'); if(g) g.hidden=!on;
+});
+stepQuiz($('#q-graph'),[
+ {q:"Quelle quantité maximale d'anticorps est atteinte lors de la réponse primaire à l'antigène A ?",options:["environ 1 unité arbitraire","environ 10 unités arbitraires","environ 100 unités arbitraires","environ 1 000 unités arbitraires"],answer:1,why:"Le sommet de la courbe violette est à environ 10 u.a. L'échelle est logarithmique : chaque graduation vaut 10 fois la précédente."},
+ {q:"Quelle quantité maximale d'anticorps est atteinte lors de la réponse secondaire ?",options:["environ 10 unités arbitraires","environ 100 unités arbitraires","environ 1 000 unités arbitraires","environ 10 000 unités arbitraires"],answer:2,why:"Le sommet de la courbe rose est à environ 1 000 u.a., soit environ 100 fois plus que lors de la réponse primaire."},
+ {q:"Combien de temps faut-il pour atteindre la quantité maximale ?",options:["Réponse primaire : environ 3 semaines ; réponse secondaire : environ 1 semaine","Réponse primaire : environ 1 semaine ; réponse secondaire : environ 3 semaines","Environ 3 semaines dans les deux cas","Environ 1 semaine dans les deux cas"],answer:0,why:"La réponse secondaire est beaucoup plus rapide : le maximum est atteint en environ 1 semaine, contre environ 3 semaines pour la réponse primaire."},
+ {q:"Pourquoi appelle-t-on la courbe rose « réponse immunitaire secondaire » ?",options:["Parce qu'elle correspond à un deuxième contact avec le même antigène","Parce qu'elle correspond à un antigène différent du premier","Parce qu'elle est moins importante que la première","Parce qu'elle se produit dans un deuxième organe"],answer:0,why:"Elle suit un deuxième contact avec le même antigène A. L'organisme le reconnaît déjà grâce aux lymphocytes mémoire."},
+ {q:"La réponse à un antigène B rencontré pour la première fois est…",options:["une réponse primaire : l'organisme rencontre B pour la première fois","une réponse secondaire : l'organisme est déjà immunisé","impossible à déterminer","identique à la réponse secondaire à A"],answer:0,why:"Un premier contact donne toujours une réponse primaire, même si l'organisme a déjà rencontré un autre antigène. Les lymphocytes mémoire de A ne reconnaissent pas B."},
+ {q:"Avec tes connaissances sur les lymphocytes, pourquoi la réponse secondaire est-elle plus efficace ?",options:["Des lymphocytes mémoire, formés au premier contact, reconnaissent vite l'antigène, se multiplient vite et produisent beaucoup plus d'anticorps","Les phagocytes ont mémorisé l'antigène et l'attaquent seuls","L'antigène est devenu plus faible au deuxième contact","Les anticorps du premier contact sont encore très nombreux dans le sang"],answer:0,why:"La mémoire immunitaire repose sur les lymphocytes mémoire : la reconnaissance et la multiplication des lymphocytes spécifiques sont plus rapides et plus importantes."}
+],{onDone:function(s,t){setRes('graph',s,t);}});
+
+/* ---------- vaccination pas à pas ---------- */
+(function(){
+  var S=[
+   {t:"1. On injecte le vaccin",d:"Le vaccin contient une forme inactivée ou atténuée du micro-organisme, donc des antigènes. Il ne provoque pas la maladie."},
+   {t:"2. Réponse primaire",d:"Les lymphocytes B spécifiques reconnaissent l'antigène, se multiplient et produisent des anticorps. Certains deviennent des lymphocytes mémoire, à longue durée de vie."},
+   {t:"3. Contact avec le vrai microbe",d:"Le microbe actif entre dans le corps. Les lymphocytes mémoire le reconnaissent aussitôt : la réponse secondaire, rapide et intense, l'élimine avant que la maladie se développe. L'individu est immunisé."},
+   {t:"4. Le rappel",d:"Avec le temps, le nombre d'anticorps diminue. Une nouvelle dose, un rappel, relance la production de lymphocytes mémoire et maintient l'immunité."}
+  ], k=0, root=$('#vacc');
+  function draw(){
+    root.innerHTML='<div class="dots" aria-hidden="true">'+S.map(function(s,i){return '<i class="'+(i<=k?'on':'')+'"></i>';}).join('')+'</div>'+
+     '<div class="stage" aria-live="polite"><h3>'+S[k].t+'</h3><p style="margin:0">'+S[k].d+'</p></div>'+
+     '<div class="row" style="margin-top:0"><button type="button" class="btn ghost" data-a="prev"'+(k===0?' disabled':'')+'>Étape précédente</button><button type="button" class="btn" data-a="next"'+(k===S.length-1?' disabled':'')+'>Étape suivante</button></div>';
+  }
+  root.addEventListener('click',function(e){var b=e.target.closest('button'); if(!b) return; if(b.dataset.a==='next'&&k<S.length-1) k++; else if(b.dataset.a==='prev'&&k>0) k--; draw();});
+  draw();
+})();
+
+/* ---------- spécificité ---------- */
+(function(){
+  var SH=[{k:'tri',c:'var(--virus)'},{k:'sq',c:'var(--tcell)'},{k:'ci',c:'var(--stain)'}];
+  function shape(k,x,y,fill,c,dash){
+    var a=fill?'fill="'+c+'" stroke="none"':'fill="none" stroke="'+c+'" stroke-width="2.4"'+(dash?' stroke-dasharray="3 2"':'');
+    if(k==='tri') return '<polygon '+a+' points="'+x+','+(y-8)+' '+(x+8)+','+(y+6)+' '+(x-8)+','+(y+6)+'"/>';
+    if(k==='sq') return '<rect '+a+' x="'+(x-7)+'" y="'+(y-7)+'" width="14" height="14"/>';
+    return '<circle '+a+' cx="'+x+'" cy="'+y+'" r="8"/>';
+  }
+  function abSVG(s){return '<svg viewBox="0 0 80 64" aria-hidden="true"><path d="M40 60V38M40 38L18 16M40 38L62 16" fill="none" stroke="var(--ab)" stroke-width="5" stroke-linecap="round"/>'+shape(s.k,18,9,false,s.c,true)+shape(s.k,62,9,false,s.c,true)+'</svg>';}
+  function agSVG(s){return '<svg viewBox="0 0 80 64" aria-hidden="true"><rect x="8" y="26" width="64" height="30" rx="15" fill="var(--surface2)" stroke="var(--line-strong)" stroke-width="2"/>'+shape(s.k,40,14,true,s.c,false)+'</svg>';}
+  var selAb=null, cells={}, nTested=0;
+  var pa=$('#pick-ab'), pg=$('#pick-ag');
+  pa.innerHTML=SH.map(function(s,i){return '<button type="button" class="pbtn" data-i="'+i+'" aria-pressed="false">'+abSVG(s)+'<span>Anticorps '+(i+1)+'</span></button>';}).join('');
+  pg.innerHTML=SH.map(function(s,i){return '<button type="button" class="pbtn" data-i="'+i+'">'+agSVG(s)+'<span>Micro-organisme '+(i+1)+'</span></button>';}).join('');
+  function mx(){
+    $('#mx').innerHTML='<thead><tr><th></th>'+SH.map(function(s,j){return '<th>Micro-org. '+(j+1)+'</th>';}).join('')+'</tr></thead><tbody>'+
+     SH.map(function(s,i){return '<tr><th>Anticorps '+(i+1)+'</th>'+SH.map(function(t,j){var c=cells[i+'-'+j]; return c?'<td class="'+(c==='y'?'yes':'no')+'">'+(c==='y'?'se fixe':'ne se fixe pas')+'</td>':'<td class="muted">à tester</td>';}).join('')+'</tr>';}).join('')+'</tbody>';
+  }
+  mx();
+  var msg=$('#spec-msg');
+  pa.addEventListener('click',function(e){
+    var b=e.target.closest('.pbtn'); if(!b) return;
+    selAb=+b.dataset.i; $$('.pbtn',pa).forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});
+    msg.className='fb'; msg.textContent='Anticorps '+(selAb+1)+' choisi. Choisis maintenant un micro-organisme.';
+  });
+  pg.addEventListener('click',function(e){
+    var b=e.target.closest('.pbtn'); if(!b) return;
+    if(selAb===null){msg.className='fb';msg.textContent='Choisis d\'abord un anticorps.';return;}
+    var j=+b.dataset.i, match=(j===selAb), key=selAb+'-'+j;
+    if(!cells[key]) nTested++;
+    cells[key]=match?'y':'n'; mx();
+    msg.className='fb '+(match?'good':'bad');
+    msg.innerHTML=match?'<b>Anticorps '+(selAb+1)+' et micro-organisme '+(j+1)+' : ils se fixent.</b> Les formes sont complémentaires : un complexe antigène-anticorps se forme.':'<b>Anticorps '+(selAb+1)+' et micro-organisme '+(j+1)+' : ils ne se fixent pas.</b> Les formes ne correspondent pas.';
+    if(nTested>=9) $('#spec-keep').hidden=false;
+  });
+})();
+
+/* ---------- Behring ---------- */
+stepQuiz($('#q-behring'),[
+ {q:"Expérience 1 : le cobaye B reçoit le sérum du cobaye A guéri de la diphtérie, puis des toxines de la diphtérie. Il survit. Que contient le sérum de A ?",options:["Des anticorps spécifiques de la diphtérie, produits lors de la première infection","Des phagocytes qui digèrent les toxines","Des bactéries de la diphtérie atténuées","Des lymphocytes T"],answer:0,why:"Le sérum ne contient plus de cellules : ce sont donc des molécules du sang, les anticorps, qui protègent B. Une protection peut se transmettre d'un animal à l'autre par le sérum."},
+ {q:"Expérience 2 : le cobaye C reçoit le même sérum, puis des toxines du tétanos. Il meurt. Que montre cette expérience ?",options:["Les anticorps sont spécifiques : ceux contre la diphtérie ne protègent pas contre le tétanos","Les toxines du tétanos sont détruites par le sérum","Le cobaye C avait déjà le tétanos","Les anticorps protègent contre tous les microbes"],answer:0,why:"Les anticorps antidiphtériques ne se fixent que sur l'antigène de la diphtérie. Ils ne reconnaissent pas les toxines du tétanos : la protection est spécifique."}
+],{label:'Question',onDone:function(s,t){setRes('behring',s,t);}});
+
+/* ---------- flashcards ---------- */
+var CARDS=[
+ {p:'cell',t:'Système immunitaire',d:"Ensemble des cellules et des organes qui défendent le corps contre les micro-organismes : moelle osseuse, ganglions, leucocytes."},
+ {p:'cell',t:'Leucocytes',d:"Globules blancs. Cellules du système immunitaire qui circulent dans le sang : les phagocytes et les lymphocytes."},
+ {p:'cell',t:'Phagocyte',d:"Leucocyte à noyau plurilobé. Il détruit les micro-organismes en les ingérant."},
+ {p:'cell',t:'Lymphocyte',d:"Leucocyte à gros noyau rond. Il est à l'origine des réactions spécifiques : lymphocytes B et lymphocytes T."},
+ {p:'cell',t:'Lymphocyte B',d:"Reconnaît un antigène précis, se multiplie, puis fabrique des anticorps spécifiques de cet antigène."},
+ {p:'cell',t:'Plasmocyte',d:"Lymphocyte B transformé en cellule spécialisée : une usine à anticorps."},
+ {p:'cell',t:'Lymphocyte T',d:"Reconnaît les cellules infectées par un virus précis et les détruit."},
+ {p:'cell',t:'Antigène',d:"Molécule portée par un micro-organisme et reconnue comme étrangère. Elle déclenche une réaction immunitaire."},
+ {p:'cell',t:'Anticorps',d:"Molécule en forme de Y produite par les lymphocytes B. Elle se fixe spécifiquement sur un antigène pour le neutraliser."},
+ {p:'cell',t:'Complexe antigène-anticorps',d:"Assemblage formé quand des anticorps se fixent sur des antigènes. Il neutralise les micro-organismes, puis il est éliminé par les phagocytes."},
+ {p:'react',t:'Contamination',d:"Entrée de micro-organismes dans l'organisme, après le franchissement des barrières naturelles."},
+ {p:'react',t:'Infection',d:"Multiplication des micro-organismes dans l'organisme."},
+ {p:'react',t:'Micro-organisme pathogène',d:"Micro-organisme capable de provoquer une maladie : bactérie ou virus."},
+ {p:'react',t:'Réaction inflammatoire',d:"Réaction locale immédiate après une infection : rougeur, chaleur, gonflement et douleur."},
+ {p:'react',t:'Phagocytose',d:"Réaction rapide et non spécifique en 4 étapes : adhésion, ingestion, digestion par des enzymes, rejet des déchets."},
+ {p:'react',t:'Réaction non spécifique',d:"Réaction identique contre n'importe quel élément étranger. Exemple : la phagocytose."},
+ {p:'react',t:'Réaction spécifique',d:"Réaction dirigée contre un antigène précis, plus lente à se mettre en place. Exemple : l'action des lymphocytes B et T."},
+ {p:'react',t:'Virulence',d:"Pouvoir pathogène d'un micro-organisme."},
+ {p:'mem',t:'Mémoire immunitaire',d:"Capacité de l'organisme à réagir plus vite et plus fort lors d'un deuxième contact avec le même antigène."},
+ {p:'mem',t:'Lymphocyte mémoire',d:"Lymphocyte à longue durée de vie, conservé après un premier contact avec un antigène."},
+ {p:'mem',t:'Réponse primaire',d:"Réponse au premier contact avec un antigène : lente et peu intense."},
+ {p:'mem',t:'Réponse secondaire',d:"Réponse au deuxième contact avec le même antigène : rapide et intense, grâce aux lymphocytes mémoire."},
+ {p:'mem',t:'Vaccination',d:"Injection d'antigènes inactivés ou atténués pour produire des lymphocytes mémoire sans provoquer la maladie."},
+ {p:'mem',t:'Rappel de vaccin',d:"Nouvelle dose qui relance la production d'anticorps et de lymphocytes mémoire quand leur nombre devient insuffisant."},
+ {p:'mem',t:'Immunisé',d:"Se dit d'un individu qui possède des anticorps spécifiques d'un antigène en quantité suffisante."},
+ {p:'mem',t:'Sérum',d:"Sang dont on a retiré les cellules (globules blancs et rouges). Il contient les anticorps."},
+ {p:'mem',t:'Sérothérapie',d:"Injection d'anticorps déjà fabriqués : protection immédiate, mais qui ne dure que quelques jours."},
+ {p:'mem',t:'Immunodéprimé',d:"Individu dont le nombre de leucocytes est insuffisant : des infections bénignes deviennent graves. Exemple : le SIDA."}
+];
+(function(){
+  var PACKS=[['all','Tout le chapitre'],['cell','Cellules et molécules'],['react','Réactions'],['mem','Mémoire et vaccin']];
+  var DIRS=[['td','Mot-clé → définition'],['dt','Définition → mot-clé']];
+  var st={pack:'all',dir:'td',queue:[],i:0,flipped:false,known:[],unknown:[],first:true};
+  var root=$('#fc');
+  function chips(){
+    $('#fc-packs').innerHTML=PACKS.map(function(p){return '<button type="button" class="chip" data-p="'+p[0]+'" aria-pressed="'+(st.pack===p[0])+'">'+p[1]+'</button>';}).join('');
+    $('#fc-dir').innerHTML=DIRS.map(function(p){return '<button type="button" class="chip" data-d="'+p[0]+'" aria-pressed="'+(st.dir===p[0])+'">'+p[1]+'</button>';}).join('');
+  }
+  function start(list,first){st.queue=shuffle(list);st.i=0;st.flipped=false;st.known=[];st.unknown=[];st.first=first;draw(false);}
+  function pool(){return CARDS.filter(function(c){return st.pack==='all'||c.p===st.pack;});}
+  function draw(anim){
+    if(st.i>=st.queue.length){
+      if(st.first) setRes('flash',st.known.length,st.queue.length);
+      root.innerHTML='<div class="score"><b>'+st.known.length+' / '+st.queue.length+'</b><span>cartes sues du premier coup</span></div>'+
+        (st.unknown.length?'<h3 style="font-size:1.05rem">À revoir</h3><ul class="wlist">'+st.unknown.map(function(c){return '<li><b>'+c.t+'</b><br><span class="muted">'+c.d+'</span></li>';}).join('')+'</ul>':'<p>Tu connais tout ce paquet.</p>')+
+        '<div class="row">'+(st.unknown.length?'<button type="button" class="btn" data-a="redo">Refaire les cartes à revoir</button>':'')+'<button type="button" class="btn ghost" data-a="all">Recommencer le paquet</button></div>';
+      return;
+    }
+    var c=st.queue[st.i], td=st.dir==='td';
+    var front=td?c.t:c.d, back=td?c.d:c.t;
+    root.innerHTML='<p class="muted small" style="margin:0">Carte '+(st.i+1)+' / '+st.queue.length+'</p>'+
+     '<button type="button" class="fcard'+(st.flipped?' back':'')+(anim?' anim':'')+'" data-a="flip"><span class="side">'+(st.flipped?(td?'Définition':'Mot-clé'):(td?'Mot-clé':'Définition'))+'</span><span class="content">'+(st.flipped?back:front)+'</span><span class="hint">'+(st.flipped?'':'Touche pour retourner')+'</span></button>'+
+     '<div class="row"'+(st.flipped?'':' hidden')+'><button type="button" class="btn ghost" data-a="no">À revoir</button><button type="button" class="btn" data-a="yes">Je savais</button></div>';
+    var f=$('.fcard',root); if(f&&!anim) f.focus({preventScroll:true});
+  }
+  root.addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return; var a=b.dataset.a;
+    if(a==='flip'){st.flipped=!st.flipped;draw(true);}
+    else if(a==='yes'||a==='no'){(a==='yes'?st.known:st.unknown).push(st.queue[st.i]);st.i++;st.flipped=false;draw(false);}
+    else if(a==='redo') start(st.unknown.slice(),false);
+    else if(a==='all') start(pool(),true);
+  });
+  $('#fc-packs').addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b)return;st.pack=b.dataset.p;chips();start(pool(),true);});
+  $('#fc-dir').addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b)return;st.dir=b.dataset.d;chips();if(st.i<st.queue.length) draw(false);});
+  chips(); start(pool(),true);
+})();
+
+/* ---------- vrai ou faux ---------- */
+(function(){
+  var V=0,F=1,tf=function(q,a,why){return {type:'tf',q:q,options:['Vrai','Faux'],answer:a,why:why};};
+  stepQuiz($('#vf'),[
+   tf("La phagocytose est une réaction spécifique.",F,"Elle agit de la même façon sur n'importe quel élément étranger : c'est une réaction non spécifique, et rapide."),
+   tf("Les anticorps sont produits par les phagocytes.",F,"Ils sont produits par des lymphocytes B transformés en plasmocytes."),
+   tf("Un lymphocyte B ne reconnaît qu'un seul antigène.",V,"Ses anticorps membranaires sont tous identiques et ne s'accrochent que sur l'antigène complémentaire : c'est la spécificité."),
+   tf("Les anticorps digèrent les bactéries.",F,"Ils se fixent sur les antigènes et forment un complexe qui neutralise les micro-organismes. Ce sont les phagocytes qui digèrent ensuite ce complexe."),
+   tf("Les lymphocytes T détruisent les cellules infectées par un virus.",V,"Chaque lymphocyte T reconnaît les cellules infectées par un virus précis et les détruit au contact."),
+   tf("Les anticorps sont efficaces contre un virus caché à l'intérieur des cellules.",F,"Le virus se reproduit dans les cellules : il est à l'abri des anticorps. Ce sont les lymphocytes T qui détruisent les cellules infectées."),
+   tf("La réaction inflammatoire provoque rougeur, chaleur, gonflement et douleur.",V,"Ce sont les quatre symptômes de la réaction inflammatoire locale, déclenchée juste après une infection."),
+   tf("Un vaccin contient des anticorps déjà fabriqués.",F,"Un vaccin contient des antigènes inactivés ou atténués. L'injection d'anticorps déjà fabriqués s'appelle la sérothérapie."),
+   tf("Après un premier contact avec un antigène, l'organisme garde des lymphocytes mémoire.",V,"Ces cellules à longue durée de vie permettent une réaction plus rapide si l'antigène revient."),
+   tf("La réponse secondaire est plus lente que la réponse primaire.",F,"Elle est plus rapide et plus intense, grâce aux lymphocytes mémoire."),
+   tf("Les antibiotiques permettent de lutter contre les virus.",F,"Les antibiotiques agissent contre les bactéries seulement."),
+   tf("Les hématies (globules rouges) sont des leucocytes.",F,"Les leucocytes sont les globules blancs : phagocytes et lymphocytes. Les hématies n'ont pas de noyau."),
+   tf("Un individu immunisé possède des anticorps spécifiques de l'antigène dans son sang.",V,"C'est la définition : il a aussi des lymphocytes mémoire, ce qui permet une réponse secondaire rapide."),
+   tf("Un rappel de vaccin est utile quand le taux d'anticorps devient insuffisant.",V,"Le rappel relance la production de lymphocytes mémoire et d'anticorps, et maintient l'immunité."),
+   tf("Un antigène est une molécule fabriquée par nos lymphocytes.",F,"C'est une molécule portée par un micro-organisme. Les molécules fabriquées par les lymphocytes B sont les anticorps."),
+   tf("Les phagocytes interviennent aussi à la fin de la réponse des lymphocytes B.",V,"Ils éliminent les complexes antigène-anticorps en les digérant.")
+  ],{shuffleItems:true,label:'Affirmation',onDone:function(s,t){setRes('vf',s,t);}});
+})();
+
+/* ---------- document d (Pasteur) ---------- */
+(function(){
+  var X=function(w){return 50+75*w;}, Y=function(h){return 210-h;};
+  var P=function(a){return a.map(function(q){return [X(q[0]),Y(q[1])];});};
+  var prim=[[0,0],[0.5,2],[1,35],[1.5,70],[2,82],[2.5,65],[3,42],[3.5,20],[4,6],[4.65,2]];
+  var sec=[[4.65,2],[4.85,60],[5.1,150],[5.4,172],[5.8,166],[6,160]];
+  var ticks=[0,1,2,3,4,5,6].map(function(w){return '<line class="ax" x1="'+X(w)+'" x2="'+X(w)+'" y1="210" y2="216"/><text x="'+X(w)+'" y="231" text-anchor="middle">'+w+'</text>';}).join('');
+  var mark=function(w,txt,anchor){return '<path d="M'+X(w)+' 252v14" stroke="var(--ink)" stroke-width="2"/><path d="M'+(X(w)-5)+' 258L'+X(w)+' 249L'+(X(w)+5)+' 258z" fill="var(--ink)"/><text x="'+X(w)+'" y="282" text-anchor="'+anchor+'">'+txt+'</text>';};
+  $('#docd').innerHTML='<svg class="chart" viewBox="0 0 520 292" role="img" aria-label="Taux d\'anticorps dans le sang en fonction du temps : petite réponse primaire après le premier contact, puis réponse secondaire rapide et forte après le deuxième contact, environ 4 semaines et demie plus tard.">'+
+   '<line class="ax" x1="50" x2="500" y1="210" y2="210"/><line class="ax" x1="50" x2="50" y1="20" y2="210"/>'+ticks+
+   '<text x="510" y="246" text-anchor="end">Temps (en semaines)</text>'+
+   '<text transform="rotate(-90 14 115)" x="14" y="115" text-anchor="middle">Taux d\'anticorps dans le sang</text>'+
+   '<line x1="'+X(4.65)+'" x2="'+X(4.65)+'" y1="22" y2="210" stroke="var(--virus)" stroke-width="1.5" stroke-dasharray="4 4"/>'+
+   '<path d="'+smooth(P(prim))+'" fill="none" stroke="var(--stain)" stroke-width="3.5"/>'+
+   '<path d="'+smooth(P(sec))+'" fill="none" stroke="var(--rose)" stroke-width="3.5"/>'+
+   '<text class="lab" x="'+X(2)+'" y="'+(Y(82)-10)+'" text-anchor="middle">Réponse primaire</text>'+
+   '<text class="lab" x="'+(X(4.65)-8)+'" y="'+(Y(172)-6)+'" text-anchor="end">Réponse secondaire</text>'+
+   mark(0,"1er contact avec l'antigène",'start')+mark(4.65,'2e contact','middle')+'</svg>';
+})();
+
+/* ---------- Pasteur : questions guidées ---------- */
+(function(){
+  var root=$('#pasteur'), grades={}, TOTAL=5;
+  function sum(){var s=0,n=0;Object.keys(grades).forEach(function(k){n++;s+=grades[k];});return [s,n];}
+  function grade(idx,v){grades[idx]=v;var r=sum(); if(r[1]===TOTAL) setRes('pasteur',r[0],TOTAL);}
+  var Q=[
+   null,
+   {q:"Montre pourquoi les poules de l'expérience 1 ont survécu, en identifiant l'information du document c qui l'explique.",hint:"Pense au mot « virulence ».",ph:"Écris ta réponse ici…",kw:[["bactéries","bacteri"],["virulence","virulen"],["perdu","perdu|plus|n'ont plus"]],model:"Les poules A ont survécu parce que la vieille culture ne contient plus de bactéries virulentes : le document c dit que les bactéries ont perdu leur virulence, donc leur pouvoir de rendre malade."},
+   {q:"En observant les résultats de l'expérience 2, que peux-tu déduire sur la maladie appelée « choléra des poules » ?",hint:"Compare ce qui arrive aux poules B avec les poules A.",kw:[["mort","mort|meur|mourr"],["culture fraîche / bactéries virulentes","virulen|fraiche"],["maladie mortelle ou grave","mortelle|grave|dangereu|tue"]],model:"Je vois que les poules B, qui n'ont jamais reçu de culture vieillie, meurent en 1 à 2 jours après l'injection de la culture fraîche. J'en déduis que la culture fraîche contient des bactéries virulentes et que le choléra des poules est une maladie mortelle causée par ces bactéries."},
+   {q:"Présente les résultats de l'expérience 3.",hint:"Que deviennent les poules C ? Compare avec les poules B.",kw:[["survivent","surviv|vivant|vivent|pas mort|ne meurent"],["culture fraîche / virulente","virulen|fraiche"],["comparaison avec l'expérience 2","poules b|experience 2|alors que|contrairement|tandis que"]],model:"Les poules C ont reçu une première injection de culture vieille, puis, 7 à 8 jours plus tard, une injection de culture fraîche virulente. Elles survivent, alors que les poules B de l'expérience 2, qui ont reçu la même culture fraîche sans injection préalable, meurent."},
+   {q:"En utilisant le document d, explique ces résultats. Utilise le vocabulaire scientifique.",hint:"Pense au premier contact, au deuxième contact et aux lymphocytes mémoire.",kw:[["antigène","antigene"],["réponse primaire / premier contact","reponse primaire|premier contact|1er contact|1re|premiere injection"],["lymphocytes mémoire","memoire"],["réponse secondaire / deuxième contact","reponse secondaire|second contact|deuxieme|2e contact|2eme"],["anticorps","anticorps"],["plus rapide","rapide|vite"],["plus intense","intense|beaucoup plus|plus nombreux|plus important|plus fort"]],model:"Je vois que la première injection de culture vieille (bactéries non virulentes, mais porteuses d'antigènes) provoque une réponse immunitaire primaire : production d'anticorps et de lymphocytes mémoire. Lors de la deuxième injection, c'est un deuxième contact avec le même antigène : le document d montre une réponse secondaire plus rapide et beaucoup plus intense. Les anticorps éliminent les bactéries virulentes avant qu'elles tuent la poule : les poules C sont immunisées."},
+   {q:"Si Pasteur avait fait son injection de culture virulente 4 semaines après la première, au lieu de 7 à 8 jours, les poules seraient-elles mortes ? Explique en utilisant le document d.",hint:"Regarde la courbe vers 4 semaines et demie : le taux d'anticorps est bas, mais que garde l'organisme ?",kw:[["non / elles survivent","non|surviv|pas mort|ne meurent|protegee"],["lymphocytes mémoire","memoire"],["réponse secondaire / deuxième contact","reponse secondaire|second contact|deuxieme|2e contact|2eme"],["rapide","rapide|vite"],["anticorps","anticorps"]],model:"Non, les poules ne seraient pas mortes. Après 4 semaines, le taux d'anticorps de la première réponse est redevenu très faible, mais les lymphocytes mémoire sont toujours là. Le document d montre que, même après plusieurs semaines, un deuxième contact avec le même antigène déclenche une réponse secondaire rapide et intense : les poules seraient protégées."}
+  ];
+  var html='';
+  html+='<div class="gq" id="g1"></div>';
+  for(var n=2;n<=5;n++) html+='<div class="gq" id="g'+n+'"></div>';
+  root.innerHTML=html;
+
+  /* question 1 : choisir la phrase du document c */
+  (function(){
+    var el=$('#g1');
+    var opts=["Pasteur injecte à un lot A de poules des extraits d'une vieille culture de bactéries, oubliée depuis plusieurs semaines.","Les poules survivent : les bactéries ont donc perdu leur virulence.","Il injecte une culture fraîche à un lot B de poules n'ayant pas reçu la culture vieillie."];
+    el.innerHTML='<p class="q">1. Montre pourquoi les poules de l\'expérience 1 ont survécu : touche l\'information du document c qui l\'explique.</p><div class="opts">'+opts.map(function(o,k){return '<button type="button" class="opt" data-k="'+k+'">'+o+'</button>';}).join('')+'</div><div class="fb" hidden aria-live="polite"></div>';
+    el.addEventListener('click',function(e){
+      var b=e.target.closest('.opt'); if(!b||b.disabled) return;
+      var k=+b.dataset.k, ok=(k===1);
+      $$('.opt',el).forEach(function(o){o.disabled=true;if(+o.dataset.k===1) o.classList.add('right'); else if(o===b) o.classList.add('wrong');});
+      var fb=$('.fb',el); fb.hidden=false; fb.className='fb '+(ok?'good':'bad');
+      fb.innerHTML='<b>'+(ok?'Exact.':'Pas tout à fait.')+'</b> Les poules A ont survécu parce que la vieille culture ne contient plus de bactéries virulentes : elles ont perdu leur pouvoir de rendre malade.';
+      grade(1,ok?1:0);
+    });
+  })();
+
+  function guided(idx){
+    var q=Q[idx], el=$('#g'+idx);
+    el.innerHTML='<p class="q">'+idx+'. '+q.q+'</p><textarea id="ta-'+idx+'" rows="4" placeholder="Écris ta réponse ici…" aria-label="Ta réponse à la question '+idx+'"></textarea>'+
+     '<div class="row"><button type="button" class="btn" data-a="check">Je vérifie</button><button type="button" class="btn ghost" data-a="hint">Un indice</button></div>'+
+     '<div class="hintbox" hidden>'+q.hint+'</div><div class="gres" hidden></div>';
+    el.addEventListener('click',function(e){
+      var b=e.target.closest('button'); if(!b) return;
+      if(b.dataset.a==='hint'){ var h=$('.hintbox',el); h.hidden=!h.hidden; }
+      else if(b.dataset.a==='check'){
+        var txt=norm($('#ta-'+idx).value), res=$('.gres',el);
+        var found=[], miss=[];
+        q.kw.forEach(function(k){ if(new RegExp(k[1]).test(txt)) found.push(k[0]); else miss.push(k[0]); });
+        res.hidden=false;
+        res.innerHTML=(txt.trim()?'':'<p class="muted">Tu n\'as rien écrit : essaie d\'abord de répondre, puis compare.</p>')+
+          '<div class="kwl">'+found.map(function(k){return '<span class="f">✓ '+k+'</span>';}).join('')+miss.map(function(k){return '<span class="m">à ajouter : '+k+'</span>';}).join('')+'</div>'+
+          '<div class="model"><b>Réponse modèle.</b> '+q.model+'</div>'+
+          '<p style="margin:12px 0 4px"><b>Compare avec ta réponse :</b></p><div class="row" style="margin-top:0"><button type="button" class="btn" data-g="1">Je l\'avais</button><button type="button" class="btn ghost" data-g="0.5">En partie</button><button type="button" class="btn ghost" data-g="0">À revoir</button></div><p class="muted small gmsg" style="margin:6px 0 0"></p>';
+      }
+      else if(b.dataset.g!==undefined){ grade(idx,+b.dataset.g); var m=$('.gmsg',el); if(m) m.textContent='Noté : '+(b.dataset.g==='1'?'je l\'avais.':b.dataset.g==='0.5'?'en partie.':'à revoir.'); }
+    });
+  }
+  for(var n2=2;n2<=5;n2++) guided(n2);
+})();
+
+/* ---------- QCM final ---------- */
+stepQuiz($('#qcm'),[
+ {type:'single',q:"Quelle cellule réalise la phagocytose ?",options:["Les hématies","Les phagocytes","Les lymphocytes B","Les lymphocytes T"],answer:1,why:"Les phagocytes ingèrent et digèrent les micro-organismes."},
+ {type:'multi',q:"Quelles sont les propriétés de la phagocytose ?",options:["Elle est rapide","Elle est non spécifique","Elle est spécifique d'un antigène","Elle met plusieurs jours à se mettre en place"],answer:[0,1],why:"La phagocytose est rapide et non spécifique : elle agit de la même façon sur tout élément étranger."},
+ {type:'single',q:"Un lymphocyte B reconnaît…",options:["n'importe quel micro-organisme","un antigène précis, grâce à ses anticorps membranaires","uniquement les cellules infectées par un virus","les hématies"],answer:1,why:"Ses anticorps membranaires, tous identiques, ne s'accrochent que sur un antigène précis : c'est la spécificité."},
+ {type:'single',q:"Que forment les anticorps en se fixant sur les antigènes ?",options:["Un complexe antigène-anticorps","Un phagocyte","Une vésicule de digestion","Un lymphocyte mémoire"],answer:0,why:"Ce complexe neutralise les micro-organismes. Il est ensuite éliminé par les phagocytes."},
+ {type:'single',q:"Pourquoi les lymphocytes B sont-ils inefficaces contre un virus déjà entré dans une cellule ?",options:["Parce qu'ils ne produisent des anticorps que contre les bactéries","Parce que le virus, caché à l'intérieur des cellules, est à l'abri des anticorps","Parce que les antibiotiques détruisent déjà le virus","Parce que les virus ne portent aucun antigène"],answer:1,why:"Un virus se reproduit à l'intérieur des cellules : les anticorps, libérés dans le sang, ne l'atteignent pas. Ce sont les lymphocytes T qui détruisent les cellules infectées."},
+ {type:'multi',q:"Que font les lymphocytes T ?",options:["Ils détruisent les cellules infectées par un virus","Ils sont spécifiques d'un virus précis","Ils produisent des anticorps","Ils digèrent les bactéries"],answer:[0,1],why:"Les lymphocytes T reconnaissent les cellules infectées par un virus précis et les détruisent. Les anticorps viennent des lymphocytes B, la digestion des phagocytes."},
+ {type:'single',q:"Par rapport à la réponse primaire, la réponse secondaire est…",options:["plus lente et plus faible","aussi rapide mais plus faible","plus rapide et plus intense","identique"],answer:2,why:"Grâce aux lymphocytes mémoire, elle est plus rapide et plus intense."},
+ {type:'single',q:"Un vaccin contient…",options:["des anticorps prêts à l'emploi","des antigènes inactivés ou atténués","des antibiotiques","des lymphocytes T"],answer:1,why:"Les antigènes inactivés ou atténués provoquent une réponse immunitaire sans provoquer la maladie. Les anticorps prêts à l'emploi, c'est la sérothérapie."},
+ {type:'single',q:"Pourquoi fait-on des rappels de vaccin ?",options:["Parce que le taux d'anticorps diminue avec le temps : le rappel relance la production d'anticorps et de lymphocytes mémoire","Parce que le vaccin devient dangereux avec le temps","Parce que le premier vaccin n'a eu aucun effet","Parce que les phagocytes détruisent tous les lymphocytes mémoire"],answer:0,why:"Quand le taux d'anticorps devient insuffisant, une nouvelle dose maintient l'immunité."},
+ {type:'single',q:"Un blessé n'est pas à jour de son vaccin contre le tétanos et n'a pas d'anticorps dans le sang. Pourquoi lui injecter des anticorps (sérothérapie) ET le vacciner ?",options:["Les anticorps injectés protègent tout de suite mais quelques jours seulement ; le vaccin lui fait fabriquer ses propres anticorps et une protection durable","Les deux ont exactement le même effet : c'est une précaution inutile","Le vaccin protège tout de suite, la sérothérapie protège dix ans","La sérothérapie fait fabriquer des lymphocytes mémoire"],answer:0,why:"La sérothérapie apporte une protection quasi immédiate mais courte. Seule la vaccination assure une immunisation durable, supérieure à 10 ans."}
+],{shuffleItems:true,onDone:function(s,t){setRes('qcm',s,t);}});
+
+/* ================= SÉANCE 5 : sujet du brevet 2018 ================= */
+function pinSVG(n,dx,dy,tx,ty){return '<g class="pin"><line x1="'+dx+'" y1="'+dy+'" x2="'+tx+'" y2="'+ty+'"/><circle cx="'+tx+'" cy="'+ty+'" r="3.5"/><circle cx="'+dx+'" cy="'+dy+'" r="12"/><text x="'+dx+'" y="'+(dy+4.5)+'">'+n+'</text></g>';}
+function triFill(px,py,col){return '<polygon points="'+px+','+(py-8)+' '+(px+8)+','+(py+6)+' '+(px-8)+','+(py+6)+'" fill="'+col+'"/>';}
+function triOutline(px,py,col){return '<polygon points="'+px+','+(py-7)+' '+(px+7)+','+(py+5)+' '+(px-7)+','+(py+5)+'" fill="none" stroke="'+col+'" stroke-width="2" stroke-dasharray="3 2"/>';}
+function sqOutline(px,py,col){return '<rect x="'+(px-6)+'" y="'+(py-6)+'" width="12" height="12" fill="none" stroke="'+col+'" stroke-width="2" stroke-dasharray="3 2"/>';}
+function abY(cx,cy,r,theta,shape,col,docked,stem){
+  var rad=theta*Math.PI/180, bx=cx+r*Math.cos(rad), by=cy+r*Math.sin(rad), s=stem||20;
+  var tip=function(px){return shape==='tri'?(docked?triFill(px,-(s+22),'var(--virus)'):triOutline(px,-(s+22),col)):sqOutline(px,-(s+22),col);};
+  return '<g transform="translate('+bx.toFixed(1)+' '+by.toFixed(1)+') rotate('+(theta+90)+')"><path d="M0 0V-'+s+'M0 -'+s+'L-11 -'+(s+15)+'M0 -'+s+'L11 -'+(s+15)+'" fill="none" stroke="var(--ab)" stroke-width="4" stroke-linecap="round"/>'+tip(-11)+tip(11)+'</g>';
+}
+function schemaSVG(){
+  var g='';
+  g+='<rect x="26" y="110" width="170" height="52" rx="26" fill="var(--bact)" stroke="var(--ink)" stroke-width="2"/>';
+  [[62,136],[104,128],[146,142],[176,130]].forEach(function(p){g+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="3" fill="var(--ink)" opacity=".4"/>';});
+  g+=triFill(238,100,'var(--virus)')+triFill(250,184,'var(--virus)')+triFill(212,228,'var(--virus)');
+  g+='<circle cx="400" cy="150" r="58" fill="var(--lymphb)" stroke="var(--stain)" stroke-width="2.5"/><circle cx="400" cy="150" r="30" fill="var(--stain)" opacity=".85"/>';
+  g+=abY(400,150,58,180,'tri','var(--virus)',true,20);
+  [135,225,315].forEach(function(t){g+=abY(400,150,58,t,'tri','var(--virus)',false,20);});
+  g+='<circle cx="570" cy="250" r="40" fill="var(--lymphb)" stroke="var(--stain)" stroke-width="2.5"/><circle cx="570" cy="250" r="20" fill="var(--stain)" opacity=".85"/>';
+  [180,225,270].forEach(function(t){g+=abY(570,250,40,t,'sq','var(--tcell)',false,18);});
+  g+=triFill(448,250,'var(--virus)')+'<path d="M462 243L476 257M476 243L462 257" stroke="var(--bad)" stroke-width="3" stroke-linecap="round"/>';
+  g+=pinSVG(1,110,60,110,110)+pinSVG(2,238,50,238,92)+pinSVG(3,418,40,412,96)+pinSVG(4,262,150,322,150)+pinSVG(5,622,196,603,230);
+  return '<svg class="fig" viewBox="0 0 640 300" role="img" aria-label="Schéma : la bactérie Clostridium tetani libère sa toxine. Un lymphocyte B dont les anticorps membranaires s’ajustent à la toxine la reconnaît. Un autre lymphocyte B, dont les anticorps ont une autre forme, ne la reconnaît pas.">'+g+'</svg>';
+}
+
+/* associer : liste de lignes avec une liste déroulante */
+function matchGame(root,rows,bank,key,opt){
+  opt=opt||{};
+  var order=bank.map(function(w,i){return i;});
+  if(!opt.keepOrder) order.sort(function(a,b){return bank[a].localeCompare(bank[b],'fr');});
+  root.innerHTML='<div class="mt">'+rows.map(function(r,i){
+    return '<div class="mrow"><span class="ml">'+r.l+'</span><select class="blank" data-a="'+r.a+'" aria-label="Réponse '+(i+1)+'"><option value="">Choisis…</option>'+order.map(function(k){return '<option value="'+k+'">'+bank[k]+'</option>';}).join('')+'</select></div>';
+  }).join('')+'</div><div class="row"><button type="button" class="btn" data-a="check">Vérifier</button><button type="button" class="btn ghost" data-a="show">Voir la correction</button></div><div class="fb" aria-live="polite" hidden></div>';
+  root.addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b||!root.contains(b)) return;
+    var sels=$$('select.blank',root);
+    if(b.dataset.a==='show'){sels.forEach(function(s){s.value=s.dataset.a;s.classList.add('ok');s.classList.remove('ko');});return;}
+    if(b.dataset.a==='check'){
+      var ok=0; sels.forEach(function(s){var g=s.value===s.dataset.a; if(g) ok++; s.classList.toggle('ok',g); s.classList.toggle('ko',!g);});
+      var fb=$('.fb',root); fb.hidden=false; fb.className='fb '+(ok===sels.length?'good':'bad');
+      fb.innerHTML=ok===sels.length?'<b>Tout est juste.</b> '+(opt.msg||''):'<b>'+ok+' sur '+sels.length+'.</b> Corrige les réponses en rouge.';
+      if(key) setRes(key,ok,sels.length);
+    }
+  });
+}
+/* liste de critères à cocher : auto-évaluation */
+function checklist(root,items,key,title){
+  root.innerHTML='<h4 class="cl-t">'+title+'</h4><ul class="cl">'+items.map(function(t,i){return '<li><label><input type="checkbox"> <span>'+t+'</span></label></li>';}).join('')+'</ul><p class="cl-s" aria-live="polite"></p>';
+  root.addEventListener('change',function(){
+    var n=$$('input:checked',root).length;
+    $('.cl-s',root).innerHTML='<b>'+n+' critère'+(n>1?'s':'')+' sur '+items.length+'.</b> '+(n===items.length?'Réponse complète.':'Reprends les critères non cochés.');
+    setRes(key,n,items.length);
+  });
+}
+/* réponse rédigée : mots-clés repérés, réponse modèle, critères à cocher */
+function writeQ(root,cfg){
+  root.innerHTML='<p class="q">'+cfg.q+'</p><textarea id="ta-'+cfg.id+'" rows="'+(cfg.rows||5)+'" placeholder="Écris ta réponse ici…" aria-label="Ta réponse"></textarea>'+
+    '<div class="row"><button type="button" class="btn" data-a="check">Je vérifie</button>'+(cfg.hint?'<button type="button" class="btn ghost" data-a="hint">Un indice</button>':'')+'</div>'+
+    (cfg.hint?'<div class="hintbox" hidden>'+cfg.hint+'</div>':'')+'<div class="gres" hidden></div>';
+  root.addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b||!root.contains(b)) return;
+    if(b.dataset.a==='hint'){var h=$('.hintbox',root); h.hidden=!h.hidden;}
+    else if(b.dataset.a==='check'){
+      var txt=norm($('#ta-'+cfg.id).value), found=[], miss=[];
+      cfg.kw.forEach(function(k){ if(new RegExp(k[1]).test(txt)) found.push(k[0]); else miss.push(k[0]); });
+      var res=$('.gres',root); res.hidden=false;
+      res.innerHTML=(txt.trim()?'':'<p class="muted">Tu n’as rien écrit : essaie d’abord de répondre, puis compare.</p>')+
+        '<div class="kwl">'+found.map(function(k){return '<span class="f">✓ '+k+'</span>';}).join('')+miss.map(function(k){return '<span class="m">à ajouter : '+k+'</span>';}).join('')+'</div>'+
+        '<div class="model"><b>Réponse modèle.</b> '+cfg.model+'</div><div class="cl-box"></div>';
+      checklist($('.cl-box',res),cfg.items,cfg.key,'Mon auto-évaluation : coche ce que ma réponse contient');
+    }
+  });
+}
+
+/* échauffement : schéma de la reconnaissance */
+(function(){
+  $('#sch-fig').innerHTML=schemaSVG();
+  matchGame($('#sch-leg'),[
+    {l:'<b>1</b>',a:0},{l:'<b>2</b>',a:1},{l:'<b>3</b>',a:2},{l:'<b>4</b>',a:3},{l:'<b>5</b>',a:4}
+  ],[
+    "La bactérie Clostridium tetani","La toxine tétanique : l’antigène","Un lymphocyte B spécifique de la toxine : il la reconnaît","Un anticorps membranaire","Un lymphocyte B non spécifique : il ne la reconnaît pas",
+    "Un phagocyte","Un plasmocyte","Un anticorps libre dans le sang","Un lymphocyte T"
+  ],'d5-schema',{msg:'Le lymphocyte 3 est le seul dont les anticorps s’ajustent à la toxine.',keepOrder:true});
+  var ST=[['ic-lb','1. Reconnaissance','un seul type de lymphocyte B s’ajuste à l’antigène'],['ic-lb','2. Multiplication','les lymphocytes B spécifiques se multiplient'],['ic-y','3. Anticorps','plasmocytes qui libèrent des anticorps ; cellules mémoire'],['ic-complex','4. Complexe','anticorps fixés sur les antigènes'],['ic-phago','5. Phagocytose','les phagocytes éliminent le complexe']];
+  $('#sch-strip').innerHTML=ST.map(function(s){return '<div class="st">'+ic(s[0])+'<b>'+s[1]+'</b><span>'+s[2]+'</span></div>';}).join('');
+  checklist($('#sch-draw'),[
+    "J’ai dessiné la bactérie Clostridium tetani et sa toxine, qui est l’antigène.",
+    "J’ai dessiné un lymphocyte B avec ses anticorps membranaires, tous identiques.",
+    "L’anticorps s’ajuste à la forme de l’antigène, comme une clé dans une serrure : le lymphocyte B reconnaît « son » antigène.",
+    "J’ai montré qu’un autre lymphocyte B, dont l’anticorps n’a pas la bonne forme, ne participe pas.",
+    "J’ai représenté la suite : multiplication, anticorps libres produits par les plasmocytes, complexe anticorps-antigène, phagocytose.",
+    "Mon schéma a un titre et toutes les légendes sont écrites, avec des traits tirés à la règle."
+  ],'d5-schema-draw','Mon auto-évaluation : coche ce que mon schéma contient');
+})();
+
+/* question 1 */
+stepQuiz($('#q1-pre'),[
+ {type:'single',q:"Que contient un vaccin contre le tétanos ?",options:["Des anticorps anti-toxine tétanique déjà fabriqués","La toxine tétanique rendue inoffensive : un antigène inactivé","Des bactéries Clostridium tetani vivantes","Des antibiotiques"],answer:1,why:"Un vaccin contient des antigènes inactivés ou atténués. Ils stimulent la production de lymphocytes mémoire sans provoquer la maladie. Injecter des anticorps déjà fabriqués, c’est la sérothérapie."},
+ {type:'tf',q:"Après une injection de vaccin, le taux d’anticorps reste élevé toute la vie.",options:['Vrai','Faux'],answer:1,why:"Le taux d’anticorps diminue avec le temps. Un rappel relance la production d’anticorps et de lymphocytes mémoire."},
+ {type:'single',q:"Pourquoi le calendrier vaccinal prévoit-il plusieurs injections du même vaccin ?",options:["Chaque injection protège contre une maladie différente","Pour maintenir une protection : les rappels relancent la réponse immunitaire","Parce que le vaccin devient dangereux avec l’âge","Parce que les phagocytes détruisent les lymphocytes mémoire"],answer:1,why:"Les rappels maintiennent un taux d’anticorps et de lymphocytes mémoire suffisant. Une réponse secondaire est plus rapide et plus intense."},
+ {type:'tf',q:"Une personne immunisée contre le tétanos possède dans son sang des anticorps spécifiques de la toxine tétanique.",options:['Vrai','Faux'],answer:0,why:"C’est la définition d’un individu immunisé : il a des anticorps spécifiques de l’antigène, en quantité suffisante."}
+],{label:'Question de cours',onDone:function(s,t){setRes('d5-k1',s,t);}});
+
+(function(){
+  var AGES=['1 mois','2 mois','4 mois','5 mois','11 mois','12 mois','16-18 mois','6 ans','11-13 ans','25 ans','45 ans','65 ans','Tous les 10 ans : 75 ans, 85 ans…'];
+  var VAC=[['BCG',[0],''],['Diphtérie - Tétanos - Poliomyélite',[1,2,4,7,8,9,10,11,12],'dtp'],['Rougeole - Oreillons - Rubéole',[5,6],'']];
+  $('#cal').innerHTML='<table class="cal"><thead><tr><th>Vaccins \\ Âge</th>'+AGES.map(function(a){return '<th>'+a+'</th>';}).join('')+'</tr></thead><tbody>'+
+    VAC.map(function(v){return '<tr class="'+v[2]+'"><th>'+v[0]+'</th>'+AGES.map(function(a,i){return v[1].indexOf(i)>=0?'<td class="x">X</td>':'<td></td>';}).join('')+'</tr>';}).join('')+'</tbody></table>';
+  var rows=[['2 mois',0],['4 mois',0],['11 mois',0],['6 ans',0],['11-13 ans',0],['25 ans',1],['45 ans',2]].map(function(r){return {l:'<b>'+r[0]+'</b>',a:r[1]};});
+  var intro=document.createElement('p'); intro.className='small'; intro.innerHTML='Carnet de santé du patient (33 ans) : vacciné à 2 mois, 4 mois, 11 mois, 6 ans et 13 ans.';
+  $('#cmp').appendChild(intro);
+  var box=document.createElement('div'); $('#cmp').appendChild(box);
+  matchGame(box,rows,['Injection reçue','Injection manquante','Pas encore recommandée à 33 ans'],'d5-cmp',{keepOrder:true,msg:'Une seule injection manque : celle de 25 ans. Le patient a 33 ans, elle aurait dû être faite il y a 8 ans.'});
+  writeQ($('#w-q1'),{id:'q1',key:'d5-q1',rows:6,
+    q:"Rédige ta réponse à la question 1 : justifie que le patient de 33 ans n’est plus à jour dans sa vaccination contre le tétanos.",
+    hint:"Compare deux listes : les âges où le document 1 recommande une injection jusqu’à 33 ans, et les âges du carnet du patient.",
+    kw:[["ligne tétanos / DTP","tetanos|dtp|diphterie"],["calendrier / document 1","calendrier|document 1|recommand"],["âge de 25 ans","25"],["injection manquante","manqu|pas recu|pas eu|n a pas|na pas|non realis|oubli"],["pas à jour","pas a jour|plus a jour"]],
+    model:"Je vois dans le document 1 que le vaccin contre le tétanos (ligne diphtérie-tétanos-poliomyélite) est recommandé à 2, 4 et 11 mois, à 6 ans, à 11-13 ans, à 25 ans, à 45 ans, à 65 ans, puis tous les 10 ans. À 33 ans, le patient aurait donc dû recevoir 6 injections : à 2, 4 et 11 mois, à 6 ans, à 11-13 ans et à 25 ans. Son carnet n’en indique que 5 : il manque l’injection de 25 ans. Il n’a pas reçu toutes les injections recommandées pour son âge : il n’est plus à jour.",
+    items:["J’ai repéré la ligne « Diphtérie - Tétanos - Poliomyélite » du document 1.","J’ai listé les injections recommandées jusqu’à 33 ans : 2, 4 et 11 mois, 6 ans, 11-13 ans, 25 ans.","Je les ai comparées à celles du carnet du patient.","J’ai identifié l’injection manquante : celle de 25 ans.","J’ai conclu clairement que le patient n’est pas à jour."]});
+})();
+
+/* question 2 */
+stepQuiz($('#q2-pre'),[
+ {type:'single',q:"Que cherche à détecter un test de dosage des anticorps anti-toxine tétanique ?",options:["Des anticorps spécifiques de la toxine tétanique dans le sang","La bactérie Clostridium tetani sur la peau","Des phagocytes dans la plaie","Des antibiotiques dans le sang"],answer:0,why:"Le test cherche les anticorps spécifiques de la toxine tétanique : leur présence montre que la personne est immunisée."},
+ {type:'tf',q:"Les anticorps sont produits par les lymphocytes B transformés en plasmocytes.",options:['Vrai','Faux'],answer:0,why:"Après la reconnaissance et la multiplication, des lymphocytes B deviennent des plasmocytes, des usines à anticorps spécifiques de l’antigène."},
+ {type:'single',q:"Un patient n’est plus immunisé contre le tétanos. Que peut-on dire de ses anticorps anti-toxine tétanique ?",options:["Ils sont absents ou en quantité insuffisante","Ils sont très nombreux","Ils se sont transformés en toxine","Ils ont été digérés par les lymphocytes T"],answer:0,why:"Avec le temps, le taux d’anticorps diminue. Sans rappel, il devient insuffisant pour protéger."},
+ {type:'tf',q:"Des anticorps anti-toxine tétanique peuvent neutraliser n’importe quelle autre toxine.",options:['Vrai','Faux'],answer:1,why:"Les anticorps sont spécifiques : ils ne se fixent que sur l’antigène dont la forme leur correspond. L’expérience de Von Behring l’a montré."}
+],{label:'Question de cours',onDone:function(s,t){setRes('d5-k2',s,t);}});
+
+function plaqueSVG(bands,pins){
+  var b='';
+  if(bands>=1) b+='<rect x="292" y="101" width="18" height="48" rx="3" fill="var(--rose)"/>';
+  if(bands>=2) b+='<rect x="382" y="101" width="18" height="48" rx="3" fill="var(--rose)"/>';
+  var p=pins?pinSVG(1,60,204,108,166)+pinSVG(2,84,40,150,106)+pinSVG(3,350,28,350,96)+pinSVG(4,262,206,299,150):'';
+  return '<svg class="fig" viewBox="0 0 560 230" role="img" aria-label="Plaquette-test avec une zone de dépôt à gauche et une zone de lecture à droite contenant '+bands+' bande'+(bands>1?'s':'')+' colorée'+(bands>1?'s':'')+'.">'+
+   '<rect x="90" y="70" width="380" height="110" rx="18" fill="var(--surface2)" stroke="var(--line-strong)" stroke-width="3"/>'+
+   '<circle cx="170" cy="125" r="24" fill="var(--surface)" stroke="var(--stain)" stroke-width="5"/><circle cx="170" cy="125" r="10" fill="var(--line)"/>'+
+   '<path d="M170 18C160 36 158 44 170 50C182 44 180 36 170 18Z" fill="var(--virus)"/>'+
+   '<rect x="250" y="95" width="190" height="60" rx="6" fill="var(--surface)" stroke="var(--ink)" stroke-width="2"/>'+b+p+'</svg>';
+}
+(function(){
+  var fig=$('#sim-fig'), res=$('#sim-res');
+  function show(k){
+    var two=k==='A';
+    fig.innerHTML=plaqueSVG(two?2:1,false);
+    res.className='fb '+(two?'good':'bad');
+    res.innerHTML=two?'<b>Test positif : deux bandes colorées.</b> Le patient est immunisé : son sang contient des anticorps anti-toxine tétanique.':'<b>Test négatif : une seule bande colorée.</b> Le patient n’est pas ou est insuffisamment protégé : il n’a pas (assez) d’anticorps anti-toxine tétanique.';
+    $$('.chip',$('#sim-btns')).forEach(function(c){c.setAttribute('aria-pressed',c.dataset.k===k?'true':'false');});
+  }
+  $('#sim-btns').addEventListener('click',function(e){var c=e.target.closest('.chip'); if(c) show(c.dataset.k);});
+  show('A');
+  $('#q2-fig').innerHTML='<figure>'+plaqueSVG(1,true)+'<figcaption>Plaquette-test d’un patient qui n’est plus immunisé. Légende les quatre éléments numérotés.</figcaption></figure>';
+  matchGame($('#q2-leg'),[{l:'<b>1</b>',a:0},{l:'<b>2</b>',a:1},{l:'<b>3</b>',a:2},{l:'<b>4</b>',a:3}],[
+    "Plaquette-test","Zone de dépôt de la goutte de sang et du diluant","Zone de lecture","Une seule bande colorée : test négatif",
+    "Deux bandes colorées : test positif","Anticorps anti-toxine tétanique","Résultat : patient immunisé"
+  ],'d5-q2l',{keepOrder:true});
+  checklist($('#q2-draw'),[
+    "J’ai dessiné la plaquette avec sa zone de dépôt et sa zone de lecture.",
+    "La zone de lecture montre une seule bande colorée, car le patient n’est plus immunisé.",
+    "J’ai légendé : plaquette, zone de dépôt de la goutte de sang et du diluant, zone de lecture, bande colorée.",
+    "J’ai indiqué le résultat : test négatif, patient pas ou insuffisamment protégé.",
+    "Mon schéma est grand, propre, avec un titre et des traits de légende tirés à la règle."
+  ],'d5-q2','Mon auto-évaluation : coche ce que mon schéma contient');
+})();
+
+/* question 3a */
+stepQuiz($('#q3-pre'),[
+ {type:'single',q:"La sérothérapie consiste à injecter…",options:["des anticorps déjà fabriqués","des antigènes inactivés","des lymphocytes mémoire","des phagocytes"],answer:0,why:"Le sérum contient des anticorps. La protection est immédiate, mais elle ne dure que quelques jours. Un vaccin, lui, contient des antigènes."},
+ {type:'tf',q:"Les antibiotiques agissent contre les bactéries, pas contre les virus.",options:['Vrai','Faux'],answer:0,why:"Clostridium tetani est une bactérie : des antibiotiques peuvent stopper l’infection. Ils sont inefficaces contre les virus."},
+ {type:'single',q:"Que signifie « être immunisé contre le tétanos » ?",options:["Avoir dans le sang des anticorps spécifiques de la toxine tétanique en quantité suffisante","Ne jamais avoir rencontré la bactérie","Avoir beaucoup de phagocytes","Avoir pris des antibiotiques"],answer:0,why:"Un individu immunisé a des anticorps spécifiques de l’antigène en quantité suffisante, et des lymphocytes mémoire."}
+],{label:'Question de cours',onDone:function(s,t){setRes('d5-k3',s,t);}});
+writeQ($('#w-q3a'),{id:'q3a',key:'d5-q3a',rows:4,
+  q:"Rédige ta réponse à la question 3a : cite les étapes de l’arbre qui amènent au protocole C.",
+  hint:"Pars du haut de l’arbre. Il y a deux questions à se poser. Les résultats des questions 1 et 2 te donnent les réponses.",
+  kw:[["vaccination à jour : non","non"],["test de dosage des anticorps","dosage|test"],["absence d’anticorps","absence|pas d anticorps|aucun anticorps|negatif"],["protocole C","protocole c"]],
+  model:"Je vois que le médecin se pose d’abord la question « Vaccination contre le tétanos à jour ? ». Pour ce patient, la réponse est NON (question 1). Il réalise alors le test de dosage rapide des anticorps anti-toxine tétanique : le résultat est une absence d’anticorps, c’est-à-dire un test négatif (question 2). Ces deux étapes mènent au protocole C.",
+  items:["J’ai cité l’étape « vaccination à jour ? » avec la réponse NON.","J’ai cité l’étape « test de dosage rapide des anticorps anti-toxine tétanique » avec le résultat : absence d’anticorps.","J’ai relié ces deux étapes au protocole C."]});
+stepQuiz($('#q3-sc'),[
+ {type:'single',q:"Un patient est à jour de sa vaccination contre le tétanos. Il se blesse avec une fourche rouillée. Quel protocole le médecin applique-t-il ?",options:["Protocole A","Protocole B","Protocole C"],answer:0,why:"Vaccination à jour : OUI. Le protocole A suffit : des antibiotiques contre les bactéries de l’outil."},
+ {type:'single',q:"Un patient n’est pas à jour de sa vaccination, mais le test de dosage montre une présence d’anticorps. Quel protocole ?",options:["Protocole A","Protocole B","Protocole C"],answer:1,why:"Il a encore des anticorps : pas besoin de sérothérapie. On donne des antibiotiques et on met la vaccination à jour : protocole B."},
+ {type:'single',q:"Un patient n’est pas à jour de sa vaccination et le test de dosage ne montre aucun anticorps. Quel protocole ?",options:["Protocole A","Protocole B","Protocole C"],answer:2,why:"Sans anticorps, il n’est pas protégé : sérothérapie, vaccination immédiate et antibiotiques, soit le protocole C."}
+],{label:'Patient',onDone:function(s,t){setRes('d5-s3a',s,t);}});
+
+/* question 3b */
+stepQuiz($('#q3b-pre'),[
+ {type:'single',q:"Un patient n’a plus d’anticorps anti-toxine tétanique. Pourquoi l’injection d’un vaccin ne suffit-elle pas à le protéger tout de suite ?",options:["Parce que la réponse immunitaire primaire est lente : il faut du temps pour produire des anticorps","Parce que le vaccin contient des anticorps trop petits","Parce que le vaccin détruit les lymphocytes mémoire","Parce que le vaccin ne contient aucun antigène"],answer:0,why:"Lors d’un premier contact avec l’antigène (ou après une longue période), la réponse est lente : plusieurs jours à plusieurs semaines pour atteindre un taux d’anticorps protecteur."},
+ {type:'tf',q:"La sérothérapie permet à l’organisme de fabriquer des lymphocytes mémoire.",options:['Vrai','Faux'],answer:1,why:"Les anticorps sont apportés tout faits : l’organisme ne les fabrique pas. Aucun lymphocyte mémoire n’est produit, donc la protection ne dure que quelques jours."},
+ {type:'single',q:"Qu’est-ce qui rend la vaccination efficace sur le long terme ?",options:["Les lymphocytes mémoire formés après l’injection","Les antibiotiques contenus dans le vaccin","Les anticorps injectés avec le vaccin","Les phagocytes, qui gardent l’antigène en mémoire"],answer:0,why:"Le vaccin stimule la production de lymphocytes mémoire à longue durée de vie. Lors d’un contact ultérieur, la réponse secondaire est rapide et intense."},
+ {type:'tf',q:"Les antibiotiques stoppent la multiplication des bactéries, comme Clostridium tetani.",options:['Vrai','Faux'],answer:0,why:"Ils agissent contre les bactéries. Dans le protocole C, ils stoppent l’infection due aux bactéries présentes sur l’outil."}
+],{label:'Question de cours',onDone:function(s,t){setRes('d5-k3b',s,t);}});
+matchGame($('#m-q3b'),[
+  {l:'<b>Sérothérapie immédiate</b> (2)',a:0},{l:'<b>Vaccination immédiate</b> (3)',a:1},{l:'<b>Prise d’antibiotiques</b> (1)',a:2}
+],[
+  "Apporte tout de suite des anticorps anti-toxine tétanique, mais seulement pour quelques jours",
+  "Fait fabriquer des anticorps et des lymphocytes mémoire : protection de plus de 10 ans",
+  "Stoppe l’infection due aux bactéries présentes sur l’outil de jardinage",
+  "Détruit les anticorps du patient"
+],'d5-m3b',{keepOrder:true,msg:'Chaque élément a un rôle que les deux autres ne peuvent pas jouer.'});
+writeQ($('#w-q3b'),{id:'q3b',key:'d5-q3b',rows:9,
+  q:"Rédige ta réponse à la question 3b : justifie la nécessité des trois éléments du protocole C.",
+  hint:"Pour chaque élément, dis ce qu’il apporte, puis pourquoi les deux autres ne le remplacent pas. N’oublie pas que ce patient n’a plus d’anticorps.",
+  kw:[["patient sans anticorps","plus d anticorps|pas d anticorps|plus immunise|pas protege|non protege|absence"],["antibiotiques","antibiotique"],["bactéries / infection","bacteri|infection"],["sérothérapie / anticorps injectés","serotherapie|anticorps"],["protection immédiate","immediat"],["quelques jours","quelques jours|courte|temporaire|dure peu|ne dure pas"],["vaccination","vaccin"],["plus de 10 ans","10 ans|longtemps|durable|long terme"],["lymphocytes mémoire","memoire"],["réponse lente","lent|delai|du temps"]],
+  model:"Je vois dans le document 3 que le protocole C associe trois éléments. Je sais que ce patient n’a plus d’anticorps anti-toxine tétanique : il n’est pas protégé et il vient de se blesser. Les antibiotiques (1) sont nécessaires pour stopper l’infection due aux nombreuses bactéries présentes sur l’outil de jardinage. La sérothérapie (2) apporte immédiatement des anticorps anti-toxine tétanique : la protection est quasi immédiate, ce qui est indispensable ici, mais elle ne dure que quelques jours. La vaccination (3) est nécessaire pour que le patient fabrique lui-même des anticorps et des lymphocytes mémoire : c’est la seule qui assure une immunisation de plus de 10 ans. Or la réponse immunitaire primaire est lente : la vaccination seule ne protégerait pas tout de suite. J’en déduis que les trois éléments sont complémentaires.",
+  items:["J’ai précisé que le patient n’a plus d’anticorps : il n’est pas protégé contre la toxine.","Antibiotiques : ils stoppent l’infection due aux bactéries de l’outil.","Sérothérapie : des anticorps anti-toxine sont injectés, la protection est quasi immédiate.","…mais la sérothérapie ne dure que quelques jours.","Vaccination : le patient fabrique ses anticorps et ses lymphocytes mémoire, protection de plus de 10 ans.","J’ai expliqué pourquoi il faut les trois : la vaccination seule est trop lente, la sérothérapie seule est trop courte."]});
+
+/* ---------- démarrage ---------- */
+renderBilan(); renderDone(); route();
+})();
+</script>
+
+</body></html>

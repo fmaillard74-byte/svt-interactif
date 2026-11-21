@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chasse aux gemmes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+/* Plan : cahier de labo à grands carreaux, cartes-étiquettes de collection, gemmes comme seule couleur vive. */
+:root{
+  --ink:#14202b; --paper:#f1f5f8; --card:#ffffff; --line:#cddae5; --muted:#51606e;
+  --ok:#1d8a57; --ok-bg:#e3f6ec; --ko:#c63a32; --ko-bg:#fdebea; --focus:#2f6fe0; --chip:#e8eef4;
+  --fs:18px;
+  --display:'Bricolage Grotesque','Trebuchet MS',system-ui,sans-serif;
+  --body:'Atkinson Hyperlegible','Segoe UI',Verdana,system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#e9eff5; --paper:#0f1822; --card:#17232f; --line:#2b3b4b; --muted:#a2b1bf;
+    --ok:#4fd08e; --ok-bg:#143626; --ko:#ff7b72; --ko-bg:#3a1c1c; --focus:#7fa8ff; --chip:#223242; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#e9eff5; --paper:#0f1822; --card:#17232f; --line:#2b3b4b; --muted:#a2b1bf;
+  --ok:#4fd08e; --ok-bg:#143626; --ko:#ff7b72; --ko-bg:#3a1c1c; --focus:#7fa8ff; --chip:#223242; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{font-size:var(--fs)}
+body{margin:0;background-color:var(--paper);
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:32px 32px;background-position:-1px -1px;
+  color:var(--ink);font-family:var(--body);line-height:1.6;-webkit-text-size-adjust:100%}
+.wrap{max-width:780px;margin:0 auto;padding:0 16px 64px}
+h1,h2,h3{font-family:var(--display);line-height:1.15;margin:0;text-wrap:balance;letter-spacing:-.01em}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+
+/* barre de progression globale */
+.top{position:sticky;top:0;z-index:10;background:var(--paper);border-bottom:2px solid var(--ink);padding:8px 16px}
+.top-in{max-width:780px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center}
+.rank{font-family:var(--display);font-weight:800;font-size:1.05rem}
+.rank small{font-family:var(--body);font-weight:400;color:var(--muted);font-size:.8rem;margin-left:6px}
+.stats{display:flex;gap:12px;align-items:center;font-weight:700;font-variant-numeric:tabular-nums}
+.stats .gm{display:flex;align-items:center;gap:4px}
+.xpbar{grid-column:1/-1;height:14px;border:2px solid var(--ink);border-radius:8px;background:var(--card);overflow:hidden}
+.xpfill{height:100%;width:0;background:repeating-linear-gradient(135deg,#e8a317 0 8px,#f2bf48 8px 16px);transition:width .5s}
+.xpnote{grid-column:1/-1;font-size:.78rem;color:var(--muted);margin-top:-2px}
+.tools{display:flex;gap:6px}
+.tools button{border:2px solid var(--ink);background:var(--card);border-radius:8px;width:34px;height:30px;font-weight:700;line-height:1}
+
+/* accueil */
+.hero{padding:28px 0 8px}
+.hero h1{font-size:clamp(2.1rem,7vw,3.2rem);font-weight:800}
+.hero p{max-width:56ch;margin:10px 0 0;color:var(--muted)}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0 6px}
+.rule{background:var(--card);border:2px solid var(--ink);border-radius:12px;padding:10px 12px;font-size:.88rem;line-height:1.4;display:flex;gap:10px;align-items:center}
+.rule b{display:block}
+.galleries{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:18px}
+.gal{position:relative;text-align:left;background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:14px 14px 12px;display:grid;grid-template-columns:auto 1fr;gap:4px 14px;box-shadow:5px 5px 0 var(--gc, var(--ink));transition:transform .12s, box-shadow .12s}
+.gal:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--gc, var(--ink))}
+.gal .gi{grid-row:1/4;align-self:center}
+.gal .tag{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.gal h3{font-size:1.12rem}
+.gal .prog{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
+.gal .go{grid-column:1/-1;margin-top:8px;font-weight:700;font-size:.9rem;border-top:2px dashed var(--line);padding-top:8px;display:flex;justify-content:space-between}
+.gal.done{background:var(--card)}
+.all-done{margin-top:18px;border:2px solid var(--ink);border-radius:14px;background:var(--card);padding:16px;box-shadow:5px 5px 0 #3cc7d6}
+.all-done h2{font-size:1.4rem;margin-bottom:6px}
+.foot{margin-top:34px;display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap;color:var(--muted);font-size:.82rem}
+.link{background:none;border:none;text-decoration:underline;color:var(--muted);padding:0;font-size:.82rem}
+
+/* niveau et questions */
+.lvhead{display:flex;align-items:center;gap:12px;padding:20px 0 8px;flex-wrap:wrap}
+.back{border:2px solid var(--ink);background:var(--card);border-radius:10px;padding:4px 12px;font-weight:700}
+.lvhead h2{font-size:1.35rem;flex:1;min-width:200px}
+.slots{display:flex;gap:5px;flex-wrap:wrap;margin:4px 0 12px}
+.slot{display:inline-flex;border-radius:8px;padding:2px;border:2px solid transparent}
+.slot.cur{border-color:var(--ink);background:var(--card)}
+.qcard{background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:18px 18px 16px;box-shadow:6px 6px 0 var(--gc,var(--ink))}
+.qmeta{font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.qtext{font-size:1.1rem;font-weight:700;margin:0 0 14px;max-width:62ch}
+.opts{display:grid;gap:10px}
+.opt{text-align:left;border:2px solid var(--ink);background:var(--card);border-radius:10px;padding:10px 14px;display:flex;gap:10px;align-items:center;min-height:48px}
+.opt:hover:not(:disabled){background:var(--chip)}
+.opt.sel{background:var(--chip);box-shadow:inset 0 0 0 2px var(--ink)}
+.opt.good{background:var(--ok-bg);border-color:var(--ok)}
+.opt.bad{background:var(--ko-bg);border-color:var(--ko)}
+.opt:disabled{cursor:default}
+.letter{flex:none;width:26px;height:26px;border-radius:50%;border:2px solid currentColor;display:grid;place-items:center;font-weight:700;font-size:.8rem}
+.vf{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.vf .opt{justify-content:center;font-weight:700;font-size:1.1rem}
+.row{display:grid;grid-template-columns:1fr;gap:6px;padding:10px 0;border-top:2px dashed var(--line)}
+.row:first-of-type{border-top:none}
+.row .lbl{font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:2px solid var(--ink);background:var(--card);border-radius:20px;padding:2px 12px;font-size:.88rem;min-height:36px}
+.chip:hover:not(:disabled){background:var(--chip)}
+.chip.on{background:var(--ink);color:var(--paper)}
+.chip.good{background:var(--ok);border-color:var(--ok);color:#fff}
+.chip.bad{background:var(--ko);border-color:var(--ko);color:#fff}
+.row.ok-row .lbl::after{content:" ✓";color:var(--ok)}
+.row.ko-row .lbl::after{content:" ✗";color:var(--ko)}
+.match{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px}
+.match .opt{font-size:.95rem;position:relative}
+.mark{flex:none;min-width:24px;height:24px;border-radius:12px;display:grid;place-items:center;font-size:.78rem;font-weight:800;color:#fff;padding:0 6px}
+.match .col-h{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;align-items:center}
+.btn{border:2px solid var(--ink);background:var(--ink);color:var(--paper);border-radius:10px;padding:8px 18px;font-weight:700}
+.btn.alt{background:var(--card);color:var(--ink)}
+.btn:disabled{opacity:.45;cursor:default}
+.msg{margin-top:12px;font-weight:700;min-height:1.6em}
+.fb{margin-top:16px;border:2px solid var(--ink);border-radius:12px;padding:12px 14px;background:var(--chip)}
+.fb.good{background:var(--ok-bg);border-color:var(--ok)}
+.fb.bad{background:var(--ko-bg);border-color:var(--ko)}
+.fb h3{font-size:1.05rem;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.fb p{margin:6px 0 0}
+.xp{font-family:var(--display);font-weight:800;background:#e8a317;color:#14202b;border-radius:20px;padding:0 10px;font-size:.9rem}
+/* fiche d'objet et arbre */
+.sample{border:2px dashed var(--ink);border-radius:12px;padding:10px 14px;margin-bottom:14px;background:var(--chip)}
+.sample b{font-family:var(--display)}
+.sample ul{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px 18px}
+.sample li span{font-weight:700;padding:0 8px;border-radius:10px;background:var(--card);border:2px solid var(--ink);margin-left:4px;font-size:.88rem}
+.tree{display:grid;grid-template-columns:minmax(0,1.25fr) auto minmax(0,1fr);gap:0 0;align-items:center;max-width:560px}
+.trrow{display:contents}
+.trn{border:2px solid var(--ink);border-radius:12px;padding:8px 12px;background:var(--card);font-weight:700;line-height:1.3;text-align:center}
+.trrow.cur .trn{background:#fff3c4;color:#14202b;box-shadow:0 0 0 3px #eaa20f}
+.trrow.lock .trn{opacity:.5;border-style:dashed}
+.trrow.done .trn{background:var(--chip)}
+.trb{display:flex;align-items:center;min-width:92px}
+.trb .line{flex:1;height:2px;background:var(--ink);min-width:12px;position:relative}
+.trb .line::after{content:"";position:absolute;right:-1px;top:-5px;border-left:9px solid var(--ink);border-top:6px solid transparent;border-bottom:6px solid transparent}
+.br{font-family:var(--display);font-weight:800;font-size:.85rem;border:2px solid var(--ink);border-radius:20px;padding:1px 12px;background:var(--card);color:var(--ink);line-height:1.5;min-height:34px;display:inline-flex;align-items:center}
+button.br:hover{background:#eaa20f;color:#14202b}
+span.br{opacity:.45;min-height:28px}
+span.br.chosen{opacity:1;background:var(--ok);border-color:var(--ok);color:#fff}
+.br.wrong{background:var(--ko);border-color:var(--ko);color:#fff}
+.trl{border:2px solid var(--ink);border-radius:12px;padding:8px 10px;background:var(--card);font-family:var(--display);font-weight:800;text-align:center;line-height:1.2}
+.trl.reached{background:var(--ok);border-color:var(--ok);color:#fff;box-shadow:0 0 0 3px var(--ok-bg)}
+.trdown{grid-column:1;display:flex;flex-direction:column;align-items:center;margin:0}
+.trdown .vline{width:2px;height:16px;background:var(--ink);position:relative}
+.trdown .vline::after{content:"";position:absolute;left:-5px;bottom:-9px;border-top:9px solid var(--ink);border-left:6px solid transparent;border-right:6px solid transparent}
+.trdown{margin:4px 0 12px;grid-column:1}
+.trdown .br{margin-bottom:2px}
+.trrow.fin .trl{grid-column:1}
+@media (max-width:420px){.trb{min-width:78px}.br{padding:1px 8px}}
+/* fin de niveau */
+.endcard{text-align:center;padding:26px 18px;background:var(--card);border:2px solid var(--ink);border-radius:16px;box-shadow:6px 6px 0 var(--gc)}
+.endcard h2{font-size:1.7rem;margin:8px 0}
+.bigs{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin:10px 0}
+.endcard .actions{justify-content:center}
+.sparkle{animation:pop .7s ease-out}
+@keyframes pop{0%{transform:scale(.6) rotate(-8deg);opacity:0}60%{transform:scale(1.12) rotate(3deg);opacity:1}100%{transform:scale(1) rotate(0)}}
+.toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,40px);background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:24px;font-weight:700;opacity:0;pointer-events:none;transition:all .3s;z-index:20;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+table.sum{width:100%;border-collapse:collapse;margin:12px 0;text-align:left;font-size:.92rem}
+table.sum th,table.sum td{border-bottom:2px dashed var(--line);padding:6px 6px;vertical-align:middle}
+@media (max-width:620px){
+  .rank small{display:none}
+  .rank{font-size:.95rem}
+  .stats{gap:8px}
+  .rules{grid-template-columns:1fr}
+  .galleries{grid-template-columns:1fr}
+  .match{grid-template-columns:1fr}
+  .qcard{padding:14px 12px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="top"><div class="top-in">
+  <div class="rank" id="rank">Curieux de la matière</div>
+  <div class="stats"><span class="gm" id="gemcount"></span><span id="xptxt">0 XP</span>
+    <span class="tools"><button id="smaller" aria-label="Réduire le texte">A−</button><button id="bigger" aria-label="Agrandir le texte">A+</button></span></div>
+  <div class="xpbar" role="progressbar" aria-label="Progression vers le rang suivant" aria-valuemin="0" aria-valuemax="100" id="xpbar"><div class="xpfill" id="xpfill"></div></div>
+  <div class="xpnote" id="xpnote"></div>
+</div></div>
+<main class="wrap" id="app"></main>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* ============ DONNÉES ============ */
+const GEMS = [
+ {name:'Émeraude', color:'#1fa971'},
+ {name:'Citrine',  color:'#eaa20f'},
+ {name:'Saphir',   color:'#2f6fe0'},
+ {name:'Améthyste',color:'#8a4fd6'},
+ {name:'Rubis',    color:'#e0405f'},
+ {name:'Diamant',  color:'#35c3d6'}
+];
+const PROP = {aimant:"Attiré par l’aimant", conduit:"Conduit le courant", flotte:"Flotte dans l’eau", transp:"Transparent"};
+const TREE_S = {k:'flotte', q:'Flotte-t-il dans l’eau ?', y:'PEHD', n:{k:'transp', q:'Est-il transparent ?', y:'PET', n:'PVC'}};
+const TREE_G = {k:'aimant', q:'Est-il attiré par l’aimant ?', y:'acier', n:{k:'conduit', q:'Conduit-il le courant ?', y:'aluminium', n:{k:'flotte', q:'Flotte-t-il dans l’eau ?', y:'PEHD', n:{k:'transp', q:'Est-il transparent ?', y:'PET', n:'PVC'}}}};
+
+const LEVELS = [
+ {gem:0, tag:'Activité 621', title:'Les 5 familles de matière', intro:'Matière organique, minérale, plastiques, métaux, verres et céramiques.', qs:[
+  {t:'sort', q:'Classe chaque objet dans sa famille de matière.', cats:['Organique','Minérale','Plastique','Métal','Verre / céramique'],
+   items:[['Une branche d’arbre',0],['Un tee-shirt en coton',0],['Un caillou',1],['Une bouteille en plastique',2],['Une capsule de bière',3],['Une tasse en céramique',4]],
+   why:'Branche et coton viennent d’êtres vivants (organique). Le caillou est naturel et non vivant (minérale). La bouteille est en plastique, la capsule en métal et la tasse en céramique.'},
+  {t:'vf', q:'Le coton vient d’une plante : c’est de la matière organique.', a:true, why:'Le coton est produit par un végétal, un être vivant. C’est donc de la matière organique.'},
+  {t:'vf', q:'L’eau est de la matière organique.', a:false, why:'L’eau est naturelle et ne vient pas d’un être vivant : c’est de la matière minérale (comme l’air et les roches).'},
+  {t:'qcm', q:'Les plastiques sont fabriqués à partir…', o:['du pétrole','du sable','du bois','du minerai de fer'], a:0, why:'Les plastiques sont des matériaux synthétiques que l’Homme fabrique à partir du pétrole.'},
+  {t:'qcm', q:'Pour fabriquer du verre, on chauffe à très haute température…', o:['du sable','du pétrole','du coton','de l’aluminium'], a:0, why:'Le verre vient du sable (matière minérale) porté à très haute température, puis refroidi.'},
+  {t:'qcm', q:'Un bûcheron coupe un arbre, puis un menuisier en fait une planche pour un meuble. Que peut-on dire ?', o:['Le bois de l’arbre est une matière, la planche est un matériau','Le bois et la planche sont tous les deux des matières, jamais des matériaux','L’arbre est un matériau, la planche est une matière','Le bois n’est ni une matière ni un matériau'], a:0, why:'Un matériau est une matière transformée par l’Homme et utilisée pour fabriquer un objet.'},
+  {t:'match', q:'Relie chaque origine à la famille de matière qui en vient.', pairs:[['Le pétrole','Les plastiques'],['Le sable chauffé','Le verre'],['Le minerai de fer','Les métaux'],['Les êtres vivants','La matière organique']],
+   why:'Chaque famille a son origine : pétrole pour les plastiques, sable pour le verre, minerai pour les métaux, êtres vivants pour la matière organique.'},
+  {t:'multi', q:'Coche tous les objets en matière organique.', o:['Un carton','Un pull en laine','Une canette en aluminium','Un caillou','Une feuille morte'], a:[0,1,4], why:'Carton (fibres de bois), laine (animal) et feuille morte viennent d’êtres vivants. La canette est un métal, le caillou est minéral.'}
+ ]},
+ {gem:1, tag:'Activité 622 · défi 1', title:'Aimant et courant électrique', intro:'Conducteur ou isolant ? Attiré par l’aimant ou pas ?', qs:[
+  {t:'qcm', q:'Un matériau qui laisse passer le courant électrique est…', o:['un conducteur','un isolant','un aimant','un plastique'], a:0, why:'Un conducteur laisse passer le courant. Un isolant ne le laisse pas passer.'},
+  {t:'vf', q:'Le plastique est un isolant électrique.', a:true, why:'Les plastiques ne laissent pas passer le courant. C’est pour cela qu’ils entourent les fils électriques.'},
+  {t:'vf', q:'Tous les métaux sont attirés par un aimant.', a:false, why:'L’aimant n’attire que les objets qui contiennent du fer. L’aluminium et le cuivre sont des métaux mais ne sont pas attirés.'},
+  {t:'qcm', q:'L’aimant attire les objets qui contiennent du…', o:['fer','plastique','carton','verre'], a:0, why:'La présence de fer rend un objet attiré par l’aimant. L’acier est fait surtout de fer.'},
+  {t:'sort', q:'Teste chaque objet : où le ranges-tu ?', cats:['Conducteur et attiré','Conducteur, pas attiré','Isolant'],
+   items:[['Une boîte de conserve en acier',0],['Une canette en aluminium',1],['Une bouteille en plastique',2],['Un carton',2],['Un fil de cuivre',1],['Un clou en acier',0]],
+   why:'Les métaux sont tous conducteurs, mais seuls ceux qui contiennent du fer (acier) sont attirés. Plastique et carton sont isolants.'},
+  {t:'qcm', q:'Dans un circuit, tu places un objet entre deux fils. La lampe s’allume. Que conclus-tu ?', o:['L’objet est un conducteur','L’objet est un isolant','L’objet contient du fer','L’objet est en plastique'], a:0, why:'La lampe s’allume si le courant passe : l’objet laisse passer le courant, c’est un conducteur.'},
+  {t:'qcm', q:'Un objet conduit le courant mais n’est pas attiré par l’aimant. Que peut-on penser ?', o:['C’est un métal sans fer, comme l’aluminium','C’est de l’acier','C’est un plastique','C’est du carton'], a:0, why:'Il conduit donc c’est un métal. Il n’est pas attiré donc il ne contient pas de fer : par exemple l’aluminium.'},
+  {t:'qcm', q:'Dans la poubelle jaune, tu dois séparer des boîtes en acier de canettes en aluminium. Quel test est le plus rapide ?', o:['L’aimant : l’acier est attiré, pas l’aluminium','La couleur : l’acier est toujours plus foncé','La flottaison dans l’eau','Le goût du métal'], a:0, why:'L’aimant sépare l’acier (attiré) de l’aluminium (non attiré). C’est ce que font les centres de tri.'}
+ ]},
+ {gem:2, tag:'Activité 622 · défi 2', title:'Densité et plastiques', intro:'L’eau a une densité de 1. Au-dessus, ça coule. En dessous, ça flotte.', qs:[
+  {t:'qcm', q:'Quelle est la densité de l’eau ?', o:['1','0','10','100'], a:0, why:'On compare tout à l’eau, dont la densité vaut 1.'},
+  {t:'vf', q:'Un objet de densité supérieure à 1 coule dans l’eau.', a:true, why:'Plus dense que l’eau (d > 1) : il coule. Moins dense (d < 1) : il flotte.'},
+  {t:'vf', q:'Un objet qui flotte a une densité supérieure à 1.', a:false, why:'Un objet qui flotte est moins dense que l’eau : sa densité est inférieure à 1.'},
+  {t:'sort', q:'Dans un bac d’eau, chaque objet flotte-t-il ou coule-t-il ?', cats:['Il flotte','Il coule'],
+   items:[['Du PEHD (d ≈ 0,95)',0],['Du PET (d ≈ 1,4)',1],['Du PVC (d ≈ 1,4)',1],['Un bouchon de liège',0],['Un clou en fer',1],['Un glaçon',0]],
+   why:'Densité inférieure à 1 : ça flotte (PEHD, liège, glace). Densité supérieure à 1 : ça coule (PET, PVC, fer).'},
+  {t:'tree', q:'Suis les branches de l’arbre pour identifier l’échantillon : clique sur OUI ou NON à chaque étape.', tree:'S', sample:{name:'Échantillon n°1', props:{flotte:true}}, why:'Il flotte : c’est le seul des trois plastiques qui flotte. C’est du PEHD.'},
+  {t:'tree', q:'Suis les branches de l’arbre pour identifier l’échantillon : clique sur OUI ou NON à chaque étape.', tree:'S', sample:{name:'Échantillon n°2', props:{flotte:false, transp:true}}, why:'Il coule et il est transparent : c’est du PET.'},
+  {t:'tree', q:'Suis les branches de l’arbre pour identifier l’échantillon : clique sur OUI ou NON à chaque étape.', tree:'S', sample:{name:'Échantillon n°3', props:{flotte:false, transp:false}}, why:'Il coule et il est opaque : c’est du PVC.'},
+  {t:'qcm', q:'Le PET et le PVC coulent tous les deux. Quelle propriété permet de les distinguer ?', o:['La transparence : le PET est transparent, le PVC opaque','Le fait de conduire le courant','L’attraction par l’aimant','La famille de matière : le PET est un métal'], a:0, why:'La densité ne suffit pas ici. On croise avec une autre propriété : le PET est transparent, le PVC est opaque.'}
+ ]},
+ {gem:3, tag:'Activité 622 · bilan', title:'L’enquête des propriétés', intro:'Croiser plusieurs tests pour identifier un matériau.', qs:[
+  {t:'qcm', q:'Une propriété est caractéristique d’une famille de matériaux quand…', o:['tous les matériaux de la famille l’ont, et les autres familles non','un seul objet de la famille l’a','elle dépend de la taille de l’objet','elle change à chaque test'], a:0, why:'Exemple : tous les métaux conduisent le courant, alors que les plastiques non. La conductivité caractérise les métaux.'},
+  {t:'qcm', q:'Pourquoi un seul test ne suffit pas toujours à identifier un matériau ?', o:['Plusieurs matériaux peuvent donner le même résultat','Les tests sont toujours faux','Il faut au moins dix tests','Les matériaux changent pendant le test'], a:0, why:'Le PET et le PVC coulent tous les deux : il faut croiser deux propriétés (densité et transparence).'},
+  {t:'qcm', q:'Objet mystère : il est attiré par l’aimant et il conduit le courant. Qu’est-ce que c’est ?', o:['Une boîte de conserve en acier','Une canette en aluminium','Une bouteille en plastique','Un pot en verre'], a:0, why:'Attiré par l’aimant : il contient du fer. Conducteur : c’est un métal. Donc de l’acier.'},
+  {t:'qcm', q:'Objet mystère : il ne conduit pas le courant et il flotte dans l’eau. Qu’est-ce que c’est ?', o:['Un morceau de PEHD','Un clou en acier','Un morceau de cuivre','Un morceau de PET'], a:0, why:'Il ne conduit pas : ce n’est pas un métal. Il flotte : il est moins dense que l’eau. Parmi ces choix, seul le PEHD convient.'},
+  {t:'match', q:'Relie chaque test à ce qu’il permet de savoir.', pairs:[['L’aimant','Y a-t-il du fer ?'],['Un circuit avec une lampe','Conducteur ou isolant ?'],['Un bac d’eau','La densité est-elle supérieure ou inférieure à 1 ?'],['L’observation à la lumière','Transparent ou opaque ?']],
+   why:'Chaque test répond à une question précise. On choisit le test selon ce qu’on cherche.'},
+  {t:'multi', q:'Coche toutes les affirmations vraies.', o:['L’aluminium est un métal conducteur, non attiré par l’aimant','Tous les plastiques flottent','Le PET et le PVC coulent','Un objet attiré par l’aimant contient du fer','Un isolant laisse passer le courant'], a:[0,2,3], why:'Seuls certains plastiques flottent (le PEHD). Un isolant ne laisse pas passer le courant.'}
+ ]},
+ {gem:4, tag:'Pour aller plus loin', title:'D’autres propriétés', intro:'Dureté, élasticité, chaleur, transparence : à quoi servent-elles ?', qs:[
+  {t:'match', q:'Relie chaque propriété à un usage.', pairs:[['Élasticité','Un élastique à cheveux'],['Bon conducteur de la chaleur','Le fond d’une casserole'],['Transparence','Une fenêtre en verre'],['Dureté','Une lame qui coupe']],
+   why:'On choisit un matériau pour la propriété dont l’objet a besoin.'},
+  {t:'qcm', q:'Pourquoi le fond d’une casserole est en métal et la poignée en plastique ?', o:['Le métal conduit bien la chaleur, le plastique non','Le plastique est plus lourd','Le métal est transparent','Le plastique conduit mieux le courant'], a:0, why:'Le métal transmet la chaleur à la nourriture. La poignée en plastique chauffe peu : elle isole de la chaleur.'},
+  {t:'vf', q:'Un matériau élastique reprend sa forme quand on arrête de le déformer.', a:true, why:'C’est la définition de l’élasticité : le caoutchouc, un élastique, un ressort.'},
+  {t:'qcm', q:'Un diamant raye le verre, mais le verre ne raye pas le diamant. Que montre ce test ?', o:['Le diamant est plus dur que le verre','Le verre est plus dur que le diamant','Le diamant est élastique','Le verre est un métal'], a:0, why:'Le matériau le plus dur raye l’autre. C’est le test de dureté.'},
+  {t:'qcm', q:'Pourquoi les fils électriques sont-ils en métal entourés de plastique ?', o:['Le métal conduit le courant, le plastique isole','Le plastique conduit le courant, le métal isole','Les deux conduisent le courant','C’est seulement pour la couleur'], a:0, why:'Le métal au centre laisse passer le courant. Le plastique autour est isolant : il protège les personnes.'},
+  {t:'vf', q:'Les matériaux durs sont toujours élastiques.', a:false, why:'Dur et élastique sont deux propriétés différentes. Le verre est dur mais casse au lieu de reprendre sa forme.'},
+  {t:'multi', q:'Coche tous les objets élastiques.', o:['Un élastique','Un ressort en acier','Une brique','Un morceau de verre','Une balle en caoutchouc'], a:[0,1,4], why:'Un élastique, un ressort et une balle en caoutchouc reprennent leur forme. La brique et le verre cassent.'}
+ ]},
+ {gem:5, tag:'Défi final', title:'Le centre de tri', intro:'Utilise toutes les propriétés pour trier comme les professionnels.', qs:[
+  {t:'qcm', q:'Au centre de tri, un gros aimant passe au-dessus du tapis. Il retire…', o:['les objets qui contiennent du fer, comme l’acier','tous les métaux','tous les plastiques','le verre'], a:0, why:'L’aimant n’attire que le fer. Il retire l’acier mais laisse passer l’aluminium.'},
+  {t:'qcm', q:'Sur le tapis restent une canette en aluminium, une bouteille en plastique et un carton. Quel test repère la canette ?', o:['La conductivité électrique','L’aimant','La couleur','L’odeur'], a:0, why:'Seule la canette conduit le courant. L’aimant ne marche pas : l’aluminium n’est pas attiré.'},
+  {t:'tree', q:'Suis les branches de l’arbre du tri pour identifier l’objet : clique sur OUI ou NON à chaque étape.', tree:'G', sample:{name:'Objet n°1', props:{aimant:true}}, why:'Il est attiré par l’aimant : il contient du fer, c’est de l’acier.'},
+  {t:'tree', q:'Suis les branches de l’arbre du tri pour identifier l’objet : clique sur OUI ou NON à chaque étape.', tree:'G', sample:{name:'Objet n°2', props:{aimant:false, conduit:true}}, why:'Pas attiré mais conducteur : un métal sans fer, l’aluminium.'},
+  {t:'tree', q:'Suis les branches de l’arbre du tri pour identifier l’objet : clique sur OUI ou NON à chaque étape.', tree:'G', sample:{name:'Objet n°3', props:{aimant:false, conduit:false, flotte:true}}, why:'Isolant et il flotte : c’est du PEHD.'},
+  {t:'tree', q:'Suis les branches de l’arbre du tri pour identifier l’objet : clique sur OUI ou NON à chaque étape.', tree:'G', sample:{name:'Objet n°4', props:{aimant:false, conduit:false, flotte:false, transp:true}}, why:'Isolant, coule, transparent : c’est du PET.'},
+  {t:'tree', q:'Suis les branches de l’arbre du tri pour identifier l’objet : clique sur OUI ou NON à chaque étape.', tree:'G', sample:{name:'Objet n°5', props:{aimant:false, conduit:false, flotte:false, transp:false}}, why:'Isolant, coule, opaque : c’est du PVC.'}
+ ]}
+];
+const TREES = {S:TREE_S, G:TREE_G};
+const MATCHCOL = ['#1fa971','#eaa20f','#2f6fe0','#8a4fd6','#e0405f'];
+
+/* ============ ÉTAT ============ */
+const KEY = 'chasse_gemmes_v1';
+const TOTALQ = LEVELS.reduce((n,l)=>n+l.qs.length,0);
+const BASEMAX = TOTALQ*10;
+let S = {res:{}, streak:0, size:1};
+try{ const raw = localStorage.getItem(KEY); if(raw){ const o = JSON.parse(raw); if(o && o.res) S = Object.assign(S,o); } }catch(e){}
+const hot = window.claude && window.claude.hot;
+try{ if(hot && hot.snapshot) hot.snapshot(()=>({S, view:V.name, li:P && P.li})); }catch(e){}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+const FS = [16,18,20,22];
+function applySize(){ document.documentElement.style.setProperty('--fs', FS[S.size]+'px'); }
+
+const RANKS = [
+ {at:0,    name:'Curieux de la matière'},
+ {at:.25,  name:'Apprenti trieur'},
+ {at:.50,  name:'Chercheur de gemmes'},
+ {at:.75,  name:'Expert des matériaux'},
+ {at:.92,  name:'Maître de la matière'}
+];
+function xpTotal(){ return Object.values(S.res).reduce((n,r)=>n+r.xp,0); }
+function rankInfo(){
+  const xp = xpTotal(); let i = 0;
+  RANKS.forEach((r,k)=>{ if(xp >= r.at*BASEMAX) i = k; });
+  const next = RANKS[i+1];
+  if(!next) return {name:RANKS[i].name, pct:100, note:'Rang maximum atteint.'};
+  const a = RANKS[i].at*BASEMAX, b = next.at*BASEMAX;
+  return {name:RANKS[i].name, pct:Math.max(3,Math.round(100*(xp-a)/(b-a))), note:'Encore '+Math.ceil(b-xp)+' XP pour devenir « '+next.name+' »'};
+}
+function levelStats(li){
+  const L = LEVELS[li]; let first=0, second=0, fail=0, done=0, xp=0;
+  L.qs.forEach((q,qi)=>{ const r = S.res[li+'-'+qi]; if(r){ done++; xp+=r.xp; if(r.r==='first') first++; else if(r.r==='second') second++; else fail++; } });
+  return {n:L.qs.length, first, second, fail, done, xp};
+}
+function polishedTotal(){ let n=0; LEVELS.forEach((l,li)=>{ n += levelStats(li).first; }); return n; }
+
+/* ============ GEMMES (SVG) ============ */
+function gem(color, st, size){
+  size = size||28;
+  const o = 'stroke="#14202b" stroke-width="2" stroke-linejoin="round"';
+  if(st==='empty') return `<svg width="${size}" height="${size}" viewBox="0 0 48 48" aria-hidden="true"><polygon points="14,8 34,8 44,19 24,42 4,19" fill="none" stroke="#8a99a8" stroke-width="2" stroke-dasharray="4 3" stroke-linejoin="round"/></svg>`;
+  if(st==='lost') return `<svg width="${size}" height="${size}" viewBox="0 0 48 48" aria-hidden="true"><polygon points="14,8 34,8 44,19 24,42 4,19" fill="#b4bec8" ${o}/><path d="M22 9 L26 20 L21 28 L25 40" fill="none" stroke="#14202b" stroke-width="2" stroke-linecap="round"/></svg>`;
+  const rough = st==='rough';
+  const base = rough ? `<polygon points="14,8 34,8 44,19 24,42 4,19" fill="${color}" fill-opacity=".5" ${o} stroke-dasharray="${rough?'0':'0'}"/>` :
+    `<polygon points="14,8 34,8 44,19 24,42 4,19" fill="${color}" ${o}/>
+     <polygon points="14,8 34,8 30,19 18,19" fill="#fff" fill-opacity=".42"/>
+     <polygon points="4,19 14,8 18,19" fill="#fff" fill-opacity=".22"/>
+     <polygon points="44,19 34,8 30,19" fill="#000" fill-opacity=".12"/>
+     <polygon points="18,19 30,19 24,42" fill="#000" fill-opacity=".2"/>
+     <path d="M4 19 H44 M18 19 L24 42 L30 19 M14 8 L18 19 M34 8 L30 19" fill="none" stroke="#14202b" stroke-width="1.2" stroke-linejoin="round" opacity=".6"/>`;
+  const spark = rough ? '' : `<path d="M40 4 L41.6 8.4 L46 10 L41.6 11.6 L40 16 L38.4 11.6 L34 10 L38.4 8.4 Z" fill="#fff" stroke="#14202b" stroke-width="1"/>`;
+  return `<svg width="${size}" height="${size}" viewBox="0 0 48 48" aria-hidden="true">${base}${rough?`<path d="M4 19 H44 M18 19 L24 42 L30 19" fill="none" stroke="#14202b" stroke-width="1.2" opacity=".5"/>`:''}${spark}</svg>`;
+}
+function slotGem(li, qi){
+  const r = S.res[li+'-'+qi]; const c = GEMS[LEVELS[li].gem].color;
+  return gem(c, r ? (r.r==='first'?'polished':r.r==='second'?'rough':'lost') : 'empty', 24);
+}
+
+/* ============ OUTILS ============ */
+const $ = s => document.querySelector(s);
+const app = $('#app');
+function esc(s){ return String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function shuffle(a){ const b=a.slice(); for(let i=b.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [b[i],b[j]]=[b[j],b[i]]; } return b; }
+let toastT;
+function toast(t){ const e=$('#toast'); e.textContent=t; e.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>e.classList.remove('show'),2400); }
+
+function renderTop(){
+  const ri = rankInfo();
+  $('#rank').innerHTML = esc(ri.name) + '<small>niveau de collectionneur</small>';
+  $('#xptxt').textContent = xpTotal()+' XP';
+  $('#gemcount').innerHTML = gem('#35c3d6','polished',22)+'<span>'+polishedTotal()+' / '+TOTALQ+'</span>';
+  $('#xpfill').style.width = ri.pct+'%';
+  $('#xpbar').setAttribute('aria-valuenow', ri.pct);
+  $('#xpnote').textContent = ri.note;
+}
+
+/* ============ VUES ============ */
+const V = {name:'home'};
+let P = null;           // partie en cours
+function go(name){ V.name = name; render(); window.scrollTo({top:0}); }
+
+function render(){
+  renderTop();
+  if(V.name==='home') return renderHome();
+  if(V.name==='play') return renderPlay();
+  if(V.name==='end') return renderEnd();
+}
+
+function renderHome(){
+  const allDone = LEVELS.every((l,li)=>levelStats(li).done===l.qs.length);
+  let h = `<section class="hero"><h1>Chasse aux gemmes</h1>
+  <p>Six galeries pour réviser la diversité de la matière. Chaque question réussie taille une gemme et rapporte de l’XP.</p>
+  <div class="rules">
+   <div class="rule">${gem('#1fa971','polished',34)}<div><b>Premier essai : 10 XP</b>gemme polie</div></div>
+   <div class="rule">${gem('#1fa971','rough',34)}<div><b>Deuxième essai : 5 XP</b>gemme brute</div></div>
+   <div class="rule">${gem('#eaa20f','polished',34)}<div><b>3 réussites de suite</b>bonus de 5 XP</div></div>
+  </div></section>`;
+  if(allDone){
+    const ri = rankInfo();
+    h += `<div class="all-done"><h2>Toutes les galeries sont explorées</h2><p>Ton rang : <b>${esc(ri.name)}</b>, avec ${xpTotal()} XP et ${polishedTotal()} gemmes polies sur ${TOTALQ}. Reviens sur les galeries où il reste des gemmes brutes pour les repolir.</p></div>`;
+  }
+  h += '<div class="galleries">';
+  LEVELS.forEach((L,li)=>{
+    const st = levelStats(li), c = GEMS[L.gem].color;
+    const slots = L.qs.map((q,qi)=>slotGem(li,qi)).join('');
+    const state = st.done===0 ? 'Commencer' : st.done<st.n ? 'Continuer' : (st.first===st.n ? 'Rejouer' : 'Repolir mes gemmes');
+    h += `<button class="gal ${st.done===st.n?'done':''}" style="--gc:${c}" data-act="open" data-li="${li}">
+      <span class="gi">${gem(c, st.done===st.n && st.first===st.n ? 'polished' : st.done? 'polished':'empty', 54)}</span>
+      <span class="tag">${esc(L.tag)} · ${esc(GEMS[L.gem].name)}</span>
+      <h3>${esc(L.title)}</h3>
+      <span class="prog" aria-label="${st.first} gemmes polies sur ${st.n}">${slots}</span>
+      <span class="go"><span>${st.done}/${st.n} · ${st.xp} XP</span><span>${state} →</span></span></button>`;
+  });
+  h += `</div><div class="foot"><span>Ta progression reste sur cet appareil.</span><button class="link" data-act="reset" id="resetb">Effacer ma progression</button></div>`;
+  app.innerHTML = h;
+}
+
+function openLevel(li){
+  const st = levelStats(li), L = LEVELS[li];
+  let queue = [];
+  L.qs.forEach((q,qi)=>{ if(!S.res[li+'-'+qi]) queue.push(qi); });
+  if(!queue.length){
+    // niveau terminé : on repolit les gemmes non parfaites, ou tout rejouer si parfait
+    L.qs.forEach((q,qi)=>{ const r=S.res[li+'-'+qi]; if(!r || r.r!=='first') queue.push(qi); });
+    if(!queue.length) queue = L.qs.map((q,qi)=>qi);
+    queue.forEach(qi=>{ delete S.res[li+'-'+qi]; });
+    save();
+  }
+  P = {li, queue, pos:0, att:0, done:false, ui:null};
+  go('play');
+}
+
+function renderPlay(){
+  const L = LEVELS[P.li], c = GEMS[L.gem].color, qi = P.queue[P.pos], q = L.qs[qi];
+  const slots = L.qs.map((x,i)=>`<span class="slot ${i===qi?'cur':''}">${slotGem(P.li,i)}</span>`).join('');
+  app.innerHTML = `<div class="lvhead"><button class="back" data-act="home">← Galeries</button><h2>${esc(GEMS[L.gem].name)} · ${esc(L.title)}</h2></div>
+  <div class="slots" aria-label="Progression de la galerie">${slots}</div>
+  <article class="qcard" style="--gc:${c}" id="qcard"><div class="qmeta">${esc(L.tag)} · question ${qi+1} sur ${L.qs.length}</div>
+   <p class="qtext" id="qtext">${esc(q.q)}</p><div id="qbody"></div><div class="msg" id="msg" aria-live="polite"></div><div id="fb"></div></article>`;
+  P.att = 0; P.done = false; P.ui = null;
+  buildQ(q);
+}
+
+/* ---------- construction par type ---------- */
+function buildQ(q){
+  const b = $('#qbody');
+  if(q.t==='qcm'){
+    const order = shuffle(q.o.map((_,i)=>i)); P.ui = {order, wrong:[]};
+    b.innerHTML = '<div class="opts">'+order.map((oi,k)=>`<button class="opt" data-act="qcm" data-i="${oi}"><span class="letter">${'ABCD'[k]}</span><span>${esc(q.o[oi])}</span></button>`).join('')+'</div>';
+  } else if(q.t==='vf'){
+    b.innerHTML = `<div class="vf"><button class="opt" data-act="vf" data-v="1">Vrai</button><button class="opt" data-act="vf" data-v="0">Faux</button></div>`;
+  } else if(q.t==='multi'){
+    P.ui = {sel:new Set()};
+    b.innerHTML = '<div class="opts">'+q.o.map((t,i)=>`<button class="opt" data-act="mtoggle" data-i="${i}" aria-pressed="false"><span class="letter"></span><span>${esc(t)}</span></button>`).join('')+`</div><div class="actions"><button class="btn" data-act="mcheck">Valider</button></div>`;
+  } else if(q.t==='sort'){
+    P.ui = {ch:q.items.map(()=>-1)};
+    b.innerHTML = q.items.map((it,i)=>`<div class="row" data-row="${i}"><div class="lbl">${esc(it[0])}</div><div class="chips">${q.cats.map((c,ci)=>`<button class="chip" data-act="sort" data-i="${i}" data-c="${ci}">${esc(c)}</button>`).join('')}</div></div>`).join('')+`<div class="actions"><button class="btn" data-act="scheck">Valider</button></div>`;
+  } else if(q.t==='match'){
+    const R = shuffle(q.pairs.map((_,i)=>i)); P.ui = {R, as:q.pairs.map(()=>-1), sel:-1};
+    drawMatch(q);
+  } else if(q.t==='tree'){
+    const T = TREES[q.tree]; P.ui = {node:T, path:[], wrong:0};
+    drawTree(q);
+  }
+}
+
+/* ---------- retours communs ---------- */
+function msg(t, cls){ const m=$('#msg'); m.textContent=t; m.style.color = cls==='ko'?'var(--ko)':cls==='ok'?'var(--ok)':'inherit'; }
+function failCheck(q, reveal){
+  P.att++;
+  if(P.att>=2){ reveal(); resolve('fail'); return true; }
+  return false;
+}
+function resolve(kind){
+  const L = LEVELS[P.li], qi = P.queue[P.pos], q = L.qs[qi], key = P.li+'-'+qi;
+  let xp = kind==='first'?10:kind==='second'?5:0, bonus = false;
+  if(kind==='first'){ S.streak++; if(S.streak%3===0){ xp += 5; bonus = true; } } else { S.streak = 0; }
+  S.res[key] = {r:kind, xp}; save(); P.done = true;
+  document.querySelectorAll('#qbody button').forEach(x=>{ x.disabled = true; });
+  const head = kind==='first' ? 'Gemme polie !' : kind==='second' ? 'Gemme brute, bien joué.' : 'Pas cette fois.';
+  const cls = kind==='fail' ? 'bad' : 'good';
+  const last = P.pos >= P.queue.length-1;
+  $('#msg').textContent = '';
+  $('#fb').innerHTML = `<div class="fb ${cls}" role="status"><h3>${gem(GEMS[L.gem].color, kind==='first'?'polished':kind==='second'?'rough':'lost', 30)}${head}${kind!=='fail'?`<span class="xp">+${xp} XP</span>`:''}${bonus?'<span class="xp">dont 5 de série</span>':''}</h3><p>${esc(q.why)}</p>
+   <div class="actions"><button class="btn" data-act="next" id="nextb">${last?'Terminer la galerie':'Question suivante'} →</button></div></div>`;
+  const slotsEl = document.querySelectorAll('.slots .slot'); if(slotsEl[qi]) slotsEl[qi].innerHTML = slotGem(P.li, qi);
+  renderTop();
+  if(bonus) toast('Série de 3 : +5 XP bonus !');
+  setTimeout(()=>{ const n=$('#nextb'); if(n) n.focus({preventScroll:false}); }, 30);
+}
+
+/* ---------- QCM / VF ---------- */
+function onQcm(btn){
+  const q = curQ(); if(P.done) return; const i = +btn.dataset.i;
+  if(i===q.a){ btn.classList.add('good'); resolve(P.att===0?'first':'second'); return; }
+  btn.classList.add('bad'); btn.disabled = true;
+  if(failCheck(q, ()=>{ document.querySelectorAll('[data-act="qcm"]').forEach(x=>{ if(+x.dataset.i===q.a) x.classList.add('good'); }); })) return;
+  msg('Pas tout à fait. Relis la question et essaie encore.','ko');
+}
+function onVf(btn){
+  const q = curQ(); if(P.done) return; const v = btn.dataset.v==='1';
+  const ok = v===q.a;
+  document.querySelectorAll('[data-act="vf"]').forEach(x=>{ if((x.dataset.v==='1')===q.a) x.classList.add('good'); });
+  if(!ok) btn.classList.add('bad');
+  resolve(ok?'first':'fail');
+}
+
+/* ---------- Multi ---------- */
+function onMToggle(btn){
+  if(P.done) return; const i=+btn.dataset.i, s=P.ui.sel;
+  if(s.has(i)) s.delete(i); else s.add(i);
+  btn.classList.toggle('sel', s.has(i)); btn.setAttribute('aria-pressed', s.has(i));
+  btn.querySelector('.letter').textContent = s.has(i)?'✓':'';
+}
+function onMCheck(){
+  const q = curQ(); if(P.done) return; const s = P.ui.sel;
+  const good = q.a.length===s.size && q.a.every(i=>s.has(i));
+  if(good){ document.querySelectorAll('[data-act="mtoggle"]').forEach(x=>{ if(s.has(+x.dataset.i)) x.classList.add('good'); }); resolve(P.att===0?'first':'second'); return; }
+  document.querySelectorAll('[data-act="mtoggle"]').forEach(x=>{ const i=+x.dataset.i; x.classList.remove('bad'); if(s.has(i) && !q.a.includes(i)) x.classList.add('bad'); });
+  const wrong = [...s].filter(i=>!q.a.includes(i)).length, missed = q.a.filter(i=>!s.has(i)).length;
+  if(failCheck(q, ()=>{ document.querySelectorAll('[data-act="mtoggle"]').forEach(x=>{ const i=+x.dataset.i; x.classList.remove('sel','bad'); if(q.a.includes(i)){ x.classList.add('good'); } else if(s.has(i)) x.classList.add('bad'); }); })) return;
+  msg((wrong?wrong+' choix à retirer. ':'')+(missed?missed+' bonne(s) réponse(s) oubliée(s). ':'')+'Essaie encore.','ko');
+}
+
+/* ---------- Tri ---------- */
+function onSort(btn){
+  if(P.done) return; const i=+btn.dataset.i, c=+btn.dataset.c; P.ui.ch[i]=c;
+  document.querySelectorAll(`[data-act="sort"][data-i="${i}"]`).forEach(x=>{ x.classList.remove('on','bad','good'); if(+x.dataset.c===c) x.classList.add('on'); });
+  const row = document.querySelector(`[data-row="${i}"]`); row.classList.remove('ok-row','ko-row');
+}
+function onSCheck(){
+  const q = curQ(); if(P.done) return; const ch = P.ui.ch;
+  if(ch.some(x=>x<0)){ msg('Classe tous les objets avant de valider.','ko'); return; }
+  let bad = 0;
+  q.items.forEach((it,i)=>{ const row=document.querySelector(`[data-row="${i}"]`); const ok = ch[i]===it[1]; row.classList.toggle('ok-row',ok); row.classList.toggle('ko-row',!ok); if(!ok) bad++; });
+  if(!bad){ resolve(P.att===0?'first':'second'); return; }
+  const reveal = ()=>{ q.items.forEach((it,i)=>{ document.querySelectorAll(`[data-act="sort"][data-i="${i}"]`).forEach(x=>{ x.classList.remove('on'); if(+x.dataset.c===it[1]) x.classList.add('good'); else if(+x.dataset.c===ch[i]) x.classList.add('bad'); }); }); };
+  if(failCheck(q, reveal)) return;
+  msg(bad+' objet(s) mal classé(s), marqués ✗. Corrige et valide à nouveau.','ko');
+}
+
+/* ---------- Relier ---------- */
+function drawMatch(q){
+  const u = P.ui, L = q.pairs;
+  const left = L.map((p,i)=>{
+    const a = u.as[i]; const col = MATCHCOL[i%5];
+    return `<button class="opt ${u.sel===i?'sel':''} ${u.flag&&u.flag[i]===1?'good':''} ${u.flag&&u.flag[i]===0?'bad':''}" data-act="mleft" data-i="${i}" style="border-left:8px solid ${col}"><span class="mark" style="background:${col}">${i+1}</span><span>${esc(p[0])}</span></button>`;
+  }).join('');
+  const right = u.R.map((ri,pos)=>{
+    const holder = u.as.indexOf(pos);
+    const mk = holder>=0 ? `<span class="mark" style="background:${MATCHCOL[holder%5]}">${holder+1}</span>` : '<span class="mark" style="background:var(--line);color:var(--ink)">·</span>';
+    const f = u.flag && holder>=0 ? (u.flag[holder]===1?'good':'bad') : '';
+    return `<button class="opt ${f}" data-act="mright" data-p="${pos}">${mk}<span>${esc(L[ri][1])}</span></button>`;
+  }).join('');
+  $('#qbody').innerHTML = `<div class="match"><div class="col-h">Clique un élément, puis sa réponse</div><div class="col-h"></div><div class="opts">${left}</div><div class="opts">${right}</div></div><div class="actions"><button class="btn" data-act="mcheck2">Valider</button></div>`;
+}
+function onMLeft(btn){
+  if(P.done) return; const i=+btn.dataset.i, u=P.ui;
+  if(u.as[i]>=0){ u.as[i]=-1; }
+  u.sel = (u.sel===i)? -1 : i; u.flag=null; drawMatch(curQ());
+}
+function onMRight(btn){
+  if(P.done) return; const pos=+btn.dataset.p, u=P.ui;
+  if(u.sel<0){ msg('Choisis d’abord un élément dans la colonne de gauche.',''); return; }
+  const h = u.as.indexOf(pos); if(h>=0) u.as[h]=-1;
+  u.as[u.sel]=pos; u.sel=-1; u.flag=null; msg('',''); drawMatch(curQ());
+}
+function onMCheck2(){
+  const q = curQ(), u = P.ui; if(P.done) return;
+  if(u.as.some(x=>x<0)){ msg('Relie tous les éléments avant de valider.','ko'); return; }
+  u.flag = u.as.map((pos,i)=> u.R[pos]===i ? 1 : 0);
+  const bad = u.flag.filter(x=>x===0).length;
+  if(!bad){ drawMatch(q); resolve(P.att===0?'first':'second'); return; }
+  if(failCheck(q, ()=>{ u.as = q.pairs.map((_,i)=>u.R.indexOf(i)); u.flag = q.pairs.map(()=>1); drawMatch(q); })) return;
+  drawMatch(q); msg(bad+' liaison(s) fausse(s), en rouge. Défais-les en cliquant l’élément et recommence.','ko');
+}
+
+/* ---------- Arbre ---------- */
+function treeChain(T){
+  const rows = []; let n = T;
+  while(typeof n==='object'){ rows.push({k:n.k, q:n.q, yes:n.y}); const nx = n.n; if(typeof nx==='string'){ rows.final = nx; break; } n = nx; }
+  return rows;
+}
+function drawTree(q){
+  const u = P.ui, s = q.sample, rows = treeChain(TREES[q.tree]);
+  const props = Object.keys(s.props).map(k=>`<li>${esc(PROP[k])} :<span>${s.props[k]?'oui':'non'}</span></li>`).join('');
+  const fin = typeof u.node==='string', last = u.path.length-1;
+  const reachedYes = fin && last>=0 && u.path[last].a ? last : -1;
+  const reachedFinal = fin && last>=0 && !u.path[last].a;
+  let h = '';
+  rows.forEach((r,i)=>{
+    const st = i<u.path.length ? 'done' : (i===u.path.length && !fin ? 'cur' : 'lock');
+    const ans = st==='done' ? u.path[i].a : null;
+    const yes = st==='cur' ? `<button class="br yes" data-act="tnode" data-v="1">OUI</button>` : `<span class="br yes ${ans===true?'chosen':''}">OUI</span>`;
+    const no = st==='cur' ? `<button class="br no" data-act="tnode" data-v="0">NON</button>` : `<span class="br no ${ans===false?'chosen':''}">NON</span>`;
+    const gr = 2*i+1;
+    h += `<div class="trrow ${st}"><div class="trn" style="grid-area:${gr}/1">${esc(r.q)}</div><div class="trb" style="grid-area:${gr}/2">${yes}<span class="line"></span></div><div class="trl ${reachedYes===i?'reached':''}" style="grid-area:${gr}/3">${esc(r.yes)}</div></div>`;
+    h += `<div class="trdown ${st}" style="grid-area:${gr+1}/1">${no}<span class="vline"></span></div>`;
+  });
+  h += `<div class="trrow fin"><div class="trl ${reachedFinal?'reached':''}" style="grid-area:${2*rows.length+1}/1">${esc(rows.final)}</div></div>`;
+  $('#qbody').innerHTML = `<div class="sample"><b>${esc(s.name)}</b><ul>${props}</ul></div><div class="tree">${h}</div>`;
+}
+function onTNode(btn){
+  const q = curQ(), u = P.ui; if(P.done || typeof u.node==='string') return;
+  const v = btn.dataset.v==='1', truth = !!q.sample.props[u.node.k];
+  if(v!==truth){
+    u.wrong++; btn.classList.add('wrong');
+    msg('Pas cette branche. Relis la fiche de l’objet : « '+PROP[u.node.k].toLowerCase()+' » ?','ko');
+    if(u.wrong>=2){
+      while(typeof u.node!=='string'){ const t=!!q.sample.props[u.node.k]; u.path.push({q:u.node.q,a:t}); u.node = t?u.node.y:u.node.n; }
+      drawTree(q); resolve('fail');
+    }
+    return;
+  }
+  u.path.push({q:u.node.q, a:v}); u.node = v?u.node.y:u.node.n; msg('','');
+  drawTree(q);
+  if(typeof u.node==='string') resolve(u.wrong===0?'first':'second');
+}
+
+function curQ(){ return LEVELS[P.li].qs[P.queue[P.pos]]; }
+
+/* ---------- fin de niveau ---------- */
+function renderEnd(){
+  const L = LEVELS[P.li], c = GEMS[L.gem].color, st = levelStats(P.li);
+  const big = L.qs.map((q,i)=>slotGem(P.li,i)).join('').replace(/width="24" height="24"/g,'width="38" height="38"');
+  const pct = st.first/st.n;
+  const medal = pct===1 ? 'Taille parfaite' : pct>=.7 ? 'Belle taille' : 'Gemmes à polir';
+  const word = pct===1 ? 'Toutes tes gemmes sont polies.' : pct>=.7 ? 'Presque parfait : quelques gemmes à repolir.' : 'Tu peux repolir tes gemmes brutes pour gagner plus d’XP.';
+  const rough = st.n - st.first;
+  const next = P.li+1 < LEVELS.length ? P.li+1 : -1;
+  app.innerHTML = `<div class="lvhead"><button class="back" data-act="home">← Galeries</button></div>
+  <section class="endcard" style="--gc:${c}"><div class="sparkle">${gem(c,'polished',84)}</div><h2>${esc(GEMS[L.gem].name)} : ${medal}</h2>
+  <div class="bigs">${big}</div>
+  <p>${st.first} gemme(s) polie(s), ${st.second} brute(s), ${st.fail} à retravailler. <b>${st.xp} XP</b> gagnés dans cette galerie.</p><p>${word}</p>
+  <div class="actions">${rough?`<button class="btn" data-act="repolish" data-li="${P.li}">Repolir mes ${rough} gemme(s)</button>`:''}${next>=0?`<button class="btn ${rough?'alt':''}" data-act="open" data-li="${next}">Galerie suivante →</button>`:''}<button class="btn alt" data-act="home">Retour aux galeries</button></div></section>`;
+}
+
+/* ============ ÉVÉNEMENTS ============ */
+document.addEventListener('click', e=>{
+  const b = e.target.closest('[data-act]'); if(!b) return;
+  const a = b.dataset.act;
+  if(a==='open'){ openLevel(+b.dataset.li); }
+  else if(a==='home'){ go('home'); }
+  else if(a==='qcm') onQcm(b);
+  else if(a==='vf') onVf(b);
+  else if(a==='mtoggle') onMToggle(b);
+  else if(a==='mcheck') onMCheck();
+  else if(a==='sort') onSort(b);
+  else if(a==='scheck') onSCheck();
+  else if(a==='mleft') onMLeft(b);
+  else if(a==='mright') onMRight(b);
+  else if(a==='mcheck2') onMCheck2();
+  else if(a==='tnode') onTNode(b);
+  else if(a==='next'){ P.pos++; if(P.pos>=P.queue.length) go('end'); else render(); window.scrollTo({top:0}); }
+  else if(a==='repolish'){
+    const li=+b.dataset.li, L=LEVELS[li], queue=[];
+    L.qs.forEach((q,qi)=>{ const r=S.res[li+'-'+qi]; if(r && r.r!=='first'){ queue.push(qi); delete S.res[li+'-'+qi]; } });
+    save(); P={li,queue,pos:0,att:0,done:false,ui:null}; go('play');
+  }
+  else if(a==='reset'){
+    if(b.dataset.armed){ S={res:{},streak:0,size:S.size}; save(); go('home'); }
+    else { b.dataset.armed='1'; b.textContent='Cliquer encore pour tout effacer'; }
+  }
+});
+$('#bigger').addEventListener('click',()=>{ S.size=Math.min(3,S.size+1); applySize(); save(); });
+$('#smaller').addEventListener('click',()=>{ S.size=Math.max(0,S.size-1); applySize(); save(); });
+
+/* ============ DÉMARRAGE ============ */
+applySize();
+(function start(){
+  let d = null; try{ d = hot && hot.ready ? null : (hot && hot.data); }catch(e){}
+  render();
+})();
+</script>
+</body>
+</html>

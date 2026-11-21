@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Labo virtuel 532</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Plan : carnet de labo. Fond neutre bleuté, une encre bleu nuit, un accent sarcelle.
+   Mise en page : colonne unique, une carte par mission, instrument (sonde) en police mono. */
+:root{
+  --bg:#F1F5F8; --surface:#FFFFFF; --ink:#13253B; --muted:#4F6377; --line:#C9D5DF;
+  --accent:#0E7C86; --accent-ink:#FFFFFF; --amber:#B86A00;
+  --good:#1B6E44; --good-bg:#E1F2E8; --bad:#A93226; --bad-bg:#F9E3E0;
+  --water:#D5EAF3; --tank:#6F8CA3; --plant:#2F8F4E; --s1:#0E7C86; --s2:#7A8B99; --s3:#B86A00;
+  --f-body:"Lexend",system-ui,-apple-system,"Segoe UI",sans-serif; --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1926; --surface:#152638; --ink:#E6EEF5; --muted:#9DB1C3; --line:#2B4258;
+    --accent:#4FC4CD; --accent-ink:#06222A; --amber:#F0B050;
+    --good:#6BD79B; --good-bg:#12372A; --bad:#FF9082; --bad-bg:#44201C;
+    --water:#1C4258; --tank:#6E8CA5; --plant:#5BC47C; --s1:#4FC4CD; --s2:#8FA2B3; --s3:#F0B050;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1926; --surface:#152638; --ink:#E6EEF5; --muted:#9DB1C3; --line:#2B4258;
+  --accent:#4FC4CD; --accent-ink:#06222A; --amber:#F0B050;
+  --good:#6BD79B; --good-bg:#12372A; --bad:#FF9082; --bad-bg:#44201C;
+  --water:#1C4258; --tank:#6E8CA5; --plant:#5BC47C; --s1:#4FC4CD; --s2:#8FA2B3; --s3:#F0B050;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.6}
+.wrap{max-width:780px;margin:0 auto;padding:20px 16px 56px;display:flex;flex-direction:column;gap:18px}
+header.top{display:flex;flex-direction:column;gap:12px}
+.eyebrow{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+h1{margin:0;font-size:clamp(28px,6vw,40px);line-height:1.15;font-weight:700;text-wrap:balance}
+.lead{margin:0;color:var(--muted);max-width:62ch}
+.scorebar{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 18px;
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+.points{font-family:var(--f-mono);font-weight:600;font-size:18px}
+.points small{font-family:var(--f-body);font-weight:400;color:var(--muted);font-size:14px}
+.badges{display:flex;gap:8px;flex-wrap:wrap}
+.badge{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:3px 10px 3px 6px;border-radius:99px;
+  border:1.5px dashed var(--line);color:var(--muted)}
+.badge i{font-style:normal;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:12px;border:1.5px solid var(--line)}
+.badge.on{border:1.5px solid var(--good);background:var(--good-bg);color:var(--good)}
+.badge.on i{background:var(--good);color:var(--surface);border-color:var(--good)}
+section.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 18px;display:flex;flex-direction:column;gap:14px}
+.mhead{display:flex;gap:12px;align-items:flex-start}
+.mnum{flex:none;width:36px;height:36px;border-radius:9px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-weight:700}
+h2{margin:0;font-size:21px;line-height:1.25;text-wrap:balance}
+.mdesc{margin:2px 0 0;color:var(--muted);font-size:15.5px}
+p{margin:0}
+.note{font-size:14.5px;color:var(--muted)}
+table.res{width:100%;border-collapse:collapse;font-size:15.5px}
+table.res th{text-align:left;font-weight:600;font-size:14px;color:var(--muted);padding:6px 8px 6px 0;border-bottom:1px solid var(--line)}
+table.res td{padding:8px 8px 8px 0;border-bottom:1px solid var(--line);vertical-align:middle}
+.tscroll{overflow-x:auto}
+select{font:inherit;font-size:15.5px;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:8px;padding:6px 28px 6px 8px;min-height:40px;max-width:100%}
+select.ok{border-color:var(--good);background:var(--good-bg)}
+select.bad{border-color:var(--bad);background:var(--bad-bg)}
+select:disabled{opacity:1;color:var(--ink)}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn{background:var(--accent);color:var(--accent-ink);border:0;border-radius:10px;padding:10px 18px;font-weight:600;min-height:44px;align-self:flex-start}
+.btn.ghost{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+.quiz{display:flex;flex-direction:column;gap:8px;padding-top:6px;border-top:1px dashed var(--line)}
+.qtext{font-weight:600}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{text-align:left;background:var(--bg);color:var(--ink);border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;min-height:44px;line-height:1.45}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt.ok{border-color:var(--good);background:var(--good-bg);color:var(--ink)}
+.opt.bad{border-color:var(--bad);background:var(--bad-bg);color:var(--ink)}
+.opt:disabled{cursor:default}
+.fb{font-size:15.5px;min-height:1.2em}
+.fb.ok{color:var(--good)} .fb.bad{color:var(--bad)}
+.lab{display:grid;grid-template-columns:minmax(0,230px) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:600px){.lab{grid-template-columns:1fr}}
+.panel{display:flex;flex-direction:column;gap:10px}
+.tankbox{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:8px}
+.tankbox svg{width:100%;height:auto;display:block}
+.readout{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.readout .lbl{font-size:13px;color:var(--muted)}
+.readout .val{font-family:var(--f-mono);font-weight:600;font-size:24px;text-align:right}
+.readout .val.sm{font-size:16px;color:var(--s2)}
+.ctl{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+.ctl label{font-size:15px;color:var(--muted)}
+input[type=range]{flex:1 1 160px;accent-color:var(--accent);min-height:36px}
+.seg{display:inline-flex;border:1.5px solid var(--accent);border-radius:10px;overflow:hidden}
+.seg button{background:transparent;color:var(--accent);border:0;padding:8px 14px;font-weight:600;min-height:44px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.chartbox{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:8px 8px 4px}
+.chartbox svg{width:100%;height:auto;display:block}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px;color:var(--muted);padding:4px 6px 6px}
+.legend span::before{content:"";display:inline-block;width:18px;height:0;border-top:3px solid var(--c);margin-right:6px;vertical-align:middle}
+.mystery{border-left:5px solid var(--amber);background:var(--bg);padding:10px 14px;border-radius:0 10px 10px 0;font-size:16px}
+.cloze{display:flex;flex-direction:column;gap:12px}
+.cloze p{line-height:2.3}
+.final{border:2px solid var(--good);background:var(--good-bg);border-radius:12px;padding:14px 16px;display:none;flex-direction:column;gap:6px}
+.final.show{display:flex}
+.final strong{font-size:19px}
+.stars{color:var(--amber);letter-spacing:3px;font-size:20px}
+@media (prefers-reduced-motion: no-preference){ .opt,select{transition:background .15s,border-color .15s} }
+</style>
+</head>
+<body>
+<main class="wrap">
+<header class="top">
+  <span class="eyebrow">SVT 5ème · activité 532</span>
+  <h1>Labo virtuel 532</h1>
+  <p class="lead">Ces missions prolongent l’enquête : fais le bilan des trois expériences, puis étudie le poisson et l’élodée. Une bonne réponse du premier coup rapporte 2 points, une bonne réponse après un essai en rapporte 1.</p>
+  <p class="note">Les courbes sont illustratives : elles s’inspirent de mesures typiques, pas d’une expérience réelle.</p>
+</header>
+
+<div class="scorebar" role="status" aria-live="polite">
+  <div class="points"><span id="pts">0</span> <small>/ <span id="ptsMax">0</span> points</small></div>
+  <div class="badges" id="badges"></div>
+</div>
+
+<!-- MISSION 1 -->
+<section class="card" id="m1">
+  <div class="mhead"><div class="mnum">1</div><div><h2>Le bilan des trois ateliers</h2>
+  <p class="mdesc">Complète le tableau avec ce que vous avez observé en classe.</p></div></div>
+  <div class="tscroll"><table class="res" id="tbl1">
+    <thead><tr><th>Être vivant</th><th>Eau de chaux</th><th>% de O₂ dans le flacon</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+  <button class="btn" id="chk1" type="button">Vérifier le tableau</button>
+  <p class="fb" id="fb1" aria-live="polite"></p>
+  <div class="quiz" data-q="m1q1"></div>
+</section>
+
+<!-- MISSION 2 -->
+<section class="card" id="m2">
+  <div class="mhead"><div class="mnum">2</div><div><h2>Le poisson dans un aquarium fermé</h2>
+  <p class="mdesc">Un poisson vit 30 minutes dans un aquarium fermé. La sonde mesure le dioxygène dissous dans l’eau. Le bleu de bromothymol jaunit quand il y a plus de CO₂ dissous.</p></div></div>
+  <div class="quiz" data-q="m2q1"></div>
+  <div class="lab">
+    <div class="panel">
+      <div class="tankbox" id="tank2"></div>
+      <div class="readout">
+        <span class="lbl">Sonde O₂ (poisson)</span><span class="val" id="r2a">8,0</span>
+        <span class="lbl">Sonde O₂ (témoin)</span><span class="val sm" id="r2b">8,0</span>
+        <span class="lbl">Indicateur</span><span id="ind2"></span>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="ctl">
+        <button class="btn" id="go2" type="button">Lancer l’expérience</button>
+        <label for="t2">Temps : <b id="t2v">0</b> min</label>
+        <input type="range" id="t2" min="0" max="30" step="1" value="0">
+      </div>
+      <div class="chartbox"><div id="chart2"></div>
+        <div class="legend"><span style="--c:var(--s1)">Aquarium avec poisson</span><span style="--c:var(--s2)">Aquarium témoin (sans poisson)</span></div></div>
+    </div>
+  </div>
+  <div class="quiz" data-q="m2q2"></div>
+  <div class="quiz" data-q="m2q3"></div>
+</section>
+
+<!-- MISSION 3 -->
+<section class="card" id="m3">
+  <div class="mhead"><div class="mnum">3</div><div><h2>L’élodée, dans le noir puis à la lumière</h2>
+  <p class="mdesc">Même montage avec une plante aquatique. Compare les deux conditions avec le curseur du temps.</p></div></div>
+  <div class="ctl">
+    <span class="seg" role="group" aria-label="Condition d’éclairage">
+      <button type="button" id="cDark" aria-pressed="true">Obscurité</button>
+      <button type="button" id="cLight" aria-pressed="false">Lumière</button>
+    </span>
+  </div>
+  <div class="lab">
+    <div class="panel">
+      <div class="tankbox" id="tank3"></div>
+      <div class="readout">
+        <span class="lbl">Sonde O₂ (élodée)</span><span class="val" id="r3a">8,0</span>
+        <span class="lbl">Sonde O₂ (témoin)</span><span class="val sm" id="r3b">8,0</span>
+        <span class="lbl">Indicateur</span><span id="ind3"></span>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="ctl">
+        <button class="btn" id="go3" type="button">Lancer l’expérience</button>
+        <label for="t3">Temps : <b id="t3v">0</b> min</label>
+        <input type="range" id="t3" min="0" max="30" step="1" value="0">
+      </div>
+      <div class="chartbox"><div id="chart3"></div>
+        <div class="legend"><span style="--c:var(--s1)" id="lg3">Élodée dans l’obscurité</span><span style="--c:var(--s2)">Aquarium témoin (sans élodée)</span></div></div>
+    </div>
+  </div>
+  <div class="quiz" data-q="m3q1"></div>
+  <div class="mystery" id="myst" hidden><b>Mystère.</b> À la lumière, le dioxygène augmente. Cela ne ressemble pas à ce que font les autres êtres vivants. Un autre phénomène est en jeu, que tu étudieras dans le prochain chapitre.</div>
+  <div class="quiz" data-q="m3q2"></div>
+</section>
+
+<!-- MISSION 4 -->
+<section class="card" id="m4">
+  <div class="mhead"><div class="mnum">4</div><div><h2>Mon résumé à trous</h2>
+  <p class="mdesc">Complète chaque phrase avec le bon mot. Tu retrouveras ces idées dans ton bilan écrit.</p></div></div>
+  <div class="cloze" id="cloze"></div>
+  <button class="btn" id="chk4" type="button">Vérifier le résumé</button>
+  <p class="fb" id="fb4" aria-live="polite"></p>
+  <div class="final" id="final">
+    <strong>Enquête terminée.</strong>
+    <p id="finalTxt"></p>
+    <p>Prochaine étape sur ta feuille à carreaux : rédige ton bilan de 5 à 7 lignes. Vise les 4 étoiles : <span class="stars">★★★★</span></p>
+  </div>
+</section>
+</main>
+
+<script>
+(function(){
+"use strict";
+var fr = function(v){ return v.toLocaleString("fr-FR",{minimumFractionDigits:1,maximumFractionDigits:1}); };
+var $ = function(s,r){ return (r||document).querySelector(s); };
+var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------- Données illustratives ---------- */
+var DATA = {
+  fish:  { o2:function(t){return 8.0-0.055*t;}, ph:function(t){return 0.50+0.45*t/30;} },
+  ctrl:  { o2:function(){return 8.0;},          ph:function(){return 0.50;} },
+  dark:  { o2:function(t){return 8.0-0.025*t;}, ph:function(t){return 0.50+0.32*t/30;} },
+  light: { o2:function(t){return 8.0+0.05*t;},  ph:function(t){return 0.50-0.36*t/30;} }
+};
+function mix(a,b,k){ return a.map(function(v,i){return Math.round(v+(b[i]-v)*k);}); }
+function bbt(p){ /* 0 bleu, 0.5 vert, 1 jaune */
+  var B=[46,111,192], G=[93,179,107], Y=[233,195,47];
+  var c = p<0.5 ? mix(B,G,p/0.5) : mix(G,Y,(p-0.5)/0.5);
+  return "rgb("+c.join(",")+")";
+}
+function bbtName(p){ return p>0.62 ? "jaune : plus de CO₂" : (p<0.38 ? "bleu : moins de CO₂" : "vert : neutre"); }
+function tube(p){
+  return '<svg width="64" height="44" viewBox="0 0 64 44" role="img" aria-label="Indicateur '+bbtName(p)+'">'+
+    '<rect x="6" y="6" width="22" height="32" rx="6" fill="'+bbt(p)+'" stroke="var(--tank)" stroke-width="2"/>'+
+    '<text x="36" y="26" font-size="11" fill="var(--muted)" font-family="var(--f-body)">'+(p>0.62?"jaune":(p<0.38?"bleu":"vert"))+'</text></svg>';
+}
+
+/* ---------- Graphique ---------- */
+function chart(el, series, t, label){
+  var W=560,H=250,L=52,R=14,T=12,Bm=40,yMin=6,yMax=10;
+  var x=function(v){return L+(W-L-R)*v/30;};
+  var y=function(v){return T+(H-T-Bm)*(1-(v-yMin)/(yMax-yMin));};
+  var s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+label+'" font-family="var(--f-body)">';
+  for(var g=yMin; g<=yMax; g++){
+    s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y(g)+'" y2="'+y(g)+'" stroke="var(--line)" stroke-width="1"/>';
+    s+='<text x="'+(L-8)+'" y="'+(y(g)+4)+'" text-anchor="end" font-size="12" fill="var(--muted)">'+g+'</text>';
+  }
+  [0,10,20,30].forEach(function(m){
+    s+='<text x="'+x(m)+'" y="'+(H-Bm+18)+'" text-anchor="middle" font-size="12" fill="var(--muted)">'+m+'</text>';
+  });
+  s+='<text x="'+(L+(W-L-R)/2)+'" y="'+(H-6)+'" text-anchor="middle" font-size="12" fill="var(--muted)">temps (min)</text>';
+  s+='<text transform="translate(13 '+(T+(H-T-Bm)/2)+') rotate(-90)" text-anchor="middle" font-size="12" fill="var(--muted)">O₂ dissous (mg/L)</text>';
+  series.forEach(function(se){
+    var d="";
+    for(var m=0;m<=t;m++){ d+=(m?"L":"M")+x(m).toFixed(1)+" "+y(se.f(m)).toFixed(1); }
+    s+='<path d="'+d+'" fill="none" stroke="'+se.c+'" stroke-width="'+(se.w||3)+'" stroke-linecap="round" stroke-linejoin="round"'+(se.dash?' stroke-dasharray="6 5"':'')+'/>';
+    s+='<circle cx="'+x(t)+'" cy="'+y(se.f(t))+'" r="5" fill="'+se.c+'" stroke="var(--surface)" stroke-width="2"/>';
+  });
+  s+='</svg>';
+  el.innerHTML=s;
+}
+
+/* ---------- Illustrations des aquariums ---------- */
+function tankFish(){
+  return '<svg viewBox="0 0 220 170" role="img" aria-label="Aquarium fermé contenant un poisson et une sonde">'+
+   '<rect x="20" y="30" width="180" height="120" rx="8" fill="var(--water)" stroke="var(--tank)" stroke-width="4"/>'+
+   '<rect x="14" y="22" width="192" height="12" rx="4" fill="var(--tank)"/>'+
+   '<rect x="160" y="8" width="8" height="70" rx="3" fill="var(--ink)"/><rect x="156" y="70" width="16" height="12" rx="3" fill="var(--accent)"/>'+
+   '<g fill="var(--s3)"><ellipse cx="95" cy="100" rx="30" ry="17"/><path d="M122 100 L148 84 L148 116 Z"/></g>'+
+   '<circle cx="80" cy="95" r="4" fill="var(--surface)"/><circle cx="79" cy="95" r="2" fill="var(--ink)"/>'+
+   '<path d="M40 138 Q60 128 80 138 T120 138" fill="none" stroke="var(--tank)" stroke-width="2" opacity=".5"/></svg>';
+}
+function tankPlant(light){
+  var lamp = light ? '<g stroke="var(--s3)" stroke-width="3" stroke-linecap="round"><line x1="110" y1="16" x2="110" y2="28"/><line x1="86" y1="22" x2="94" y2="30"/><line x1="134" y1="22" x2="126" y2="30"/></g><circle cx="110" cy="12" r="7" fill="var(--s3)"/>' : '';
+  var shade = light ? '' : '<rect x="20" y="30" width="180" height="120" rx="8" fill="#0A1420" opacity=".62"/><text x="110" y="62" text-anchor="middle" font-size="13" fill="#E6EEF5" font-family="var(--f-body)">obscurité</text>';
+  var stem = function(x,h,lean){ return '<path d="M'+x+' 148 Q'+(x+lean)+' '+(148-h/2)+' '+(x+lean*1.6)+' '+(148-h)+'" fill="none" stroke="var(--plant)" stroke-width="4" stroke-linecap="round"/>'; };
+  var leaves = function(x,h,lean){ var o=''; for(var i=1;i<=5;i++){ var yy=148-h*i/5.4, xx=x+lean*1.6*i/5.4; o+='<ellipse cx="'+(xx-9)+'" cy="'+yy+'" rx="9" ry="3.5" fill="var(--plant)"/><ellipse cx="'+(xx+9)+'" cy="'+(yy-5)+'" rx="9" ry="3.5" fill="var(--plant)"/>'; } return o; };
+  return '<svg viewBox="0 0 220 170" role="img" aria-label="Aquarium fermé contenant de l’élodée, '+(light?'éclairé':'dans l’obscurité')+'">'+
+   '<rect x="20" y="30" width="180" height="120" rx="8" fill="var(--water)" stroke="var(--tank)" stroke-width="4"/>'+
+   '<rect x="14" y="22" width="192" height="12" rx="4" fill="var(--tank)"/>'+
+   '<rect x="168" y="8" width="8" height="70" rx="3" fill="var(--ink)"/><rect x="164" y="70" width="16" height="12" rx="3" fill="var(--accent)"/>'+
+   stem(70,84,8)+stem(105,96,-10)+stem(138,76,10)+leaves(70,84,8)+leaves(105,96,-10)+leaves(138,76,10)+
+   lamp+shade+'</svg>';
+}
+
+/* ---------- Score et badges ---------- */
+var score=0, maxScore=0;
+var BADGES=[["m1","Témoin"],["m2","Poisson"],["m3","Élodée"],["m4","Résumé"]];
+var done={ m1:{tbl:false,q:false}, m2:{q1:false,q2:false,q3:false}, m3:{q1:false,q2:false}, m4:{cz:false} };
+function renderBadges(){
+  var h="";
+  BADGES.forEach(function(b){
+    var d=done[b[0]], ok=Object.keys(d).every(function(k){return d[k];});
+    h+='<span class="badge'+(ok?' on':'')+'"><i>'+(ok?'✓':'')+'</i>'+b[1]+'</span>';
+  });
+  $("#badges").innerHTML=h;
+  $("#pts").textContent=score; $("#ptsMax").textContent=maxScore;
+  var all=BADGES.every(function(b){var d=done[b[0]];return Object.keys(d).every(function(k){return d[k];});});
+  var f=$("#final"); if(all){ f.classList.add("show"); $("#finalTxt").textContent="Tu as obtenu "+score+" points sur "+maxScore+". "+(score>=maxScore*0.8?"Excellent travail d’enquêteur.":"Reprends les missions où tu as hésité avant ton bilan."); }
+}
+
+/* ---------- Questions à choix ---------- */
+var Q={
+ m1q1:{k:["m1","q"],q:"Dans le flacon témoin de la piste asticots, que doit-on observer ?",o:[
+   ["Un % de O₂ proche de 21 % et une eau de chaux limpide",1,"Oui. Sans être vivant, rien ne change : c’est ce qui prouve que les asticots sont à l’origine des changements."],
+   ["Un % de O₂ qui baisse comme dans le bocal des asticots",0,"Non. Le témoin ne contient pas d’être vivant, donc le % de O₂ ne baisse pas."],
+   ["Une eau de chaux trouble",0,"Non. Le témoin ne reçoit pas de CO₂ supplémentaire."]]},
+ m2q1:{k:["m2","q1"],q:"Prédis : au bout de 30 minutes, que va indiquer la sonde O₂ dans l’aquarium avec le poisson ?",o:[
+   ["Une valeur plus faible qu’au départ",1,"Bonne prédiction. Vérifie avec l’expérience ci-dessous."],
+   ["Une valeur plus forte qu’au départ",0,"Pas sûr. Les êtres vivants étudiés ont fait baisser le O₂. Vérifie avec l’expérience ci-dessous."],
+   ["Exactement la même valeur",0,"Regarde plutôt l’aquarium témoin : c’est lui qui ne change pas. Vérifie avec l’expérience ci-dessous."]]},
+ m2q2:{k:["m2","q2"],q:"Le bleu de bromothymol passe au jaune dans l’aquarium du poisson. Que montre-t-il ?",o:[
+   ["Du CO₂ s’est accumulé dans l’eau",1,"Oui. Comme l’eau de chaux qui se trouble, il signale la présence de CO₂."],
+   ["Du O₂ s’est accumulé dans l’eau",0,"Non. Le O₂ baisse. Le jaune signale plus de CO₂."],
+   ["L’eau a refroidi",0,"Non. La couleur ne dépend pas ici de la température mais du CO₂ dissous."]]},
+ m2q3:{k:["m2","q3"],q:"Le poisson respire-t-il ? Choisis la meilleure réponse.",o:[
+   ["Oui : le O₂ baisse et le CO₂ augmente, alors que le témoin ne change pas",1,"Oui. Il prélève le dioxygène dissous dans l’eau et rejette du dioxyde de carbone."],
+   ["Non : il ne respire pas, car il ne prend pas d’air",0,"Il ne prend pas l’air, mais il prélève le O₂ dissous dans l’eau, avec ses branchies."],
+   ["On ne peut pas savoir sans voir sa bouche bouger",0,"Les mesures suffisent : elles montrent les échanges de gaz."]]},
+ m3q1:{k:["m3","q1"],q:"Dans l’obscurité, que prouvent les mesures sur l’élodée ?",o:[
+   ["Elle prélève du O₂ et rejette du CO₂, comme les animaux",1,"Oui. Dans l’obscurité, l’élodée respire comme le poisson, l’homme ou les asticots."],
+   ["Elle ne respire pas, car c’est une plante",0,"Non. Le O₂ baisse et le CO₂ augmente : elle respire."],
+   ["Elle produit du O₂ dans l’obscurité",0,"Non. Dans l’obscurité, le O₂ baisse."]]},
+ m3q2:{k:["m3","q2"],gate:function(){return viewedLight;},gateMsg:"Choisis d’abord la condition « Lumière » et lance l’expérience pour débloquer cette question.",
+   q:"À la lumière, le O₂ augmente. Que peux-tu conclure ?",o:[
+   ["La lumière change le résultat : un autre phénomène intervient. On ne peut pas dire que l’élodée ne respire pas à la lumière.",1,"Oui. Une mesure ne suffit pas pour conclure : la respiration peut continuer, cachée par ce phénomène. Réponse au prochain chapitre."],
+   ["L’élodée ne respire pas à la lumière",0,"Trop vite. Rien ne prouve que la respiration s’arrête."],
+   ["La sonde est en panne à la lumière",0,"Le témoin montre que la sonde marche. Cherche une autre explication."]]}
+};
+var viewedLight=false;
+var _k=0; Object.keys(Q).forEach(function(id){ var o=Q[id].o, r=_k++%3; Q[id].o=o.slice(r).concat(o.slice(0,r)); });
+var qState={};
+function addPts(n){ score+=n; renderBadges(); }
+function buildQuiz(el){
+  var id=el.getAttribute("data-q"), d=Q[id]; maxScore+=2; qState[id]={tries:0,done:false};
+  var h='<p class="qtext" id="qt-'+id+'">'+d.q+'</p><div class="opts" role="group" aria-labelledby="qt-'+id+'">';
+  d.o.forEach(function(o,i){ h+='<button type="button" class="opt" data-i="'+i+'">'+o[0]+'</button>'; });
+  h+='</div><p class="fb" aria-live="polite"></p>';
+  el.innerHTML=h;
+  el.addEventListener("click",function(e){
+    var b=e.target.closest(".opt"); if(!b||b.disabled) return;
+    var s=qState[id]; if(s.done) return;
+    if(d.gate && !d.gate()){ $(".fb",el).className="fb bad"; $(".fb",el).textContent=d.gateMsg; return; }
+    var o=d.o[+b.getAttribute("data-i")], fb=$(".fb",el);
+    s.tries++;
+    if(o[1]){
+      s.done=true; b.classList.add("ok");
+      [].forEach.call(el.querySelectorAll(".opt"),function(x){x.disabled=true;});
+      fb.className="fb ok"; fb.textContent=o[2];
+      done[d.k[0]][d.k[1]]=true; addPts(s.tries===1?2:1);
+    } else { b.classList.add("bad"); b.disabled=true; fb.className="fb bad"; fb.textContent=o[2]; }
+  });
+}
+
+/* ---------- Listes déroulantes (tableau et texte à trous) ---------- */
+function checkSelects(root,fbEl,flag){
+  var sels=[].slice.call(root.querySelectorAll("select")), good=0, empty=0;
+  sels.forEach(function(s){
+    if(s.disabled) { good++; return; }
+    if(!s.value){ empty++; return; }
+    var st=s._st; st.tries++;
+    if(s.value===s.getAttribute("data-ans")){
+      s.className="ok"; s.disabled=true; good++; addPts(st.tries===1?2:1);
+    } else { s.className="bad"; }
+  });
+  var total=sels.length;
+  if(good===total){ fbEl.className="fb ok"; fbEl.textContent="Tout est juste."; flag(); }
+  else { fbEl.className="fb bad"; fbEl.textContent=good+" réponse"+(good>1?"s":"")+" juste"+(good>1?"s":"")+" sur "+total+(empty?". Réponds aux cases vides."  :". Corrige les cases en rouge."); }
+}
+function mkSelect(opts,ans,id,aria){
+  var s=document.createElement("select"); s.id=id; s.setAttribute("aria-label",aria); s.setAttribute("data-ans",ans);
+  var o0=document.createElement("option"); o0.value=""; o0.textContent="choisir…"; s.appendChild(o0);
+  opts.forEach(function(t){ var o=document.createElement("option"); o.value=t; o.textContent=t; s.appendChild(o); });
+  s._st={tries:0}; maxScore+=2;
+  s.addEventListener("change",function(){ if(!s.disabled) s.className=""; });
+  return s;
+}
+
+/* Mission 1 */
+(function(){
+  var rows=[["L’homme (souffle)","homme"],["Les asticots","asticots"],["Les levures","levures"]];
+  var tb=$("#tbl1 tbody");
+  rows.forEach(function(r){
+    var tr=document.createElement("tr"), td0=document.createElement("td"); td0.textContent=r[0]; tr.appendChild(td0);
+    var a=document.createElement("td"), b=document.createElement("td");
+    a.appendChild(mkSelect(["reste limpide","se trouble"],"se trouble","c-"+r[1],"Eau de chaux, "+r[0]));
+    b.appendChild(mkSelect(["augmente","diminue","ne change pas"],"diminue","o-"+r[1],"Pourcentage de O₂, "+r[0]));
+    tr.appendChild(a); tr.appendChild(b); tb.appendChild(tr);
+  });
+  $("#chk1").addEventListener("click",function(){ checkSelects($("#tbl1"),$("#fb1"),function(){done.m1.tbl=true;renderBadges();}); });
+})();
+
+/* Mission 4 */
+(function(){
+  var bank=["dioxygène","dioxyde de carbone","se trouble","diminue","augmente","témoin","milieu","reste limpide"];
+  var sentences=[
+    ["Les êtres vivants étudiés prélèvent du ",["dioxygène"]," et rejettent du ",["dioxyde de carbone"],"."],
+    ["L’eau de chaux ",["se trouble"]," en présence de dioxyde de carbone."],
+    ["Dans un flacon fermé contenant un être vivant, le pourcentage de O₂ ",["diminue"],"."],
+    ["Le flacon ",["témoin"]," permet de vérifier que le changement vient bien de l’être vivant."],
+    ["L’homme prélève le O₂ de l’air, le poisson prélève le O₂ dissous dans l’eau : leur ",["milieu"]," est différent."]
+  ];
+  var root=$("#cloze"), n=0;
+  sentences.forEach(function(sn){
+    var p=document.createElement("p");
+    sn.forEach(function(part){
+      if(typeof part==="string"){ p.appendChild(document.createTextNode(part)); }
+      else { n++; p.appendChild(mkSelect(bank,part[0],"cz"+n,"Mot manquant "+n)); }
+    });
+    root.appendChild(p);
+  });
+  $("#chk4").addEventListener("click",function(){ checkSelects(root,$("#fb4"),function(){done.m4.cz=true;renderBadges();}); });
+})();
+
+/* ---------- Laboratoires virtuels ---------- */
+function anim(slider,btn,onUpdate){
+  btn.addEventListener("click",function(){
+    if(reduce){ slider.value=30; onUpdate(); return; }
+    slider.value=0; onUpdate(); btn.disabled=true;
+    var t0=null, dur=4200;
+    function step(ts){ if(t0===null) t0=ts; var k=Math.min(1,(ts-t0)/dur); slider.value=Math.round(30*k); onUpdate(); if(k<1) requestAnimationFrame(step); else btn.disabled=false; }
+    requestAnimationFrame(step);
+  });
+  slider.addEventListener("input",onUpdate);
+}
+/* Mission 2 */
+(function(){
+  $("#tank2").innerHTML=tankFish();
+  var sl=$("#t2");
+  function upd(){
+    var t=+sl.value; $("#t2v").textContent=t;
+    $("#r2a").textContent=fr(DATA.fish.o2(t)); $("#r2b").textContent=fr(DATA.ctrl.o2(t));
+    $("#ind2").innerHTML=tube(DATA.fish.ph(t));
+    chart($("#chart2"),[{f:DATA.ctrl.o2,c:"var(--s2)",dash:true,w:2.5},{f:DATA.fish.o2,c:"var(--s1)"}],t,"Courbes du dioxygène dissous, poisson et témoin");
+  }
+  anim(sl,$("#go2"),upd); upd();
+})();
+/* Mission 3 */
+(function(){
+  var cond="dark", sl=$("#t3");
+  function upd(){
+    var t=+sl.value, D=DATA[cond]; $("#t3v").textContent=t;
+    $("#r3a").textContent=fr(D.o2(t)); $("#r3b").textContent=fr(DATA.ctrl.o2(t));
+    $("#ind3").innerHTML=tube(D.ph(t));
+    $("#tank3").innerHTML=tankPlant(cond==="light");
+    chart($("#chart3"),[{f:DATA.ctrl.o2,c:"var(--s2)",dash:true,w:2.5},{f:D.o2,c:cond==="light"?"var(--s3)":"var(--s1)"}],t,"Courbes du dioxygène dissous, élodée et témoin");
+    $("#lg3").style.setProperty("--c",cond==="light"?"var(--s3)":"var(--s1)");
+    $("#lg3").textContent=cond==="light"?"Élodée à la lumière":"Élodée dans l’obscurité";
+  }
+  function setCond(c){
+    cond=c; $("#cDark").setAttribute("aria-pressed",c==="dark"); $("#cLight").setAttribute("aria-pressed",c==="light");
+    sl.value=0; upd();
+  }
+  $("#cDark").addEventListener("click",function(){setCond("dark");});
+  $("#cLight").addEventListener("click",function(){setCond("light");});
+  anim(sl,$("#go3"),function(){ upd(); if(cond==="light" && +sl.value>=20 && !viewedLight){ viewedLight=true; $("#myst").hidden=false; } });
+  sl.addEventListener("input",function(){ if(cond==="light" && +sl.value>=20 && !viewedLight){ viewedLight=true; $("#myst").hidden=false; } });
+  upd();
+})();
+
+[].forEach.call(document.querySelectorAll(".quiz"),buildQuiz);
+renderBadges();
+})();
+</script>
+</body>
+</html>

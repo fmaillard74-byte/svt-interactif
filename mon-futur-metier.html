@@ -1,0 +1,581 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Mon futur métier</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap">
+<style>
+/* Concept : un cahier de bord en 6 étapes chronométrées (30 min) : se connaître (10 min), chercher et choisir un métier (20 min). */
+:root{
+  --bg:#f3f6fb; --surface:#ffffff; --ink:#14213d; --muted:#54627a; --line:#d5ddea;
+  --accent:#2447c8; --accent-ink:#ffffff; --hl:#ffd23f; --hl-ink:#14213d; --ok:#1e7a4d; --warn:#a15c00;
+  --font-display:"Bricolage Grotesque","Trebuchet MS",sans-serif;
+  --font-body:"Atkinson Hyperlegible","Segoe UI",Verdana,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1626; --surface:#172138; --ink:#e8eefb; --muted:#9fb0cc; --line:#2a3a58;
+  --accent:#8fa8ff; --accent-ink:#0f1626; --hl:#ffd23f; --hl-ink:#14213d; --ok:#58c58d; --warn:#f0b35a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1626; --surface:#172138; --ink:#e8eefb; --muted:#9fb0cc; --line:#2a3a58;
+  --accent:#8fa8ff; --accent-ink:#0f1626; --hl:#ffd23f; --hl-ink:#14213d; --ok:#58c58d; --warn:#f0b35a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:17px;line-height:1.55;
+  padding-block:0 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:20;background:var(--surface)}
+.wrap{max-width:820px;margin:0 auto}
+h1,h2,h3{font-family:var(--font-display);line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(28px,6vw,40px);font-weight:800}
+h2{font-size:clamp(22px,4.5vw,28px);font-weight:800}
+h3{font-size:18px;font-weight:600}
+p{margin:0}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--hl);outline-offset:2px;border-radius:4px}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:15;background:var(--surface);border-bottom:1px solid var(--line);
+  margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px))}
+.top-in{max-width:820px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;justify-content:space-between}
+.brand{font-family:var(--font-display);font-weight:800;font-size:18px}
+.timer{display:flex;align-items:center;gap:10px}
+.clock{font-variant-numeric:tabular-nums;font-weight:700;font-size:22px;min-width:3.6ch;text-align:center}
+.clock.late{color:var(--warn)}
+button{font:inherit;cursor:pointer}
+.btn{border:2px solid var(--accent);background:var(--accent);color:var(--accent-ink);padding:10px 18px;border-radius:8px;font-weight:700;min-height:44px}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.stepper{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:18px 0 8px;padding:0;list-style:none}
+.stepper button{width:100%;border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:8px 2px;
+  display:flex;flex-direction:column;align-items:center;gap:2px;font-size:13px;line-height:1.2;min-height:62px}
+.stepper b{font-family:var(--font-display);font-size:18px}
+.stepper .min{color:var(--muted);font-size:12px}
+.stepper button[aria-current="step"]{border-color:var(--accent);background:var(--hl);color:var(--hl-ink)}
+.stepper button[aria-current="step"] .min{color:var(--hl-ink)}
+.stepper button.done b::after{content:" ✓";color:var(--ok)}
+.phase{display:flex;justify-content:space-between;font-size:14px;color:var(--muted);margin:0 2px 4px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px;margin-top:14px;display:grid;gap:16px}
+.lead{color:var(--muted)}
+.tag{display:inline-block;background:var(--hl);color:var(--hl-ink);font-weight:700;font-size:14px;padding:2px 10px;border-radius:99px;width:fit-content}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:2px solid var(--line);background:var(--bg);color:var(--ink);padding:8px 14px;border-radius:99px;min-height:44px}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+.chip.static{cursor:default;min-height:0;padding:4px 12px;font-size:15px}
+.hint{border-left:4px solid var(--hl);padding:4px 0 4px 12px;color:var(--muted)}
+.warn{border-left-color:var(--warn);color:var(--warn)}
+.okmsg{border-left-color:var(--ok);color:var(--ok);font-weight:700}
+label,.lab{font-weight:700;display:block;margin-bottom:4px}
+input[type=text],textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:8px;padding:10px 12px}
+textarea{min-height:76px;resize:vertical}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+.grid2>*{min-width:0}
+.links{display:grid;gap:10px;padding:0;margin:0;list-style:none}
+.links li{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--bg)}
+.links a{font-weight:700}
+.links span{display:block;color:var(--muted);font-size:15px}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:14px}
+.check{display:grid;gap:4px;padding:0;margin:0;list-style:none}
+.check label{display:flex;gap:10px;align-items:flex-start;font-weight:400;margin:0;padding:6px 0}
+.check input{width:22px;height:22px;margin-top:2px;flex:none;accent-color:var(--accent)}
+.act{display:grid;gap:8px;padding:12px 0;border-top:1px solid var(--line)}
+.act:first-child{border-top:0}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{border:2px solid var(--line);background:var(--bg);color:var(--ink);padding:6px 12px;border-radius:8px;min-height:44px}
+.seg button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+.bars{display:grid;gap:8px}
+.bar{display:grid;grid-template-columns:minmax(120px,190px) 1fr 3.4ch;gap:10px;align-items:center}
+.bar .t{font-size:15px}
+.bar.top .t{font-weight:700}
+.track{height:14px;background:var(--bg);border:1px solid var(--line);border-radius:99px;overflow:hidden}
+.fill{height:100%;background:var(--muted);transition:width .2s}
+.bar.top .fill{background:var(--accent)}
+.bar .v{font-variant-numeric:tabular-nums;font-size:14px;color:var(--muted)}
+.sentence{font-family:var(--font-display);font-size:19px;font-weight:600;line-height:1.35;border:2px solid var(--accent);border-radius:12px;padding:14px 16px}
+.cand{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--bg);display:grid;gap:12px}
+.cand-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.pill{background:var(--hl);color:var(--hl-ink);font-weight:700;padding:2px 12px;border-radius:99px;font-variant-numeric:tabular-nums}
+.rank{display:grid;gap:8px}
+.rank button{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;text-align:left;border:2px solid var(--line);background:var(--bg);color:var(--ink);padding:12px 14px;border-radius:10px;min-height:48px}
+.rank button[aria-pressed="true"]{border-color:var(--accent);background:var(--surface);box-shadow:inset 0 0 0 2px var(--accent)}
+.rank .nm{font-weight:700}
+.rank .sub{display:block;font-weight:400;color:var(--muted);font-size:14px}
+pre.recap{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:16px;font-family:var(--font-body);font-size:16px;margin:0;max-height:440px;overflow:auto}
+.status{min-height:1.5em;color:var(--ok);font-weight:700}
+details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;background:var(--surface)}
+.wrap>details{margin-top:18px}
+summary{cursor:pointer;font-weight:700}
+details ul.plain{margin:10px 0 0;padding-left:20px;display:grid;gap:6px}
+details .chips{margin-top:10px}
+footer{margin-top:24px;color:var(--muted);font-size:15px}
+@media (max-width:520px){.stepper button span.t{display:none}.card{padding:16px}.bar{grid-template-columns:1fr 3.4ch}.bar .track{grid-column:1/-1;grid-row:2}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="top"><div class="top-in">
+  <div class="brand">Mon futur métier</div>
+  <div class="timer" role="timer" aria-label="Temps restant">
+    <span class="clock" id="clock">30:00</span>
+    <button class="btn" id="go" type="button">Démarrer les 30 min</button>
+  </div>
+</div></div>
+
+<main class="wrap">
+  <header style="margin-top:22px;display:grid;gap:8px">
+    <h1>Me connaître pour choisir un métier</h1>
+    <p class="lead">En 30 minutes, tu découvres ce qui te plaît et ce que tu sais bien faire, puis tu t'en sers pour chercher des métiers, les comparer et en choisir un. Tu le présenteras à l'oral à la séance suivante. Tes réponses restent sur cet appareil.</p>
+  </header>
+
+  <ol class="stepper" id="stepper"></ol>
+  <div class="phase"><span>Partie A · Me connaître (10 min)</span><span>Partie B · Chercher et choisir (20 min)</span></div>
+
+  <!-- Étape 1 : goûts -->
+  <section class="card" data-step="1" id="s1">
+    <span class="tag">Étape 1 · 4 min · Mes goûts</span>
+    <h2>Ce que j'aime faire</h2>
+    <p class="lead">Pour chaque activité, touche la réponse qui te ressemble. Réponds vite : ta première idée est la bonne.</p>
+    <div id="acts"></div>
+    <h3>Mes familles de goûts</h3>
+    <div class="bars" id="bars" aria-live="polite"></div>
+    <p class="hint" id="barhint"></p>
+  </section>
+
+  <!-- Étape 2 : qualités -->
+  <section class="card" data-step="2" id="s2" hidden>
+    <span class="tag">Étape 2 · 3 min · Mes qualités</span>
+    <h2>Ce que je sais bien faire</h2>
+    <p class="lead">Choisis jusqu'à 5 qualités qui te décrivent le mieux. Ne choisis pas celles que tu voudrais avoir : choisis celles que les autres remarquent chez toi.</p>
+    <div class="chips" id="quals" role="group" aria-label="Mes qualités"></div>
+    <p class="hint" id="qualcount"></p>
+    <div><label for="proof">Une fois où j'ai montré l'une de ces qualités (à l'école, en sport, à la maison…)</label>
+      <textarea id="proof" placeholder="Ex. : j'ai aidé un camarade à comprendre un exercice, avec patience."></textarea></div>
+    <div><label for="others">Ce que mes proches ou mes professeurs disent de moi</label>
+      <input type="text" id="others" placeholder="Ex. : « tu es toujours de bonne humeur », « tu es très soigneux »"></div>
+  </section>
+
+  <!-- Étape 3 : conditions + profil -->
+  <section class="card" data-step="3" id="s3" hidden>
+    <span class="tag">Étape 3 · 3 min · Mon profil</span>
+    <h2>Comment j'aimerais travailler</h2>
+    <p class="lead">Deux métiers du même secteur peuvent être très différents. Dis ce qui compte pour toi, ou « Peu importe ».</p>
+    <div id="conds"></div>
+    <h3>Mon profil en un coup d'œil</h3>
+    <div id="profile" aria-live="polite" style="display:grid;gap:12px"></div>
+    <div><label for="ideal">Je complète : un métier idéal pour moi, ce serait un métier où…</label>
+      <input type="text" id="ideal" placeholder="Ex. : je travaille en équipe, je bouge, et j'aide des gens"></div>
+  </section>
+
+  <!-- Étape 4 : pistes -->
+  <section class="card" data-step="4" id="s4" hidden>
+    <span class="tag">Étape 4 · 5 min · Des pistes</span>
+    <h2>Trouver 3 métiers à examiner</h2>
+    <p class="lead">Voici des métiers qui correspondent à tes familles de goûts. Ce sont des idées de départ : tu peux aussi ajouter un métier auquel tu penses déjà. Garde 3 candidats.</p>
+    <div id="pistes" style="display:grid;gap:14px"></div>
+    <div class="grid2" style="align-items:end">
+      <div><label for="custom">Un autre métier qui m'intéresse</label><input type="text" id="custom" placeholder="Ex. : sage-femme, pompier, pâtissier"></div>
+      <div><button class="btn ghost" type="button" id="addc">Ajouter à ma liste</button></div>
+    </div>
+    <p class="hint" id="candcount"></p>
+    <ul class="links"><li><a href="https://www.onisep.fr/decouvrir-les-metiers/des-metiers-par-secteur" target="_blank" rel="noopener">Onisep : des métiers par secteur</a><span>Pour parcourir un secteur et voir tous ses métiers, y compris ceux que tu ne connais pas.</span></li></ul>
+  </section>
+
+  <!-- Étape 5 : enquête -->
+  <section class="card" data-step="5" id="s5" hidden>
+    <span class="tag">Étape 5 · 10 min · Enquête</span>
+    <h2>J'enquête sur mes 3 candidats</h2>
+    <p class="lead">Compte environ 3 minutes par métier. Ouvre la fiche Onisep du métier, lis le résumé, puis réponds. Un métier avec peu de réponses cochées est un métier à laisser de côté.</p>
+    <ul class="links">
+      <li><a href="https://www.onisep.fr/decouvrir-les-metiers/des-metiers-par-secteur" target="_blank" rel="noopener">Onisep : fiches métiers</a><span>Activités, qualités, lieux d'exercice, conditions de travail, formations.</span></li>
+      <li><a href="https://www.onisep.fr/avenir-s/la-plateforme-avenir-s-vos-questions-nos-reponses" target="_blank" rel="noopener">Plateforme Avenir(s)</a><span>Pour explorer des métiers en vidéo. Ton professeur t'indique l'accès de ton collège.</span></li>
+    </ul>
+    <div id="enq" style="display:grid;gap:16px"></div>
+  </section>
+
+  <!-- Étape 6 : choix -->
+  <section class="card" data-step="6" id="s6" hidden>
+    <span class="tag">Étape 6 · 5 min · Mon choix</span>
+    <h2>Je choisis mon métier</h2>
+    <p class="lead">Les métiers sont classés selon tes réponses de l'étape 5. Touche celui que tu veux présenter. Tu peux garder un autre que celui du haut si tu as une bonne raison.</p>
+    <div class="rank" id="rank"></div>
+    <div id="reasons" hidden style="display:grid;gap:14px">
+      <div id="verdict" class="hint"></div>
+      <div><label for="why1">Il correspond à mes goûts parce que…</label><textarea id="why1"></textarea></div>
+      <div><label for="why2">Il utilise mes qualités : lesquelles et comment ?</label><textarea id="why2"></textarea></div>
+      <div><label for="why3">Pour y arriver, je pourrais faire ces études ou cette formation…</label><textarea id="why3"></textarea></div>
+      <h3>Ma fiche de choix</h3>
+      <pre class="recap" id="recap"></pre>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+        <button class="btn" id="copy" type="button">Copier ma fiche</button>
+        <span class="status" id="status" role="status"></span>
+      </div>
+      <p class="hint">Colle cette fiche dans ton cahier ou ton espace numérique de travail. Elle servira de base pour préparer ton oral à la prochaine séance.</p>
+    </div>
+  </section>
+
+  <div class="nav">
+    <button class="btn ghost" id="prev" type="button">Précédent</button>
+    <button class="btn" id="next" type="button">Suivant</button>
+  </div>
+
+  <details>
+    <summary>Pour l'enseignant : cadre et sources</summary>
+    <ul class="plain">
+      <li>La découverte des métiers de la 5e à la 3e s'organise autour de trois axes d'égale importance : secteurs d'activité, expériences d'immersion, formations après le collège (<a href="https://www.education.gouv.fr/bo/2023/Hebdo21/MENE2312737N" target="_blank" rel="noopener">BO n° 21 du 25 mai 2023</a>). Cette séance travaille le premier axe, à partir de la connaissance de soi.</li>
+      <li>Objectifs annuels de 5e dans la plateforme Avenir(s) : explorer ses goûts, ses motivations et ses points forts, et découvrir des métiers très différents en apprenant à les observer (présentation de la DRAIO de Grenoble, novembre 2025). La partie A répond au premier, la partie B au second.</li>
+      <li>Les six familles de goûts de l'étape 1 s'inspirent des modèles d'intérêts professionnels de type Holland, très utilisés en orientation. Ce n'est ni un test officiel de l'Éducation nationale ni une évaluation : le résultat sert à ouvrir des pistes. Les familles sont à la louche, deux ou trois points d'écart n'ont aucun sens.</li>
+      <li>Les métiers suggérés à l'étape 4 et les secteurs associés sont des exemples de départ rédigés pour cette page. Chaque élève les vérifie sur l'Onisep (étape 5). La séance Onisep « Tour d'horizon des métiers » suit la même logique : relier métier, secteur et centres d'intérêt, et montrer qu'un goût mène à de nombreux métiers.</li>
+      <li>Ressources : <a href="https://www.education.gouv.fr/la-decouverte-des-metiers-au-college-de-la-classe-de-cinquieme-la-classe-de-troisieme-378233" target="_blank" rel="noopener">page du ministère</a> et <a href="https://eduscol.education.gouv.fr/5217/la-decouverte-des-metiers-au-college" target="_blank" rel="noopener">page Éduscol</a> sur la découverte des métiers au collège.</li>
+      <li>Les réponses sont enregistrées dans le navigateur de l'élève uniquement. Vous ne les recevez pas : demandez-lui la fiche copiée à l'étape 6. Le score de l'étape 5 est un aide-mémoire pour trier, pas un verdict.</li>
+    </ul>
+  </details>
+  <footer>Ressources : Onisep, Éduscol, ministère de l'Éducation nationale.</footer>
+</main>
+
+<script>
+(function(){
+  /* ---------- Données ---------- */
+  var FAMS=[
+    {id:"tech",name:"Concret et technique",verb:"construire, réparer ou manipuler des choses concrètes",
+      sectors:["Bâtiment, travaux publics","Industrie","Agriculture, animaux, nature"],
+      jobs:["Électricien·ne","Mécanicien·ne automobile","Menuisier·ère","Technicien·ne de maintenance","Paysagiste","Boulanger·ère"]},
+    {id:"sci",name:"Comprendre et chercher",verb:"observer, expérimenter et comprendre comment ça marche",
+      sectors:["Sciences, recherche","Énergie, environnement","Informatique, numérique"],
+      jobs:["Technicien·ne de laboratoire","Géologue","Développeur·se informatique","Vétérinaire","Ingénieur·e en environnement","Archéologue"]},
+    {id:"art",name:"Créer et s'exprimer",verb:"imaginer, créer et m'exprimer",
+      sectors:["Arts, culture","Communication, médias"],
+      jobs:["Graphiste","Architecte","Photographe","Styliste","Monteur·se vidéo","Animateur·rice 3D"]},
+    {id:"soc",name:"Aider et accompagner",verb:"aider, soigner ou accompagner les autres",
+      sectors:["Santé, social","Éducation, enseignement"],
+      jobs:["Infirmier·ère","Professeur·e des écoles","Éducateur·rice spécialisé·e","Kinésithérapeute","Aide-soignant·e","Soigneur·se animalier·ère"]},
+    {id:"ent",name:"Entreprendre et convaincre",verb:"organiser, convaincre et mener des projets",
+      sectors:["Commerce, vente","Communication, médias","Droit, justice"],
+      jobs:["Chef·fe de projet événementiel","Commercial·e","Journaliste","Avocat·e","Community manager","Chef·fe d'entreprise"]},
+    {id:"org",name:"Organiser et fiabiliser",verb:"organiser, classer et vérifier avec méthode",
+      sectors:["Transport, logistique","Commerce, vente","Santé, social"],
+      jobs:["Comptable","Logisticien·ne","Documentaliste","Secrétaire médical·e","Contrôleur·se qualité","Assistant·e de gestion"]}
+  ];
+  var ACTS=[
+    ["Réparer ou monter un objet",0],["Utiliser des outils ou des machines",0],["Travailler dehors ou de mes mains",0],
+    ["Faire une expérience pour comprendre pourquoi",1],["Résoudre une énigme ou un problème difficile",1],["Mesurer, observer, analyser des données",1],
+    ["Dessiner, imaginer, inventer",2],["Jouer, chanter, filmer, écrire des histoires",2],["Composer des images, décorer, créer un style",2],
+    ["Expliquer à quelqu'un qui ne comprend pas",3],["Prendre soin de quelqu'un ou d'un animal",3],["Écouter un camarade qui va mal",3],
+    ["Organiser un projet ou un événement",4],["Convaincre, débattre, présenter devant un groupe",4],["Vendre, négocier, lancer une idée",4],
+    ["Ranger, classer, tenir des comptes",5],["Suivre une méthode précise sans me tromper",5],["Vérifier que tout est bien fait",5]
+  ];
+  var QUALS=["Curiosité","Patience","Créativité","Sens de l'organisation","Écoute des autres","Précision","Persévérance","Habileté manuelle","Endurance physique","Sens du contact","Sens des responsabilités","Calme face au stress","Capacité à entraîner les autres","Logique","Autonomie","Esprit d'équipe"];
+  var CONDS=[
+    ["lieu","Où je préfère travailler",["À l'intérieur","En extérieur"]],
+    ["equipe","Avec qui",["Plutôt seul·e","En équipe"]],
+    ["mouv","Mon corps",["Debout, en mouvement","Plutôt assis·e"]],
+    ["public","Les contacts",["Beaucoup de monde (clients, patients, élèves)","Peu de contacts"]],
+    ["rythme","Le rythme",["Régulier, prévisible","Varié, imprévu"]]
+  ];
+  var CRIT=["Il correspond à mes goûts","Il utilise au moins 2 de mes qualités","Ses conditions de travail me conviennent","J'ai trouvé assez d'infos fiables (dont l'Onisep)"];
+  var STEPS=[["Goûts","4 min"],["Qualités","3 min"],["Profil","3 min"],["Pistes","5 min"],["Enquête","10 min"],["Choix","5 min"]];
+  var TOTAL=30*60, KEY="mon-futur-metier-v2";
+  var S={step:1,g:{},q:[],c:{},f:{},cands:[],custom:[],enq:{},final:"",remaining:TOTAL,running:false,done:{}};
+  try{var raw=localStorage.getItem(KEY);if(raw){var o=JSON.parse(raw);for(var k in o){S[k]=o[k]}}}catch(e){}
+  S.running=false;
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+  var $=function(id){return document.getElementById(id)};
+  function h(tag,props,kids){
+    var e=document.createElement(tag);props=props||{};
+    for(var k in props){
+      if(k==="class")e.className=props[k];
+      else if(k==="text")e.textContent=props[k];
+      else if(k.indexOf("on")===0)e.addEventListener(k.slice(2),props[k]);
+      else e.setAttribute(k,props[k]);
+    }
+    (kids||[]).forEach(function(c){e.appendChild(typeof c==="string"?document.createTextNode(c):c)});
+    return e;
+  }
+  function seg(box,labels,get,set){
+    labels.forEach(function(l,i){
+      var b=h("button",{type:"button",text:l,"aria-pressed":get()===i?"true":"false"});
+      b.addEventListener("click",function(){
+        set(i);box.querySelectorAll("button").forEach(function(x,j){x.setAttribute("aria-pressed",j===i?"true":"false")});
+      });
+      box.appendChild(b);
+    });
+  }
+
+  /* ---------- Étape 1 : goûts ---------- */
+  var acts=$("acts");
+  ACTS.forEach(function(a,i){
+    var row=h("div",{class:"act"});row.appendChild(h("p",{text:a[0]}));
+    var box=h("div",{class:"seg",role:"group","aria-label":a[0]});
+    seg(box,["Pas du tout","Un peu","Beaucoup"],function(){return S.g[i]},function(v){S.g[i]=v;save();bars()});
+    row.appendChild(box);acts.appendChild(row);
+  });
+  function famScores(){
+    return FAMS.map(function(f,fi){
+      var s=0,n=0;ACTS.forEach(function(a,i){if(a[1]===fi&&S.g[i]!==undefined){s+=S.g[i];n++}});
+      return {f:f,s:s,n:n};
+    });
+  }
+  function topFams(){
+    var sc=famScores(),answered=sc.reduce(function(a,x){return a+x.n},0);
+    if(answered<9)return [];
+    return sc.slice().sort(function(a,b){return b.s-a.s}).filter(function(x){return x.s>0}).slice(0,2).map(function(x){return x.f});
+  }
+  function bars(){
+    var box=$("bars");box.innerHTML="";
+    var top=topFams().map(function(f){return f.id});
+    famScores().forEach(function(x){
+      var row=h("div",{class:"bar"+(top.indexOf(x.f.id)>-1?" top":"")});
+      row.appendChild(h("span",{class:"t",text:x.f.name}));
+      var fill=h("div",{class:"fill"});fill.style.width=(x.s/6*100)+"%";
+      row.appendChild(h("div",{class:"track"},[fill]));
+      row.appendChild(h("span",{class:"v",text:x.s+"/6"}));
+      box.appendChild(row);
+    });
+    var done=Object.keys(S.g).length;
+    $("barhint").textContent=top.length?"Tes deux familles les plus fortes sont en bleu. Garde-les en tête pour la suite.":"Réponds à au moins 9 activités pour voir apparaître tes deux familles les plus fortes ("+done+"/18 faites).";
+  }
+
+  /* ---------- Étape 2 : qualités ---------- */
+  var qbox=$("quals");
+  function qcount(){
+    $("qualcount").textContent=S.q.length+" qualité"+(S.q.length>1?"s":"")+" sur 5 maximum."+(S.q.length===5?" C'est complet. Touche une qualité pour la retirer.":"");
+  }
+  QUALS.forEach(function(q){
+    var b=h("button",{type:"button",class:"chip",text:q,"aria-pressed":S.q.indexOf(q)>-1?"true":"false"});
+    b.addEventListener("click",function(){
+      var i=S.q.indexOf(q);
+      if(i>-1)S.q.splice(i,1);else{if(S.q.length>=5)return;S.q.push(q)}
+      b.setAttribute("aria-pressed",i>-1?"false":"true");save();qcount();
+    });
+    qbox.appendChild(b);
+  });
+  qcount();
+
+  /* ---------- Étape 3 : conditions et profil ---------- */
+  var cb=$("conds");
+  CONDS.forEach(function(c){
+    var row=h("div",{class:"act"});row.appendChild(h("p",{class:"lab",text:c[1]}));
+    var box=h("div",{class:"seg",role:"group","aria-label":c[1]});
+    seg(box,[c[2][0],c[2][1],"Peu importe"],function(){return S.c[c[0]]},function(v){S.c[c[0]]=v;save();profile()});
+    row.appendChild(box);cb.appendChild(row);
+  });
+  function condList(){
+    var out=[];
+    CONDS.forEach(function(c){var v=S.c[c[0]];if(v===0||v===1)out.push(c[2][v])});
+    return out;
+  }
+  function profile(){
+    var box=$("profile");box.innerHTML="";
+    var tf=topFams();
+    var line=function(label,text){box.appendChild(h("p",{},[h("strong",{text:label+" : "}),text]))};
+    line("Mes familles de goûts",tf.length?tf.map(function(f){return f.name}).join(" et "):"à compléter à l'étape 1");
+    line("Mes qualités",S.q.length?S.q.join(", "):"à compléter à l'étape 2");
+    var cl=condList();
+    line("Mes conditions de travail",cl.length?cl.join(" ; "):"peu importe");
+    if(tf.length){
+      var secs=[];tf.forEach(function(f){f.sectors.forEach(function(s){if(secs.indexOf(s)<0)secs.push(s)})});
+      var d=h("div",{},[h("p",{},[h("strong",{text:"Secteurs à regarder en priorité (à vérifier sur l'Onisep)"})])]);
+      var ch=h("div",{class:"chips",style:"margin-top:8px"});
+      secs.forEach(function(s){ch.appendChild(h("span",{class:"chip static",text:s}))});
+      d.appendChild(ch);box.appendChild(d);
+      var s="Je cherche un métier où je pourrai "+tf.map(function(f){return f.verb}).join(", et aussi ")+"."+(S.q.length?" Je m'appuie sur : "+S.q.slice(0,3).join(", ").toLowerCase()+".":"");
+      box.appendChild(h("p",{class:"sentence",text:s}));
+    }
+  }
+
+  /* ---------- Étape 4 : pistes ---------- */
+  var chipRefs=[];
+  function allSelected(){return S.cands.slice()}
+  function syncChips(){
+    chipRefs.forEach(function(r){r.b.setAttribute("aria-pressed",S.cands.indexOf(r.n)>-1?"true":"false")});
+    var n=S.cands.length;
+    var t=$("candcount");
+    t.className="hint"+(n===3?" okmsg":"");
+    t.textContent=n+" candidat"+(n>1?"s":"")+" sur 3."+(n<3?" Il t'en faut 3 pour comparer à l'étape 5.":" Tu peux passer à l'enquête.");
+  }
+  function toggleCand(n){
+    var i=S.cands.indexOf(n);
+    if(i>-1)S.cands.splice(i,1);else{if(S.cands.length>=3)return}
+    if(i<0)S.cands.push(n);
+    save();syncChips();
+  }
+  function jobChip(n){
+    var b=h("button",{type:"button",class:"chip",text:n});
+    b.addEventListener("click",function(){toggleCand(n)});
+    chipRefs.push({b:b,n:n});return b;
+  }
+  function pistes(){
+    var box=$("pistes");box.innerHTML="";chipRefs=[];
+    var tf=topFams(),ids=tf.map(function(f){return f.id});
+    if(!tf.length)box.appendChild(h("p",{class:"hint warn",text:"Tu n'as pas encore de familles de goûts : fais d'abord l'étape 1. En attendant, voici toutes les familles."}));
+    var main=FAMS.filter(function(f){return ids.indexOf(f.id)>-1}),rest=FAMS.filter(function(f){return ids.indexOf(f.id)<0});
+    main.forEach(function(f){
+      var d=h("div",{},[h("h3",{text:f.name})]);
+      var ch=h("div",{class:"chips",style:"margin-top:8px"});f.jobs.forEach(function(j){ch.appendChild(jobChip(j))});
+      d.appendChild(ch);box.appendChild(d);
+    });
+    var det=h("details",{},[h("summary",{text:main.length?"Voir les autres familles":"Toutes les familles"})]);
+    if(!main.length)det.setAttribute("open","");
+    rest.forEach(function(f){
+      var d=h("div",{style:"margin-top:12px"},[h("h3",{text:f.name})]);
+      var ch=h("div",{class:"chips",style:"margin-top:8px"});f.jobs.forEach(function(j){ch.appendChild(jobChip(j))});
+      d.appendChild(ch);det.appendChild(d);
+    });
+    box.appendChild(det);
+    if(S.custom.length){
+      var d=h("div",{},[h("h3",{text:"Mes propres idées"})]);
+      var ch=h("div",{class:"chips",style:"margin-top:8px"});S.custom.forEach(function(j){ch.appendChild(jobChip(j))});
+      d.appendChild(ch);box.appendChild(d);
+    }
+    syncChips();
+  }
+  $("addc").addEventListener("click",function(){
+    var v=$("custom").value.trim();if(!v)return;
+    var all=[];FAMS.forEach(function(f){all=all.concat(f.jobs)});
+    if(S.custom.indexOf(v)<0&&all.indexOf(v)<0)S.custom.push(v);
+    $("custom").value="";
+    if(S.cands.length<3&&S.cands.indexOf(v)<0)S.cands.push(v);
+    save();pistes();
+  });
+
+  /* ---------- Étape 5 : enquête ---------- */
+  function E(n){
+    if(!S.enq[n])S.enq[n]={d:"",t:"",p:"",c:[false,false,false,false],e:0};
+    return S.enq[n];
+  }
+  function score(n){var e=E(n);return e.c.filter(Boolean).length+(e.e||0)}
+  function enquete(){
+    var box=$("enq");box.innerHTML="";
+    if(!S.cands.length){
+      box.appendChild(h("p",{class:"hint warn",text:"Tu n'as pas encore de candidats. Reviens à l'étape 4 pour en choisir 3."}));return;
+    }
+    S.cands.forEach(function(n,ci){
+      var e=E(n),pill=h("span",{class:"pill"});
+      function upd(){pill.textContent="Score "+score(n)+" / 9"}
+      var card=h("div",{class:"cand"});
+      card.appendChild(h("div",{class:"cand-head"},[h("h3",{text:(ci+1)+". "+n}),pill]));
+      var mk=function(lab,key,ph){
+        var id="e"+ci+key;
+        var ta=h("textarea",{id:id,placeholder:ph});ta.value=e[key]||"";
+        ta.addEventListener("input",function(){e[key]=ta.value;save()});
+        return h("div",{},[h("label",{for:id,text:lab}),ta]);
+      };
+      card.appendChild(mk("Ce que fait cette personne (une phrase)","d","Ex. : elle répare des moteurs et conseille les clients."));
+      card.appendChild(mk("Études ou formation possibles","t","Ex. : CAP ou bac pro, puis éventuellement BTS."));
+      card.appendChild(mk("Ce qui me plaît ou me freine","p","Ex. : j'aime le contact, mais les horaires sont longs."));
+      var ul=h("ul",{class:"check"});
+      CRIT.forEach(function(c,i){
+        var id="c"+ci+"-"+i,cbx=h("input",{type:"checkbox",id:id});cbx.checked=!!e.c[i];
+        cbx.addEventListener("change",function(){e.c[i]=cbx.checked;save();upd()});
+        ul.appendChild(h("li",{},[h("label",{},[cbx,c])]));
+      });
+      card.appendChild(h("div",{},[h("p",{class:"lab",text:"Mon bilan"}),ul]));
+      var sbox=h("div",{class:"seg",role:"group","aria-label":"Mon envie d'en savoir plus"});
+      seg(sbox,["1","2","3","4","5"],function(){return e.e?e.e-1:-1},function(v){e.e=v+1;save();upd()});
+      card.appendChild(h("div",{},[h("p",{class:"lab",text:"Mon envie d'en savoir plus (1 = faible, 5 = forte)"}),sbox]));
+      upd();box.appendChild(card);
+    });
+  }
+
+  /* ---------- Étape 6 : choix ---------- */
+  function ranking(){
+    return S.cands.slice().sort(function(a,b){return score(b)-score(a)});
+  }
+  function choix(){
+    var box=$("rank");box.innerHTML="";
+    if(S.cands.length&&S.cands.indexOf(S.final)<0)S.final="";
+    if(!S.cands.length){
+      box.appendChild(h("p",{class:"hint warn",text:"Il te faut des candidats : reviens aux étapes 4 et 5."}));$("reasons").hidden=true;return;
+    }
+    ranking().forEach(function(n,i){
+      var e=E(n),marks=CRIT.map(function(c,j){return e.c[j]?"✓":"–"}).join(" ");
+      var b=h("button",{type:"button","aria-pressed":S.final===n?"true":"false"},[
+        h("span",{},[h("span",{class:"nm",text:(i+1)+". "+n}),h("span",{class:"sub",text:"Critères : "+marks+" · envie "+(e.e||0)+"/5"})]),
+        h("span",{class:"pill",text:score(n)+" / 9"})
+      ]);
+      b.addEventListener("click",function(){
+        S.final=n;save();
+        box.querySelectorAll("button").forEach(function(x){x.setAttribute("aria-pressed","false")});
+        b.setAttribute("aria-pressed","true");reasons();
+      });
+      box.appendChild(b);
+    });
+    reasons();
+  }
+  function reasons(){
+    var r=$("reasons");
+    if(!S.final){r.hidden=true;return}
+    r.hidden=false;r.style.display="grid";
+    var e=E(S.final),k=e.c.filter(Boolean).length,v=$("verdict");
+    if(k>=3){v.className="hint okmsg";v.textContent="Choix cohérent : "+S.final+" respecte "+k+" critères sur 4. Explique pourquoi avec tes mots."}
+    else{v.className="hint warn";v.textContent="Ton choix repose sur "+k+" critère"+(k>1?"s":"")+" sur 4. Retourne à l'étape 5 pour compléter, ou choisis un autre métier. Tu peux en parler à ton professeur."}
+    recap();
+  }
+  function recap(){
+    var f=S.f;function t(k){return (f[k]&&f[k].trim())||"à compléter"}
+    var tf=topFams(),cl=condList();
+    var e=S.final?E(S.final):null;
+    var others=ranking().filter(function(n){return n!==S.final});
+    var txt="MON MÉTIER CHOISI : "+(S.final||"à choisir")+"\n\n"+
+      "MON PROFIL\n"+
+      "Mes familles de goûts : "+(tf.length?tf.map(function(x){return x.name}).join(" et "):"à compléter")+"\n"+
+      "Mes qualités : "+(S.q.length?S.q.join(", "):"à compléter")+"\n"+
+      "Mes conditions de travail : "+(cl.length?cl.join(" ; "):"peu importe")+"\n\n"+
+      "POURQUOI CE MÉTIER ME CORRESPOND\n"+
+      "Mes goûts : "+t("why1")+"\n"+
+      "Mes qualités : "+t("why2")+"\n"+
+      "Études ou formation possibles : "+t("why3")+"\n\n"+
+      "CE QUE J'AI APPRIS SUR CE MÉTIER\n"+
+      "Ce que fait le professionnel : "+((e&&e.d.trim())||"à compléter")+"\n"+
+      "Formation : "+((e&&e.t.trim())||"à compléter")+"\n"+
+      "Ce qui me plaît ou me freine : "+((e&&e.p.trim())||"à compléter")+"\n\n"+
+      "Les autres métiers que j'ai comparés : "+(others.length?others.map(function(n){return n+" ("+score(n)+"/9)"}).join(" ; "):"aucun");
+    $("recap").textContent=txt;return txt;
+  }
+  $("copy").addEventListener("click",function(){
+    var txt=recap(),s=$("status");
+    function fb(){var r=document.createRange();r.selectNodeContents($("recap"));var sel=window.getSelection();sel.removeAllRanges();sel.addRange(r);s.textContent="Texte sélectionné : copie-le avec Ctrl+C."}
+    try{navigator.clipboard.writeText(txt).then(function(){s.textContent="Fiche copiée."},fb)}catch(er){fb()}
+  });
+
+  /* ---------- Champs texte simples ---------- */
+  ["proof","others","ideal","why1","why2","why3"].forEach(function(id){
+    var el=$(id);if(S.f[id])el.value=S.f[id];
+    el.addEventListener("input",function(){S.f[id]=el.value;save();if(id.indexOf("why")===0)recap()});
+  });
+
+  /* ---------- Navigation ---------- */
+  var st=$("stepper");
+  STEPS.forEach(function(l,i){
+    var li=h("li");
+    var b=h("button",{type:"button"});b.innerHTML="<b>"+(i+1)+"</b><span class=t>"+l[0]+"</span><span class=min>"+l[1]+"</span>";
+    b.addEventListener("click",function(){go(i+1)});
+    li.appendChild(b);st.appendChild(li);
+  });
+  function go(n){
+    n=Math.max(1,Math.min(6,n));
+    if(n>S.step)S.done[S.step]=true;
+    S.step=n;
+    for(var i=1;i<=6;i++)$("s"+i).hidden=(i!==n);
+    st.querySelectorAll("button").forEach(function(b,i){
+      if(i+1===n)b.setAttribute("aria-current","step");else b.removeAttribute("aria-current");
+      b.className=S.done[i+1]?"done":"";
+    });
+    $("prev").disabled=(n===1);
+    $("next").style.visibility=(n===6)?"hidden":"visible";
+    if(n===1)bars();
+    if(n===3)profile();
+    if(n===4)pistes();
+    if(n===5)enquete();
+    if(n===6)choix();
+    save();window.scrollTo({top:0,behavior:"auto"});
+  }
+  $("prev").addEventListener("click",function(){go(S.step-1)});
+  $("next").addEventListener("click",function(){go(S.step+1)});
+
+  /* ---------- Minuteur ---------- */
+  var tick=null;
+  function fmt(sec){var m=Math.floor(Math.abs(sec)/60),s=Math.abs(sec)%60;return (sec<0?"+":"")+String(m).padStart(2,"0")+":"+String(s).padStart(2,"0")}
+  function clock(){var c=$("clock");c.textContent=fmt(S.remaining);c.className="clock"+(S.remaining<=300?" late":"")}
+  $("go").addEventListener("click",function(){
+    if(S.running){clearInterval(tick);S.running=false;$("go").textContent="Reprendre";save();return}
+    S.running=true;$("go").textContent="Pause";
+    tick=setInterval(function(){S.remaining--;clock();if(S.remaining%10===0)save()},1000);
+  });
+  if(S.remaining<TOTAL&&S.remaining>0)$("go").textContent="Reprendre";
+  clock();go(S.step);
+})();
+</script>
+
+</body></html>

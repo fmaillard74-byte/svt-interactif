@@ -1,0 +1,806 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Révisions Rome Seconde</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Marcellus&display=swap">
+<style>
+/* Layout: one column, a quiet header with a 14-tile mosaic (one tessera per revision day), four tabs, practice panels as single cards. */
+:root{
+  --bg:#f3f1f6; --surface:#ffffff; --surface2:#ebe7f2; --ink:#1d1830; --muted:#625b78; --line:#d8d2e4;
+  --accent:#5a2a8a; --accent-ink:#ffffff; --gold:#b7861a; --gold2:#d9b24a; --tile:#e3deed;
+  --good:#1d7a4b; --good-bg:#e1f3e9; --bad:#b3261e; --bad-bg:#fbe5e3;
+  --font-display:'Marcellus',Georgia,'Times New Roman',serif;
+  --font-body:'Instrument Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14101e; --surface:#1e182d; --surface2:#2a2340; --ink:#efeaf8; --muted:#a79fc0; --line:#3a3254;
+    --accent:#b99aec; --accent-ink:#1a1030; --gold:#e0b84a; --gold2:#b8902c; --tile:#2c2542;
+    --good:#6fd6a0; --good-bg:#173626; --bad:#ff948d; --bad-bg:#3b1b1c; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14101e; --surface:#1e182d; --surface2:#2a2340; --ink:#efeaf8; --muted:#a79fc0; --line:#3a3254;
+  --accent:#b99aec; --accent-ink:#1a1030; --gold:#e0b84a; --gold2:#b8902c; --tile:#2c2542;
+  --good:#6fd6a0; --good-bg:#173626; --bad:#ff948d; --bad-bg:#3b1b1c; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.shell{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+h1,h2,h3{font-family:var(--font-display);font-weight:400;margin:0;text-wrap:balance;letter-spacing:.01em}
+p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.top h1{font-size:clamp(22px,4.6vw,30px);line-height:1.15}
+.top .sub{color:var(--muted);font-size:14px;margin-top:4px}
+.streak{display:flex;align-items:center;gap:10px}
+.coin{width:48px;height:48px;border-radius:50%;background:var(--gold2);color:#2a1d00;display:grid;place-items:center;
+  font-family:var(--font-display);font-size:22px;box-shadow:inset 0 0 0 3px var(--gold),inset 0 0 0 5px var(--gold2)}
+.streak small{display:block;color:var(--muted);font-size:13px;line-height:1.2}
+.streak b{font-weight:600}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tab{background:none;border:0;border-bottom:3px solid transparent;padding:10px 14px;color:var(--muted);font-weight:500;white-space:nowrap}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.hero{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center}
+@media (max-width:640px){.hero{grid-template-columns:1fr}}
+.eyebrow{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.hero h2{font-size:28px;margin:4px 0 8px}
+.lead{color:var(--muted);max-width:46ch;margin-bottom:16px}
+.btn{background:var(--accent);color:var(--accent-ink);border:0;border-radius:10px;padding:12px 20px;font-weight:600;min-height:46px}
+.btn:hover{filter:brightness(1.08)}
+.btn[disabled]{opacity:.45;cursor:not-allowed;filter:none}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.small{padding:6px 12px;min-height:34px;font-size:14px}
+.mosaic{display:grid;grid-template-columns:repeat(7,30px);gap:4px}
+.mosaic i{width:30px;height:30px;border-radius:4px;background:var(--tile);display:block}
+.mosaic i.done{background:var(--gold2)}
+.mosaic i.done:nth-child(3n){background:var(--gold)}
+.mosaic i.today{outline:2px solid var(--accent);outline-offset:1px}
+.mosaic i.miss{opacity:.45}
+.cap{font-size:13px;color:var(--muted);margin-top:8px;grid-column:1/-1}
+.mosaic-wrap{display:flex;flex-direction:column}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.kpi{background:var(--surface2);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:2px}
+.kpi b{font-family:var(--font-display);font-size:26px;font-weight:400}
+.kpi span{color:var(--muted);font-size:14px}
+.steps{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.steps span{font-size:13px;font-weight:600;color:var(--muted);border-bottom:3px solid var(--line);padding-bottom:3px}
+.steps span.on{color:var(--ink);border-bottom-color:var(--accent)}
+.steps span.past{color:var(--ink);border-bottom-color:var(--gold2)}
+.session-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.meta{font-size:13px;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
+.tag{font-size:12px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;color:var(--accent)}
+.flash{background:var(--surface2);border-radius:12px;padding:26px 22px;min-height:190px;display:flex;flex-direction:column;gap:14px;justify-content:center}
+.flash .q{font-family:var(--font-display);font-size:clamp(20px,4.4vw,25px);line-height:1.3}
+.flash .a{font-size:17px;border-top:1px solid var(--line);padding-top:14px}
+.flash .a b{font-weight:600}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row .btn{flex:1 1 140px}
+.rate-bad{border:1px solid var(--bad)!important;color:var(--bad)!important}
+.rate-good{background:var(--good)!important;color:#fff!important}
+:root[data-theme="dark"] .rate-good{color:#0b2416!important}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .rate-good{color:#0b2416!important}}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;min-height:48px;line-height:1.35}
+.opt:hover:not([disabled]){border-color:var(--accent)}
+.opt.ok{background:var(--good-bg);border-color:var(--good)}
+.opt.ko{background:var(--bad-bg);border-color:var(--bad)}
+.opt[disabled]{cursor:default}
+.explain{background:var(--surface2);border-radius:10px;padding:12px 14px}
+.qtext{font-family:var(--font-display);font-size:clamp(20px,4.2vw,24px);line-height:1.3}
+ol.slots{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+ol.slots li{display:flex;gap:10px;align-items:center;border:1px dashed var(--line);border-radius:10px;padding:8px 10px;min-height:46px}
+ol.slots li.filled{border-style:solid;cursor:pointer;background:var(--surface2)}
+ol.slots li.ok{border-color:var(--good);background:var(--good-bg)}
+ol.slots li.ko{border-color:var(--bad);background:var(--bad-bg)}
+ol.slots .n{font-family:var(--font-display);width:26px;color:var(--muted)}
+ol.slots .yr{margin-left:auto;font-weight:600;white-space:nowrap}
+.pool{display:flex;flex-wrap:wrap;gap:8px}
+.pool button{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:8px 14px;min-height:40px}
+.pool button:hover{border-color:var(--accent)}
+.pairs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:520px){.pairs{gap:8px}.pairs .opt{padding:10px;font-size:15px}}
+.pairs .col{display:flex;flex-direction:column;gap:8px}
+.opt.sel{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent) inset}
+.opt.done{background:var(--good-bg);border-color:var(--good);opacity:.75}
+.opt.bad{background:var(--bad-bg);border-color:var(--bad)}
+textarea{width:100%;min-height:150px;resize:vertical;border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--surface);color:var(--ink);font:inherit}
+.kw{display:flex;flex-wrap:wrap;gap:8px}
+.kw span{border-radius:999px;padding:4px 12px;font-size:14px;border:1px solid var(--line)}
+.kw .f{background:var(--good-bg);border-color:var(--good)}
+.kw .m{background:var(--bad-bg);border-color:var(--bad)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:14px}
+.chip[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mode{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:4px}
+.mode:hover{border-color:var(--accent)}
+.mode b{font-family:var(--font-display);font-weight:400;font-size:19px}
+.mode span{color:var(--muted);font-size:14px}
+.bars{display:flex;flex-direction:column;gap:10px}
+.bar{display:grid;grid-template-columns:minmax(120px,200px) 1fr 70px;gap:10px;align-items:center;font-size:14px}
+@media (max-width:520px){.bar{grid-template-columns:1fr 1fr 56px}}
+.bar .track{height:12px;background:var(--tile);border-radius:6px;overflow:hidden}
+.bar .fill{height:100%;background:var(--accent);border-radius:6px}
+.bar .val{text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
+.outline{display:flex;flex-direction:column;gap:12px}
+.outline h3{font-size:19px}
+.outline ul{margin:6px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.keybox{background:var(--surface2);border-radius:10px;padding:12px 14px}
+.keybox b{font-weight:600}
+.muted{color:var(--muted)}
+.hint{font-size:13px;color:var(--muted)}
+.result{display:flex;flex-direction:column;gap:12px}
+.result .big{font-family:var(--font-display);font-size:34px}
+@media (prefers-reduced-motion:no-preference){.opt,.btn,.mode,.pool button{transition:border-color .15s,background .15s,filter .15s}}
+.denier{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pc{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:8px;min-width:0}
+.pc svg{width:100%;height:auto;display:block}
+.pc text{font-family:var(--font-display);fill:var(--ink)}
+.pc [data-k]{cursor:pointer}
+.pc [data-k]:hover .hot,.pc [data-k].on .hot{stroke:var(--accent);stroke-width:3}
+.hot{fill:none;stroke:transparent}
+.disc{fill:var(--gold2);stroke:var(--gold);stroke-width:3}
+.fig{fill:var(--gold);opacity:.85}
+.expl{background:var(--surface2);border-left:4px solid var(--accent);border-radius:8px;padding:12px 14px;min-height:48px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.id{background:var(--surface2);border-radius:12px;padding:14px;min-width:0}
+.id h4{margin:0 0 6px;font-family:var(--font-display);font-weight:400;font-size:18px}
+.id ul{margin:0;padding-left:18px}
+blockquote.q{margin:0;padding:12px 16px;border-left:4px solid var(--gold);background:var(--surface2);border-radius:0 8px 8px 0;font-family:var(--font-display);font-size:18px}
+.idea{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:stretch}
+.idea>div{border-radius:10px;padding:10px 12px;min-width:0}
+.idea .ap{background:var(--good-bg)}.idea .re{background:var(--bad-bg)}
+.idea .arr{background:none;align-self:center;color:var(--muted);padding:0}
+@media(max-width:560px){.denier,.two{grid-template-columns:1fr}.idea{grid-template-columns:1fr}.idea .arr{transform:rotate(90deg);justify-self:center}}
+</style>
+
+<div class="shell">
+  <header class="top">
+    <div>
+      <h1>Rome, d'Auguste à Constantin</h1>
+      <p class="sub">Histoire · Seconde · 10 à 15 minutes par jour pendant 14 jours</p>
+    </div>
+    <div class="streak" id="topstats"></div>
+  </header>
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+  <main id="view"></main>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- utilities ---------- */
+const $ = (s, el=document) => el.querySelector(s);
+const h = (tag, attrs={}, ...kids) => {
+  const e = document.createElement(tag);
+  for (const k in attrs){
+    const v = attrs[k];
+    if (k === 'class') e.className = v;
+    else if (k === 'html') e.innerHTML = v;
+    else if (k.slice(0,2) === 'on') e.addEventListener(k.slice(2), v);
+    else if (v === true) e.setAttribute(k, '');
+    else if (v !== false && v != null) e.setAttribute(k, v);
+  }
+  for (const c of kids.flat()){ if (c == null || c === false) continue; e.append(c.nodeType ? c : document.createTextNode(c)); }
+  return e;
+};
+const shuffle = a => { a = a.slice(); for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const TODAY = () => new Date().toLocaleDateString('sv-SE');
+const addDays = (s,n) => { const d=new Date(s+'T12:00:00'); d.setDate(d.getDate()+n); return d.toLocaleDateString('sv-SE'); };
+const diffDays = (a,b) => Math.round((new Date(b+'T12:00:00')-new Date(a+'T12:00:00'))/864e5);
+const hash = s => { let x=5381; for (let i=0;i<s.length;i++) x=((x<<5)+x+s.charCodeAt(i))|0; return (x>>>0).toString(36); };
+const plural = (n,w) => n + ' ' + w + (n>1 ? 's' : '');
+
+/* ---------- content ---------- */
+const THEMES = {
+  intro:'Contexte',
+  aug:'Auguste et le principat',
+  doc:'Doc 2 : propagande',
+  emp:'Empire multiculturel',
+  rel:'Religions',
+  con:'Constantin'
+};
+
+const CARDS = [
+ ['intro','Au IIIe siècle av. J.-C., quel est le régime de Rome ?','Une <b>république</b> qui entreprend de vastes conquêtes.'],
+ ['intro','Que contrôle Rome au Ier siècle av. J.-C. ?','<b>Presque tout le bassin méditerranéen</b>.'],
+ ['intro','Pourquoi les victoires mènent-elles aux guerres civiles ?','Elles <b>renforcent le pouvoir des généraux</b>, qui se disputent le pouvoir.'],
+ ['intro','Qui succède à Jules César après son assassinat ?','<b>Octave</b>, son fils adoptif.'],
+ ['aug','Quand Octave devient-il Auguste ? Quel régime met-il en place ?','En <b>27 av. J.-C.</b> : le <b>principat</b> (ou empire), où il concentre tous les pouvoirs.'],
+ ['aug','Pourquoi Auguste garde-t-il les apparences de la République ?','Le peuple romain <b>rejette violemment toute forme de monarchie</b>.'],
+ ['aug','Que signifie « princeps » ?','« <b>Premier</b> » des sénateurs : titre d\'Auguste.'],
+ ['aug','Cite 4 moyens par lesquels Auguste domine le Sénat.','1) Il peut <b>s\'opposer</b> à toutes ses décisions. 2) Titre de <b>princeps</b>. 3) Il <b>désigne</b> les membres du Sénat. 4) Élu <b>censeur</b>, il choisit qui y entre.'],
+ ['aug','Qu\'est-ce qu\'un censeur ?','Un magistrat qui peut <b>choisir les membres du Sénat</b>.'],
+ ['aug','Qu\'est-ce que l\'« imperator » ? Depuis quand Auguste l\'est-il ?','Le <b>chef des armées</b>, depuis <b>29 av. J.-C.</b> (rôle normalement du consul).'],
+ ['aug','Que permet le titre de tribun à vie ?','<b>S\'opposer à tout</b> (droit de veto).'],
+ ['aug','Pourquoi dit-on que le principat est une « monarchie qui ne dit pas son nom » ?','Auguste garde les institutions républicaines (Sénat, magistrats…) mais il les <b>contrôle toutes</b>.'],
+ ['doc','Res Gestae : auteur, nature, date ?','Écrites par <b>Auguste lui-même</b> ; texte <b>autobiographique</b>, sorte de testament ; Ier siècle.'],
+ ['doc','À qui s\'adressent les Res Gestae ?','À son <b>héritier</b>, mais aussi pour <b>convaincre tous les Romains</b>.'],
+ ['doc','Quelles sont les 3 idées de propagande des 2 documents ?','1) Il met en avant le <b>Sénat et le peuple romain</b> : il « respecte les institutions ». 2) Il se place <b>au même niveau que ses collègues</b>. 3) Il a <b>servi la République</b> : bénéfice collectif, non individuel.'],
+ ['doc','Que signifie S.P.Q.R. ? Où est-ce sur la monnaie ?','<i>Senatus Populusque Romanus</i> : « le Sénat et le peuple romain », devise de la République. Au <b>revers</b> du denier, avec le char triomphal.'],
+ ['doc','Décris le denier d\'argent (lieu, date, avers, revers).','Frappé à <b>Colonia Patricia (Cordoue)</b>, <b>19-18 av. J.-C.</b>. Avers : buste d\'Octave entouré de ses surnoms (César, Auguste). Revers : char triomphal + S.P.Q.R.'],
+ ['doc','Quelle phrase des Res Gestae montre qu\'Auguste se place au niveau de ses collègues ?','« supérieur à tous les autres par la dignité et l\'autorité, mais [il n\'avait] pas de pouvoir plus grand que celui de [ses] collègues ».'],
+ ['doc','Conclusion : que reste-t-il vrai malgré la propagande ?','Auguste est <b>le seul détenteur du pouvoir</b>. À sa mort, <b>Tibère</b> reprend ses titres et fonctions : l\'empire s\'enracine.'],
+ ['doc','Doc 2 : quels sont les deux documents et leur point commun ?','Un texte (les <b>Res Gestae</b>) et une monnaie (le <b>denier d\'argent</b>). Point commun : de la <b>propagande</b> pour montrer qu\'Auguste respecte les institutions.'],
+ ['doc','Propagande : définition (à partir du Doc 2) ?','Ensemble de textes, d\'images ou de monnaies destinés à <b>faire accepter un pouvoir</b> en donnant une image favorable du chef.'],
+ ['doc','Idée 1 : ce que montre Auguste / ce qu\'il en est vraiment ?','Il met en avant le <b>Sénat et le peuple romain</b> (S.P.Q.R.) → mais en réalité il <b>domine le Sénat</b>.'],
+ ['doc','Idée 2 : ce que montre Auguste / ce qu\'il en est vraiment ?','Il se dit <b>au niveau de ses collègues</b> → mais il est <b>princeps</b>, imperator, tribun à vie : il garde <b>tous les pouvoirs</b>.'],
+ ['doc','Idée 3 : ce que montre Auguste / ce qu\'il en est vraiment ?','Il a <b>servi la République</b> (bénéfice collectif) → mais il est <b>le seul détenteur du pouvoir</b>.'],
+ ['doc','Qu\'y a-t-il sur l\'avers du denier ?','Le <b>buste d\'Octave</b>, entouré de ses surnoms (<b>César, Auguste</b>).'],
+ ['doc','Qu\'y a-t-il sur le revers du denier ?','Un <b>char triomphal</b> et l\'inscription <b>S.P.Q.R.</b>'],
+ ['emp','Comment l\'empire est-il sécurisé ?','Installation de <b>légions</b> et construction de <b>murs aux frontières</b> les plus éloignées.'],
+ ['emp','Quel est le rôle des gouverneurs ?','Ils appliquent les <b>lois impériales</b> dans leurs provinces et <b>améliorent les conditions de vie</b> : adhésion au régime, armée qui intervient vite.'],
+ ['emp','À quoi sert la citoyenneté romaine pour un provincial ?','Exercer des <b>fonctions politiques</b> locales, puis entrer au <b>Sénat</b> : il participe à l\'empire et devient <b>fidèle</b>.'],
+ ['emp','Qu\'est-ce que Caracalla décide en 212 ?','Il donne la <b>citoyenneté romaine à tous les hommes libres</b> de l\'empire.'],
+ ['emp','Qu\'est-ce que la romanisation ?','L\'intégration de la culture des régions conquises et la <b>diffusion de l\'architecture</b> et du mode de vie romains.'],
+ ['emp','Qu\'est-ce que l\'ascension sociale dans l\'empire ?','La possibilité de monter dans la société grâce à la citoyenneté : certains <b>empereurs en sont issus</b>.'],
+ ['emp','Que signifie « pax romana » ?','La <b>paix romaine</b> : paix à l\'intérieur de l\'empire (IIe-IIIe siècle dans ton cours).'],
+ ['rel','Qu\'est-ce que le culte de l\'empereur ?','Un culte qui <b>rassemble les habitants</b> de l\'empire autour de l\'empereur.'],
+ ['rel','Quelle tension religieuse traverse l\'empire ?','Les <b>religions polythéistes</b> (ex. culte d\'Isis) contre les <b>monothéistes</b> (juifs, chrétiens).'],
+ ['rel','Pourquoi les chrétiens sont-ils persécutés ?','Ils sont <b>monothéistes</b> et refusent le culte de l\'empereur. Pourtant, la <b>communauté chrétienne s\'étend</b>.'],
+ ['con','Constantin : empereur de quelle date à quelle date ?','De <b>306</b> à <b>337</b>.'],
+ ['con','Quelle est la situation politique au début du IVe siècle ?','Depuis <b>293</b>, l\'Empire est gouverné par <b>plusieurs empereurs</b>. Constantin l\'emporte et <b>rétablit l\'unité</b>.'],
+ ['con','Que se passe-t-il en 306 ?','Constantin est <b>proclamé empereur par les légions de Grande-Bretagne</b>.'],
+ ['con','Que se passe-t-il en 312 ?','<b>Victoire de Constantin sur Maxence</b> (pont Milvius, 28 octobre). Constantin empereur d\'Occident, Licinius d\'Orient.'],
+ ['con','Qui est à l\'origine de l\'édit de Milan (313) ? Quelles conséquences ?','<b>Constantin et Licinius</b> (Augustes). Conséquence : <b>plus de liberté pour les chrétiens</b>, fin des persécutions.'],
+ ['con','Comment l\'édit de Milan justifie-t-il la liberté de culte ?','Pour que la <b>divinité soit favorable</b> à eux et à tous leurs sujets, dans la tranquillité de l\'Empire.'],
+ ['con','Que se passe-t-il de 316 à 324 ?','Guerre contre Licinius. Le <b>3 juillet 324</b>, Constantin devient <b>seul empereur</b>.'],
+ ['con','325 : quelle est la situation et qu\'est-ce que le concile de Nicée ?','Les chrétiens sont divisés. Constantin <b>convoque et préside</b> une assemblée d\'évêques (~300) qui fixe le <b>Credo</b>, rejette la doctrine d\'<b>Arius</b> et fixe la date de Pâques.'],
+ ['con','Qu\'est-ce qu\'un concile ? Un Credo ?','Concile : <b>assemblée d\'évêques</b>. Credo : texte qui <b>résume la foi chrétienne</b> (le dogme).'],
+ ['con','Que fait Constantin en 330, et pourquoi ?','Il inaugure <b>Constantinople</b> (ancienne Byzance), la « <b>nouvelle Rome</b> », à l\'Est, plus proche des menaces extérieures.'],
+ ['con','Comment Constantinople imite-t-elle Rome ?','Sept collines, un <b>forum</b>, un <b>capitole</b>, un <b>sénat</b>. Mais c\'est une ville <b>chrétienne</b> (églises).'],
+ ['con','Qu\'est-ce que le solidus ?','Une <b>monnaie en or</b> créée par Constantin, utilisée dans tout l\'Empire.'],
+ ['con','Fais la synthèse des changements apportés par Constantin.','Il <b>rétablit l\'unité</b> de l\'Empire, <b>autorise puis protège le christianisme</b> (Milan, Nicée) et <b>renforce l\'Est</b> avec Constantinople.']
+].map(c => ({ id:'c'+hash(c[1]), th:c[0], q:c[1], a:c[2] }));
+
+const Q = (th,q,o,c,e) => ({ id:'q'+hash(q), th, q, o, c, e, t:'mc' });
+const V = (th,q,c,e) => ({ id:'v'+hash(q), th, q, o:['Vrai','Faux'], c: c ? 0 : 1, e, t:'vf' });
+
+const QUIZ = [
+ Q('intro','Au IIIe siècle av. J.-C., Rome est…',['une monarchie héréditaire','une république qui entreprend de vastes conquêtes','un empire dirigé par Auguste','une cité grecque'],1,'Rome est une <b>république</b> qui conquiert presque tout le bassin méditerranéen.'),
+ Q('intro','Pourquoi les victoires militaires déstabilisent-elles la République ?',['Elles ruinent le Trésor','Elles renforcent le pouvoir des généraux, qui se disputent le pouvoir','Elles font fuir les sénateurs','Elles provoquent une révolte des provinces'],1,'Les généraux victorieux se disputent le pouvoir : <b>guerres civiles</b>, puis assassinat de Jules César.'),
+ Q('intro','Qui succède à Jules César ?',['Marc Antoine','Tibère','Octave, son fils adoptif','Constantin'],2,'<b>Octave</b>, fils adoptif de César, devient Auguste.'),
+ Q('aug','En quelle année Octave devient-il Auguste et fonde-t-il le principat ?',['44 av. J.-C.','29 av. J.-C.','27 av. J.-C.','14 ap. J.-C.'],2,'<b>27 av. J.-C.</b> Attention : 29 av. J.-C. est la date où il devient chef des armées (imperator).'),
+ Q('aug','Que signifie « princeps » ?',['Premier des sénateurs','Chef des armées','Roi de Rome','Défenseur du peuple'],0,'<i>Princeps</i> = « premier » des sénateurs.'),
+ Q('aug','Quel titre fait d\'Auguste le chef des armées ?',['Censeur','Imperator','Tribun','Consul'],1,'<b>Imperator</b>, depuis 29 av. J.-C. : un rôle normalement réservé au consul.'),
+ Q('aug','Que permet le titre de tribun à vie ?',['Désigner les sénateurs','S\'opposer à toute décision (veto)','Commander les légions','Frapper monnaie'],1,'Le tribun peut <b>s\'opposer à tout</b>.'),
+ Q('aug','Comment Auguste choisit-il les membres du Sénat ?',['Par élection populaire','Il les désigne, notamment comme censeur','Par tirage au sort','Ils héritent de leur siège'],1,'Il <b>désigne</b> les membres du Sénat ; en tant que <b>censeur</b>, il décide qui y entre.'),
+ Q('aug','Pourquoi Auguste conserve-t-il les institutions républicaines ?',['Par manque d\'argent','Le peuple romain rejette violemment toute monarchie','Le Sénat l\'exige par la loi','Pour imiter Jules César'],1,'Il sait que le peuple romain <b>rejette toute forme de monarchie</b>.'),
+ Q('aug','Quelle formule résume le mieux le régime d\'Auguste ?',['Une monarchie qui ne dit pas son nom','Une démocratie directe','Une théocratie','Une république restaurée sans changement'],0,'Les institutions existent encore, mais Auguste <b>concentre tous les pouvoirs</b>.'),
+ Q('doc','Qui a écrit les Res Gestae ?',['Tibère','Auguste lui-même','Un historien grec','Constantin'],1,'Ce sont les « Actes du divin Auguste », <b>écrits par Auguste</b> : autobiographie et testament.'),
+ Q('doc','Les Res Gestae sont destinées…',['uniquement aux soldats','à son héritier, mais aussi à convaincre tous les Romains','aux provinciaux seulement','aux chrétiens'],1,'Destinées à l\'héritier, elles servent aussi la <b>propagande</b> auprès de tous les Romains.'),
+ Q('doc','Que signifie S.P.Q.R. ?',['Senatus Populusque Romanus','Sacra Pax Quae Romae','Senatus Principis Qui Regit','Salus Publica Quirites Romae'],0,'<i>Senatus Populusque Romanus</i> : le Sénat et le peuple romain.'),
+ Q('doc','Où figure S.P.Q.R. sur le denier d\'Auguste ?',['À l\'avers, autour du buste','Au revers, avec le char triomphal','Sur la tranche','Nulle part'],1,'<b>Revers</b> : char triomphal et S.P.Q.R. ; avers : buste d\'Octave.'),
+ Q('doc','Quelle phrase montre qu\'Auguste se place au niveau de ses collègues ?',['« J\'ai célébré trois triomphes »','« supérieur à tous par la dignité et l\'autorité, mais sans pouvoir plus grand que mes collègues »','« J\'ai réédifié le Capitole »','« J\'ai repoussé les frontières »'],1,'Il affirme n\'avoir <b>pas plus de pouvoir</b> que ses collègues : c\'est la 2e idée de propagande.'),
+ Q('doc','Quelle est la 3e idée de propagande ?',['Il a rendu service à la République : bénéfice collectif et non individuel','Il est un dieu vivant','Il est plus puissant que le Sénat','Il refuse tous les titres'],0,'Il se présente comme un <b>serviteur de la République</b>.'),
+ Q('doc','Qui succède à Auguste ?',['Caligula','Tibère','Néron','Constantin'],1,'<b>Tibère</b>, désigné par Auguste, reprend ses titres et fonctions.'),
+Q('doc','Apparence ou réalité ? « Le Sénat et le peuple romain » est gravé sur la monnaie.',['Apparence républicaine','Réalité : pouvoir d\'un seul'],0,'C\'est l\'<b>apparence</b> : S.P.Q.R. rappelle la République.'),
+Q('doc','Apparence ou réalité ? Auguste désigne les membres du Sénat.',['Apparence républicaine','Réalité : pouvoir d\'un seul'],1,'<b>Réalité</b> : il domine le Sénat.'),
+Q('doc','Apparence ou réalité ? Auguste dit n\'avoir pas plus de pouvoir que ses collègues.',['Apparence républicaine','Réalité : pouvoir d\'un seul'],0,'<b>Apparence</b> : c\'est ce qu\'il écrit dans les Res Gestae.'),
+Q('doc','Apparence ou réalité ? Auguste est tribun à vie et imperator.',['Apparence républicaine','Réalité : pouvoir d\'un seul'],1,'<b>Réalité</b> : il concentre tous les pouvoirs.'),
+Q('doc','Apparence ou réalité ? Tibère reprend à la mort d\'Auguste tous ses titres et fonctions.',['Apparence républicaine','Réalité : pouvoir d\'un seul'],1,'<b>Réalité</b> : le pouvoir d\'un seul se transmet.'),
+Q('doc','Le denier d\'Auguste est un exemple de…',['propagande','loi impériale','culte de l\'empereur','édit de tolérance'],0,'Une monnaie diffuse partout l\'image qu\'Auguste veut donner de son pouvoir : de la <b>propagande</b>.'),
+Q('doc','Où et quand le denier a-t-il été frappé ?',['Rome, 27 av. J.-C.','Colonia Patricia (Cordoue), 19-18 av. J.-C.','Constantinople, 330','Lyon, 212'],1,'<b>Colonia Patricia (Cordoue)</b>, <b>19-18 av. J.-C.</b>.'),
+Q('doc','Qu\'y a-t-il à l\'avers du denier ?',['Un char triomphal','Le buste d\'Octave avec ses surnoms','Une louve','Un temple'],1,'Avers : <b>buste d\'Octave</b> (César, Auguste). Revers : char triomphal + S.P.Q.R.'),
+ Q('emp','Comment l\'empire est-il sécurisé aux frontières ?',['Par des alliances','Par des légions et des murs','Par la flotte uniquement','Par des tributs'],1,'<b>Légions</b> et <b>murs</b> aux frontières les plus éloignées.'),
+ Q('emp','Quel est le rôle des gouverneurs ?',['Commander la flotte','Appliquer les lois impériales et améliorer les conditions de vie en province','Choisir l\'empereur','Rendre la justice à Rome'],1,'Cela favorise l\'<b>adhésion au régime</b> et permet à l\'armée d\'intervenir vite.'),
+ Q('emp','Que décide Caracalla en 212 ?',['Interdire le christianisme','Donner la citoyenneté romaine à tous les hommes libres','Déplacer la capitale','Supprimer le Sénat'],1,'<b>212</b> : tous les hommes libres de l\'empire deviennent citoyens.'),
+ Q('emp','À quoi sert la citoyenneté pour un provincial ?',['Payer moins d\'impôts','Exercer des fonctions politiques, entrer au Sénat et devenir fidèle à l\'empire','Éviter l\'armée','Voyager librement'],1,'Elle permet de <b>participer à l\'empire</b> et renforce la fidélité.'),
+ Q('emp','La romanisation, c\'est…',['la conquête militaire d\'un territoire','la diffusion du mode de vie romain (architecture, culture)','le départ des Romains en province','l\'abandon de tous les cultes locaux'],1,'On intègre la culture des régions conquises et on diffuse l\'<b>architecture</b> romaine.'),
+ Q('emp','Que signifie « pax romana » ?',['La paix romaine','La loi romaine','L\'armée romaine','La religion romaine'],0,'<i>Pax</i> = paix.'),
+ Q('rel','Le culte de l\'empereur sert à…',['convertir les chrétiens','rassembler les habitants autour de l\'empereur','remplacer le Sénat','financer l\'armée'],1,'C\'est un lien religieux et politique entre l\'empereur et ses sujets.'),
+ Q('rel','Le culte d\'Isis est un exemple de religion…',['polythéiste','monothéiste','chrétienne','sans dieux'],0,'Isis est une divinité parmi d\'autres : religion <b>polythéiste</b>.'),
+ Q('rel','Pourquoi les chrétiens sont-ils persécutés avant Constantin ?',['Ils sont monothéistes et refusent le culte de l\'empereur','Ils refusent l\'impôt','Ils se révoltent','Ils parlent grec'],0,'Tension entre <b>polythéistes</b> et <b>monothéistes</b>.'),
+ Q('con','Constantin est empereur…',['de 27 av. J.-C. à 14','de 212 à 250','de 306 à 337','de 313 à 325'],2,'<b>306 à 337</b> (proclamé par les légions de Grande-Bretagne, mort en 337).'),
+ Q('con','Quelle est la situation politique au début du IVe siècle ?',['Un seul empereur','Plusieurs empereurs gouvernent l\'Empire (depuis 293)','La République est rétablie','Il n\'y a plus d\'empereur'],1,'Constantin l\'emporte sur les autres et <b>rétablit l\'unité</b>.'),
+ Q('con','Que se passe-t-il le 28 octobre 312 ?',['Concile de Nicée','Victoire de Constantin sur Maxence (pont Milvius)','Mort de Constantin','Édit de Milan'],1,'Constantin devient empereur d\'Occident, Licinius d\'Orient.'),
+ Q('con','Qui publie l\'édit de Milan en 313 ?',['Constantin et Licinius','Constantin et Maxence','Auguste et Tibère','Constantin seul'],0,'Édit de tolérance signé par <b>Constantin (Occident) et Licinius (Orient)</b>.'),
+ Q('con','Que décide l\'édit de Milan ?',['Le christianisme devient obligatoire','Liberté de pratiquer la religion de son choix, chrétiens inclus','Les cultes païens sont interdits','Les évêques sont expulsés'],1,'C\'est un édit de <b>tolérance</b>, pas une obligation.'),
+ Q('con','Pourquoi Constantin autorise-t-il le christianisme (doc. 2) ?',['Pour que la divinité soit favorable à lui et à ses sujets','Par peur de Licinius','Pour punir le Sénat','Pour financer l\'armée'],0,'Il veut la <b>faveur de la divinité</b> pour l\'Empire tout entier.'),
+ Q('con','Qui préside le concile de Nicée en 325 ?',['Le pape','Constantin','Licinius','Arius'],1,'Constantin <b>convoque et préside</b> le concile (~300 évêques).'),
+ Q('con','Que fixe le concile de Nicée ?',['Le calendrier romain','Le dogme (Credo) et rejet de la doctrine d\'Arius','La capitale de l\'Empire','La monnaie'],1,'Il fixe le <b>Credo</b> et rejette l\'<b>arianisme</b>.'),
+ Q('con','Qu\'inaugure Constantin en 330 ?',['Rome','Constantinople, la nouvelle Rome','Milan','Trèves'],1,'<b>Constantinople</b>, ancienne Byzance, à l\'Est.'),
+ Q('con','Quel élément montre que Constantinople imite Rome ?',['Sept collines, forum, capitole, sénat','Un amphithéâtre uniquement','Une grande muraille','Un grand port'],0,'Doc. 5 : la nouvelle capitale imite Rome.'),
+ Q('con','Qu\'est-ce que le solidus ?',['Une monnaie en or créée par Constantin','Un impôt','Une légion','Un titre'],0,'Monnaie en <b>or</b>, utilisée dans tout l\'Empire.'),
+ Q('con','Pourquoi renforcer l\'Est avec Constantinople ?',['Se rapprocher des menaces extérieures (Goths, Perses)','Rome est détruite','Fuir les chrétiens','Contrôler l\'Afrique'],0,'L\'Est est <b>confronté aux menaces extérieures</b> (carte du doc. 6).'),
+ V('aug','Auguste a supprimé le Sénat.',false,'Faux : il le <b>garde mais le contrôle</b>.'),
+ V('aug','Auguste est à la fois princeps, imperator et tribun à vie.',true,'Vrai : il cumule les titres.'),
+ V('aug','Le principat est fondé en 27 av. J.-C.',true,'Vrai.'),
+ V('intro','Octave est le fils biologique de Jules César.',false,'Faux : son fils <b>adoptif</b>.'),
+ V('doc','Les Res Gestae sont écrites par un historien indépendant.',false,'Faux : par <b>Auguste lui-même</b>.'),
+ V('doc','Le denier montre un char triomphal à l\'avers.',false,'Faux : au <b>revers</b>. L\'avers porte le buste d\'Octave.'),
+ V('doc','Tibère reprend les titres et fonctions d\'Auguste à sa mort.',true,'Vrai : l\'empire s\'enracine.'),
+ V('emp','En 212, tous les hommes libres de l\'empire deviennent citoyens.',true,'Vrai : décision de Caracalla.'),
+ V('emp','La romanisation se limite à la conquête militaire.',false,'Faux : c\'est surtout la <b>diffusion du mode de vie romain</b>.'),
+ V('rel','Les chrétiens sont persécutés notamment parce qu\'ils sont monothéistes.',true,'Vrai : tension entre polythéistes et monothéistes.'),
+ V('con','L\'édit de Milan est signé par Constantin seul.',false,'Faux : avec <b>Licinius</b>.'),
+ V('con','Constantin devient seul empereur en 324.',true,'Vrai : victoire sur Licinius le 3 juillet 324.'),
+ V('con','Le concile de Nicée réunit près de 300 évêques.',true,'Vrai.'),
+ V('con','Constantinople est bâtie sur l\'ancienne Byzance.',true,'Vrai.'),
+ V('con','Le solidus est une monnaie d\'argent.',false,'Faux : en <b>or</b>.'),
+ V('con','Constantin choisit Rome comme seule capitale en 330.',false,'Faux : il inaugure <b>Constantinople</b>.')
+];
+
+const FRISES = [
+ { title:'De l\'imperator à Constantinople', items:[
+   {t:'Octave devient chef des armées (imperator)',y:'29 av. J.-C.'},{t:'Octave devient Auguste : début du principat',y:'27 av. J.-C.'},
+   {t:'Caracalla donne la citoyenneté à tous les hommes libres',y:'212'},{t:'Édit de Milan',y:'313'},
+   {t:'Concile de Nicée',y:'325'},{t:'Inauguration de Constantinople',y:'330'}]},
+ { title:'La carrière de Constantin', items:[
+   {t:'Proclamé empereur par les légions de Grande-Bretagne',y:'306'},{t:'Victoire sur Maxence au pont Milvius',y:'312'},
+   {t:'Édit de Milan avec Licinius',y:'313'},{t:'Victoire sur Licinius : seul empereur',y:'324'},
+   {t:'Concile de Nicée',y:'325'},{t:'Inauguration de Constantinople',y:'330'}]},
+ { title:'Tout le chapitre', items:[
+   {t:'Octave devient Auguste',y:'27 av. J.-C.'},{t:'Caracalla : citoyenneté pour tous les hommes libres',y:'212'},
+   {t:'Constantin proclamé empereur',y:'306'},{t:'Édit de Milan',y:'313'},
+   {t:'Concile de Nicée',y:'325'},{t:'Mort de Constantin',y:'337'}]}
+];
+
+const PAIRS = [
+ ['Princeps','« Premier » des sénateurs'],['Imperator','Chef des armées'],['Censeur','Choisit les membres du Sénat'],
+ ['Tribun à vie','Peut s\'opposer à tout (veto)'],['Res Gestae','Autobiographie d\'Auguste, testament et propagande'],
+ ['S.P.Q.R.','Le Sénat et le peuple romain'],['Principat','Régime d\'Auguste : pouvoir d\'un seul'],
+ ['Légion','Unité de l\'armée, installée aux frontières'],['Gouverneur','Applique les lois impériales en province'],
+ ['Citoyenneté','Droits civiques, étendus à tous en 212'],['Romanisation','Diffusion du mode de vie romain'],
+ ['Pax romana','La paix romaine'],['Culte impérial','Culte rendu à l\'empereur'],['Polythéisme','Plusieurs dieux'],
+ ['Monothéisme','Un seul Dieu'],['Concile','Assemblée d\'évêques'],['Credo','Texte qui résume la foi chrétienne'],
+ ['Arius','Doctrine chrétienne rejetée à Nicée'],['Constantinople','Nouvelle Rome à l\'Est, inaugurée en 330'],
+ ['Solidus','Monnaie en or de Constantin'],['Édit de Milan','Liberté de culte (313)'],
+ ['Maxence','Rival battu au pont Milvius (312)'],['Licinius','Empereur d\'Orient, vaincu en 324'],
+ ['Propagande','Textes et monnaies pour faire accepter son pouvoir']
+];
+
+const WRITES = [
+ { q:'Présente les 2 documents (Res Gestae et denier) et montre comment Auguste conserve les apparences de la République.',
+   kw:[['Res Gestae',['res gestae','actes du divin']],['autobiographie ou testament',['autobiograph','testament']],['héritier / convaincre',['heritier','convaincre']],
+       ['denier ou monnaie',['denier','monnaie']],['S.P.Q.R.',['spqr','senatus populusque']],['Sénat et peuple romain',['senat et le peuple','senat et au peuple','senat et peuple']],
+       ['même niveau que ses collègues',['college','meme niveau']],['propagande',['propagande']],['seul détenteur du pouvoir',['seul detenteur','tous les pouvoirs','seul maitre']]],
+   m:'Les <i>Res Gestae</i> sont l\'autobiographie d\'Auguste, une sorte de testament écrit par lui-même au Ier siècle, destiné à son héritier mais aussi à convaincre tous les Romains. Le second document est un denier d\'argent : buste d\'Octave à l\'avers, char triomphal et S.P.Q.R. au revers. Dans les deux cas, Auguste met en avant le Sénat et le peuple romain, se place au même niveau que ses collègues et dit avoir servi la République. C\'est de la propagande : il fait croire qu\'il respecte les institutions alors qu\'il est le seul détenteur du pouvoir.' },
+ { q:'Montre comment Auguste contrôle le Sénat et les magistrats.',
+   kw:[['princeps',['princeps']],['censeur',['censeur']],['désigne les sénateurs',['designe']],['s\'oppose / veto',['oppos','veto']],['imperator / chef des armées',['imperator','chef des armees']],['tribun à vie',['tribun']],['27 av. J.-C.',['27']],['29 av. J.-C.',['29']]],
+   m:'À partir de 27 av. J.-C., Auguste met en place le principat. Il domine le Sénat : il porte le titre de princeps, peut s\'opposer à toutes ses décisions, désigne ses membres et, comme censeur, choisit qui y entre. Il contrôle aussi les magistrats : depuis 29 av. J.-C. il est imperator, chef des armées, un rôle de consul, et il reçoit le titre de tribun à vie, qui lui permet de s\'opposer à tout.' },
+ { q:'Explique comment l\'empire est sécurisé, administré et unifié.',
+   kw:[['légions',['legion']],['murs aux frontières',['mur','frontiere']],['gouverneurs',['gouverneur']],['lois impériales',['loi']],['citoyenneté',['citoyennet']],['Caracalla',['caracalla']],['212',['212']],['Sénat',['senat']],['fidélité / adhésion',['fidele','adhesion']],['romanisation',['romanisation']]],
+   m:'Des légions installées et des murs aux frontières les plus éloignées sécurisent le territoire. Les gouverneurs appliquent les lois impériales dans leurs provinces et améliorent les conditions de vie, ce qui favorise l\'adhésion au régime. La citoyenneté romaine permet aux provinciaux d\'exercer des fonctions politiques, puis d\'entrer au Sénat : ils deviennent fidèles à l\'empire. En 212, Caracalla l\'accorde à tous les hommes libres. La romanisation diffuse l\'architecture et la culture romaines.' },
+ { q:'Décris et explique les grands changements sous Constantin (religieux et territorial).',
+   kw:[['306',['306']],['Maxence ou 312',['maxence','312']],['Licinius',['licinius']],['édit de Milan',['milan']],['liberté de culte',['liberte','tolerance']],['concile de Nicée',['nicee']],['Credo ou dogme',['credo','dogme']],['Arius',['arius']],['Constantinople',['constantinople']],['nouvelle Rome',['nouvelle rome']],['l\'Est / menaces',['l\'est','orient','menace']]],
+   m:'Proclamé empereur en 306, Constantin bat Maxence en 312 et, avec Licinius, publie en 313 l\'édit de Milan : les chrétiens obtiennent la liberté de culte, pour que la divinité soit favorable à l\'Empire. En 325, il convoque et préside le concile de Nicée, qui fixe le Credo et rejette la doctrine d\'Arius. Seul empereur depuis 324, il inaugure en 330 Constantinople, la nouvelle Rome, à l\'Est, pour renforcer cette partie de l\'empire confrontée aux menaces extérieures.' }
+];
+
+const OUTLINE = [
+ ['Introduction',['IIIe s. av. J.-C. : Rome, république conquérante','Ier s. av. J.-C. : presque tout le bassin méditerranéen','Victoires → pouvoir des généraux → guerres civiles → assassinat de César → Octave']],
+ ['A) Un nouveau régime politique (27 av. J.-C. : le principat)',['1) Auguste domine le Sénat : s\'oppose, princeps, désigne les membres, censeur','2) Auguste contrôle les magistrats : imperator (29 av. J.-C.), tribun à vie','3) Les apparences de la République : Doc 2 (Res Gestae + denier) et 3 idées de propagande','Conclusion : Tibère reprend tout, l\'empire s\'enracine']],
+ ['B) Un vaste empire multiculturel',['1) Légions et murs ; gouverneurs et lois impériales ; adhésion et armée rapide','2) Citoyenneté romaine → Sénat → fidélité ; 212 : Caracalla','Prise de notes : romanisation, ascension sociale, culte de l\'empereur, pax romana','Religions : polythéistes ↔ monothéistes, persécutions, extension du christianisme']],
+ ['Constantin (306-337) : une ère de changements',['312 Maxence → 313 édit de Milan → 324 seul empereur','325 concile de Nicée (Credo, Arius) → 330 Constantinople → 337 mort','Synthèse : unité de l\'Empire, christianisme protégé, Est renforcé']]
+];
+
+/* ---------- state & persistence ---------- */
+const LS_KEY = 'rome-revisions-v1';
+const INT = [0,1,2,4,7,12];
+let S = { start:null, cards:{}, q:{}, days:{}, updated:0 };
+let busy = false, tab = 'today', dbDoc = null, saving = false, dirty = false;
+
+function loadLocal(){ try { const r = localStorage.getItem(LS_KEY); if (r) return JSON.parse(r); } catch(e){} return null; }
+function saveLocal(){ try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch(e){} }
+function persist(){
+  S.updated = Date.now(); saveLocal();
+  if (!dbDoc) return;
+  dirty = true; if (!saving) flush();
+}
+async function flush(){
+  saving = true;
+  while (dirty){ dirty = false; try { await dbDoc.set({ json: JSON.stringify(S), updated: S.updated }); } catch(e){} }
+  saving = false;
+}
+async function initDb(){
+  try {
+    if (!window.claude || !claude.use) return;
+    const [db, user] = await Promise.all([claude.use('db'), claude.use('user')]);
+    if (!db || !user) return;
+    const id = await user.id(); if (!id) return;
+    dbDoc = db.collection('data/users/' + id).doc('progress');
+    const snap = await dbDoc.get();
+    if (snap.exists){
+      const r = snap.data(); const remote = r && r.json ? JSON.parse(r.json) : null;
+      if (remote && (remote.updated||0) > (S.updated||0)){ S = Object.assign({ start:null, cards:{}, q:{}, days:{} }, remote); saveLocal(); if (!busy) renderAll(); }
+      else if (S.updated > ((remote && remote.updated)||0)) persist();
+    } else if (S.updated) persist();
+  } catch(e){}
+}
+
+/* ---------- derived data ---------- */
+const dayNo = () => S.start ? diffDays(S.start, TODAY()) + 1 : 1;
+function streak(){
+  let d = TODAY(); if (!(S.days[d] && S.days[d].done)) d = addDays(d,-1);
+  let n = 0; while (S.days[d] && S.days[d].done){ n++; d = addDays(d,-1); } return n;
+}
+const boxOf = id => (S.cards[id] ? S.cards[id].b : 0);
+const isDue = (id,today) => S.cards[id] && S.cards[id].d <= today;
+function themeStats(){
+  const out = {}; for (const k in THEMES) out[k] = { ok:0, ko:0 };
+  for (const q of QUIZ){ const s = S.q[q.id]; if (s){ out[q.th].ok += s.ok||0; out[q.th].ko += s.ko||0; } }
+  return out;
+}
+
+/* ---------- engines ---------- */
+function runCards(el, list, done){
+  const total = list.length; let queue = list.slice(), known = 0, flipped = false;
+  function rate(c, kind){
+    const today = TODAY(); const cur = S.cards[c.id] || { b:0, d:today };
+    let b = cur.b, first = !c._again;
+    if (kind === 'again'){ b = 1; if (!c._again){ c._again = true; queue.push(c); } }
+    else if (kind === 'hesitant'){ b = Math.max(1, b); }
+    else { b = cur.b === 0 ? 2 : Math.min(5, b + 1); if (first) known++; }
+    S.cards[c.id] = { b, d: addDays(today, Math.max(1, INT[b])) };
+    persist(); queue.shift(); flipped = false; show();
+  }
+  function show(){
+    if (!queue.length) return done({ score: known, total });
+    const c = queue[0];
+    const back = h('div',{class:'a',html:c.a});
+    back.hidden = !flipped;
+    const actions = flipped
+      ? h('div',{class:'row'},
+          h('button',{class:'btn ghost rate-bad',onclick:()=>rate(c,'again')},'À revoir (1)'),
+          h('button',{class:'btn ghost',onclick:()=>rate(c,'hesitant')},'Hésitant (2)'),
+          h('button',{class:'btn rate-good',onclick:()=>rate(c,'good')},'Je savais (3)'))
+      : h('div',{class:'row'}, h('button',{class:'btn',onclick:()=>{ flipped = true; show(); }},'Voir la réponse (espace)'));
+    el.replaceChildren(
+      h('div',{class:'meta'},h('span',{class:'tag'},THEMES[c.th]),h('span',{},`Il reste ${plural(queue.length,'carte')}`)),
+      h('div',{class:'flash'},h('div',{class:'q'},c.q),back),
+      actions,
+      h('p',{class:'hint'},'Dis la réponse à voix haute avant de la révéler. Les cartes ratées reviennent demain.')
+    );
+  }
+  el._key = e => {
+    if (!queue.length) return;
+    if (!flipped && (e.key === ' ' || e.key === 'Enter')){ e.preventDefault(); flipped = true; show(); }
+    else if (flipped && ['1','2','3'].includes(e.key)) rate(queue[0], ['again','hesitant','good'][+e.key-1]);
+  };
+  show();
+}
+
+function runQuiz(el, list, done){
+  let i = 0, score = 0;
+  function show(){
+    if (i >= list.length) return done({ score, total: list.length });
+    const q = list[i];
+    const order = q.t === 'vf' ? [0,1] : shuffle([0,1,2,3]);
+    const box = h('div',{class:'opts'}); const fb = h('div'); let answered = false;
+    order.forEach(idx => {
+      const b = h('button',{class:'opt'}, q.o[idx]);
+      b.addEventListener('click', () => {
+        if (answered) return; answered = true;
+        const ok = idx === q.c; if (ok) score++;
+        const st = S.q[q.id] || { ok:0, ko:0 }; st[ok ? 'ok' : 'ko']++; S.q[q.id] = st; persist();
+        [...box.children].forEach((bb,k) => { bb.disabled = true; if (order[k] === q.c) bb.classList.add('ok'); else if (bb === b) bb.classList.add('ko'); });
+        fb.replaceChildren(
+          h('div',{class:'explain'}, h('b',{}, ok ? 'Bonne réponse. ' : 'Pas tout à fait. '), h('span',{html:q.e})),
+          h('div',{class:'row',style:'margin-top:12px'}, h('button',{class:'btn',onclick:()=>{ i++; show(); }}, i+1 >= list.length ? 'Terminer' : 'Question suivante'))
+        );
+      });
+      box.append(b);
+    });
+    el.replaceChildren(
+      h('div',{class:'meta'},h('span',{class:'tag'}, (q.t==='vf'?'Vrai ou faux · ':'') + THEMES[q.th]),h('span',{},`${i+1} / ${list.length}`)),
+      h('p',{class:'qtext'}, q.q), box, fb);
+  }
+  show();
+}
+
+function runFrise(el, set, done){
+  const items = shuffle(set.items.map((x,r) => Object.assign({ r }, x)));
+  const slots = []; let checked = false;
+  function draw(){
+    const n = set.items.length;
+    const ol = h('ol',{class:'slots'});
+    for (let k=0;k<n;k++){
+      const it = slots[k];
+      const li = h('li',{ class: it ? 'filled' : '' }, h('span',{class:'n'}, String(k+1)), it ? it.t : h('span',{class:'muted'},'Touche un événement ci-dessous'));
+      if (it && checked){ li.classList.add(it.r === k ? 'ok' : 'ko'); li.append(h('span',{class:'yr'}, it.y)); li.style.cursor='default'; }
+      else if (it) li.addEventListener('click', () => { slots.splice(k,1); draw(); });
+      ol.append(li);
+    }
+    const pool = h('div',{class:'pool'});
+    items.filter(x => !slots.includes(x)).forEach(x => pool.append(h('button',{onclick:()=>{ slots.push(x); draw(); }}, x.t)));
+    let foot;
+    if (!checked){
+      foot = h('div',{class:'row'}, h('button',{class:'btn',disabled:slots.length<n,onclick:()=>{ checked = true; draw(); }},'Vérifier l\'ordre'));
+    } else {
+      const sc = slots.filter((x,k) => x.r === k).length;
+      foot = h('div',{class:'result'},
+        h('p',{}, h('b',{}, `${sc} sur ${n} bien placés.`)),
+        h('div',{class:'keybox'}, h('b',{},'Ordre correct : '), set.items.map(x => `${x.y} ${x.t}`).join(' → ')),
+        h('div',{class:'row'}, h('button',{class:'btn',onclick:()=>done({ score: sc, total: n })},'Continuer')));
+    }
+    el.replaceChildren(
+      h('div',{class:'meta'},h('span',{class:'tag'},'Frise'),h('span',{},set.title)),
+      h('p',{class:'qtext'},'Remets les événements dans l\'ordre chronologique.'),
+      ol, checked ? null : pool, foot);
+  }
+  draw();
+}
+
+function runPairs(el, set, done){
+  const n = set.length; const L = shuffle(set.map((p,i)=>({i,t:p[0]}))), R = shuffle(set.map((p,i)=>({i,t:p[1]})));
+  let sl = null, sr = null, errors = 0, bad = null; const ok = new Set();
+  function draw(){
+    const mk = (side, arr, sel) => h('div',{class:'col'}, arr.map(x => {
+      const cls = ['opt']; if (ok.has(x.i)) cls.push('done'); else if (sel === x.i) cls.push('sel');
+      if (bad && bad[side] === x.i) cls.push('bad');
+      return h('button',{class:cls.join(' '),disabled:ok.has(x.i),onclick:()=>pick(side,x.i)}, x.t);
+    }));
+    const finished = ok.size === n;
+    el.replaceChildren(
+      h('div',{class:'meta'},h('span',{class:'tag'},'Associations'),h('span',{},`${ok.size} / ${n} · ${plural(errors,'erreur')}`)),
+      h('p',{class:'qtext'},'Relie chaque mot à sa définition.'),
+      h('div',{class:'pairs'}, mk('l',L,sl), mk('r',R,sr)),
+      finished ? h('div',{class:'row'}, h('button',{class:'btn',onclick:()=>done({ score: Math.max(0,n-errors), total:n })},'Continuer')) : null);
+  }
+  function pick(side,i){
+    if (side==='l') sl = sl===i ? null : i; else sr = sr===i ? null : i;
+    if (sl!=null && sr!=null){
+      if (sl===sr){ ok.add(sl); sl = sr = null; }
+      else { errors++; bad = { l:sl, r:sr }; sl = sr = null; setTimeout(()=>{ bad=null; draw(); }, 600); }
+    }
+    draw();
+  }
+  draw();
+}
+
+const norm = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[’]/g,"'").replace(/\./g,'');
+function runWrite(el, w, done){
+  const ta = h('textarea',{id:'wr-text',placeholder:'Écris 3 à 5 phrases, sans regarder la fiche.'});
+  const out = h('div'); let checked = false;
+  function check(){
+    const t = norm(ta.value); const res = w.kw.map(k => [k[0], k[1].some(s => t.includes(s))]);
+    const found = res.filter(x => x[1]).length; checked = true;
+    out.replaceChildren(
+      h('p',{}, h('b',{}, `${found} mots-clés sur ${res.length}.`), ' Les mots manquants sont à placer dans ta prochaine tentative.'),
+      h('div',{class:'kw'}, res.map(x => h('span',{class:x[1]?'f':'m'}, (x[1]?'✓ ':'✗ ') + x[0]))),
+      h('details',{style:'margin-top:12px'}, h('summary',{},'Voir un modèle de réponse'), h('p',{class:'explain',style:'margin-top:8px',html:w.m})),
+      h('div',{class:'row',style:'margin-top:12px'}, h('button',{class:'btn',onclick:()=>done({ score: found, total: res.length })},'Continuer')));
+  }
+  el.replaceChildren(
+    h('div',{class:'meta'},h('span',{class:'tag'},'Rédiger'),h('span',{},'Sans filet')),
+    h('p',{class:'qtext'},w.q), ta,
+    h('div',{class:'row'}, h('button',{class:'btn',onclick:check},'Vérifier mes mots-clés')), out);
+}
+
+/* ---------- session & practice ---------- */
+function weightedQuiz(pool, n){
+  return pool.map(q => { const s = S.q[q.id]; const w = s ? (s.ko - 0.5*s.ok) : 1.5; return [q, w + Math.random()*0.9]; })
+    .sort((a,b) => b[1]-a[1]).slice(0,n).map(x => x[0]);
+}
+function pickCards(pool, max, maxNew){
+  const today = TODAY();
+  const due = pool.filter(c => isDue(c.id,today)).sort((a,b) => boxOf(a.id)-boxOf(b.id));
+  let pick = due.slice(0,max);
+  const fresh = pool.filter(c => !S.cards[c.id]);
+  pick = pick.concat(fresh.slice(0, Math.min(max - pick.length, maxNew)));
+  if (pick.length < Math.min(8,max)){
+    const rest = pool.filter(c => !pick.includes(c) && S.cards[c.id]).sort((a,b) => boxOf(a.id)-boxOf(b.id) || S.cards[a.id].d.localeCompare(S.cards[b.id].d));
+    pick = pick.concat(rest.slice(0, Math.min(8,max) - pick.length));
+  }
+  return pick;
+}
+function gameFor(n, random){
+  const g = random ? Math.floor(Math.random()*4) : (n-1) % 4; const k = random ? Math.floor(Math.random()*9) : Math.floor((n-1)/4);
+  if (g === 0){ const s = FRISES[k % FRISES.length]; return { name:'Frise chronologique', run:(el,d)=>runFrise(el,s,d) }; }
+  if (g === 1){ const s = shuffle(PAIRS).slice(0,6); return { name:'Associations', run:(el,d)=>runPairs(el,s,d) }; }
+  if (g === 2){ const w = WRITES[k % WRITES.length]; return { name:'Rédiger sans filet', run:(el,d)=>runWrite(el,w,d) }; }
+  const v = shuffle(QUIZ.filter(q => q.t==='vf')).slice(0,6); return { name:'Vrai ou faux', run:(el,d)=>runQuiz(el,v,d) };
+}
+function buildPlan(bonus){
+  const cards = pickCards(CARDS, 10, 5);
+  const quiz = weightedQuiz(QUIZ.filter(q => q.t==='mc'), 6);
+  return { cards, quiz, game: gameFor(dayNo() + (bonus ? 1 : 0), bonus) };
+}
+
+let keyHandler = null;
+document.addEventListener('keydown', e => { if (keyHandler && !/textarea|input/i.test(e.target.tagName)) keyHandler(e); });
+
+function panelShell(titleSteps, onQuit){
+  const bar = h('div',{class:'steps'}); const body = h('div',{class:'result',style:'gap:16px'});
+  const frame = h('section',{class:'panel'}, h('div',{class:'session-head'}, bar, h('button',{class:'btn ghost small',onclick:onQuit},'Quitter')), body);
+  return { frame, bar, body };
+}
+const quitTo = () => { busy = false; keyHandler = null; renderAll(); };
+
+function startSession(bonus){
+  busy = true; if (!S.start){ S.start = TODAY(); persist(); }
+  const P = buildPlan(bonus); const steps = [];
+  if (P.cards.length) steps.push({ name:`Cartes · ${P.cards.length}`, run:(el,d)=>{ runCards(el,P.cards,d); keyHandler = el._key; } });
+  steps.push({ name:`QCM · ${P.quiz.length}`, run:(el,d)=>{ keyHandler = null; runQuiz(el,P.quiz,d); } });
+  steps.push({ name:P.game.name, run:(el,d)=>{ keyHandler = null; P.game.run(el,d); } });
+  const sh = panelShell(null, quitTo); view.replaceChildren(sh.frame);
+  let k = 0; const results = [];
+  const drawBar = () => sh.bar.replaceChildren(...steps.map((s,i) => h('span',{class: i<k?'past':(i===k?'on':'')}, s.name)));
+  function next(){
+    drawBar(); if (k >= steps.length) return finish();
+    const s = steps[k]; const el = h('div',{class:'result'}); sh.body.replaceChildren(el);
+    s.run(el, r => { results.push(Object.assign({ name:s.name }, r)); k++; window.scrollTo(0,0); next(); });
+  }
+  function finish(){
+    keyHandler = null; const today = TODAY();
+    const tot = results.reduce((a,r)=>a+r.total,0), sc = results.reduce((a,r)=>a+r.score,0);
+    S.days[today] = { done:true, score:sc, total:tot }; persist();
+    sh.bar.replaceChildren(h('span',{class:'past'},'Séance terminée'));
+    const due = CARDS.filter(c => S.cards[c.id] && S.cards[c.id].d <= addDays(today,1)).length;
+    sh.body.replaceChildren(
+      h('p',{class:'eyebrow'},`Jour ${dayNo()} validé`),
+      h('p',{class:'big',style:'font-family:var(--font-display);font-size:32px'}, `${sc} bonnes réponses sur ${tot}`),
+      h('div',{class:'grid2'}, results.map(r => h('div',{class:'kpi'}, h('b',{},`${r.score}/${r.total}`), h('span',{},r.name)))),
+      h('p',{class:'muted'}, `Demain, ${plural(due,'carte')} reviendr${due>1?'ont':'a'}. Les erreurs de QCM sont prioritaires dans la prochaine séance.`),
+      h('div',{class:'row'}, h('button',{class:'btn',onclick:quitTo},'Retour à l\'accueil')));
+  }
+  next();
+}
+
+/* ---------- views ---------- */
+const view = $('#view');
+function mosaic(){
+  const today = TODAY(); const start = S.start || today; const wrap = h('div',{class:'mosaic','aria-label':'14 jours de révision'});
+  for (let i=0;i<14;i++){
+    const d = addDays(start,i); const done = S.days[d] && S.days[d].done;
+    const cls = done ? 'done' : (d === today ? 'today' : (d < today ? 'miss' : ''));
+    wrap.append(h('i',{class:cls,title:`Jour ${i+1}`}));
+  }
+  const nd = Object.values(S.days).filter(x=>x.done).length;
+  return h('div',{class:'mosaic-wrap'}, wrap, h('p',{class:'cap'}, `${nd} jour${nd>1?'s':''} validé${nd>1?'s':''} sur 14`));
+}
+function renderTop(){
+  const st = streak();
+  $('#topstats').replaceChildren(h('div',{class:'coin','aria-hidden':'true'},String(st)), h('div',{}, h('b',{},plural(st,'jour')), h('small',{},'d\'affilée')));
+}
+function viewToday(){
+  const today = TODAY(); const done = !!(S.days[today] && S.days[today].done);
+  const dueN = CARDS.filter(c => isDue(c.id,today)).length, newN = CARDS.filter(c => !S.cards[c.id]).length;
+  const n = dayNo(); const g = gameFor(n,false).name;
+  const mastered = CARDS.filter(c => boxOf(c.id) >= 4).length;
+  view.replaceChildren(
+    h('section',{class:'panel hero'},
+      h('div',{},
+        h('p',{class:'eyebrow'}, S.start ? `Jour ${Math.min(n,14)} sur 14` : 'Prêt pour le jour 1'),
+        h('h2',{}, done ? 'Défi du jour terminé' : 'Défi du jour'),
+        h('p',{class:'lead'}, done ? 'Reviens demain : tes cartes ratées reviendront, celles que tu sais s\'espacent. Tu peux faire une séance bonus.' : `10 cartes, 6 questions et un jeu (${g.toLowerCase()}). Environ 12 minutes.`),
+        h('button',{class:'btn',onclick:()=>startSession(done)}, done ? 'Séance bonus' : 'Commencer')),
+      mosaic()),
+    h('section',{class:'grid2'},
+      h('div',{class:'kpi'}, h('b',{},String(dueN)), h('span',{},'cartes à revoir aujourd\'hui')),
+      h('div',{class:'kpi'}, h('b',{},String(newN)), h('span',{},'cartes pas encore vues')),
+      h('div',{class:'kpi'}, h('b',{},`${mastered}/${CARDS.length}`), h('span',{},'cartes bien ancrées'))),
+    h('section',{class:'panel'},
+      h('h3',{},'Comment ça marche'),
+      h('p',{class:'muted'},'Chaque jour : cartes (rappel actif), QCM (reconnaissance), un jeu qui change (frise, associations, rédaction, vrai ou faux). Les cartes ratées reviennent le lendemain, les réussies de plus en plus tard : 1, 2, 4, 7 puis 12 jours. Le jour 14, tout le chapitre est revu.')));
+}
+
+let trainTheme = 'all';
+function viewTrain(){
+  const th = trainTheme;
+  const cardsP = CARDS.filter(c => th==='all' || c.th===th);
+  const quizP = QUIZ.filter(q => q.t==='mc' && (th==='all' || q.th===th));
+  const vfP = QUIZ.filter(q => q.t==='vf' && (th==='all' || q.th===th));
+  const chips = h('div',{class:'chips'}, [['all','Tout le chapitre'], ...Object.entries(THEMES)].map(([k,l]) =>
+    h('button',{class:'chip','aria-pressed':String(th===k),onclick:()=>{ trainTheme = k; viewTrain(); }}, l)));
+  const modes = [
+    ['Flashcards',`${cardsP.length} cartes. Les plus faibles d'abord.`, ()=>practice('Flashcards',(el,d)=>{ runCards(el,pickCards(cardsP,15,15),d); keyHandler = el._key; })],
+    ['QCM',`${quizP.length} questions. Les erreurs reviennent en priorité.`, ()=>practice('QCM',(el,d)=>runQuiz(el,weightedQuiz(quizP,Math.min(10,quizP.length)),d))],
+    ['Vrai ou faux',`${vfP.length} affirmations pièges.`, ()=>practice('Vrai ou faux',(el,d)=>runQuiz(el,shuffle(vfP).slice(0,Math.min(8,vfP.length)),d))],
+    ['Frise chronologique','Remets 6 événements dans l\'ordre.', ()=>practice('Frise',(el,d)=>runFrise(el,FRISES[Math.floor(Math.random()*FRISES.length)],d))],
+    ['Associations','Relie 6 mots-clés à leur définition.', ()=>practice('Associations',(el,d)=>runPairs(el,shuffle(PAIRS).slice(0,6),d))],
+    ['Rédiger sans filet','Écris un paragraphe, vérifie tes mots-clés.', ()=>practice('Rédiger',(el,d)=>runWrite(el,WRITES[Math.floor(Math.random()*WRITES.length)],d))]
+  ];
+  view.replaceChildren(h('section',{class:'panel'}, h('h3',{},'S\'entraîner librement'), h('p',{class:'muted'},'Choisis un thème, puis un mode. Ta progression est enregistrée comme pour le défi du jour.'), chips),
+    h('section',{class:'modes'}, modes.map(m => h('button',{class:'mode',onclick:m[2]}, h('b',{},m[0]), h('span',{},m[1])))));
+}
+function practice(title, engine){
+  busy = true; const sh = panelShell(null, quitTo);
+  sh.bar.replaceChildren(h('span',{class:'on'},title)); view.replaceChildren(sh.frame);
+  const el = h('div',{class:'result'}); sh.body.replaceChildren(el);
+  engine(el, r => {
+    keyHandler = null;
+    sh.body.replaceChildren(h('p',{class:'eyebrow'},'Terminé'),
+      h('p',{style:'font-family:var(--font-display);font-size:32px'}, r.total ? `${r.score} sur ${r.total}` : 'Rien à revoir'),
+      h('div',{class:'row'}, h('button',{class:'btn',onclick:()=>{ keyHandler=null; practice(title, engine); }},'Rejouer'), h('button',{class:'btn ghost',onclick:quitTo},'Retour')));
+  });
+}
+function viewPlan(){
+  view.replaceChildren(h('section',{class:'panel outline'},
+    h('h3',{},'Le plan du cours de la prof'),
+    h('p',{class:'muted'},'Retiens d\'abord cette structure : chaque question de contrôle est un morceau de ce plan.'),
+    OUTLINE.map(([t,l]) => h('div',{}, h('h3',{},t), h('ul',{}, l.map(x => h('li',{},x))))),
+    h('div',{class:'keybox'}, h('b',{},'À savoir par cœur : '), 'Auguste concentre tous les pouvoirs (27 av. J.-C.) mais garde les apparences de la République ; l\'empire tient par l\'armée, l\'administration, la citoyenneté (212) et le culte impérial ; Constantin (306-337) autorise le christianisme (313), préside Nicée (325) et fonde Constantinople (330).')));
+}
+function viewProg(){
+  const ts = themeStats(); const today = TODAY();
+  const counts = [0,0,0,0,0,0]; CARDS.forEach(c => counts[boxOf(c.id)]++);
+  const labels = ['Pas encore vues','Boîte 1 · demain','Boîte 2 · 2 jours','Boîte 3 · 4 jours','Boîte 4 · 7 jours','Boîte 5 · 12 jours'];
+  const bar = (l,v,max,txt) => h('div',{class:'bar'}, h('span',{},l), h('div',{class:'track'}, h('div',{class:'fill',style:`width:${max?Math.round(100*v/max):0}%`})), h('span',{class:'val'},txt));
+  const weak = Object.entries(ts).filter(([k,v]) => v.ok+v.ko >= 3 && v.ok/(v.ok+v.ko) < 0.7).sort((a,b)=>a[1].ok/(a[1].ok+a[1].ko) - b[1].ok/(b[1].ok+b[1].ko)).slice(0,2);
+  const reset = h('button',{class:'btn ghost small',onclick:function(){
+    if (this.dataset.armed){ S = { start:null, cards:{}, q:{}, days:{}, updated:0 }; persist(); renderAll(); }
+    else { this.dataset.armed = '1'; this.textContent = 'Confirmer : tout effacer'; }
+  }},'Réinitialiser ma progression');
+  view.replaceChildren(
+    h('section',{class:'panel'}, h('h3',{},'Les 14 jours'), mosaic(), h('p',{class:'muted'}, `Série en cours : ${plural(streak(),'jour')}.`)),
+    h('section',{class:'panel'}, h('h3',{},'Mémoire des cartes'), h('div',{class:'bars'}, counts.map((v,i) => bar(labels[i],v,CARDS.length,`${v}`)))),
+    h('section',{class:'panel'}, h('h3',{},'Réussite aux QCM par thème'), h('div',{class:'bars'}, Object.entries(THEMES).map(([k,l]) => {
+      const v = ts[k], n = v.ok+v.ko; return bar(l, v.ok, n, n ? `${Math.round(100*v.ok/n)} % · ${n}` : '–'); })),
+      weak.length ? h('div',{class:'keybox'}, h('b',{},'À retravailler : '), weak.map(([k]) => THEMES[k]).join(', '), '. Va dans « S\'entraîner » et choisis ce thème.') : h('p',{class:'hint'},'Les thèmes à retravailler apparaissent après quelques réponses.')),
+    h('div',{}, reset));
+}
+
+const DENIER = {
+  av:['Avers (face)','Le <b>buste d\'Octave</b>, entouré de ses surnoms : <b>César</b> et <b>Auguste</b>. Le chef est mis en avant, mais sous un nom qui rappelle la tradition.'],
+  nom:['Les surnoms','<b>César</b> (héritage de son père adoptif) et <b>Auguste</b> (titre reçu en 27 av. J.-C.) : le pouvoir d\'un seul s\'affiche déjà.'],
+  rev:['Revers (pile)','Un <b>char triomphal</b> : Auguste est le général victorieux qui a servi Rome.'],
+  spqr:['S.P.Q.R.','<i>Senatus Populusque Romanus</i> : « le Sénat et le peuple romain », devise de la <b>République</b>. C\'est l\'idée n° 1 de propagande : il respecte les institutions.'],
+  lieu:['Lieu et date','Frappé à <b>Colonia Patricia (Cordoue)</b>, en <b>19-18 av. J.-C.</b>, en argent : une monnaie qui circule partout et diffuse l\'image du pouvoir.']
+};
+function viewDoc(){
+  const coin = `<div class="denier">
+   <div class="pc"><svg viewBox="0 0 200 200" role="img" aria-label="Avers du denier : buste d'Octave"><circle class="disc" cx="100" cy="100" r="92"/>
+     <g data-k="av"><circle class="fig" cx="100" cy="86" r="26"/><path class="fig" d="M52 160c4-30 24-40 48-40s44 10 48 40z"/><circle class="hot" cx="100" cy="112" r="50"/></g>
+     <g data-k="nom"><path id="ring" d="M100 100m-80 0a80 80 0 1 1 160 0a80 80 0 1 1-160 0" fill="none"/><text font-size="15" letter-spacing="2"><textPath href="#ring" startOffset="2%">CAESAR · AVGVSTVS ·</textPath></text><circle class="hot" cx="100" cy="100" r="86" stroke-dasharray="6 6"/></g></svg>
+     <p class="hint" style="text-align:center;margin:4px 0 0">AVERS</p></div>
+   <div class="pc"><svg viewBox="0 0 200 200" role="img" aria-label="Revers du denier : char triomphal et S.P.Q.R."><circle class="disc" cx="100" cy="100" r="92"/>
+     <g data-k="rev"><rect class="fig" x="52" y="92" width="76" height="26" rx="4"/><circle class="fig" cx="76" cy="124" r="14"/><path class="fig" d="M128 100l30-10 6 14-30 14z"/><circle class="hot" cx="104" cy="108" r="52"/></g>
+     <g data-k="spqr"><text x="100" y="62" font-size="22" text-anchor="middle" letter-spacing="3">S P Q R</text><rect class="hot" x="52" y="40" width="96" height="28" rx="6"/></g>
+     <g data-k="lieu"><text x="100" y="158" font-size="10" text-anchor="middle">CORDOUE · 19-18 av. J.-C.</text><rect class="hot" x="40" y="152" width="120" height="20" rx="6"/></g></svg>
+     <p class="hint" style="text-align:center;margin:4px 0 0">REVERS</p></div></div>`;
+  const expl = h('div',{class:'expl','aria-live':'polite'}, 'Touche une partie du denier pour comprendre à quoi elle sert.');
+  const box = h('div',{}); box.innerHTML = coin;
+  box.querySelectorAll('[data-k]').forEach(g => {
+    g.setAttribute('tabindex','0'); g.setAttribute('role','button');
+    const go = () => { const d = DENIER[g.dataset.k]; box.querySelectorAll('[data-k]').forEach(x=>x.classList.remove('on')); g.classList.add('on'); expl.innerHTML = '<b>'+d[0]+' :</b> '+d[1]; };
+    g.addEventListener('click',go); g.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); go(); } });
+  });
+  const idea = (n,ap,re) => h('div',{class:'idea'},
+    h('div',{class:'ap'}, h('b',{},'Idée '+n+' · il montre'), h('p',{style:'margin:4px 0 0'},ap)),
+    h('div',{class:'arr'},'→'),
+    h('div',{class:'re'}, h('b',{},'En réalité'), h('p',{style:'margin:4px 0 0'},re)));
+  const docQ = QUIZ.filter(q => q.t==='mc' && q.th==='doc');
+  const docC = CARDS.filter(c => c.th==='doc');
+  view.replaceChildren(
+    h('section',{class:'panel'},
+      h('p',{class:'eyebrow'},'Document 2'), h('h3',{},'La propagande d\'Auguste : les Res Gestae et le denier'),
+      h('p',{class:'muted'},'Deux documents, une même mission : montrer qu\'Auguste respecte la République alors qu\'il détient tous les pouvoirs.'),
+      h('div',{class:'two'},
+        h('div',{class:'id'}, h('h4',{},'Les Res Gestae'), h('ul',{}, ...['Écrites par Auguste lui-même','Texte autobiographique, sorte de testament','Ier siècle','Pour son héritier, mais aussi pour convaincre tous les Romains'].map(x=>h('li',{},x)))),
+        h('div',{class:'id'}, h('h4',{},'Le denier d\'argent'), h('ul',{}, ...['Colonia Patricia (Cordoue)','19-18 av. J.-C.','Avers : buste d\'Octave + surnoms','Revers : char triomphal + S.P.Q.R.'].map(x=>h('li',{},x)))))),
+    h('section',{class:'panel'}, h('h3',{},'Le denier, pièce par pièce'), box, expl),
+    h('section',{class:'panel'}, h('h3',{},'La phrase clé'),
+      h('blockquote',{class:'q'},'« supérieur à tous les autres par la dignité et l\'autorité, mais [il n\'avait] pas de pouvoir plus grand que celui de [ses] collègues »'),
+      h('p',{class:'muted'},'Extrait des Res Gestae : c\'est l\'idée n° 2.')),
+    h('section',{class:'panel'}, h('h3',{},'3 idées de propagande : apparence et réalité'),
+      idea(1,'Le Sénat et le peuple romain (S.P.Q.R.) : il respecte les institutions.','Il domine le Sénat.'),
+      idea(2,'Il est au même niveau que ses collègues.','Princeps, imperator, tribun à vie : il a tous les pouvoirs.'),
+      idea(3,'Il a servi la République : bénéfice collectif, non individuel.','Il est le seul détenteur du pouvoir ; Tibère reprend tout à sa mort.')),
+    h('section',{class:'panel'}, h('h3',{},'Teste-toi sur le Doc 2'),
+      h('div',{class:'row'},
+        h('button',{class:'btn',onclick:()=>practice('Doc 2 · QCM',(el,d)=>runQuiz(el,weightedQuiz(docQ,Math.min(10,docQ.length)),d))},'QCM apparence ou réalité'),
+        h('button',{class:'btn ghost',onclick:()=>practice('Doc 2 · cartes',(el,d)=>{ runCards(el,pickCards(docC,12,12),d); keyHandler = el._key; })},'Flashcards Doc 2'),
+        h('button',{class:'btn ghost',onclick:()=>practice('Doc 2 · rédiger',(el,d)=>runWrite(el,WRITES[0],d))},'Rédiger sur le Doc 2'))));
+}
+
+const TABS = [['today','Aujourd\'hui',viewToday],['train','S\'entraîner',viewTrain],['doc','Doc 2',viewDoc],['plan','Plan du cours',viewPlan],['prog','Progrès',viewProg]];
+function renderTab(){ (TABS.find(t=>t[0]===tab)||TABS[0])[2](); }
+function renderTabs(){
+  $('#tabs').replaceChildren(...TABS.map(([k,l]) => h('button',{class:'tab',role:'tab','aria-selected':String(tab===k),onclick:()=>{ if (busy){ busy=false; keyHandler=null; } tab=k; renderAll(); }}, l)));
+}
+function renderAll(){ renderTop(); renderTabs(); renderTab(); }
+
+const local = loadLocal(); if (local) S = Object.assign(S, local);
+renderAll();
+initDb();
+})();
+</script>
+
+</body></html>

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Observation microscopique : levures et ferments lactiques</title>
+<style>
+:root{--ink:#1d2b3a;--muted:#5b6b7b;--bg:#f3f6fa;--card:#fff;--line:#d6dee7;--accent:#1f5fbf;--ok:#1a8a4f;--bad:#d03a3a;--corr:#d9780f;--g:clamp(92px,22vw,240px)}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--bg);line-height:1.45}
+main{max-width:1200px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:1.45rem;margin:0 0 4px}
+h2{font-size:1.05rem;margin:0 0 8px}
+.sub{margin:0;color:var(--muted);font-size:.95rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-top:16px}
+.ml{margin:0 0 4px;color:var(--ok);font-weight:600}
+.q{margin:8px 0 8px;font-weight:600}
+.choices{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.ch{font-family:inherit;font-weight:700;font-size:1rem;min-width:78px;padding:9px 16px;border-radius:10px;border:2px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+.ch:hover{border-color:var(--accent)}
+.ch.obj{display:inline-flex;align-items:center;gap:8px}
+.dot{width:18px;height:18px;border-radius:50%;border:2px solid rgba(0,0,0,.25);display:inline-block}
+.calc{display:flex;align-items:center;gap:8px;font-size:1.15rem;font-weight:700;flex-wrap:wrap}
+.calc input{width:96px;font:inherit;font-weight:700;padding:7px 10px;border:2px solid var(--line);border-radius:10px;text-align:center}
+.calc input:focus{outline:none;border-color:var(--accent)}
+.total{margin:6px 0 0;font-size:1.1rem;font-weight:700;color:var(--ok)}
+.mmsg{min-height:1.3em;margin:6px 0 0;color:var(--bad);font-weight:600;font-size:.92rem}
+.linkbtn{background:none;border:0;color:var(--accent);cursor:pointer;font:inherit;font-size:.88rem;text-decoration:underline;padding:0;margin-top:6px}
+.tabs{display:flex;gap:8px;margin:0 0 12px;flex-wrap:wrap}
+.tab{font-family:inherit;font-weight:600;font-size:.95rem;padding:9px 16px;border-radius:999px;border:2px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+.tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+#consigne{margin:0 0 12px}
+.figure{display:flex;align-items:stretch;width:100%;max-width:1060px;margin:0 auto}
+.gl{display:none}
+.gut{flex:0 0 var(--g);position:relative}
+.stage{position:relative;flex:1;min-width:0;border-radius:6px;overflow:hidden;background:#222;box-shadow:0 2px 10px rgba(20,40,70,.18)}
+.stage.armed{cursor:crosshair}
+.stage img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none}
+.ov{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.conn{position:absolute;width:26px;border-top:2px solid var(--ok);transform:translateY(-1px)}
+.gl .conn{right:0}.gr .conn{left:0}
+.tag{position:absolute;transform:translateY(-50%);max-width:calc(100% - 28px);background:#fff;border:2px solid var(--ok);color:#12633a;font-weight:700;font-size:clamp(10px,1.45vw,14px);line-height:1.2;padding:3px 9px;border-radius:12px}
+.gl .tag{right:26px;text-align:right}.gr .tag{left:26px}
+.tag.corr{border-color:var(--corr);color:#8a4a06}
+.conn.corr{border-color:var(--corr)}
+.mag{position:absolute;right:10px;bottom:10px;background:rgba(20,30,45,.85);color:#fff;font-weight:800;padding:4px 14px;border-radius:10px;font-size:1.25rem;animation:pop .5s}
+.mag[hidden]{display:none}
+.tray{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:14px}
+.tray p.help{margin:0 0 10px;color:var(--muted);font-size:.88rem}
+.labels{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.lab{font-family:inherit;font-weight:600;font-size:.95rem;text-align:left;padding:10px 14px;border:2px solid var(--accent);background:#eef4ff;color:#14407f;border-radius:10px;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+.lab.sel{background:var(--accent);color:#fff}
+.lab.dragging{opacity:.35}
+.lab.shake{animation:shake .4s}
+.lab.ghost{position:fixed;z-index:99;pointer-events:none;transform:translate(-50%,-115%);box-shadow:0 6px 16px rgba(0,0,0,.3);background:var(--accent);color:#fff;opacity:.95}
+.done{color:var(--ok);font-weight:700;margin:0}
+.bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+#prog{font-weight:700;margin-right:auto}
+.btn{font-family:inherit;font-weight:600;font-size:.9rem;padding:8px 14px;border-radius:8px;border:2px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+#msg{min-height:1.6em;margin:10px 0 0;font-weight:600}
+#msg.ok{color:var(--ok)} #msg.bad{color:var(--bad)} #msg.corr{color:var(--corr)}
+.flash{animation:fade .9s forwards}
+@keyframes fade{from{opacity:1}to{opacity:0}}
+@keyframes pop{0%{transform:scale(.3);opacity:0}70%{transform:scale(1.2)}100%{transform:scale(1);opacity:1}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+</style>
+</head>
+<body>
+<main>
+ <h1>Observation au microscope</h1>
+ <p class="sub">D’abord le grossissement, ensuite les légendes de l’image.</p>
+
+ <section class="card" id="mag">
+  <h2>1. Retrouve le grossissement</h2>
+  <div id="magBody"></div>
+ </section>
+
+ <h2 style="margin-top:22px">2. Légende l’image</h2>
+ <div class="tabs" role="tablist">
+  <button class="tab" role="tab" data-scene="levures">Les levures</button>
+  <button class="tab" role="tab" data-scene="ferments">Les ferments lactiques</button>
+ </div>
+ <p id="consigne"></p>
+
+ <div class="figure">
+  <div class="gut gl" id="gl"></div>
+  <div class="stage" id="stage">
+   <img id="photo" alt="Photographie d'une observation au microscope" draggable="false">
+   <svg class="ov" id="ov" preserveAspectRatio="none" aria-hidden="true"></svg>
+   <span class="mag" id="badge" hidden>×600</span>
+  </div>
+  <div class="gut gr" id="gr"></div>
+ </div>
+
+ <aside class="tray">
+  <p class="help">Glisse chaque légende sur l’image, ou clique sur la légende puis sur l’image.</p>
+  <div class="labels" id="labels"></div>
+ </aside>
+
+ <div class="bar">
+  <span id="prog"></span>
+  <button class="btn" id="reset">Recommencer</button>
+  <button class="btn" id="show">Voir la correction</button>
+ </div>
+ <p id="msg" role="status"></p>
+</main>
+
+<script>
+const SCENES = {"levures": {"img": "levures.png", "w": 380, "h": 288, "focus": [{"cx": 184, "cy": 88, "r": 31, "c": "#f5b301"}, {"cx": 60, "cy": 158, "r": 27, "c": "#1f6fe5"}], "consigne": "Place « Une levure » sur la levure entourée en bleu. Place la membrane, le cytoplasme et le noyau sur l’autre levure, entourée en jaune.", "labels": [{"id": "levure", "text": "Une levure", "tag": "Levure", "side": "R", "anchor": [73, 158], "draw": {"t": "ellipse", "cx": 60, "cy": 158, "rx": 12, "ry": 17, "rot": -15}, "hint": "Place cette légende sur la levure entourée en bleu.", "zones": [{"t": "ellipse", "cx": 60, "cy": 158, "rx": 12, "ry": 17, "rot": -15}]}, {"id": "membrane", "text": "Membrane", "tag": "Membrane", "side": "R", "anchor": [191, 70], "draw": {"t": "dot", "x": 191, "y": 70}, "hint": "La membrane est le contour de la levure entourée en jaune.", "zones": [{"t": "ring", "cx": 184, "cy": 88, "rx": 16, "ry": 20, "tol": 4}]}, {"id": "cytoplasme", "text": "Cytoplasme", "tag": "Cytoplasme", "side": "R", "anchor": [180, 102], "draw": {"t": "dot", "x": 180, "y": 102}, "hint": "Le cytoplasme est à l’intérieur de la levure entourée en jaune, autour du noyau.", "zones": [{"t": "cyto", "cx": 184, "cy": 88, "rx": 16, "ry": 20, "nx": 188, "ny": 85, "nr": 8}]}, {"id": "noyau", "text": "Noyau", "tag": "Noyau", "side": "R", "anchor": [196, 85], "draw": {"t": "circle", "x": 188, "y": 85, "r": 8}, "hint": "Cherche la zone arrondie au centre de la levure entourée en jaune.", "zones": [{"t": "circle", "x": 188, "y": 85, "r": 9}]}]}, "ferments": {"img": "ferments.png", "w": 429, "h": 313, "focus": [], "consigne": "Place « Une bactérie » sur un grain isolé, puis « Une chaîne de streptocoques » sur un alignement de grains.", "labels": [{"id": "bacterie", "text": "Une bactérie : un streptocoque", "tag": "Streptocoque", "hint": "Cherche un seul grain bleu foncé, isolé.", "zones": [{"t": "circle", "x": 198, "y": 227, "r": 7, "side": "R", "anchor": [204.5, 227], "draw": {"t": "circle", "x": 198, "y": 227, "r": 6}}, {"t": "circle", "x": 158, "y": 217, "r": 7, "side": "R", "anchor": [164.5, 217], "draw": {"t": "circle", "x": 158, "y": 217, "r": 6}}, {"t": "circle", "x": 185, "y": 215, "r": 7, "side": "R", "anchor": [191.5, 215], "draw": {"t": "circle", "x": 185, "y": 215, "r": 6}}, {"t": "circle", "x": 195, "y": 216, "r": 7, "side": "R", "anchor": [201.5, 216], "draw": {"t": "circle", "x": 195, "y": 216, "r": 6}}, {"t": "circle", "x": 224, "y": 168, "r": 7, "side": "R", "anchor": [230.5, 168], "draw": {"t": "circle", "x": 224, "y": 168, "r": 6}}, {"t": "circle", "x": 232, "y": 178, "r": 7, "side": "R", "anchor": [238.5, 178], "draw": {"t": "circle", "x": 232, "y": 178, "r": 6}}]}, {"id": "chaine", "text": "Une chaîne de streptocoques", "tag": "Chaîne de streptocoques", "hint": "Cherche plusieurs grains alignés les uns à la suite des autres.", "zones": [{"t": "poly", "pts": [[128, 212], [138, 210], [147, 207], [152, 203], [168, 197], [175, 192], [183, 185], [190, 183]], "r": 7, "side": "R", "anchor": [168, 197], "draw": {"t": "poly", "pts": [[128, 212], [138, 210], [147, 207], [152, 203], [168, 197], [175, 192], [183, 185], [190, 183]], "r": 7}}, {"t": "poly", "pts": [[225, 126], [235, 133], [243, 138], [248, 142]], "r": 7, "side": "R", "anchor": [255, 142], "draw": {"t": "poly", "pts": [[225, 126], [235, 133], [243, 138], [248, 142]], "r": 7}}]}]}};
+const $ = s => document.querySelector(s);
+const stage=$('#stage'), photo=$('#photo'), ov=$('#ov'), gl=$('#gl'), gr=$('#gr'), labelsEl=$('#labels'), msg=$('#msg'), prog=$('#prog');
+const NS='http://www.w3.org/2000/svg';
+const state={};
+let cur=null, selected=null;
+
+function svgEl(tag,attrs){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);return e;}
+function say(t,cls){msg.textContent=t;msg.className=cls||'';}
+
+/* ---------- 1. Grossissement progressif ---------- */
+const MAG={step:0,err:''};
+const OBJ=[{id:'rouge',l:'Rouge',c:'#d63b3b'},{id:'jaune',l:'Jaune',c:'#f2c21a'},{id:'bleu',l:'Bleu',c:'#2a6fdb'}];
+function renderMag(){
+  const b=$('#magBody'); b.innerHTML='';
+  const line=t=>{const p=document.createElement('p');p.className='ml';p.textContent='✔ '+t;b.appendChild(p);};
+  const question=t=>{const p=document.createElement('p');p.className='q';p.textContent=t;b.appendChild(p);};
+  const choices=(items,fn)=>{
+    const d=document.createElement('div');d.className='choices';
+    items.forEach(it=>{
+      const x=document.createElement('button');x.type='button';x.className='ch'+(it.c?' obj':'');
+      if(it.c){const s=document.createElement('span');s.className='dot';s.style.background=it.c;x.appendChild(s);}
+      x.appendChild(document.createTextNode(it.l));
+      x.addEventListener('click',()=>fn(it));d.appendChild(x);
+    });b.appendChild(d);
+  };
+  if(MAG.step>0)line('Objectif utilisé : bleu');
+  if(MAG.step>1)line('Grossissement de l’objectif bleu : ×40');
+  if(MAG.step>2)line('Grossissement de l’oculaire : ×15');
+  if(MAG.step===0){
+    question('Quel objectif du microscope as-tu utilisé pour cette observation ?');
+    choices(OBJ,it=>{ if(it.id==='bleu'){MAG.step=1;MAG.err='';}else MAG.err='Ce n’est pas l’objectif utilisé pour cette observation. Réessaie.'; renderMag(); });
+  } else if(MAG.step===1){
+    question('Quel grossissement est gravé sur l’objectif bleu ?');
+    choices([4,10,40,100].map(n=>({l:'×'+n,n})),it=>{ if(it.n===40){MAG.step=2;MAG.err='';}else MAG.err='Regarde bien la gravure sur l’objectif bleu. Réessaie.'; renderMag(); });
+  } else if(MAG.step===2){
+    question('Quel grossissement est gravé sur l’oculaire (la lentille près de l’œil) ?');
+    choices([5,10,15,20].map(n=>({l:'×'+n,n})),it=>{ if(it.n===15){MAG.step=3;MAG.err='';}else MAG.err='Regarde bien la gravure sur l’oculaire. Réessaie.'; renderMag(); });
+  } else if(MAG.step===3){
+    question('Calcule le grossissement total : grossissement de l’oculaire × grossissement de l’objectif.');
+    const d=document.createElement('div');d.className='calc';
+    d.innerHTML='<span>15 × 40 =</span><input id="tot" type="text" inputmode="numeric" autocomplete="off" aria-label="Grossissement total"><button class="btn" id="chk" type="button">Valider</button>';
+    b.appendChild(d);
+    const go=()=>{ const v=parseInt(($('#tot').value||'').replace(/\D/g,''),10);
+      if(v===600){MAG.step=4;MAG.err='';}else MAG.err='Ce n’est pas le bon résultat. Multiplie 15 par 40.'; renderMag(); };
+    $('#chk').addEventListener('click',go);
+    $('#tot').addEventListener('keydown',e=>{if(e.key==='Enter')go();});
+  } else {
+    const p=document.createElement('p');p.className='total';p.textContent='Grossissement total : 15 × 40 = ×600';b.appendChild(p);
+    const r=document.createElement('button');r.type='button';r.className='linkbtn';r.textContent='Refaire cette étape';
+    r.addEventListener('click',()=>{MAG.step=0;MAG.err='';renderMag();});b.appendChild(r);
+  }
+  if(MAG.step<4){const m=document.createElement('p');m.className='mmsg';m.textContent=MAG.err;b.appendChild(m);}
+  $('#badge').hidden=MAG.step<4;
+  if(MAG.step===3&&MAG.err===''){}
+}
+
+/* ---------- 2. Légendes ---------- */
+function segDist(px,py,a,b){
+  const dx=b[0]-a[0],dy=b[1]-a[1],l=dx*dx+dy*dy;
+  let t=l?((px-a[0])*dx+(py-a[1])*dy)/l:0; t=Math.max(0,Math.min(1,t));
+  return Math.hypot(px-(a[0]+t*dx),py-(a[1]+t*dy));
+}
+function hit(z,x,y){
+  switch(z.t){
+    case 'ellipse':{const a=(z.rot||0)*Math.PI/180,dx=x-z.cx,dy=y-z.cy;
+      const u=dx*Math.cos(a)+dy*Math.sin(a), v=-dx*Math.sin(a)+dy*Math.cos(a);
+      return Math.hypot(u/z.rx,v/z.ry)<1.1;}
+    case 'ring':{const r=Math.hypot((x-z.cx)/z.rx,(y-z.cy)/z.ry);return Math.abs(r-1)*Math.min(z.rx,z.ry)<=z.tol;}
+    case 'cyto':{const r=Math.hypot((x-z.cx)/z.rx,(y-z.cy)/z.ry);return r<0.85&&Math.hypot(x-z.nx,y-z.ny)>z.nr+2;}
+    case 'circle': return Math.hypot(x-z.x,y-z.y)<=z.r;
+    case 'poly': for(let i=0;i<z.pts.length-1;i++){if(segDist(x,y,z.pts[i],z.pts[i+1])<=z.r)return true;}return false;
+  }
+  return false;
+}
+function findZone(L,x,y){ for(let i=0;i<L.zones.length;i++){ if(hit(L.zones[i],x,y))return i; } return -1; }
+
+function drawShape(d,col){
+  if(d.t==='ellipse'){ const e=svgEl('ellipse',{cx:d.cx,cy:d.cy,rx:d.rx,ry:d.ry,fill:col,'fill-opacity':.12,stroke:col,'stroke-width':2.5,'vector-effect':'non-scaling-stroke'});
+    if(d.rot)e.setAttribute('transform',`rotate(${d.rot} ${d.cx} ${d.cy})`); ov.appendChild(e); }
+  else if(d.t==='circle') ov.appendChild(svgEl('circle',{cx:d.x,cy:d.y,r:d.r,fill:'none',stroke:col,'stroke-width':2.5,'vector-effect':'non-scaling-stroke'}));
+  else if(d.t==='poly'){ const pts=d.pts.map(q=>q.join(',')).join(' ');
+    ov.appendChild(svgEl('polyline',{points:pts,fill:'none',stroke:col,'stroke-opacity':.3,'stroke-width':d.r*2,'stroke-linecap':'round','stroke-linejoin':'round'}));
+    ov.appendChild(svgEl('polyline',{points:pts,fill:'none',stroke:col,'stroke-width':2,'vector-effect':'non-scaling-stroke'})); }
+  else ov.appendChild(svgEl('circle',{cx:d.x,cy:d.y,r:3.4,fill:col,stroke:'#fff','stroke-width':1.5,'vector-effect':'non-scaling-stroke'}));
+}
+
+function render(){
+  const S=SCENES[cur], st=state[cur];
+  ov.innerHTML=''; gl.innerHTML=''; gr.innerHTML='';
+  ov.setAttribute('viewBox',`0 0 ${S.w} ${S.h}`);
+  (S.focus||[]).forEach(f=>{
+    const a={cx:f.cx,cy:f.cy,r:f.r,fill:'none','stroke-dasharray':'7 5','vector-effect':'non-scaling-stroke'};
+    ov.appendChild(svgEl('circle',Object.assign({},a,{stroke:'#fff','stroke-width':5.5})));
+    ov.appendChild(svgEl('circle',Object.assign({},a,{stroke:f.c,'stroke-width':2.8})));
+  });
+  let okCount=0;
+  for(const L of S.labels){
+    const p=st.placed[L.id]; if(!p)continue;
+    if(!p.corr)okCount++;
+    const z=L.zones[p.z], d=z.draw||L.draw, an=z.anchor||L.anchor, side=z.side||L.side;
+    const col=p.corr?'#d9780f':'#1a8a4f';
+    drawShape(d,col);
+    ov.appendChild(svgEl('line',{x1:an[0],y1:an[1],x2:side==='L'?0:S.w,y2:an[1],stroke:col,'stroke-width':2,'vector-effect':'non-scaling-stroke'}));
+    const g=side==='L'?gl:gr, top=(an[1]/S.h*100)+'%';
+    const c=document.createElement('div'); c.className='conn'+(p.corr?' corr':''); c.style.top=top; g.appendChild(c);
+    const t=document.createElement('div'); t.className='tag'+(p.corr?' corr':''); t.textContent=L.tag; t.style.top=top; g.appendChild(t);
+  }
+  labelsEl.innerHTML='';
+  const left=S.labels.filter(L=>!st.placed[L.id]);
+  for(const L of left){
+    const b=document.createElement('button');
+    b.type='button'; b.className='lab'+(selected===L.id?' sel':''); b.dataset.id=L.id; b.textContent=L.text;
+    labelsEl.appendChild(b);
+  }
+  if(!left.length){const d=document.createElement('p');d.className='done';d.textContent='Toutes les légendes sont placées.';labelsEl.appendChild(d);}
+  stage.classList.toggle('armed',!!selected);
+  prog.textContent=`${okCount} / ${S.labels.length} légendes bien placées`;
+  if(!left.length){
+    const anyCorr=S.labels.some(L=>st.placed[L.id].corr);
+    if(anyCorr) say('Voici la correction (en orange). Clique sur « Recommencer » pour réessayer.','corr');
+    else say('Bravo ! Toutes les légendes sont bien placées.','ok');
+  }
+}
+
+function flashBad(x,y){
+  const c=svgEl('circle',{cx:x,cy:y,r:5,fill:'none',stroke:'#d03a3a','stroke-width':3,'vector-effect':'non-scaling-stroke'});
+  c.setAttribute('class','flash'); ov.appendChild(c); setTimeout(()=>c.remove(),950);
+}
+
+function tryPlace(id,cx,cy){
+  const S=SCENES[cur], st=state[cur];
+  const r=photo.getBoundingClientRect();
+  if(cx<r.left||cx>r.right||cy<r.top||cy>r.bottom)return;
+  const x=(cx-r.left)/r.width*S.w, y=(cy-r.top)/r.height*S.h;
+  const L=S.labels.find(l=>l.id===id); if(!L)return;
+  const zi=findZone(L,x,y);
+  if(zi>=0){
+    st.placed[id]={z:zi,corr:false}; selected=null;
+    say('Bien joué ! « '+L.tag+' » est à la bonne place.','ok');
+    render();
+  } else {
+    flashBad(x,y);
+    say('Ce n’est pas la bonne zone. '+(L.hint||'Regarde bien l’image et réessaie.'),'bad');
+    const b=labelsEl.querySelector(`[data-id="${id}"]`);
+    if(b){b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake');}
+  }
+}
+
+labelsEl.addEventListener('pointerdown',e=>{
+  const b=e.target.closest('.lab'); if(!b)return;
+  e.preventDefault();
+  const id=b.dataset.id, sx=e.clientX, sy=e.clientY;
+  let ghost=null, moved=false;
+  const mv=ev=>{
+    if(!moved&&Math.hypot(ev.clientX-sx,ev.clientY-sy)>6){
+      moved=true; ghost=b.cloneNode(true); ghost.classList.add('ghost'); ghost.classList.remove('sel');
+      document.body.appendChild(ghost); b.classList.add('dragging');
+    }
+    if(ghost){ghost.style.left=ev.clientX+'px';ghost.style.top=ev.clientY+'px';}
+  };
+  const up=ev=>{
+    removeEventListener('pointermove',mv);removeEventListener('pointerup',up);removeEventListener('pointercancel',up);
+    if(ghost)ghost.remove(); b.classList.remove('dragging');
+    if(moved){ if(ev.type==='pointerup')tryPlace(id,ev.clientX,ev.clientY); }
+    else{selected=(selected===id)?null:id; render();}
+  };
+  addEventListener('pointermove',mv);addEventListener('pointerup',up);addEventListener('pointercancel',up);
+});
+stage.addEventListener('click',e=>{ if(selected)tryPlace(selected,e.clientX,e.clientY); });
+
+$('#reset').addEventListener('click',()=>{state[cur]={placed:{}};selected=null;say('');render();});
+$('#show').addEventListener('click',()=>{
+  const S=SCENES[cur], st=state[cur];
+  for(const L of S.labels){ if(!st.placed[L.id])st.placed[L.id]={z:0,corr:true}; }
+  selected=null; render();
+});
+
+function show(key){
+  if(!SCENES[key])key='levures';
+  cur=key; selected=null;
+  if(!state[key])state[key]={placed:{}};
+  const S=SCENES[key];
+  photo.src=S.img; photo.width=S.w; photo.height=S.h;
+  $('#consigne').textContent=S.consigne;
+  document.querySelectorAll('.tab').forEach(t=>t.setAttribute('aria-selected',t.dataset.scene===key));
+  say(''); render();
+  try{history.replaceState(null,'','#'+key);}catch(e){}
+}
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>show(t.dataset.scene)));
+addEventListener('hashchange',()=>{const k=location.hash.slice(1); if(SCENES[k]&&k!==cur)show(k);});
+renderMag();
+show(SCENES[location.hash.slice(1)]?location.hash.slice(1):'levures');
+</script>
+</body>
+</html>

@@ -1,0 +1,981 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Mission Matériaux</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800&family=Baloo+2:wght@400;500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root{
+    color-scheme: dark;
+    --bg: #0a1120;
+    --bg-grid: #0d1526;
+    --panel: #121c33;
+    --panel-2: #182544;
+    --line: #2a3b61;
+    --line-soft: #1e2c4d;
+    --text: #eef3ff;
+    --text-dim: #93a4c7;
+    --text-faint: #5f7099;
+    --teal: #2fe6c4;
+    --teal-dim: #1a8f7e;
+    --amber: #ffb648;
+    --amber-dim: #a67127;
+    --coral: #ff6b6a;
+    --success: #5be089;
+    --font-display: 'Orbitron', 'Arial Narrow', sans-serif;
+    --font-body: 'Baloo 2', 'Trebuchet MS', sans-serif;
+    --font-mono: 'Share Tech Mono', 'Consolas', monospace;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    padding-inline: 0;
+    background-image:
+      linear-gradient(var(--bg-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
+    background-size: 28px 28px;
+    background-position: center;
+  }
+
+  h1,h2,h3{ text-wrap: balance; margin: 0; }
+  p{ line-height: 1.55; }
+  ::selection{ background: var(--teal); color: #04120f; }
+  a{ color: var(--teal); }
+  :focus-visible{ outline: 2px solid var(--teal); outline-offset: 2px; border-radius: 4px; }
+
+  .wrap{
+    max-width: 920px;
+    margin-inline: auto;
+    padding-inline: 16px;
+  }
+
+  /* ---------- HEADER ---------- */
+  header.mission{
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 40;
+    background: linear-gradient(180deg, #0a1120 0%, #0a1120 78%, rgba(10,17,32,0));
+    padding-top: calc(env(safe-area-inset-top, 0px) + 12px);
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line-soft);
+    backdrop-filter: blur(6px);
+  }
+  .brand-row{
+    display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+  }
+  .brand{
+    display:flex; flex-direction:column; gap:2px;
+  }
+  .brand .eyebrow{
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .18em; color: var(--teal); text-transform: uppercase;
+  }
+  .brand h1{
+    font-family: var(--font-display); font-weight: 800; font-size: clamp(20px, 4.5vw, 28px);
+    letter-spacing: .03em; color: var(--text);
+  }
+  .brand .sub{ font-size: 13px; color: var(--text-dim); }
+
+  .code-tracker{
+    display:flex; gap:6px; align-items:center; font-family: var(--font-mono);
+  }
+  .code-tracker .slot{
+    width: 30px; height: 34px; border: 1px solid var(--line); border-radius: 6px;
+    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:16px;
+    background: var(--panel); color: var(--text-faint);
+  }
+  .code-tracker .slot.filled{
+    color: #04120f; background: var(--amber); border-color: var(--amber);
+    box-shadow: 0 0 12px rgba(255,182,72,.5);
+  }
+
+  nav.rooms{
+    display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;
+  }
+  nav.rooms button{
+    font-family: var(--font-body); font-weight:600; font-size: 13px;
+    background: var(--panel); color: var(--text-dim); border: 1px solid var(--line);
+    padding: 8px 12px; border-radius: 8px; cursor:pointer; display:flex; align-items:center; gap:6px;
+    transition: border-color .15s, color .15s, background .15s;
+  }
+  nav.rooms button .mark{ font-family: var(--font-mono); font-size:12px; }
+  nav.rooms button:hover{ border-color: var(--teal-dim); color: var(--text); }
+  nav.rooms button.active{ background: var(--panel-2); border-color: var(--teal); color: var(--text); }
+  nav.rooms button.done .mark{ color: var(--success); }
+  nav.rooms button.done{ border-color: var(--success); }
+
+  /* ---------- LAYOUT ---------- */
+  main{ padding-block: 20px 64px; }
+
+  .room{ display:flex; flex-direction:column; gap:18px; }
+
+  .hud{
+    position: relative;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 20px;
+  }
+  .hud::before, .hud::after{
+    content:""; position:absolute; width: 16px; height:16px; border: 2px solid var(--teal-dim);
+    opacity:.7;
+  }
+  .hud::before{ top:-1px; left:-1px; border-right:none; border-bottom:none; border-top-left-radius: 10px; }
+  .hud::after{ bottom:-1px; right:-1px; border-left:none; border-top:none; border-bottom-right-radius: 10px; }
+
+  .room-title{
+    display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom: 4px;
+  }
+  .room-title .tag{
+    font-family: var(--font-mono); font-size:12px; color: var(--amber); letter-spacing:.1em;
+  }
+  .room-title h2{
+    font-family: var(--font-display); font-size: clamp(19px,4vw,24px); font-weight:700; color: var(--text);
+  }
+  .briefing{
+    font-size: 14.5px; color: var(--text-dim); max-width: 64ch;
+  }
+  .reward-line{
+    margin-top: 10px; font-family: var(--font-mono); font-size: 12.5px; color: var(--teal-dim);
+    display:flex; align-items:center; gap:6px;
+  }
+  .reward-line.unlocked{ color: var(--success); }
+
+  /* ---------- FAMILY CARDS (Room 1) ---------- */
+  .families{
+    display:grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:12px;
+  }
+  .family-card{
+    background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 14px;
+    display:flex; flex-direction:column; gap:6px;
+  }
+  .family-card .icon{ font-size: 22px; }
+  .family-card h3{ font-family: var(--font-body); font-weight:700; font-size:15px; color: var(--text); }
+  .family-card p{ font-size: 13px; color: var(--text-dim); margin:0; }
+  .family-card .ex{ font-family: var(--font-mono); font-size: 11.5px; color: var(--amber); }
+
+  .classify-table{ width:100%; border-collapse: collapse; margin-top: 6px; }
+  .classify-table th, .classify-table td{
+    text-align:left; padding: 9px 8px; border-bottom: 1px solid var(--line-soft); font-size: 13.5px;
+  }
+  .classify-table th{ color: var(--text-faint); font-weight:600; font-family: var(--font-mono); font-size: 11.5px; text-transform: uppercase; letter-spacing:.05em; }
+  select.answer-select{
+    width:100%; background: var(--panel); color: var(--text); border: 1px solid var(--line);
+    border-radius: 6px; padding: 7px 8px; font-family: var(--font-body); font-size: 13.5px;
+  }
+  select.answer-select.correct{ border-color: var(--success); }
+  select.answer-select.wrong{ border-color: var(--coral); }
+
+  .btn{
+    font-family: var(--font-body); font-weight:700; font-size: 14px; border-radius: 9px; border:1px solid transparent;
+    padding: 10px 18px; cursor:pointer; display:inline-flex; align-items:center; gap:8px; width: fit-content;
+  }
+  .btn-primary{ background: var(--teal); color: #04120f; }
+  .btn-primary:hover{ background:#4ff0d1; }
+  .btn-ghost{ background: transparent; border-color: var(--line); color: var(--text-dim); }
+  .btn-ghost:hover{ border-color: var(--teal-dim); color: var(--text); }
+  .btn-row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .feedback{ font-size: 13.5px; font-family: var(--font-mono); }
+  .feedback.ok{ color: var(--success); }
+  .feedback.err{ color: var(--coral); }
+
+  /* ---------- FILL BLANKS (Room 2) ---------- */
+  .cloze{ font-size: 15.5px; line-height: 2.1; color: var(--text); }
+  .cloze input{
+    width: 128px; background: var(--panel); border: none; border-bottom: 2px solid var(--teal-dim);
+    color: var(--amber); font-family: var(--font-mono); font-size: 14px; padding: 3px 6px; text-align:center;
+    border-radius: 4px 4px 0 0;
+  }
+  .cloze input.correct{ border-bottom-color: var(--success); color: var(--success); }
+  .cloze input.wrong{ border-bottom-color: var(--coral); color: var(--coral); }
+  .wordbank{ display:flex; flex-wrap:wrap; gap:8px; margin-top: 12px; }
+  .chip{
+    font-family: var(--font-mono); font-size: 12.5px; background: var(--panel-2); border: 1px solid var(--line);
+    color: var(--teal); padding: 6px 11px; border-radius: 999px; cursor:pointer;
+  }
+  .chip:hover{ border-color: var(--teal); }
+  .chip:disabled{ opacity:.3; cursor:default; text-decoration: line-through; }
+
+  /* ---------- FLASHCARDS (Room 3) ---------- */
+  .deck{ display:flex; flex-direction:column; align-items:center; gap:14px; }
+  .card-scene{ perspective: 1200px; width: 100%; max-width: 380px; height: 220px; }
+  .card-flip{
+    position:relative; width:100%; height:100%; text-align:center; cursor:pointer;
+    transform-style: preserve-3d; transition: transform .5s;
+  }
+  .card-flip.flipped{ transform: rotateY(180deg); }
+  .face{
+    position:absolute; inset:0; backface-visibility:hidden; border-radius: 14px; border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; padding: 22px; font-size: 15px;
+  }
+  .face.front{ background: var(--panel-2); color: var(--text); font-family:var(--font-display); font-weight:700; font-size: 18px; }
+  .face.back{ background: #0f2f2a; color: var(--text); transform: rotateY(180deg); border-color: var(--teal-dim); font-size:14.5px; }
+  .deck-controls{ display:flex; align-items:center; gap:14px; }
+  .deck-counter{ font-family: var(--font-mono); font-size: 13px; color: var(--text-dim); min-width: 70px; text-align:center; }
+
+  /* ---------- QUIZ (Room 4) ---------- */
+  .quiz-q{ border-top: 1px solid var(--line-soft); padding-top: 14px; margin-top: 14px; }
+  .quiz-q:first-of-type{ border-top:none; margin-top:0; padding-top:0; }
+  .quiz-q p.q-text{ font-weight:600; font-size: 14.5px; margin-bottom:8px; color:var(--text); }
+  .opt{
+    display:flex; align-items:center; gap:9px; padding: 8px 10px; border-radius:8px; cursor:pointer;
+    border: 1px solid transparent; font-size: 13.8px;
+  }
+  .opt:hover{ background: var(--panel-2); }
+  .opt input{ accent-color: var(--teal); }
+  .quiz-q.graded .opt.correct-opt{ background: rgba(91,224,137,.12); border-color: var(--success); }
+  .quiz-q.graded .opt.wrong-opt{ background: rgba(255,107,106,.12); border-color: var(--coral); }
+  .score-box{
+    margin-top: 16px; padding: 14px; border-radius: 10px; background: var(--panel-2); border: 1px solid var(--line);
+    font-family: var(--font-mono); font-size: 14px;
+  }
+
+  /* ---------- EXERCICES (Room 5) ---------- */
+  .exo{ border: 1px solid var(--line); border-radius: 12px; padding: 16px; background: var(--panel-2); }
+  .exo + .exo{ margin-top: 12px; }
+  .exo h3{ font-family: var(--font-body); font-size: 15px; font-weight:700; color: var(--amber); margin-bottom:6px; }
+  .exo p{ font-size: 13.8px; color: var(--text-dim); margin: 0 0 8px; }
+  details.correction{ margin-top: 10px; }
+  details.correction summary{
+    cursor:pointer; font-family: var(--font-mono); font-size: 12.5px; color: var(--teal); list-style:none;
+  }
+  details.correction summary::before{ content:"▸ "; }
+  details.correction[open] summary::before{ content:"▾ "; }
+  details.correction .content{
+    margin-top: 8px; font-size: 13.5px; color: var(--text); background: var(--panel);
+    border-left: 2px solid var(--teal-dim); padding: 10px 12px; border-radius: 0 8px 8px 0;
+  }
+  .mini-table{ width:100%; border-collapse:collapse; font-size:13px; }
+  .mini-table th, .mini-table td{ text-align:left; padding:6px 8px; border-bottom:1px solid var(--line-soft); }
+  .check-line{ display:flex; align-items:center; gap:10px; margin-top: 16px; font-size:14px; }
+  .check-line input{ width:18px; height:18px; accent-color: var(--success); }
+
+  /* ---------- VAULT (Room finale) ---------- */
+  .vault{
+    display:flex; flex-direction:column; align-items:center; gap:18px; text-align:center; padding: 28px 16px;
+  }
+  .vault .big-slots{ display:flex; gap:10px; }
+  .vault .big-slots .slot{
+    width: 46px; height: 54px; border-radius:8px; border: 1px solid var(--line); background: var(--panel-2);
+    display:flex; align-items:center; justify-content:center; font-family: var(--font-display); font-size:24px;
+    font-weight:800; color: var(--text-faint);
+  }
+  .vault .big-slots .slot.filled{
+    color: #04120f; background: var(--amber); border-color: var(--amber); box-shadow: 0 0 16px rgba(255,182,72,.5);
+  }
+  .vault-status{ font-family: var(--font-mono); font-size: 13px; color: var(--text-dim); }
+  .certificate{
+    margin-top: 6px; padding: 22px; border: 1px dashed var(--success); border-radius: 12px;
+    background: rgba(91,224,137,.06); max-width: 420px;
+  }
+  .certificate .role{ font-family: var(--font-display); font-size:20px; color: var(--success); margin-top:6px; }
+
+  @media (max-width: 520px){
+    .brand-row{ flex-direction:column; align-items:flex-start; }
+    .card-scene{ height: 250px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .card-flip, nav.rooms button, .btn{ transition: none; }
+  }
+</style>
+
+<div class="wrap">
+  <header class="mission">
+    <div class="brand-row">
+      <div class="brand">
+        <span class="eyebrow">Mission // 6e · Sciences physiques</span>
+        <h1>Mission Matériaux</h1>
+        <span class="sub">Chapitre 2 — Classer et caractériser les matériaux</span>
+      </div>
+      <div class="code-tracker" id="codeTracker" aria-label="Code de mission reconstitué">
+        <div class="slot" data-slot="0">M</div>
+        <div class="slot" data-slot="1">A</div>
+        <div class="slot" data-slot="2">T</div>
+        <div class="slot" data-slot="3">E</div>
+        <div class="slot" data-slot="4">R</div>
+      </div>
+    </div>
+    <nav class="rooms" id="roomNav">
+      <button data-room="room1"><span class="mark">①</span> Salle 1 · Le labo</button>
+      <button data-room="room2"><span class="mark">②</span> Salle 2 · Trace écrite</button>
+      <button data-room="room3"><span class="mark">③</span> Salle 3 · Fiches mémo</button>
+      <button data-room="room4"><span class="mark">④</span> Salle 4 · Quiz</button>
+      <button data-room="room5"><span class="mark">⑤</span> Salle 5 · Exercices</button>
+      <button data-room="room6"><span class="mark">🔒</span> Coffre final</button>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ROOM 1 -->
+    <section class="room" id="room1" hidden>
+      <div class="hud">
+        <div class="room-title"><span class="tag">SALLE 1</span><h2>Le laboratoire des matériaux</h2></div>
+        <p class="briefing">Un inventeur a caché le premier fragment du code de mission quelque part dans le labo. Pour le trouver, découvrez les 4 grandes familles de matériaux, puis triez 6 objets du quotidien pour prouver que vous les reconnaissez.</p>
+      </div>
+
+      <div class="hud">
+        <h3 style="font-family:var(--font-body);font-size:15px;margin-bottom:10px;color:var(--text);">Les 4 grandes familles</h3>
+        <div class="families">
+          <div class="family-card">
+            <div class="icon">⚙️</div>
+            <h3>Matériaux métalliques</h3>
+            <p>Brillants, souvent lourds. Bons conducteurs d'électricité et de chaleur.</p>
+            <div class="ex">ex : fer, aluminium, cuivre, zinc</div>
+          </div>
+          <div class="family-card">
+            <div class="icon">🌿</div>
+            <h3>Matériaux organiques</h3>
+            <p>D'origine naturelle (issus du vivant) ou synthétique (fabriqués à partir du pétrole).</p>
+            <div class="ex">ex : bois, coton, cuir · plastiques</div>
+          </div>
+          <div class="family-card">
+            <div class="icon">🧱</div>
+            <h3>Matériaux minéraux / verres</h3>
+            <p>Issus de roches ou de sable. Souvent durs mais cassants, bons isolants.</p>
+            <div class="ex">ex : pierre, verre, terre cuite, béton</div>
+          </div>
+          <div class="family-card">
+            <div class="icon">🔗</div>
+            <h3>Matériaux composites</h3>
+            <p>Assemblage d'au moins deux familles pour combiner leurs qualités.</p>
+            <div class="ex">ex : béton armé, fibre de verre</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hud">
+        <h3 style="font-family:var(--font-body);font-size:15px;margin-bottom:6px;color:var(--text);">Épreuve : trier les objets du labo</h3>
+        <p class="briefing" style="margin-bottom:10px;">Associez chaque objet à sa famille de matériau, puis validez.</p>
+        <div style="overflow-x:auto;">
+          <table class="classify-table" id="classifyTable">
+            <thead><tr><th>Objet</th><th>Famille de matériau</th></tr></thead>
+            <tbody>
+              <tr data-answer="metallique">
+                <td>Une pièce de monnaie en cuivre</td>
+                <td><select class="answer-select"><option value="">— choisir —</option>
+                  <option value="metallique">Métallique</option>
+                  <option value="organique-nat">Organique (naturel)</option>
+                  <option value="organique-syn">Organique (synthétique)</option>
+                  <option value="mineral">Minéral / verre / céramique</option>
+                  <option value="composite">Composite</option>
+                </select></td>
+              </tr>
+              <tr data-answer="organique-nat">
+                <td>Un pull en laine</td>
+                <td><select class="answer-select"><option value="">— choisir —</option>
+                  <option value="metallique">Métallique</option>
+                  <option value="organique-nat">Organique (naturel)</option>
+                  <option value="organique-syn">Organique (synthétique)</option>
+                  <option value="mineral">Minéral / verre / céramique</option>
+                  <option value="composite">Composite</option>
+                </select></td>
+              </tr>
+              <tr data-answer="organique-syn">
+                <td>Une bouteille de shampooing en plastique</td>
+                <td><select class="answer-select"><option value="">— choisir —</option>
+                  <option value="metallique">Métallique</option>
+                  <option value="organique-nat">Organique (naturel)</option>
+                  <option value="organique-syn">Organique (synthétique)</option>
+                  <option value="mineral">Minéral / verre / céramique</option>
+                  <option value="composite">Composite</option>
+                </select></td>
+              </tr>
+              <tr data-answer="mineral">
+                <td>Un carreau de vitre</td>
+                <td><select class="answer-select"><option value="">— choisir —</option>
+                  <option value="metallique">Métallique</option>
+                  <option value="organique-nat">Organique (naturel)</option>
+                  <option value="organique-syn">Organique (synthétique)</option>
+                  <option value="mineral">Minéral / verre / céramique</option>
+                  <option value="composite">Composite</option>
+                </select></td>
+              </tr>
+              <tr data-answer="composite">
+                <td>Une poutre en béton armé</td>
+                <td><select class="answer-select"><option value="">— choisir —</option>
+                  <option value="metallique">Métallique</option>
+                  <option value="organique-nat">Organique (naturel)</option>
+                  <option value="organique-syn">Organique (synthétique)</option>
+                  <option value="mineral">Minéral / verre / céramique</option>
+                  <option value="composite">Composite</option>
+                </select></td>
+              </tr>
+              <tr data-answer="mineral">
+                <td>Une paillasse en granit</td>
+                <td><select class="answer-select"><option value="">— choisir —</option>
+                  <option value="metallique">Métallique</option>
+                  <option value="organique-nat">Organique (naturel)</option>
+                  <option value="organique-syn">Organique (synthétique)</option>
+                  <option value="mineral">Minéral / verre / céramique</option>
+                  <option value="composite">Composite</option>
+                </select></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="btn-row" style="margin-top:12px;">
+          <button class="btn btn-primary" id="checkRoom1">Valider le tri</button>
+          <span class="feedback" id="feedbackRoom1"></span>
+        </div>
+        <div class="reward-line" id="rewardRoom1">🔒 Fragment de code verrouillé — triez les 6 objets sans erreur.</div>
+      </div>
+    </section>
+
+    <!-- ROOM 2 -->
+    <section class="room" id="room2" hidden>
+      <div class="hud">
+        <div class="room-title"><span class="tag">SALLE 2</span><h2>La trace écrite trouée</h2></div>
+        <p class="briefing">Complétez le bilan du cours avec les mots de la banque ci-dessous. Cliquez sur un mot pour le placer dans la première case vide, ou tapez directement.</p>
+      </div>
+      <div class="hud">
+        <p class="cloze">
+          Les matériaux <input type="text" class="blank" data-answer="metalliques,metallique" id="b1"> comme le fer, l'aluminium et le cuivre sont de bons conducteurs d'<input type="text" class="blank" data-answer="electricite,electrique" id="b2"> et de <input type="text" class="blank" data-answer="chaleur,thermique" id="b3">.
+          <br><br>
+          Les matières <input type="text" class="blank" data-answer="plastiques,plastique" id="b4">, utilisées par exemple pour fabriquer des bouteilles ou des emballages, sont obtenues par transformation du <input type="text" class="blank" data-answer="petrole" id="b5">.
+          <br><br>
+          Pour identifier un échantillon inconnu, on teste sa conductivité électrique : les métaux sont des conducteurs, tandis que le plastique, le verre ou le bois sec sont des <input type="text" class="blank" data-answer="isolants,isolant" id="b6">.
+          <br><br>
+          Certains plastiques flottent dans l'eau douce mais coulent seulement dans l'eau <input type="text" class="blank" data-answer="salee" id="b7">, car cela dépend de leur masse volumique.
+          <br><br>
+          La matière <input type="text" class="blank" data-answer="organique" id="b8"> constitue les êtres vivants ou provient de leur décomposition ; elle brûle facilement, contrairement à la matière <input type="text" class="blank" data-answer="minerale,minéral,mineral" id="b9"> qui est inerte.
+        </p>
+        <div class="wordbank" id="wordbank"></div>
+        <div class="btn-row" style="margin-top:14px;">
+          <button class="btn btn-primary" id="checkRoom2">Vérifier la trace écrite</button>
+          <button class="btn btn-ghost" id="resetRoom2">Réinitialiser</button>
+          <span class="feedback" id="feedbackRoom2"></span>
+        </div>
+        <div class="reward-line" id="rewardRoom2">🔒 Fragment de code verrouillé — remplissez les 9 blancs correctement.</div>
+      </div>
+    </section>
+
+    <!-- ROOM 3 -->
+    <section class="room" id="room3" hidden>
+      <div class="hud">
+        <div class="room-title"><span class="tag">SALLE 3</span><h2>Les fiches mémo</h2></div>
+        <p class="briefing">Retournez chaque fiche pour découvrir la définition. Parcourez les 11 fiches jusqu'au bout pour récupérer le fragment de code.</p>
+      </div>
+      <div class="hud deck">
+        <div class="card-scene">
+          <div class="card-flip" id="cardFlip" tabindex="0" role="button" aria-label="Retourner la fiche">
+            <div class="face front" id="cardFront"></div>
+            <div class="face back" id="cardBack"></div>
+          </div>
+        </div>
+        <div class="deck-controls">
+          <button class="btn btn-ghost" id="prevCard">◂ Précédente</button>
+          <span class="deck-counter" id="cardCounter">1 / 11</span>
+          <button class="btn btn-ghost" id="nextCard">Suivante ▸</button>
+        </div>
+        <div class="reward-line" id="rewardRoom3">🔒 Fragment de code verrouillé — consultez les 11 fiches.</div>
+      </div>
+    </section>
+
+    <!-- ROOM 4 -->
+    <section class="room" id="room4" hidden>
+      <div class="hud">
+        <div class="room-title"><span class="tag">SALLE 4</span><h2>Le scanner à quiz</h2></div>
+        <p class="briefing">8 questions. Obtenez au moins 6 bonnes réponses pour débloquer le fragment de code. Vous pouvez recommencer autant de fois que nécessaire.</p>
+      </div>
+      <div class="hud" id="quizBox"></div>
+    </section>
+
+    <!-- ROOM 5 -->
+    <section class="room" id="room5" hidden>
+      <div class="hud">
+        <div class="room-title"><span class="tag">SALLE 5</span><h2>Entraînement supplémentaire</h2></div>
+        <p class="briefing">Cherchez d'abord sur votre cahier, puis affichez la correction pour vérifier. Cochez la case en bas une fois les 4 exercices terminés.</p>
+      </div>
+
+      <div class="exo">
+        <h3>Exercice 1 — Classement rapide</h3>
+        <p>Classez ces objets dans leur famille de matériau : une casserole en inox, un tee-shirt en coton, un pot de yaourt en plastique, un mur en briques, une raquette en fibre de carbone.</p>
+        <details class="correction">
+          <summary>Afficher la correction</summary>
+          <div class="content">
+            <div style="overflow-x:auto;">
+            <table class="mini-table">
+              <tr><th>Objet</th><th>Famille</th></tr>
+              <tr><td>Casserole en inox</td><td>Métallique</td></tr>
+              <tr><td>Tee-shirt en coton</td><td>Organique naturel</td></tr>
+              <tr><td>Pot de yaourt en plastique</td><td>Organique synthétique</td></tr>
+              <tr><td>Mur en briques</td><td>Minéral</td></tr>
+              <tr><td>Raquette en fibre de carbone</td><td>Composite</td></tr>
+            </table>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div class="exo">
+        <h3>Exercice 2 — Le test de flottaison</h3>
+        <p>On plonge trois plastiques dans de l'eau douce puis dans de l'eau salée : le PEHD flotte dans les deux, le PET coule dans les deux, le PS flotte dans l'eau salée mais coule dans l'eau douce. Classez ces trois plastiques du plus dense au moins dense, et expliquez pourquoi ce test permet de trier les plastiques au recyclage.</p>
+        <details class="correction">
+          <summary>Afficher la correction</summary>
+          <div class="content">
+            Du plus dense au moins dense : PET (coule partout) &gt; PS (coule dans l'eau douce, flotte dans l'eau salée, plus dense qu'elle) &gt; PEHD (flotte partout, le moins dense). Ce test fonctionne car chaque plastique a une masse volumique différente : comparée à celle de l'eau douce (1,0 g/mL) et de l'eau salée (environ 1,03 g/mL), elle détermine s'il flotte ou coule. Les centres de tri utilisent ce principe pour séparer les plastiques sans les identifier un par un.
+          </div>
+        </details>
+      </div>
+
+      <div class="exo">
+        <h3>Exercice 3 — L'échantillon mystère</h3>
+        <p>Un échantillon gris ne conduit pas l'électricité, n'est pas attiré par un aimant, et se raye facilement avec un ongle. À quelle famille appartient-il probablement : métallique, minéral, ou organique synthétique ? Justifiez votre réponse en une phrase.</p>
+        <details class="correction">
+          <summary>Afficher la correction</summary>
+          <div class="content">
+            Il s'agit probablement d'un matériau organique synthétique (un plastique) : les métaux conduisent l'électricité et beaucoup sont magnétiques, tandis que les minéraux comme le verre ou la céramique sont en général plus durs et se rayent difficilement à l'ongle. L'absence de conductivité et la faible dureté orientent vers un plastique.
+          </div>
+        </details>
+      </div>
+
+      <div class="exo">
+        <h3>Exercice 4 — Vers le chapitre suivant</h3>
+        <p>En 2 à 3 phrases, expliquez pourquoi tester la conductivité électrique des matériaux dans ce chapitre est une bonne préparation pour le prochain chapitre sur l'électricité.</p>
+        <details class="correction">
+          <summary>Afficher la correction</summary>
+          <div class="content">
+            En testant quels matériaux laissent passer le courant, on découvre déjà les notions de conducteur et d'isolant. Ce sont exactement les notions dont on a besoin pour comprendre comment construire un circuit électrique : les fils conducteurs relient les composants, tandis que les isolants protègent et empêchent le courant de passer là où il ne faut pas.
+          </div>
+        </details>
+      </div>
+
+      <div class="check-line">
+        <input type="checkbox" id="exoDone">
+        <label for="exoDone">J'ai terminé les 4 exercices et vérifié mes réponses.</label>
+      </div>
+      <div class="reward-line" id="rewardRoom5" style="margin-top:8px;">🔒 Fragment de code verrouillé — cochez la case une fois terminé.</div>
+    </section>
+
+    <!-- ROOM 6 : VAULT -->
+    <section class="room" id="room6" hidden>
+      <div class="hud">
+        <div class="room-title"><span class="tag">SALLE FINALE</span><h2>Le coffre-fort du savoir</h2></div>
+        <p class="briefing">Terminez les 5 salles pour reconstituer le mot codé et ouvrir le coffre.</p>
+      </div>
+      <div class="hud vault">
+        <div class="big-slots" id="vaultSlots">
+          <div class="slot" data-i="0">?</div>
+          <div class="slot" data-i="1">?</div>
+          <div class="slot" data-i="2">?</div>
+          <div class="slot" data-i="3">?</div>
+          <div class="slot" data-i="4">?</div>
+        </div>
+        <div class="vault-status" id="vaultStatus">0 / 5 fragments récupérés</div>
+        <div id="vaultResult"></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var STORAGE_KEY = "mission-materiaux-progress-v1";
+
+  var state = {
+    room1: false,
+    room2: false,
+    room3: false,
+    room4: false,
+    room5: false,
+    flashSeen: [],
+    currentCard: 0
+  };
+
+  function loadState(){
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if(raw){
+        var parsed = JSON.parse(raw);
+        for(var k in parsed){ state[k] = parsed[k]; }
+      }
+    }catch(e){}
+  }
+  function saveState(){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+  }
+
+  function normalize(s){
+    return (s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").trim();
+  }
+
+  /* ---------------- NAVIGATION ---------------- */
+  var rooms = ["room1","room2","room3","room4","room5","room6"];
+  var navButtons = {};
+
+  function switchRoom(id){
+    rooms.forEach(function(r){
+      var section = document.getElementById(r);
+      section.hidden = (r !== id);
+    });
+    rooms.forEach(function(r){
+      navButtons[r].classList.toggle("active", r === id);
+    });
+    try{ history.replaceState(null, "", "#" + id); }catch(e){}
+    if(id === "room6"){ renderVault(); }
+  }
+
+  function initNav(){
+    var navEl = document.getElementById("roomNav");
+    Array.prototype.forEach.call(navEl.querySelectorAll("button"), function(btn){
+      var id = btn.getAttribute("data-room");
+      navButtons[id] = btn;
+      btn.addEventListener("click", function(){ switchRoom(id); });
+    });
+    refreshNavBadges();
+    var hash = (location.hash || "").replace("#","");
+    var start = rooms.indexOf(hash) >= 0 ? hash : "room1";
+    switchRoom(start);
+  }
+
+  function refreshNavBadges(){
+    var letters = ["M","A","T","E","R"];
+    var doneFlags = [state.room1, state.room2, state.room3, state.room4, state.room5];
+    doneFlags.forEach(function(done, i){
+      var key = "room" + (i+1);
+      if(navButtons[key]){
+        navButtons[key].classList.toggle("done", !!done);
+        var mark = navButtons[key].querySelector(".mark");
+        if(mark) mark.textContent = done ? letters[i] : "①②③④⑤".charAt(i);
+      }
+    });
+    var slots = document.querySelectorAll("#codeTracker .slot");
+    slots.forEach(function(slot, i){
+      slot.classList.toggle("filled", !!doneFlags[i]);
+    });
+  }
+
+  function markDone(roomKey, rewardElId){
+    if(!state[roomKey]){
+      state[roomKey] = true;
+      saveState();
+    }
+    refreshNavBadges();
+    var el = document.getElementById(rewardElId);
+    var idx = parseInt(roomKey.replace("room",""), 10) - 1;
+    var letters = ["M","A","T","E","R"];
+    if(el){
+      el.textContent = "✅ Fragment récupéré : " + letters[idx] + " — bien joué !";
+      el.classList.add("unlocked");
+    }
+  }
+
+  /* ---------------- ROOM 1 : CLASSIFICATION ---------------- */
+  function initRoom1(){
+    var table = document.getElementById("classifyTable");
+    var rows = table.querySelectorAll("tbody tr");
+    document.getElementById("checkRoom1").addEventListener("click", function(){
+      var allCorrect = true;
+      rows.forEach(function(row){
+        var expected = row.getAttribute("data-answer");
+        var select = row.querySelector("select");
+        if(select.value === expected){
+          select.classList.remove("wrong");
+          select.classList.add("correct");
+        }else{
+          select.classList.remove("correct");
+          select.classList.add("wrong");
+          allCorrect = false;
+        }
+      });
+      var fb = document.getElementById("feedbackRoom1");
+      if(allCorrect){
+        fb.textContent = "6/6 — tri parfait !";
+        fb.className = "feedback ok";
+        markDone("room1", "rewardRoom1");
+      }else{
+        var correctCount = 0;
+        rows.forEach(function(row){
+          if(row.querySelector("select").value === row.getAttribute("data-answer")) correctCount++;
+        });
+        fb.textContent = correctCount + "/6 — corrigez les cases en rouge et revalidez.";
+        fb.className = "feedback err";
+      }
+    });
+  }
+
+  /* ---------------- ROOM 2 : TEXTE A TROUS ---------------- */
+  var blankWords = [
+    {id:"b1", label:"métalliques"},
+    {id:"b2", label:"électricité"},
+    {id:"b3", label:"chaleur"},
+    {id:"b4", label:"plastiques"},
+    {id:"b5", label:"pétrole"},
+    {id:"b6", label:"isolants"},
+    {id:"b7", label:"salée"},
+    {id:"b8", label:"organique"},
+    {id:"b9", label:"minérale"}
+  ];
+
+  function shuffle(arr){
+    var a = arr.slice();
+    for(var i = a.length - 1; i > 0; i--){
+      var j = Math.floor(Math.random() * (i+1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  function initRoom2(){
+    var bank = document.getElementById("wordbank");
+    var shuffled = shuffle(blankWords);
+    shuffled.forEach(function(w){
+      var chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "chip";
+      chip.textContent = w.label;
+      chip.addEventListener("click", function(){
+        var inputs = document.querySelectorAll(".cloze .blank");
+        for(var i = 0; i < inputs.length; i++){
+          if(!inputs[i].value){
+            inputs[i].value = w.label;
+            chip.disabled = true;
+            break;
+          }
+        }
+      });
+      bank.appendChild(chip);
+    });
+
+    document.getElementById("checkRoom2").addEventListener("click", function(){
+      var inputs = document.querySelectorAll(".cloze .blank");
+      var allCorrect = true;
+      var correctCount = 0;
+      inputs.forEach(function(input){
+        var accepted = input.getAttribute("data-answer").split(",").map(normalize);
+        var val = normalize(input.value);
+        if(accepted.indexOf(val) !== -1 && val !== ""){
+          input.classList.remove("wrong");
+          input.classList.add("correct");
+          correctCount++;
+        }else{
+          input.classList.remove("correct");
+          input.classList.add("wrong");
+          allCorrect = false;
+        }
+      });
+      var fb = document.getElementById("feedbackRoom2");
+      if(allCorrect){
+        fb.textContent = correctCount + "/9 — trace écrite complète !";
+        fb.className = "feedback ok";
+        markDone("room2", "rewardRoom2");
+      }else{
+        fb.textContent = correctCount + "/9 corrects — ajustez les cases en rouge.";
+        fb.className = "feedback err";
+      }
+    });
+
+    document.getElementById("resetRoom2").addEventListener("click", function(){
+      var inputs = document.querySelectorAll(".cloze .blank");
+      inputs.forEach(function(input){
+        input.value = "";
+        input.classList.remove("correct", "wrong");
+      });
+      var chips = bank.querySelectorAll(".chip");
+      chips.forEach(function(c){ c.disabled = false; });
+      document.getElementById("feedbackRoom2").textContent = "";
+    });
+  }
+
+  /* ---------------- ROOM 3 : FLASHCARDS ---------------- */
+  var flashcards = [
+    {front:"Matériau métallique", back:"Matériau comme le fer, l'aluminium ou le cuivre : brillant, généralement bon conducteur d'électricité et de chaleur."},
+    {front:"Matériau organique", back:"Matériau produit par un être vivant (bois, laine, coton, cuir) ou fabriqué à partir du pétrole (plastiques)."},
+    {front:"Matériau minéral", back:"Matériau issu de roches, de sable ou de terre (pierre, verre, céramique, béton) : souvent dur mais cassant."},
+    {front:"Matériau composite", back:"Assemblage d'au moins deux matériaux différents pour combiner leurs qualités. Exemple : le béton armé (béton + acier)."},
+    {front:"Conducteur électrique", back:"Matériau qui laisse passer le courant électrique. Exemple : les métaux."},
+    {front:"Isolant électrique", back:"Matériau qui ne laisse pas passer le courant électrique. Exemple : plastique, verre, bois sec."},
+    {front:"Conductivité thermique", back:"Capacité d'un matériau à transmettre la chaleur. Un bon conducteur thermique paraît froid au toucher."},
+    {front:"Magnétisme", back:"Propriété d'être attiré par un aimant. Le fer et l'acier sont magnétiques ; l'aluminium et le cuivre ne le sont pas."},
+    {front:"Masse volumique (densité)", back:"Masse d'un matériau pour un volume donné. Elle permet de prévoir si un objet flotte ou coule dans un liquide."},
+    {front:"Matière organique", back:"Matière qui constitue les êtres vivants ou provient de leur décomposition (feuilles mortes, bois, viande…). Elle brûle facilement."},
+    {front:"Matière minérale", back:"Matière inerte, non produite par un être vivant : roches, eau, air, sable."}
+  ];
+
+  function initRoom3(){
+    var flip = document.getElementById("cardFlip");
+    var front = document.getElementById("cardFront");
+    var back = document.getElementById("cardBack");
+    var counter = document.getElementById("cardCounter");
+
+    function render(){
+      var card = flashcards[state.currentCard];
+      front.textContent = card.front;
+      back.textContent = card.back;
+      flip.classList.remove("flipped");
+      counter.textContent = (state.currentCard + 1) + " / " + flashcards.length;
+    }
+
+    function markSeen(i){
+      if(state.flashSeen.indexOf(i) === -1){
+        state.flashSeen.push(i);
+        saveState();
+      }
+      if(state.flashSeen.length >= flashcards.length){
+        markDone("room3", "rewardRoom3");
+      }
+    }
+
+    flip.addEventListener("click", function(){
+      flip.classList.toggle("flipped");
+      if(flip.classList.contains("flipped")) markSeen(state.currentCard);
+    });
+    flip.addEventListener("keydown", function(e){
+      if(e.key === "Enter" || e.key === " "){
+        e.preventDefault();
+        flip.classList.toggle("flipped");
+        if(flip.classList.contains("flipped")) markSeen(state.currentCard);
+      }
+    });
+
+    document.getElementById("prevCard").addEventListener("click", function(){
+      state.currentCard = (state.currentCard - 1 + flashcards.length) % flashcards.length;
+      saveState();
+      render();
+    });
+    document.getElementById("nextCard").addEventListener("click", function(){
+      state.currentCard = (state.currentCard + 1) % flashcards.length;
+      saveState();
+      render();
+    });
+
+    render();
+    if(state.flashSeen.length >= flashcards.length){
+      markDone("room3", "rewardRoom3");
+    }
+  }
+
+  /* ---------------- ROOM 4 : QUIZ ---------------- */
+  var quizData = [
+    {q:"Le fer, l'aluminium et le cuivre appartiennent à la famille des matériaux :", opts:["Organiques","Métalliques","Minéraux","Composites"], correct:1},
+    {q:"Le béton armé est un exemple de matériau :", opts:["Métallique","Minéral","Composite","Organique naturel"], correct:2},
+    {q:"Un matériau qui laisse passer le courant électrique est appelé :", opts:["Un isolant","Un conducteur","Un composite","Un minéral"], correct:1},
+    {q:"Pour savoir si un objet est en fer, on peut utiliser :", opts:["Un thermomètre","Un aimant","Une balance seule","Un microscope"], correct:1},
+    {q:"Un plastique qui flotte dans l'eau douce mais coule dans l'eau salée a une masse volumique :", opts:["Supérieure aux deux eaux","Inférieure aux deux eaux","Comprise entre les deux","Nulle"], correct:2},
+    {q:"La matière organique est caractérisée par le fait qu'elle :", opts:["Ne brûle jamais","Est toujours métallique","Provient des êtres vivants ou de leur décomposition","Est toujours minérale"], correct:2},
+    {q:"Le verre et la céramique sont des matériaux :", opts:["De bons conducteurs électriques","Souvent durs mais cassants","Toujours magnétiques","Des composites"], correct:1},
+    {q:"L'eau, l'air et le sable font partie de la matière :", opts:["Organique","Minérale","Composite","Synthétique uniquement"], correct:1}
+  ];
+
+  function initRoom4(){
+    var box = document.getElementById("quizBox");
+    var html = "";
+    quizData.forEach(function(item, qi){
+      html += '<div class="quiz-q" data-q="' + qi + '"><p class="q-text">' + (qi+1) + ". " + item.q + '</p>';
+      item.opts.forEach(function(opt, oi){
+        html += '<label class="opt" data-opt="' + oi + '"><input type="radio" name="q' + qi + '" value="' + oi + '"> <span>' + opt + '</span></label>';
+      });
+      html += '</div>';
+    });
+    html += '<div class="btn-row" style="margin-top:14px;"><button class="btn btn-primary" id="submitQuiz">Valider le quiz</button><button class="btn btn-ghost" id="retryQuiz" hidden>Recommencer</button></div>';
+    html += '<div class="score-box" id="scoreBox" hidden></div>';
+    html += '<div class="reward-line" id="rewardRoom4">🔒 Fragment de code verrouillé — obtenez au moins 6/8.</div>';
+    box.innerHTML = html;
+
+    document.getElementById("submitQuiz").addEventListener("click", function(){
+      var score = 0;
+      quizData.forEach(function(item, qi){
+        var qEl = box.querySelector('.quiz-q[data-q="' + qi + '"]');
+        qEl.classList.add("graded");
+        var chosen = qEl.querySelector('input[name="q' + qi + '"]:checked');
+        var chosenVal = chosen ? parseInt(chosen.value, 10) : -1;
+        if(chosenVal === item.correct) score++;
+        var opts = qEl.querySelectorAll(".opt");
+        opts.forEach(function(optEl, oi){
+          optEl.classList.remove("correct-opt", "wrong-opt");
+          if(oi === item.correct) optEl.classList.add("correct-opt");
+          else if(oi === chosenVal) optEl.classList.add("wrong-opt");
+        });
+      });
+      var scoreBox = document.getElementById("scoreBox");
+      scoreBox.hidden = false;
+      scoreBox.textContent = "Score : " + score + " / " + quizData.length;
+      document.getElementById("submitQuiz").hidden = true;
+      document.getElementById("retryQuiz").hidden = false;
+      if(score >= 6){
+        markDone("room4", "rewardRoom4");
+      }
+    });
+
+    document.getElementById("retryQuiz").addEventListener("click", function(){
+      box.querySelectorAll('input[type="radio"]').forEach(function(r){ r.checked = false; });
+      box.querySelectorAll(".quiz-q").forEach(function(q){ q.classList.remove("graded"); });
+      box.querySelectorAll(".opt").forEach(function(o){ o.classList.remove("correct-opt","wrong-opt"); });
+      document.getElementById("scoreBox").hidden = true;
+      document.getElementById("submitQuiz").hidden = false;
+      document.getElementById("retryQuiz").hidden = true;
+    });
+  }
+
+  /* ---------------- ROOM 5 : EXERCICES ---------------- */
+  function initRoom5(){
+    var check = document.getElementById("exoDone");
+    check.checked = !!state.room5;
+    check.addEventListener("change", function(){
+      if(check.checked){
+        markDone("room5", "rewardRoom5");
+      }
+    });
+    if(state.room5){
+      var el = document.getElementById("rewardRoom5");
+      el.textContent = "✅ Fragment récupéré : R — bien joué !";
+      el.classList.add("unlocked");
+    }
+  }
+
+  /* ---------------- ROOM 6 : VAULT ---------------- */
+  function renderVault(){
+    var letters = ["M","A","T","E","R"];
+    var doneFlags = [state.room1, state.room2, state.room3, state.room4, state.room5];
+    var slots = document.querySelectorAll("#vaultSlots .slot");
+    var count = 0;
+    slots.forEach(function(slot, i){
+      if(doneFlags[i]){
+        slot.textContent = letters[i];
+        slot.classList.add("filled");
+        count++;
+      }else{
+        slot.textContent = "?";
+        slot.classList.remove("filled");
+      }
+    });
+    document.getElementById("vaultStatus").textContent = count + " / 5 fragments récupérés";
+    var resultEl = document.getElementById("vaultResult");
+    if(count === 5){
+      resultEl.innerHTML = '<div class="certificate"><div style="font-family:var(--font-mono);font-size:12px;color:var(--text-dim);">CODE DE MISSION : MATER</div><div class="role">Matériologue confirmé(e) !</div><p style="color:var(--text-dim);font-size:13.5px;margin-top:8px;">Vous savez classer les matériaux en familles et les caractériser par leurs propriétés physiques. Le coffre-fort du savoir est ouvert.</p></div>';
+    }else{
+      resultEl.innerHTML = "";
+    }
+  }
+
+  /* ---------------- BOOT ---------------- */
+  function start(){
+    loadState();
+    initNav();
+    initRoom1();
+    initRoom2();
+    initRoom3();
+    initRoom4();
+    initRoom5();
+    refreshNavBadges();
+  }
+
+  if(window.claude && window.claude.hot && window.claude.hot.ready){
+    window.claude.hot.snapshot(function(){ return state; });
+    window.claude.hot.ready(function(data){
+      if(data){ for(var k in data){ state[k] = data[k]; } }
+      start();
+    });
+  }else{
+    start();
+  }
+})();
+</script>
+
+</body></html>

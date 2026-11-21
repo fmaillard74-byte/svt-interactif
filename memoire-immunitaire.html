@@ -1,0 +1,845 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Mémoire immunitaire en classe</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Mise en page : une colonne lisible (max 980px), onglets en tête ; correction = cartes qui se débloquent une à une ; débat = grandes cartes à projeter */
+:root{
+  --bg:#F2F5FA; --surface:#FFFFFF; --ink:#14213D; --muted:#55627A; --line:#D5DCE8;
+  --brand:#2744D8; --brand-ink:#FFFFFF; --a:#D62839; --b:#1B8F63; --hl:#F5A400; --soft:#E8EEFB;
+  --ok:#1B8F63; --mid:#B87400; --bad:#C23147;
+  --f-display:"Barlow Condensed","Arial Narrow",sans-serif;
+  --f-body:"Atkinson Hyperlegible","Segoe UI",Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E1424; --surface:#172036; --ink:#E8EEFB; --muted:#9AA8C4; --line:#2A3652;
+  --brand:#8FA5FF; --brand-ink:#0E1424; --a:#FF6B7A; --b:#46D19B; --hl:#FFC24A; --soft:#1F2A45;
+  --ok:#46D19B; --mid:#FFC24A; --bad:#FF7A8C; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1424; --surface:#172036; --ink:#E8EEFB; --muted:#9AA8C4; --line:#2A3652;
+  --brand:#8FA5FF; --brand-ink:#0E1424; --a:#FF6B7A; --b:#46D19B; --hl:#FFC24A; --soft:#1F2A45;
+  --ok:#46D19B; --mid:#FFC24A; --bad:#FF7A8C; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:17px/1.5 var(--f-body);
+  padding-block:20px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:980px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-display);font-weight:700;line-height:1.05;margin:0;text-wrap:balance}
+h1{font-size:clamp(2rem,6vw,3.2rem);text-transform:uppercase;letter-spacing:.01em}
+h2{font-size:clamp(1.5rem,4vw,2.1rem)}
+h3{font-size:1.35rem}
+p{margin:0}
+.kicker{font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:6px}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--hl);outline-offset:2px}
+
+.top{display:flex;flex-direction:column;gap:18px;margin-bottom:22px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{border:2px solid var(--ink);background:transparent;border-radius:999px;padding:8px 18px;font-weight:700}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+
+.btn{border:2px solid var(--ink);background:var(--surface);border-radius:10px;padding:9px 16px;font-weight:700}
+.btn:hover{background:var(--soft)}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.ghost{border-color:var(--line);font-weight:400}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+/* ---------- Correction ---------- */
+.progress{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+.dot{width:34px;height:34px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;
+  font:700 .95rem var(--f-display);font-size:1.1rem;color:var(--muted);background:var(--surface)}
+.dot.now{border-color:var(--brand);color:var(--brand)}
+.dot.s-ok{background:var(--ok);border-color:var(--ok);color:var(--bg)}
+.dot.s-mid{background:var(--mid);border-color:var(--mid);color:var(--bg)}
+.dot.s-bad{background:var(--bad);border-color:var(--bad);color:var(--bg)}
+.legend{font-size:.85rem;color:var(--muted);margin:-8px 0 18px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:18px;
+  display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+.card.locked{display:none}
+.qhead{display:flex;gap:12px;align-items:baseline}
+.qnum{font:700 2.4rem/1 var(--f-display);color:var(--brand)}
+.qtext{font-size:1.15rem;font-weight:700;min-width:0}
+.fig{border:1px solid var(--line);border-radius:10px;padding:8px;background:var(--bg);min-width:0}
+.fig svg{display:block;width:100%;height:auto}
+.fig figcaption{font-size:.8rem;color:var(--muted);padding:4px 6px 0}
+.work{display:grid;gap:12px;min-width:0}
+.part{display:grid;gap:8px}
+.part>.plabel{font-weight:700;font-size:.95rem;color:var(--muted)}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;text-align:left;border:2px solid var(--line);background:var(--surface);
+  border-radius:10px;padding:10px 12px;width:100%}
+.opt:hover{border-color:var(--brand)}
+.opt[aria-pressed="true"]{border-color:var(--brand);background:var(--soft)}
+.opt.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 16%,var(--surface))}
+.opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 14%,var(--surface))}
+.nums{display:flex;gap:12px;flex-wrap:wrap}
+.num{display:grid;gap:4px}
+.num label{font-size:.9rem;color:var(--muted);font-weight:700}
+.num .inp{display:flex;align-items:center;gap:8px}
+.num input{width:110px;font:700 1.2rem var(--f-body);padding:8px 10px;border:2px solid var(--line);border-radius:10px;
+  background:var(--surface);color:var(--ink);font-variant-numeric:tabular-nums}
+.num input.right{border-color:var(--ok)} .num input.wrong{border-color:var(--bad)}
+.unit{color:var(--muted)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px;text-align:left}
+.chip:hover{border-color:var(--brand)}
+.chip[disabled]{opacity:.35;cursor:default}
+.line{min-height:56px;border:2px dashed var(--line);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:6px}
+.line .chip{border-color:var(--brand);background:var(--soft);border-radius:10px}
+.line .ph{color:var(--muted);font-size:.9rem;padding:6px}
+.fb{border-radius:10px;padding:10px 14px;background:var(--soft);font-size:.98rem}
+.fb.hint{border-left:6px solid var(--hl)}
+.fb.err{border-left:6px solid var(--bad)}
+.fb.good{border-left:6px solid var(--ok)}
+.corr{border:2px solid var(--ok);border-radius:12px;padding:14px 16px;display:grid;gap:8px;background:color-mix(in srgb,var(--ok) 8%,var(--surface))}
+.corr h3{color:var(--ok)}
+.corr .tip{font-size:.92rem;color:var(--muted)}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.bilan{background:var(--ink);color:var(--bg);border-radius:14px;padding:24px;display:grid;gap:12px}
+.bilan .btn{color:var(--ink)}
+@media (min-width:820px){
+  .card{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);align-items:start}
+  .card .qhead{grid-column:1/-1}
+}
+</style>
+<style>
+/* ---------- Débat ---------- */
+.manches{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.mtab{border:2px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 14px;font-weight:700}
+.mtab[aria-selected="true"]{border-color:var(--brand);background:var(--soft);color:var(--brand)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px;display:grid;gap:16px}
+.panel .lead{color:var(--muted);max-width:62ch}
+.stage{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:14px}
+.big{border-radius:16px;padding:22px;min-height:190px;display:grid;align-content:start;gap:10px;border:3px solid var(--ink);background:var(--bg);min-width:0}
+.big.pour{border-color:var(--b)} .big.contre{border-color:var(--a)} .big.arbitre{border-color:var(--hl)}
+.camp{font:700 .85rem var(--f-body);letter-spacing:.12em;text-transform:uppercase}
+.pour .camp{color:var(--b)} .contre .camp{color:var(--a)} .arbitre .camp{color:var(--mid)}
+.big h3{font-size:clamp(1.6rem,5vw,2.4rem)}
+.big .say{font-style:italic;color:var(--muted)}
+.big.flip{animation:flip .5s ease}
+@keyframes flip{from{transform:rotateY(90deg);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.big.flip{animation:none}}
+.words{display:flex;gap:10px;flex-wrap:wrap}
+.word{border:3px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 16px;font:700 1.5rem var(--f-display);letter-spacing:.02em}
+.word[aria-pressed="true"]{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 16%,var(--surface));text-decoration:line-through;text-decoration-thickness:2px}
+.hint-small{font-size:.9rem;color:var(--muted)}
+.timer{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.clock{font:700 clamp(3rem,12vw,5.5rem)/1 var(--f-display);font-variant-numeric:tabular-nums;min-width:2.6ch}
+.clock.low{color:var(--bad)}
+.score{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.score th,.score td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left}
+.score th{font-size:.85rem;color:var(--muted)}
+.score td.c{text-align:center}
+.score .tot td{font:700 1.8rem var(--f-display);border-bottom:0}
+.pm{display:inline-flex;align-items:center;gap:6px}
+.pm button{width:34px;height:34px;border-radius:8px;border:2px solid var(--line);background:var(--surface);font-weight:700}
+.pm output{min-width:1.6ch;text-align:center;font-weight:700}
+.scorewrap{overflow-x:auto}
+.proof{border:2px solid var(--line);background:var(--surface);border-radius:12px;padding:14px;text-align:left;display:grid;gap:4px}
+.proof:hover{border-color:var(--brand)}
+.proof .src{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.proof .fact{font-weight:700}
+.proof[aria-pressed="true"]{border-color:var(--brand);background:var(--soft)}
+.reply{border-left:6px solid var(--hl);background:var(--soft);padding:12px 14px;border-radius:10px}
+.fields{display:grid;gap:10px}
+.fields label{font-weight:700;display:grid;gap:4px}
+.fields textarea{font:inherit;color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:10px;padding:10px;min-height:70px;resize:vertical;width:100%}
+</style>
+<style>
+/* Graphique : classes thémées (les variables CSS ne passent pas toujours dans les attributs SVG) */
+.g-ink{fill:var(--ink)} .g-mut{fill:var(--muted)}
+.g-axis{stroke:var(--ink);stroke-width:1.5;fill:none}
+.g-grid{stroke:var(--line);stroke-width:1;fill:none}
+.g-a{stroke:var(--a);stroke-width:2.6;fill:none;stroke-linecap:round}
+.g-b{stroke:var(--b);stroke-width:2.6;fill:none;stroke-linecap:round}
+.g-hl{stroke:var(--hl);stroke-width:5;fill:none;stroke-linecap:round;opacity:.9}
+.g-hld{stroke:var(--hl);stroke-width:2.5;stroke-dasharray:6 4;fill:none}
+.g-dot{fill:var(--hl);stroke:var(--ink);stroke-width:1.5}
+.g-box{fill:var(--hl);stroke:none}
+.g-boxt{fill:#14213D;font-weight:700}
+.g-ring{fill:none;stroke:var(--hl);stroke-width:3}
+.g-fa{fill:var(--a)} .g-fb{fill:var(--b)}
+</style>
+<style>
+/* ---------- Débat par groupes (tablettes + écran de classe) ---------- */
+.modes{display:flex;gap:6px;flex-wrap:wrap}
+.fieldrow{align-items:flex-end}
+.f{display:grid;gap:4px;font-weight:700;font-size:.9rem;color:var(--muted)}
+.f input,.f select{font:700 1.3rem var(--f-body);padding:9px 12px;border:2px solid var(--line);border-radius:10px;
+  background:var(--surface);color:var(--ink);min-width:150px;max-width:100%}
+.f input{text-transform:uppercase}
+.codeshow{font:700 clamp(2.4rem,9vw,4.5rem)/1 var(--f-display);letter-spacing:.08em;color:var(--brand);overflow-wrap:anywhere}
+.grid12{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:10px}
+.gbtn{border:3px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 8px;display:grid;gap:2px;justify-items:center}
+.gbtn b{font:700 2rem/1 var(--f-display)}
+.gbtn small{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700}
+.gbtn.pour{border-color:var(--b)} .gbtn.pour small{color:var(--b)}
+.gbtn.contre{border-color:var(--a)} .gbtn.contre small{color:var(--a)}
+.gbtn.cur{background:var(--soft);box-shadow:0 0 0 3px var(--hl)}
+.gbtn.done{opacity:.55}
+.gbtn:disabled{opacity:.35;cursor:not-allowed}
+.proof.static{cursor:default}
+.proof.static:hover{border-color:var(--line)}
+span.word{display:inline-block}
+.memo{background:var(--soft);border-radius:12px;padding:14px 18px}
+.memo ol{margin:6px 0 0;padding-left:1.2em;display:grid;gap:4px}
+.stagehead{display:grid;gap:4px}
+.phase{font-weight:700;color:var(--muted)}
+.codebox{border:2px dashed var(--line);border-radius:12px;padding:12px 16px}
+.score.mini th,.score.mini td{padding:6px 8px}
+</style>
+<div class="wrap">
+<header class="top">
+  <div>
+    <p class="kicker">SVT · La protection de l'organisme</p>
+    <h1>Mémoire immunitaire et vaccination</h1>
+  </div>
+  <nav class="tabs" role="tablist" aria-label="Parties de la page">
+    <button class="tab" role="tab" id="t-corr" aria-selected="true" aria-controls="tab-correction">Correction pas à pas</button>
+    <button class="tab" role="tab" id="t-deb" aria-selected="false" aria-controls="tab-debat">Le Sommet de la vaccination</button>
+  </nav>
+</header>
+
+<section id="tab-correction" role="tabpanel" aria-labelledby="t-corr">
+  <p class="legend">Réponds à chaque question, demande un indice si tu bloques. La question suivante s'ouvre quand tu as validé ou consulté la correction.
+    Pastille verte : réussi seul · orange : réussi avec indice · rouge : corrigé avec la correction.</p>
+  <div class="progress" id="progress" aria-label="Progression"></div>
+  <div id="cards"></div>
+  <div id="bilan"></div>
+</section>
+
+<section id="tab-debat" role="tabpanel" aria-labelledby="t-deb" hidden>
+  <div class="panel" style="margin-bottom:16px">
+    <div>
+      <p class="kicker">Débat en groupes de 3 · 12 groupes · 6 POUR et 6 CONTRE</p>
+      <h2>Le Sommet de la vaccination</h2>
+    </div>
+    <p class="lead">Chaque groupe prépare sa prise de parole pendant 5 minutes avec les cartes tirées sur sa tablette, puis parle pendant 60 secondes. Un rebondissement apparaît, et le groupe a 60 secondes de plus pour conclure. Le camp est donné par le numéro du groupe : les numéros impairs défendent le POUR, les numéros pairs le CONTRE.</p>
+    <div class="modes" role="tablist" aria-label="Choix de l'écran">
+      <button class="mtab" role="tab" id="md-tab" aria-selected="true">Tablette de mon groupe</button>
+      <button class="mtab" role="tab" id="md-class" aria-selected="false">Écran de la classe (enseignant)</button>
+    </div>
+  </div>
+
+  <!-- Vue élèves -->
+  <div id="view-tab">
+    <div class="panel">
+      <div class="row fieldrow">
+        <label class="f" for="sCode">Code de la séance
+          <input id="sCode" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Code au tableau"></label>
+        <label class="f" for="sGroup">Numéro du groupe
+          <select id="sGroup"></select></label>
+        <button class="btn primary" id="sGo">Voir mes cartes</button>
+      </div>
+      <div class="fb err" id="sErr" hidden></div>
+    </div>
+    <div id="sOut" hidden></div>
+  </div>
+
+  <!-- Vue enseignant -->
+  <div id="view-class" hidden>
+    <div class="panel" style="margin-bottom:16px">
+      <div class="row fieldrow">
+        <label class="f" for="tCode">Code de la séance
+          <input id="tCode" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Ex. SVT-K7P"></label>
+        <button class="btn" id="tGen">Générer un code</button>
+      </div>
+      <div class="codebox"><p class="hint-small">Les élèves saisissent ce code sur leur tablette (majuscules, tirets et espaces sans importance) :</p><div class="codeshow" id="codeShow">—</div></div>
+    </div>
+
+    <div class="panel" style="margin-bottom:16px">
+      <h3>1 · Préparation</h3>
+      <div class="timer">
+        <div class="clock" id="prepClock" role="timer">5:00</div>
+        <div class="row"><button class="btn primary" id="prepGo">Lancer les 5 minutes</button><button class="btn" id="prepReset">Remettre à 5:00</button></div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-bottom:16px">
+      <h3>2 · Donner la parole à un groupe</h3>
+      <div class="grid12" id="grid"></div>
+    </div>
+
+    <div class="panel" id="stagePanel" hidden style="margin-bottom:16px"></div>
+
+    <div class="panel">
+      <h3>Tableau des points</h3>
+      <div class="scorewrap" id="summary"></div>
+      <div class="row"><button class="btn ghost" id="allReset">Tout remettre à zéro</button></div>
+    </div>
+  </div>
+</section>
+</div>
+<script>
+/* ===== Graphique des réponses immunitaires (échelle logarithmique) ===== */
+const W=760,H=400,Y0=320,YS=72;
+const L={x0:70,sx:52}, R={x0:410,sx:62};
+const ly=v=>Y0-YS*Math.log10(v);
+const lxL=w=>L.x0+L.sx*w, lxR=w=>R.x0+R.sx*w;
+const gBell=w=>Math.exp(-Math.pow(w-2.7,2)/(2*0.95*0.95));
+const prim=w=>Math.pow(10,gBell(w));
+const sec=w=>{
+  if(w<=1.3){const t=w/1.3;return Math.pow(10,3*(3*t*t-2*t*t*t));}
+  return Math.pow(10,1.75+1.25*Math.exp(-(w-1.3)/1.1));
+};
+const W100=(()=>{let w=0;while(sec(w)<100&&w<1.3)w+=0.005;return w;})();
+const f1=n=>Math.round(n*10)/10;
+function path(fn,xf){
+  let d='';
+  for(let w=0;w<=5.0001;w+=0.05){d+=(d?'L':'M')+f1(xf(w))+' '+f1(ly(fn(w)));}
+  return d;
+}
+function seg(fn,xf,a,b){
+  let d='';
+  for(let w=a;w<=b+0.0001;w+=0.05){d+=(d?'L':'M')+f1(xf(w))+' '+f1(ly(fn(w)));}
+  return d;
+}
+function tag(x,y,text,anchor){
+  const w=text.length*7+14, x0=anchor==='end'?x-w:(anchor==='middle'?x-w/2:x);
+  return `<rect class="g-box" x="${f1(x0)}" y="${f1(y-15)}" width="${w}" height="22" rx="6"/>`+
+         `<text class="g-boxt" x="${f1(x0+7)}" y="${f1(y)}" font-size="13">${text}</text>`;
+}
+function hline(v,side,label){
+  const x1=side==='L'?lxL(0):lxR(0), x2=side==='L'?lxL(5):lxR(5);
+  return `<path class="g-hld" d="M${x1} ${f1(ly(v))}H${x2}"/>`;
+}
+function vline(w,v,xf){
+  return `<path class="g-hld" d="M${f1(xf(w))} ${f1(ly(v))}V${Y0}"/>`;
+}
+function dot(x,y){return `<circle class="g-dot" cx="${f1(x)}" cy="${f1(y)}" r="6"/>`;}
+
+function overlay(kind){
+  switch(kind){
+    case 'q1':
+      return `<rect class="g-ring" x="${L.x0-12}" y="${Y0+2}" width="${L.sx*5+24}" height="68" rx="8"/>`+
+             `<rect class="g-ring" x="${R.x0-12}" y="${Y0+2}" width="${R.sx*5+24}" height="68" rx="8"/>`;
+    case 'q2':
+      return `<path class="g-hl" d="${path(prim,lxL)}"/>`+
+        tag(75,270,'1 · lent')+
+        tag(83,238,'2 · augmente')+
+        tag(184,190,'3 · maximum')+
+        tag(252,258,'4 · diminue');
+    case 'q3':
+      return hline(10,'L')+dot(lxL(2.7),ly(10))+tag(lxL(5)-6,ly(10)-12,'≈ 10 u. arb.','end');
+    case 'q4':
+      return hline(1000,'R')+dot(lxR(1.3),ly(1000))+tag(lxR(5)-6,ly(1000)-12,'≈ 1 000 u. arb.','end');
+    case 'q5':
+      return vline(2.7,10,lxL)+dot(lxL(2.7),ly(10))+tag(lxL(2.7),Y0-8,'≈ 3 sem','middle')+
+             vline(1.3,1000,lxR)+dot(lxR(1.3),ly(1000))+tag(lxR(1.3),Y0-8,'≈ 1 sem','middle');
+    case 'q6':
+      return hline(100,'R')+vline(W100,100,lxR)+dot(lxR(W100),ly(100))+tag(lxR(W100)+14,Y0-8,'≈ 1 sem');
+    case 'q7':
+      return `<rect class="g-ring" x="${L.x0-6}" y="${ly(15000)}" width="${L.sx*5+12}" height="${Y0-ly(15000)+2}" rx="8"/>`+
+             `<rect class="g-ring" x="${R.x0-6}" y="${ly(15000)}" width="${R.sx*5+12}" height="${Y0-ly(15000)+2}" rx="8"/>`+
+             tag(lxL(0.2),ly(3000),'1re exposition à A')+tag(lxR(0.2),ly(6000)+4,'2e exposition à A')+
+             `<rect class="g-ring" x="334" y="${Y0+30}" width="72" height="44" rx="8"/>`;
+    case 'q8':
+      return overlay('q3')+overlay('q4')+vline(2.7,10,lxL)+vline(1.3,1000,lxR)+
+             tag(lxR(2.6),ly(100)+4,'× 100 en 1 semaine de moins');
+    case 'q9':
+      return `<path class="g-hl" d="${path(prim,lxR)}"/>`+tag(lxR(2.7)-70,ly(10)-22,'B : 1re rencontre');
+    default: return '';
+  }
+}
+
+function graphSVG(kind){
+  const grid=[1,10,100,1000,10000].map(v=>
+    `<path class="g-grid" d="M${L.x0} ${f1(ly(v))}H${lxL(5)}M${R.x0} ${f1(ly(v))}H${lxR(5)}"/>`+
+    `<text class="g-mut" x="${L.x0-8}" y="${f1(ly(v))+4}" text-anchor="end" font-size="12">${v>=1000?String(v).replace(/(\d)(\d{3})$/,'$1 $2'):v}</text>`).join('');
+  let ticks='';
+  for(let w=0;w<=5;w++){
+    ticks+=`<path class="g-axis" d="M${lxL(w)} ${Y0}v5M${lxR(w)} ${Y0}v5"/>`+
+      `<text class="g-ink" x="${lxL(w)}" y="${Y0+19}" text-anchor="middle" font-size="12">${w}</text>`+
+      `<text class="g-ink" x="${lxR(w)}" y="${Y0+19}" text-anchor="middle" font-size="12">${w}</text>`;
+  }
+  const t=(x,y,lines,anchor='middle',size=11)=>lines.map((s,i)=>
+    `<text class="g-mut" x="${x}" y="${y+i*13}" text-anchor="${anchor}" font-size="${size}">${s}</text>`).join('');
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Graphique : quantité relative d’anticorps spécifiques dans le sang en fonction du temps, réponse primaire à l’antigène A à gauche, réponse secondaire à A et primaire à B à droite">`+
+    grid+
+    `<path class="g-axis" d="M${L.x0} ${ly(10000)}V${Y0}H${lxL(5)}M${R.x0} ${Y0}H${lxR(5)}"/>`+
+    `<path class="g-grid" d="M${lxL(5)} ${f1(ly(1))}H${R.x0}" style="stroke-dasharray:2 4"/>`+
+    ticks+
+    `<text class="g-mut" font-size="11" transform="translate(14 ${f1((ly(10000)+Y0)/2)}) rotate(-90)" text-anchor="middle">Anticorps spécifiques dans le sang (u. arb.)</text>`+
+    t(lxL(2.5),Y0+40,['Semaines après la première','exposition à l’antigène A'])+
+    t(370,Y0+40,['Intervalle','(semaines, mois,','voire années)'],'middle',10)+
+    t(lxR(2.5),Y0+40,['Semaines après la seconde exposition','à l’antigène A ou première exposition','à l’antigène B'])+
+    `<path class="g-a" d="${path(prim,lxL)}"/>`+
+    `<path class="g-a" d="${path(sec,lxR)}"/>`+
+    `<path class="g-b" d="${path(prim,lxR)}"/>`+
+    `<text class="g-fa" x="${lxL(2.7)-4}" y="${ly(10)-10}" font-size="15" font-weight="700">A</text>`+
+    `<text class="g-fa" x="${lxR(1.3)-14}" y="${ly(1000)-8}" font-size="15" font-weight="700">A</text>`+
+    `<text class="g-fb" x="${lxR(2.7)-4}" y="${ly(10)-10}" font-size="15" font-weight="700">B</text>`+
+    t(lxL(3.9),ly(30),['Réponse','immunitaire','primaire'],'middle',12).replace(/class="g-mut"/g,'class="g-ink"')+
+    t(lxR(3.9),ly(500),['Réponse','immunitaire','secondaire'],'middle',12).replace(/class="g-mut"/g,'class="g-ink"')+
+    overlay(kind)+
+  `</svg>`;
+}
+/* ===== Les 10 questions ===== */
+const Q=[
+{n:1,type:'choices',hl:'q1',
+ text:'Que représente l’axe des abscisses ? Quelle est son unité ?',
+ parts:[
+  {label:'Ce que représente l’axe',ans:0,opts:['Le temps écoulé après l’exposition à l’antigène','La quantité d’anticorps','Le nombre de lymphocytes','La température du corps']},
+  {label:'Son unité',ans:2,opts:['L’heure','Le jour','La semaine','L’année']}],
+ hints:['L’axe des abscisses est l’axe horizontal. Lis le titre écrit juste en dessous.','Le titre commence par « Semaines après… ». Il dit donc ce qu’on mesure et dans quelle unité.'],
+ wrong:'Relis le titre sous l’axe horizontal.',
+ corr:'L’axe des abscisses représente le temps écoulé après l’exposition à l’antigène. Son unité est la semaine.',
+ tip:'Méthode : pour lire un graphique, commence toujours par les titres des deux axes et leurs unités.'},
+
+{n:2,type:'build',hl:'q2',
+ text:'Décrire la réponse immunitaire primaire à l’antigène A.',
+ pool:['La production d’anticorps démarre lentement','Elle augmente progressivement','Elle atteint un petit maximum (environ 10) vers 3 semaines','Puis elle diminue','Elle augmente brusquement dès le premier jour','Elle reste stable à 1 000'],
+ ans:[0,1,2,3],
+ buildHelp:'Clique sur les phrases dans l’ordre où elles décrivent la courbe de gauche. Deux phrases sont fausses.',
+ hints:['Suis la courbe rouge de gauche avec le doigt, de 0 à 5 semaines. Que fait-elle d’abord, puis ensuite ?','Deux phrases ne correspondent pas à la courbe : une dit « brusquement », l’autre « stable ». Écarte-les.'],
+ wrong:'Il y a quatre phrases justes, à placer dans l’ordre de lecture de la courbe.',
+ corr:'Lors de la première exposition à l’antigène A, la production d’anticorps démarre lentement, augmente progressivement, atteint un petit maximum vers 2–3 semaines, puis diminue.',
+ tip:'Pour décrire une courbe : début, évolution, valeur maximale (avec son chiffre), fin.'},
+
+{n:3,type:'numbers',hl:'q3',
+ text:'Quelle quantité d’anticorps maximale est obtenue lors de la réponse immunitaire primaire ?',
+ fields:[{label:'Quantité maximale',range:[8,12],unit:'unités arbitraires'}],
+ hints:['Repère le sommet de la courbe rouge de gauche. Trace mentalement une ligne horizontale vers l’axe vertical.','Attention à l’échelle verticale : elle est logarithmique. Les graduations sont 1, 10, 100, 1 000, 10 000. Le sommet est exactement sur l’une d’elles.'],
+ wrong:'Relis la valeur sur l’axe vertical, au niveau du sommet de la courbe de gauche.',
+ corr:'Environ 10 unités arbitraires d’anticorps.',
+ tip:'Sur une échelle logarithmique, chaque graduation vaut 10 fois la précédente.'},
+
+{n:4,type:'numbers',hl:'q4',
+ text:'Quelle quantité d’anticorps maximale est obtenue lors de la réponse immunitaire secondaire ?',
+ fields:[{label:'Quantité maximale',range:[800,1200],unit:'unités arbitraires'}],
+ hints:['Cette fois, regarde le sommet de la courbe rouge de droite.','Il se trouve sur la graduation qui suit 100 sur l’axe vertical.'],
+ wrong:'Repère le sommet de la courbe rouge de droite, puis lis l’axe vertical.',
+ corr:'Environ 1 000 unités arbitraires d’anticorps, soit 100 fois plus que lors de la réponse primaire.',
+ tip:'Compare avec ta réponse à la question 3 : 1 000 ÷ 10 = 100.'},
+
+{n:5,type:'numbers',hl:'q5',
+ text:'Combien de temps faut-il pour obtenir cette quantité maximale dans les deux cas ?',
+ fields:[
+  {label:'Réponse primaire',range:[2,3.5],unit:'semaines'},
+  {label:'Réponse secondaire',range:[0.8,1.6],unit:'semaine(s)'}],
+ hints:['Pour chaque sommet, descends à la verticale jusqu’à l’axe des semaines.','Deux axes des semaines existent : lis celui de gauche pour la réponse primaire, celui de droite pour la secondaire.'],
+ wrong:'Descends à la verticale depuis chaque sommet et lis le bon axe des semaines.',
+ corr:'Réponse primaire : environ 3 semaines. Réponse secondaire : environ 1 semaine.',
+ tip:'La réponse secondaire est donc plus forte et plus rapide.'},
+
+{n:6,type:'numbers',hl:'q6',
+ text:'Combien de temps faut-il pour obtenir une quantité d’anticorps de 100 lors de la réponse immunitaire secondaire ?',
+ fields:[{label:'Durée',range:[0.5,1.2],unit:'semaine(s)'}],
+ hints:['Place-toi sur la graduation 100 de l’axe vertical et avance vers la courbe rouge de droite.','Quand tu touches la courbe pendant sa montée, descends à la verticale jusqu’à l’axe des semaines de droite.'],
+ wrong:'Pars de 100 sur l’axe vertical, rejoins la courbe de droite puis descends vers l’axe des semaines.',
+ corr:'Environ 1 semaine : en une semaine, la réponse secondaire atteint déjà 100 unités.',
+ tip:'En comparaison, la réponse primaire n’atteint jamais 100.'},
+
+{n:7,type:'choices',hl:'q7',
+ text:'Pourquoi appelle-t-on la courbe de droite « réponse immunitaire SECONDAIRE » ?',
+ parts:[{label:'Choisis la bonne explication',ans:0,opts:[
+  'Parce qu’elle correspond à une deuxième exposition au même antigène A',
+  'Parce qu’elle correspond à un deuxième antigène différent',
+  'Parce qu’elle est moins forte que la première réponse',
+  'Parce qu’elle se produit chez une deuxième personne']}],
+ hints:['Regarde le titre sous l’axe de droite : « seconde exposition à l’antigène A ».','Le mot « secondaire » indique un ordre dans le temps, pour un même antigène.'],
+ wrong:'Relis le titre sous l’axe de droite.',
+ corr:'Parce qu’elle correspond à une deuxième exposition au même antigène (A). Le système immunitaire le reconnaît déjà grâce aux lymphocytes mémoire.',
+ tip:'Entre les deux expositions, il peut s’écouler des semaines, des mois, voire des années.'},
+
+{n:8,type:'choices',hl:'q8',
+ text:'Quelle phrase est vraie ?',
+ parts:[{label:'Une seule phrase est vraie',ans:2,opts:[
+  'La réponse immunitaire secondaire demande une semaine de plus pour produire 100 fois plus d’anticorps que la réponse primaire.',
+  'La vitesse de production des anticorps est plus rapide lors de la réaction primaire que lors de la réaction secondaire.',
+  'La réaction immunitaire secondaire demande une semaine de moins pour produire cent fois plus d’anticorps que la réaction primaire.']}],
+ hints:['Utilise tes réponses aux questions 3, 4 et 5 : combien d’anticorps, et en combien de temps ?','Secondaire : 1 000 en 1 semaine. Primaire : 10 en 3 semaines. Qui est le plus rapide ? Qui produit le plus ?'],
+ wrong:'Compare les quantités maximales et les durées trouvées aux questions 3, 4 et 5.',
+ corr:'La réaction immunitaire secondaire demande une semaine de moins pour produire cent fois plus d’anticorps que la réaction primaire.',
+ tip:'Les valeurs lues sont approximatives : on parle de 3 semaines contre 1 semaine, soit environ 2 semaines d’écart.'},
+
+{n:9,type:'choices',hl:'q9',
+ text:'La réponse à l’antigène B est-elle une réponse immunitaire primaire ou secondaire ?',
+ parts:[
+  {label:'Type de réponse',ans:0,opts:['Primaire','Secondaire']},
+  {label:'Pourquoi ?',ans:1,opts:[
+   'Parce que la courbe B est plus basse que la courbe A secondaire',
+   'Parce que l’organisme rencontre l’antigène B pour la première fois',
+   'Parce que B est placé à droite sur le graphique']}],
+ hints:['Relis le titre de l’axe de droite : « première exposition à l’antigène B ».','Compare la courbe verte à la courbe rouge de gauche : même forme, même hauteur.'],
+ wrong:'Relis le titre sous l’axe de droite et compare la forme de la courbe verte.',
+ corr:'C’est une réponse immunitaire primaire, car l’organisme rencontre l’antigène B pour la première fois.',
+ tip:'La courbe verte B ressemble à la courbe primaire de A : environ 10 unités, atteintes en 3 semaines.'},
+
+{n:10,type:'build',hl:'',
+ text:'Avec vos connaissances sur le mode d’action des lymphocytes, expliquer pourquoi la réponse immunitaire secondaire est plus efficace.',
+ pool:['Lors de la première rencontre, l’organisme a fabriqué des lymphocytes mémoire','À la deuxième exposition, ils reconnaissent rapidement l’antigène','Ils se multiplient vite','Ils produisent beaucoup plus d’anticorps','Les anticorps restent en grande quantité entre les deux expositions','L’antigène change de forme à chaque exposition'],
+ ans:[0,1,2,3],
+ buildHelp:'Clique sur les phrases dans l’ordre de l’explication. Deux phrases sont fausses.',
+ hints:['Pense à ce que le corps garde en mémoire après la première rencontre avec l’antigène.','L’explication suit l’ordre du temps : première rencontre, deuxième exposition, puis ce que font les lymphocytes mémoire.'],
+ wrong:'Il y a quatre phrases justes, à placer dans l’ordre de l’explication.',
+ corr:'Lors de la première infection, l’organisme a créé des lymphocytes mémoire. Lors de la deuxième exposition, ils reconnaissent rapidement l’antigène, se multiplient vite et produisent beaucoup plus d’anticorps.',
+ tip:'C’est le principe du rappel de vaccin : on réveille la mémoire immunitaire pour obtenir une réponse rapide et forte.'}
+];
+
+/* ===== État et rendu ===== */
+const S=Q.map(()=>({sel:[],vals:[],seq:[],hint:0,tries:0,done:false,status:null,fb:null,unlocked:false}));
+const $=id=>document.getElementById(id);
+let current=0;
+
+function initCorrection(){
+  $('cards').innerHTML=Q.map((q,i)=>`<article class="card locked" id="card${i}" aria-label="Question ${q.n}"></article>`).join('');
+  S.forEach((s,i)=>{Object.assign(s,{sel:Q[i].parts?Q[i].parts.map(()=>null):[],vals:Q[i].fields?Q[i].fields.map(()=>''):[],seq:[],hint:0,tries:0,done:false,status:null,fb:null,unlocked:false});});
+  $('bilan').innerHTML='';
+  current=0;
+  Q.forEach((q,i)=>drawCard(i));
+  unlock(0,false);
+  drawProgress();
+}
+function unlock(i,scroll){
+  S[i].unlocked=true;current=i;
+  $('card'+i).classList.remove('locked');
+  drawProgress();
+  if(scroll)$('card'+i).scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'start'});
+}
+function drawProgress(){
+  $('progress').innerHTML=Q.map((q,i)=>{
+    const s=S[i],cls=s.status?'s-'+s.status:(i===current?'now':'');
+    const mark=s.status==='ok'?'✓':s.status==='mid'?'~':s.status==='bad'?'!':q.n;
+    return `<span class="dot ${cls}" title="Question ${q.n}">${mark}</span>`;
+  }).join('');
+}
+function drawCard(i){
+  const q=Q[i],s=S[i],el=$('card'+i);
+  const showHl=s.hint>=2||s.done;
+  let work='';
+  if(q.type==='choices'){
+    work=q.parts.map((p,pi)=>`<div class="part"><p class="plabel">${p.label}</p><div class="opts">`+
+      p.opts.map((o,oi)=>{
+        let c='opt';
+        if(s.done){if(oi===p.ans)c+=' right';else if(s.sel[pi]===oi)c+=' wrong';}
+        else if(s.fb&&s.fb.kind==='err'&&s.sel[pi]===oi&&oi!==p.ans)c+=' wrong';
+        return `<button class="${c}" data-act="pick" data-p="${pi}" data-o="${oi}" aria-pressed="${s.sel[pi]===oi}" ${s.done?'disabled':''}>${o}</button>`;
+      }).join('')+`</div></div>`).join('');
+  }else if(q.type==='numbers'){
+    work=`<div class="nums">`+q.fields.map((f,k)=>{
+      let c='';if(s.done)c=' right';else if(s.fb&&s.fb.kind==='err')c=' wrong';
+      return `<div class="num"><label for="n${i}_${k}">${f.label}</label><div class="inp"><input id="n${i}_${k}" class="${c.trim()}" type="text" inputmode="decimal" autocomplete="off" value="${s.vals[k]}" data-k="${k}" ${s.done?'disabled':''}><span class="unit">${f.unit}</span></div></div>`;
+    }).join('')+`</div>`;
+  }else{
+    const chosen=new Set(s.seq);
+    work=`<p class="plabel hint-small">${q.buildHelp}</p>`+
+      `<div class="line" aria-label="Ta réponse">`+
+      (s.seq.length?s.seq.map((pi,k)=>`<button class="chip" data-act="unpick" data-k="${k}" ${s.done?'disabled':''}>${k+1}. ${q.pool[pi]}</button>`).join(''):`<span class="ph">Ta réponse apparaît ici</span>`)+
+      `</div><div class="chips">`+
+      q.pool.map((t,pi)=>`<button class="chip" data-act="add" data-pi="${pi}" ${chosen.has(pi)||s.done?'disabled':''}>${t}</button>`).join('')+`</div>`;
+  }
+  let fb='';
+  if(s.hint>0&&!s.done)fb+=`<div class="fb hint"><strong>Indice ${s.hint}.</strong> ${q.hints[s.hint-1]}</div>`;
+  if(s.fb&&!s.done)fb+=`<div class="fb ${s.fb.kind}">${s.fb.text}</div>`;
+  let corr='';
+  if(s.done){
+    const lab=s.status==='ok'?'Bravo, réussi du premier coup.':s.status==='mid'?'Bien joué, c’est réussi avec un coup de pouce.':'Voici la correction.';
+    corr=`<div class="corr"><h3>${lab}</h3><p>${q.corr}</p><p class="tip">${q.tip}</p></div>`;
+  }
+  let acts='';
+  if(!s.done){
+    acts=`<div class="actions"><button class="btn primary" data-act="check">Vérifier</button>`+
+      (s.hint<2?`<button class="btn" data-act="hint">${s.hint===0?'Un indice':'Un indice de plus'}</button>`:'')+
+      (s.tries>=2||s.hint>=2?`<button class="btn ghost" data-act="reveal">Voir la correction</button>`:'')+`</div>`;
+  }else{
+    acts=`<div class="actions"><button class="btn primary" data-act="next">${i<Q.length-1?'Question suivante':'Voir mon bilan'}</button></div>`;
+  }
+  el.innerHTML=`<div class="qhead"><span class="qnum">${q.n}</span><p class="qtext">${q.text}</p></div>`+
+    `<figure class="fig">${graphSVG(showHl?q.hl:'')}<figcaption>Échelle verticale logarithmique : chaque graduation vaut 10 fois la précédente.${showHl&&q.hl?' Le repère orange montre où lire.':''}</figcaption></figure>`+
+    `<div class="work">${work}${fb}${corr}${acts}</div>`;
+}
+
+function parseNum(v){const n=parseFloat(String(v).replace(',','.').replace(/\s/g,''));return isFinite(n)?n:NaN;}
+function check(i){
+  const q=Q[i],s=S[i];let ok=false,incomplete=false;
+  if(q.type==='choices'){
+    incomplete=s.sel.some(v=>v===null);
+    ok=!incomplete&&q.parts.every((p,pi)=>s.sel[pi]===p.ans);
+  }else if(q.type==='numbers'){
+    const nums=s.vals.map(parseNum);
+    incomplete=nums.some(isNaN);
+    ok=!incomplete&&q.fields.every((f,k)=>nums[k]>=f.range[0]&&nums[k]<=f.range[1]);
+  }else{
+    incomplete=s.seq.length===0;
+    ok=s.seq.length===q.ans.length&&q.ans.every((a,k)=>s.seq[k]===a);
+  }
+  if(incomplete){s.fb={kind:'err',text:q.type==='numbers'?'Écris un nombre dans chaque case (par exemple 12 ou 1,5).':q.type==='build'?'Choisis d’abord tes phrases.':'Choisis une réponse sur chaque ligne.'};drawCard(i);return;}
+  if(ok){finish(i,(s.hint>0||s.tries>0)?'mid':'ok');return;}
+  s.tries++;
+  s.fb={kind:'err',text:'Pas tout à fait. '+q.wrong};
+  if(s.hint===0)s.hint=1;
+  drawCard(i);
+}
+function finish(i,status){
+  const s=S[i];s.done=true;s.status=status;s.fb=null;
+  if(Q[i].type==='build')s.seq=Q[i].ans.slice();
+  drawCard(i);drawProgress();
+}
+function showBilan(){
+  const c={ok:0,mid:0,bad:0};S.forEach(s=>c[s.status]++);
+  const msg=c.bad===0&&c.mid===0?'Parfait, tout est acquis.':c.bad>=4?'Relis le cours sur la mémoire immunitaire puis refais l’exercice.':'Les questions orange et rouges sont celles à revoir avec ton cours.';
+  $('bilan').innerHTML=`<div class="bilan"><h2>Ton bilan</h2><p>${c.ok} réussie(s) seul · ${c.mid} avec indice · ${c.bad} corrigée(s). ${msg}</p><div class="actions"><button class="btn" id="redo">Recommencer</button></div></div>`;
+  $('redo').onclick=()=>{initCorrection();window.scrollTo({top:0});};
+  $('bilan').scrollIntoView({block:'start'});
+}
+
+$('cards').addEventListener('click',e=>{
+  const b=e.target.closest('button[data-act]');if(!b)return;
+  const card=b.closest('.card');const i=+card.id.replace('card','');const s=S[i];const q=Q[i];
+  const act=b.dataset.act;
+  if(act==='pick'){s.sel[+b.dataset.p]=+b.dataset.o;s.fb=null;drawCard(i);}
+  else if(act==='add'){s.seq.push(+b.dataset.pi);s.fb=null;drawCard(i);}
+  else if(act==='unpick'){s.seq.splice(+b.dataset.k,1);s.fb=null;drawCard(i);}
+  else if(act==='check')check(i);
+  else if(act==='hint'){s.hint=Math.min(2,s.hint+1);drawCard(i);}
+  else if(act==='reveal')finish(i,'bad');
+  else if(act==='next'){if(i<Q.length-1)unlock(i+1,true);else showBilan();}
+});
+$('cards').addEventListener('input',e=>{
+  const inp=e.target.closest('input[data-k]');if(!inp)return;
+  const i=+inp.closest('.card').id.replace('card','');S[i].vals[+inp.dataset.k]=inp.value;
+});
+$('cards').addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&e.target.matches('input[data-k]')){e.preventDefault();check(+e.target.closest('.card').id.replace('card',''));}
+});
+/* ===== Le Sommet de la vaccination : tirage à code ===== */
+const NGROUPS=12;
+const ROLES_POUR=[
+ {name:'Médecin généraliste',say:'« Je vois chaque semaine ce que les maladies évitables font aux enfants non protégés. »',tip:'Appuyez-vous sur le rappel et la mémoire immunitaire.'},
+ {name:'Épidémiologiste de l’OMS',say:'« Je compte les cas avant et après chaque vaccin, pays par pays. »',tip:'Utilisez des chiffres : cas avant, cas après.'},
+ {name:'Historien de la variole',say:'« En 1980, l’OMS a certifié l’éradication d’une maladie qui tuait depuis des siècles. »',tip:'Racontez ce que la vaccination a changé dans le temps.'},
+ {name:'Infirmière scolaire',say:'« Une classe vaccinée protège aussi l’élève qui ne peut pas l’être. »',tip:'Parlez de la protection de tout le groupe.'},
+ {name:'Pédiatre de maternité',say:'« Je conseille les parents dès les premières semaines de vie. »',tip:'Expliquez pourquoi on commence tôt et pourquoi on refait des rappels.'},
+ {name:'Directrice d’école',say:'« Quand une épidémie menace, je dois protéger 400 élèves. »',tip:'Parlez de la protection du groupe et des élèves fragiles.'}
+];
+const ROLES_CONTRE=[
+ {name:'Parent inquiet',say:'« Mon enfant a eu de la fièvre après son dernier vaccin, et cela m’a fait peur. »',tip:'Exprimez une inquiétude réelle, puis écoutez la réponse.'},
+ {name:'Défenseur des libertés',say:'« Chacun devrait pouvoir décider pour son propre corps. »',tip:'Discutez l’obligation vaccinale, pas l’efficacité.'},
+ {name:'Patient méfiant envers les rappels',say:'« Pourquoi refaire des injections si je suis déjà immunisé ? »',tip:'Posez la question : vous avez le droit de ne pas connaître la réponse.'},
+ {name:'Pharmacien prudent',say:'« Aucun médicament n’est sans effet indésirable : je lis toujours la notice. »',tip:'Parlez de la fréquence des effets, sans les exagérer.'},
+ {name:'Grand-père sceptique',say:'« À mon époque, on attrapait la rougeole et on s’en remettait. »',tip:'Opposez votre expérience personnelle aux données, puis voyez si elles vous convainquent.'},
+ {name:'Citoyen en quête de transparence',say:'« Je veux savoir qui a mesuré ces chiffres et comment. »',tip:'Questionnez les sources et le suivi des effets indésirables.'}
+];
+const WORDS=['antigène','anticorps','lymphocytes B','lymphocytes mémoire','réponse secondaire','rappel','immunisé','microbe inactivé','défenses','effets indésirables'];
+const PROOFS=[
+ {src:'Frise · diphtérie',fact:'Environ 45 000 cas avant le vaccin, 0 cas après.',use:'Un chiffre net : que peut-on en conclure, et que ne peut-on pas conclure ?'},
+ {src:'Frise · poliomyélite',fact:'Environ 4 000 cas avant le vaccin, 0 cas après.',use:'Comparez avec la diphtérie : mêmes résultats, maladies différentes.'},
+ {src:'Frise · variole',fact:'Vaccin en 1798, dernier cas connu en 1977, éradication certifiée en 1980.',use:'Une maladie a disparu. Que dit cette durée sur l’effort nécessaire ?'},
+ {src:'Frise · rougeole',fact:'Environ 550 000 cas avant le vaccin, moins de 50 000 en l’an 2000.',use:'Les cas n’ont pas disparu : à quoi peut-on attribuer ce reste ?'},
+ {src:'Doc 4 · OMS',fact:'154 millions de vies sauvées en 50 ans, dont environ 101 millions d’enfants.',use:'Un très grand nombre : que dit-il d’une vie individuelle ?'},
+ {src:'Doc 4 · OMS',fact:'Effets fréquents et bénins (douleur locale, fatigue, fièvre) : 10 % à 50 % des personnes selon le vaccin.',use:'Une donnée que le camp CONTRE peut citer. Comment le camp POUR répond-il ?'},
+ {src:'Doc 4 · OMS',fact:'Effets indésirables graves : entre 1 cas sur 10 000 et 1 cas sur 1 000 000.',use:'Pourquoi ce chiffre est-il difficile à se représenter ? Comparez-le au risque de la maladie.'},
+ {src:'Doc 2 · courbe',fact:'Après chaque rappel, le taux d’anticorps remonte plus haut et reste au-dessus du seuil « immunisé » plus longtemps.',use:'Reliez cette donnée aux lymphocytes mémoire.'}
+];
+const EVENTS=[
+ 'Une épidémie de rougeole éclate dans une école voisine.',
+ 'Un pays supprime l’obligation de vacciner les enfants.',
+ 'Les parents d’un bébé de deux mois demandent conseil au médecin.',
+ 'Un camarade non vacciné attrape une maladie évitable.',
+ 'Votre prochain rappel tombe dans dix ans : faut-il le faire ?',
+ 'La notice d’un nouveau vaccin annonce un effet grave sur un million de personnes.',
+ 'Un voyage dans un pays où la polio existe encore est prévu cet été.',
+ 'Un influenceur affirme que les rappels ne servent à rien.',
+ 'Le carnet de santé d’un camarade montre un rappel en retard.',
+ 'Une pénurie de vaccins oblige à choisir qui protéger en premier.',
+ 'Un parent demande : « Et si mon enfant a de la fièvre après l’injection ? »',
+ 'Une maladie qu’on croyait disparue réapparaît dans une ville.'
+];
+const CRITERIA=['Mot magique placé et expliqué (+1 par mot)','Preuve chiffrée bien utilisée (+2)','Reformulation de l’argument adverse (+1)','Réaction claire au rebondissement (+2)'];
+const POINTS=[1,2,1,2];
+
+/* générateur pseudo-aléatoire déterministe : même code + même groupe = mêmes cartes sur tous les appareils */
+function xmur3(str){let h=1779033703^str.length;for(let i=0;i<str.length;i++){h=Math.imul(h^str.charCodeAt(i),3432918353);h=h<<13|h>>>19;}
+  return function(){h=Math.imul(h^h>>>16,2246822507);h=Math.imul(h^h>>>13,3266489909);return(h^=h>>>16)>>>0;};}
+function rng(str){let a=xmur3(str)();return function(){a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function shuffled(arr,key){const r=rng(key),a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));const t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function normCode(s){return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toUpperCase().replace(/[^A-Z0-9]/g,'');}
+function campOf(n){return n%2===1?'pour':'contre';}
+function deal(code,n){
+  const camp=campOf(n),k=(n-1)>>1;
+  const role=shuffled(camp==='pour'?ROLES_POUR:ROLES_CONTRE,code+'|r|'+camp)[k];
+  const proof=shuffled(PROOFS,code+'|p|'+camp)[k];
+  const words=shuffled(WORDS,code+'|w|'+n).slice(0,3);
+  const event=shuffled(EVENTS,code+'|e')[(n-1)%EVENTS.length];
+  return {n,camp,role,proof,words,event};
+}
+function fmt(s){return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
+/*==PURE_END==*/
+
+/* ----- utilitaires ----- */
+let ac=null;
+function unlockAudio(){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume();}catch(e){}}
+function beep(f,d){try{if(!ac)return;const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f||880;g.gain.value=.15;o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+(d||.25));}catch(e){}}
+function makeTimer(total,onTick,onEnd){
+  let rem=total,id=null;
+  const api={
+    get rem(){return rem;},get running(){return id!==null;},
+    start(){if(id!==null||rem<=0)return;id=setInterval(()=>{rem--;onTick(rem);if(rem<=0){api.pause();if(onEnd)onEnd();}},1000);},
+    pause(){if(id!==null){clearInterval(id);id=null;}},
+    reset(){api.pause();rem=total;onTick(rem);}
+  };
+  return api;
+}
+function lsGet(k){try{return localStorage.getItem(k)||'';}catch(e){return '';}}
+function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+const campLabel=c=>c==='pour'?'POUR':'CONTRE';
+
+function roleHTML(d){return `<div class="big ${d.camp}"><p class="camp">Camp ${campLabel(d.camp)} · groupe ${d.n}</p><h3>${d.role.name}</h3><p class="say">${d.role.say}</p><p>${d.role.tip}</p></div>`;}
+function proofHTML(d){return `<div class="proof static"><span class="src">${d.proof.src}</span><span class="fact">${d.proof.fact}</span><span class="hint-small">${d.proof.use}</span></div>`;}
+
+/* onglets principaux */
+function showTab(which){
+  const corr=which==='corr';
+  $('tab-correction').hidden=!corr;$('tab-debat').hidden=corr;
+  $('t-corr').setAttribute('aria-selected',corr);$('t-deb').setAttribute('aria-selected',!corr);
+  try{history.replaceState(null,'',corr?'#correction':'#debat');}catch(e){}
+}
+$('t-corr').onclick=()=>showTab('corr');
+$('t-deb').onclick=()=>showTab('deb');
+function showMode(cls){
+  $('view-tab').hidden=cls;$('view-class').hidden=!cls;
+  $('md-tab').setAttribute('aria-selected',!cls);$('md-class').setAttribute('aria-selected',cls);
+}
+$('md-tab').onclick=()=>showMode(false);
+$('md-class').onclick=()=>showMode(true);
+
+/* ===== Tablette de groupe ===== */
+$('sGroup').innerHTML=Array.from({length:NGROUPS},(_,i)=>`<option value="${i+1}">Groupe ${i+1}</option>`).join('');
+$('sCode').value=lsGet('svt_code_eleve');
+if(lsGet('svt_groupe_eleve'))$('sGroup').value=lsGet('svt_groupe_eleve');
+let sPrep=null;
+function showMyCards(){
+  const code=normCode($('sCode').value),n=+$('sGroup').value;
+  if(code.length<3){$('sErr').hidden=false;$('sErr').textContent='Saisis le code écrit au tableau (au moins 3 caractères).';$('sOut').hidden=true;return;}
+  $('sErr').hidden=true;
+  lsSet('svt_code_eleve',$('sCode').value);lsSet('svt_groupe_eleve',String(n));
+  const d=deal(code,n);
+  if(sPrep)sPrep.pause();
+  $('sOut').hidden=false;
+  $('sOut').innerHTML=
+   `<div class="panel" style="margin-top:16px">
+      <div class="stage">${roleHTML(d)}
+        <div class="big"><p class="camp" style="color:var(--muted)">Vos 3 mots magiques</p><div class="words">${d.words.map(w=>`<span class="word">${w}</span>`).join('')}</div><p class="hint-small">Placez-les dans votre intervention en les expliquant.</p></div>
+      </div>
+      <div><p class="kicker">Votre carte preuve</p>${proofHTML(d)}</div>
+      <div class="memo"><strong>Sur votre brouillon, préparez :</strong>
+        <ol><li>Votre argument principal, en une phrase.</li><li>Comment placer chacun des 3 mots magiques.</li><li>Comment utiliser votre preuve.</li><li>Une phrase de réserve pour le rebondissement : il apparaît au bout de 60 secondes.</li></ol></div>
+      <div class="timer"><div class="clock" id="sClock" role="timer">5:00</div>
+        <div class="row"><button class="btn primary" id="sPrepGo">Lancer mes 5 minutes</button><button class="btn" id="sPrepReset">Remettre à 5:00</button></div></div>
+      <p class="hint-small">Vous défendez ce point de vue même s'il n'est pas le vôtre. Le jury note ce que vous dites, pas ce que vous pensez.</p>
+    </div>`;
+  const upd=r=>{$('sClock').textContent=fmt(r);$('sClock').classList.toggle('low',r<=30);};
+  sPrep=makeTimer(300,r=>{upd(r);$('sPrepGo').textContent=sPrep.running?'Pause':(r===300?'Lancer mes 5 minutes':'Reprendre');},()=>{$('sPrepGo').textContent='Terminé';});
+  $('sPrepGo').onclick=()=>{if(sPrep.running)sPrep.pause();else sPrep.start();$('sPrepGo').textContent=sPrep.running?'Pause':(sPrep.rem===300?'Lancer mes 5 minutes':sPrep.rem<=0?'Terminé':'Reprendre');};
+  $('sPrepReset').onclick=()=>{sPrep.reset();$('sPrepGo').textContent='Lancer mes 5 minutes';};
+  $('sOut').scrollIntoView({block:'start'});
+}
+$('sGo').onclick=showMyCards;
+$('sCode').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();showMyCards();}});
+
+/* ===== Écran de la classe ===== */
+const sc={},wd={},doneG=new Set();
+for(let n=1;n<=NGROUPS;n++){sc[n]=[0,0,0,0];wd[n]=new Set();}
+let cur=null,tcode='';
+const gTotal=n=>sc[n].reduce((a,v,r)=>a+v*POINTS[r],0);
+
+function setCode(raw){
+  $('tCode').value=raw;lsSet('svt_code_prof',raw);
+  tcode=normCode(raw);
+  $('codeShow').textContent=tcode.length>=3?raw.toUpperCase().trim():'—';
+  drawGrid();
+}
+$('tCode').addEventListener('input',e=>{setCode(e.target.value);});
+$('tGen').onclick=()=>{
+  const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';
+  for(let i=0;i<3;i++)s+=A[Math.floor(Math.random()*A.length)];
+  setCode('SVT-'+s);cur=null;$('stagePanel').hidden=true;
+};
+
+function drawGrid(){
+  const ok=tcode.length>=3;
+  $('grid').innerHTML=Array.from({length:NGROUPS},(_,i)=>{
+    const n=i+1,c=campOf(n);
+    return `<button class="gbtn ${c}${doneG.has(n)?' done':''}${cur===n?' cur':''}" data-n="${n}" ${ok?'':'disabled'} aria-label="Groupe ${n}, camp ${campLabel(c)}${doneG.has(n)?', déjà passé':''}"><b>${n}</b><small>${campLabel(c)}</small>${doneG.has(n)?'<small>passé ✓</small>':''}</button>`;
+  }).join('');
+}
+function drawSummary(){
+  let rows='',tp=0,tc=0;
+  for(let n=1;n<=NGROUPS;n++){
+    const c=campOf(n),t=gTotal(n);if(c==='pour')tp+=t;else tc+=t;
+    rows+=`<tr><td>Groupe ${n}</td><td>${campLabel(c)}</td><td class="c">${doneG.has(n)?'✓':'—'}</td><td class="c">${t}</td></tr>`;
+  }
+  $('summary').innerHTML=`<table class="score mini"><thead><tr><th>Groupe</th><th>Camp</th><th class="c">Passé</th><th class="c">Points</th></tr></thead><tbody>${rows}</tbody>`+
+    `<tfoot><tr class="tot"><td colspan="3">Total camp POUR</td><td class="c">${tp}</td></tr><tr class="tot"><td colspan="3">Total camp CONTRE</td><td class="c">${tc}</td></tr></tfoot></table>`;
+}
+
+/* préparation 5 min */
+const prep=makeTimer(300,r=>{$('prepClock').textContent=fmt(r);$('prepClock').classList.toggle('low',r<=30);},()=>{beep(660,.6);$('prepGo').textContent='Terminé';});
+function prepBtn(){ $('prepGo').textContent=prep.running?'Pause':(prep.rem===300?'Lancer les 5 minutes':prep.rem<=0?'Terminé':'Reprendre'); }
+$('prepGo').onclick=()=>{unlockAudio();if(prep.running)prep.pause();else prep.start();prepBtn();};
+$('prepReset').onclick=()=>{prep.reset();prepBtn();};
+
+/* prise de parole : 60 s + rebondissement + 60 s */
+const sp=makeTimer(120,()=>updateSp(),()=>{beep(660,.6);if(cur!==null){doneG.add(cur);drawGrid();drawSummary();}updateSp();});
+let lastRem=120;
+function updateSp(){
+  const r=sp.rem;if(r===60&&lastRem>60)beep(990,.4);lastRem=r;
+  const clk=$('spClock');if(!clk)return;
+  const part1=r>60,shown=part1?r-60:r;
+  clk.textContent=fmt(shown);clk.classList.toggle('low',shown<=10&&r>0||r===0);
+  $('spPhase').textContent=r===0?'Temps écoulé. Passez à la notation du jury.':part1?'Partie 1 · le groupe expose ses arguments':'Partie 2 · le groupe réagit au rebondissement';
+  $('spEvent').hidden=r>60;
+  $('spGo').textContent=sp.running?'Pause':(r===120?'Démarrer la parole':r<=0?'Terminé':'Reprendre');
+}
+function scoreHTML(n){
+  return `<table class="score mini"><thead><tr><th>Critère du jury</th><th class="c">Nombre</th></tr></thead><tbody>`+
+  CRITERIA.map((c,r)=>`<tr><td>${c}</td><td class="c"><span class="pm"><button data-g="${n}" data-r="${r}" data-d="-1" aria-label="Retirer">−</button><output>${sc[n][r]}</output><button data-g="${n}" data-r="${r}" data-d="1" aria-label="Ajouter">+</button></span></td></tr>`).join('')+
+  `</tbody><tfoot><tr class="tot"><td>Points du groupe ${n}</td><td class="c">${gTotal(n)}</td></tr></tfoot></table>`;
+}
+function wordsHTML(n,d){return d.words.map((w,k)=>`<button class="word" data-w="${k}" aria-pressed="${wd[n].has(k)}">${w}</button>`).join('');}
+function selectGroup(n){
+  if(tcode.length<3)return;
+  unlockAudio();sp.reset();lastRem=120;cur=n;
+  const d=deal(tcode,n);
+  const P=$('stagePanel');P.hidden=false;
+  P.innerHTML=
+   `<div class="stagehead"><p class="kicker">3 · La parole est au groupe ${n}</p></div>
+    <div class="stage">${roleHTML(d)}
+      <div class="big"><p class="camp" style="color:var(--muted)">Mots magiques (cliquez pour barrer)</p><div class="words" id="spWords">${wordsHTML(n,d)}</div></div>
+    </div>
+    <div><p class="kicker">Carte preuve</p>${proofHTML(d)}</div>
+    <div class="timer"><div class="clock" id="spClock" role="timer">1:00</div>
+      <div><p class="phase" id="spPhase"></p>
+      <div class="row"><button class="btn primary" id="spGo">Démarrer la parole</button><button class="btn" id="spReset">Remettre à zéro</button><button class="btn ghost" id="spEnd">Terminer ce groupe</button></div></div></div>
+    <div class="big arbitre" id="spEvent" hidden><p class="camp">Rebondissement</p><h3>${d.event}</h3><p class="say">Réagissez maintenant : intégrez-le à votre conclusion.</p></div>
+    <div id="scoreArea">${scoreHTML(n)}</div>`;
+  updateSp();drawGrid();
+  P.scrollIntoView({block:'start'});
+}
+$('grid').addEventListener('click',e=>{const b=e.target.closest('.gbtn');if(b&&!b.disabled)selectGroup(+b.dataset.n);});
+$('stagePanel').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  if(b.id==='spGo'){unlockAudio();if(sp.running)sp.pause();else sp.start();updateSp();}
+  else if(b.id==='spReset'){sp.reset();lastRem=120;updateSp();}
+  else if(b.id==='spEnd'){sp.pause();doneG.add(cur);drawGrid();drawSummary();updateSp();}
+  else if(b.dataset.w!==undefined){const k=+b.dataset.w;if(wd[cur].has(k))wd[cur].delete(k);else wd[cur].add(k);$('spWords').innerHTML=wordsHTML(cur,deal(tcode,cur));}
+  else if(b.dataset.r!==undefined){const g=+b.dataset.g,r=+b.dataset.r;sc[g][r]=Math.max(0,sc[g][r]+(+b.dataset.d));$('scoreArea').innerHTML=scoreHTML(g);drawSummary();}
+});
+$('allReset').onclick=()=>{
+  sp.reset();prep.reset();prepBtn();doneG.clear();cur=null;$('stagePanel').hidden=true;
+  for(let n=1;n<=NGROUPS;n++){sc[n]=[0,0,0,0];wd[n]=new Set();}
+  drawGrid();drawSummary();
+};
+
+/* démarrage */
+initCorrection();
+setCode(lsGet('svt_code_prof'));
+drawSummary();
+if(location.hash==='#debat')showTab('deb');
+</script>
+
+</body></html>

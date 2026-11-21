@@ -1,0 +1,733 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Atelier glace au chocolat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Londrina+Solid:wght@400;900&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+/* Layout concept: une colonne de fiche de cuisine. Recette en haut, six exercices empilés,
+   chaque exercice réussi débloque la réponse à recopier sur la fiche papier. */
+:root{
+  --font-display:"Londrina Solid","Arial Narrow",Impact,sans-serif;
+  --font-body:"Nunito","Segoe UI",system-ui,-apple-system,sans-serif;
+  --bg:#F3F6EE;
+  --card:#FFFFFF;
+  --soft:#E6EBDD;
+  --ink:#26170F;
+  --muted:#65564C;
+  --line:#26170F;
+  --lime:#C8F25E;
+  --lime-soft:#E5F8AE;
+  --lime-ink:#26170F;
+  --choc:#5B2F1C;
+  --cone:#E2A65B;
+  --pink:#FF9DBB;
+  --blue:#86C8FF;
+  --on-fill:#26170F;
+  --ok:#16803F;
+  --ok-bg:#D8F3E0;
+  --bad:#C6321E;
+  --bad-bg:#FBDDD7;
+  --focus:#2F6BFF;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1A110C;--card:#271A13;--soft:#35251B;--ink:#F6EEE7;--muted:#BBA99C;--line:#9A7F6E;
+    --choc:#8A5238;--cone:#C98F45;--ok:#63D68B;--ok-bg:#1E3A2A;--bad:#FF8A78;--bad-bg:#4A241D;--focus:#8FB0FF;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1A110C;--card:#271A13;--soft:#35251B;--ink:#F6EEE7;--muted:#BBA99C;--line:#9A7F6E;
+  --choc:#8A5238;--cone:#C98F45;--ok:#63D68B;--ok-bg:#1E3A2A;--bad:#FF8A78;--bad-bg:#4A241D;--focus:#8FB0FF;
+  color-scheme:dark;
+}
+body{background:var(--bg);color:var(--ink);font:400 1rem/1.55 var(--font-body)}
+*{box-sizing:border-box}
+button,input{font-family:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+
+/* Barre de progression */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:2px solid var(--line)}
+.bar-in{max-width:880px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px 16px;flex-wrap:wrap}
+.bar-title{font:900 1.35rem/1 var(--font-display);text-transform:uppercase;letter-spacing:.02em}
+.dots{display:flex;gap:8px}
+.dot{width:38px;height:38px;border-radius:50%;border:2px solid var(--line);background:var(--card);color:var(--ink);font:800 .95rem/1 var(--font-body);cursor:pointer;display:grid;place-items:center}
+.dot.done{background:var(--choc);color:var(--lime);border-color:var(--line)}
+.count{font-weight:800;font-variant-numeric:tabular-nums;color:var(--muted);min-width:3.2em;text-align:right}
+
+.wrap{max-width:880px;margin:0 auto;padding-block:24px 72px;padding-inline:16px;display:flex;flex-direction:column;gap:28px}
+
+/* Accroche */
+.hero{display:flex;gap:24px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.hero-text{flex:1 1 380px;min-width:0;display:flex;flex-direction:column;gap:12px}
+.eyebrow{margin:0;font:800 .8rem/1 var(--font-body);text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+h1{margin:0;font:900 clamp(2.9rem,10vw,5.2rem)/.86 var(--font-display);text-transform:uppercase;text-wrap:balance}
+.lead{margin:0;max-width:52ch;font-size:1.05rem}
+.hero-art{width:150px;max-width:40%;flex:none}
+
+/* Recette */
+.recipe{background:var(--card);border:2px solid var(--line);border-radius:18px;overflow:hidden}
+.recipe-head{background:var(--lime);color:var(--lime-ink);padding:14px 20px;border-bottom:2px solid var(--line);display:flex;gap:6px 18px;align-items:baseline;flex-wrap:wrap}
+.recipe-head h2{margin:0;font:900 1.9rem/1 var(--font-display);text-transform:uppercase}
+.recipe-head span{font-weight:700}
+.recipe-body{padding:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px 32px}
+.recipe h3{margin:0 0 8px;font:800 .8rem/1 var(--font-body);text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+.recipe ul,.recipe ol{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px}
+.recipe ul{list-style:square}
+.recipe li::marker{font-weight:800}
+.recipe .qty{font-weight:800;font-variant-numeric:tabular-nums}
+
+/* Exercices */
+.list{display:flex;flex-direction:column;gap:24px}
+.ex{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:16px;scroll-margin-top:84px}
+.ex-head{display:flex;gap:14px;align-items:center}
+.ex-num{flex:none;width:46px;height:46px;border-radius:50%;background:var(--lime);color:var(--lime-ink);border:2px solid var(--line);display:grid;place-items:center;font:900 1.7rem/1 var(--font-display)}
+.ex.done .ex-num{background:var(--choc);color:var(--lime)}
+.ex-head h2{margin:0;font:900 1.9rem/1 var(--font-display);text-transform:uppercase;text-wrap:balance}
+.skill{margin:2px 0 0;font-size:.85rem;color:var(--muted)}
+.intro{margin:0;max-width:62ch}
+
+.rows{display:flex;flex-direction:column;gap:10px}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 16px;align-items:center;padding:10px 12px;border:2px solid var(--soft);border-radius:14px;background:var(--card)}
+.row .lab{min-width:0;display:flex;align-items:center;gap:12px;font-weight:700}
+.row .ic{flex:none;display:grid;place-items:center;width:44px;height:44px;border-radius:10px;background:var(--soft)}
+.ico{width:34px;height:34px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.opts{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.opt,.chip,.tool{border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px 14px;font:700 .95rem/1.2 var(--font-body);cursor:pointer;min-height:44px}
+.opt:hover,.chip:hover,.tool:hover{background:var(--soft)}
+.hint{grid-column:1/-1;font-size:.9rem;color:var(--muted);min-height:0}
+.hint:empty{display:none}
+.row.ok{background:var(--ok-bg);border-color:var(--ok)}
+.tag{display:inline-block;padding:6px 12px;border-radius:999px;background:var(--ok);color:var(--card);font-weight:800;font-size:.9rem}
+.row.bad{border-color:var(--bad);background:var(--bad-bg);animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@media (max-width:560px){.row{grid-template-columns:minmax(0,1fr)}.opts{justify-content:flex-start}}
+
+.find{background:var(--lime-soft);color:var(--lime-ink);border:2px dashed var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.find label{font-weight:700}
+.find .line{display:flex;gap:8px;flex-wrap:wrap}
+.field{border:2px solid var(--line);border-radius:10px;padding:8px 10px;background:#fff;color:#26170F;font:700 1rem/1.2 var(--font-body);min-height:44px;min-width:0}
+
+.btn{background:var(--lime);color:var(--lime-ink);border:2px solid var(--line);border-radius:12px;padding:10px 20px;font:800 1rem/1.2 var(--font-body);cursor:pointer;min-height:46px;align-self:flex-start}
+.btn:hover{filter:brightness(.95)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.msg{margin:0;font-weight:700;min-height:1.5em}
+.msg.good{color:var(--ok)}
+.msg.err{color:var(--bad)}
+
+/* Surligneurs */
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+.tool{display:flex;align-items:center;gap:8px}
+.tool[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.sw{width:18px;height:18px;border-radius:50%;border:2px solid var(--line);flex:none}
+.sw.masse,.tile.masse{background:var(--pink)}
+.sw.volume,.tile.volume{background:var(--blue)}
+.sw.autre,.tile.autre{background:repeating-linear-gradient(45deg,#D9DDD0,#D9DDD0 5px,#F4F6EF 5px,#F4F6EF 10px)}
+.tiles{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+@media (max-width:560px){.tiles{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.tile{border:2px solid var(--line);border-radius:12px;padding:8px 4px;background:var(--card);color:var(--ink);text-align:center;cursor:pointer;min-height:76px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:1px}
+.tile b{font:900 1.6rem/1 var(--font-display)}
+.tile .n{font-size:.72rem;line-height:1.15;overflow-wrap:anywhere}
+.tile .t{font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;min-height:.9em}
+.tile.masse,.tile.volume,.tile.autre{color:var(--on-fill)}
+.tile.wrong{outline:4px solid var(--bad);outline-offset:1px;animation:shake .35s}
+.tile:disabled{cursor:default}
+
+/* Tableaux de conversion */
+.step{display:flex;flex-direction:column;gap:12px;padding-top:4px}
+.step-t{margin:0;font:800 .8rem/1.2 var(--font-body);text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.scroll{overflow-x:auto}
+.ctable{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;min-width:440px}
+.slot{border:2px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);min-height:72px;padding:6px 2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer}
+.slot b{font:900 1.5rem/1 var(--font-display)}
+.slot .nm,.chip .nm{font-size:.68rem;line-height:1.1;font-weight:600;overflow-wrap:anywhere;text-align:center}
+.slot .ph{font:900 1.5rem/1 var(--font-display);color:var(--muted)}
+.slot:not(.full){border-style:dashed;background:var(--soft)}
+.slot.lock{background:var(--lime);color:var(--lime-ink);cursor:default}
+.slot.wrong{border-color:var(--bad);background:var(--bad-bg);animation:shake .35s}
+.pool{display:flex;gap:8px;flex-wrap:wrap;min-height:52px}
+.chip{display:flex;flex-direction:column;align-items:center;gap:1px}
+.chip{font:900 1.35rem/1 var(--font-display)}
+.chip.sel{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.callout{background:var(--lime-soft);color:var(--lime-ink);border:2px solid var(--line);border-radius:14px;padding:12px 14px;font-weight:700}
+.callout p{margin:0}
+.eqs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px 16px}
+.eq{display:flex;align-items:center;gap:8px;font-weight:800;font-size:1.05rem;font-variant-numeric:tabular-nums;flex-wrap:wrap}
+.eq .pre{white-space:nowrap}
+.num{width:6.8em;text-align:right;font-variant-numeric:tabular-nums;background:var(--card);color:var(--ink);border-color:var(--line)}
+.num.ok{border-color:var(--ok);background:var(--ok-bg);color:var(--ink)}
+.num.bad{border-color:var(--bad);background:var(--bad-bg);color:var(--ink)}
+
+/* À recopier */
+.copy{background:var(--lime);color:var(--lime-ink);border:2px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.copy-t{margin:0;font:900 1.35rem/1 var(--font-display);text-transform:uppercase}
+.copy p{margin:0}
+.mini{border-collapse:collapse;width:100%;background:rgba(255,255,255,.62)}
+.mini th,.mini td{border:2px solid var(--lime-ink);padding:6px 8px;text-align:center;font-weight:700;color:var(--lime-ink);vertical-align:top;font-variant-numeric:tabular-nums}
+.mini th{background:rgba(38,23,15,.1);font-weight:800}
+.mini td small{display:block;font-weight:600;font-size:.72rem}
+.mini-wrap{overflow-x:auto}
+.mini-wrap .mini{min-width:420px}
+.pills{display:flex;gap:6px;flex-wrap:wrap}
+.pill{border:2px solid var(--lime-ink);border-radius:999px;padding:3px 12px;font-weight:800;color:var(--on-fill)}
+.pill.masse{background:var(--pink)}.pill.volume{background:var(--blue)}.pill.autre{background:#F4F6EF}
+.groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px 16px}
+.groups h4{margin:0 0 4px;font-size:.85rem;font-weight:800}
+ul.plain{margin:0;padding-left:1.1em}
+
+#finale{background:var(--choc);color:#FBF4EC;border:2px solid var(--line);border-radius:18px;padding:22px 20px;display:flex;flex-direction:column;gap:8px}
+#finale h2{margin:0;font:900 2.2rem/1 var(--font-display);text-transform:uppercase;color:var(--lime)}
+#finale p{margin:0;max-width:56ch}
+
+@media (prefers-reduced-motion: reduce){
+  .row.bad,.tile.wrong,.slot.wrong{animation:none}
+}
+</style>
+
+<div class="bar">
+  <div class="bar-in">
+    <span class="bar-title">Glace au chocolat</span>
+    <nav class="dots" id="dots" aria-label="Exercices"></nav>
+    <span class="count" id="count" aria-live="polite">0 / 6</span>
+  </div>
+</div>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="hero-text">
+      <p class="eyebrow">Chapitre 1 · Masse et volume</p>
+      <h1>Atelier glace au chocolat</h1>
+      <p class="lead">Tu es le chef glacier de la classe. Fais chaque exercice ici, à l’écran. Quand il est réussi, la réponse à recopier apparaît : écris-la sur ta fiche.</p>
+    </div>
+    <svg class="hero-art" viewBox="0 0 160 210" aria-hidden="true">
+      <path d="M38 96 L80 200 L122 96 Z" style="fill:var(--cone)" stroke="var(--line)" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M52 118 L108 118 M60 140 L100 140 M68 162 L92 162" stroke="var(--line)" stroke-width="2.5" opacity=".55" stroke-linecap="round"/>
+      <circle cx="80" cy="90" r="42" style="fill:var(--choc)" stroke="var(--line)" stroke-width="4"/>
+      <circle cx="80" cy="48" r="31" style="fill:var(--pink)" stroke="var(--line)" stroke-width="4"/>
+      <path d="M58 84 Q62 72 74 70" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".55"/>
+      <path d="M66 40 Q69 33 76 32" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".7"/>
+    </svg>
+  </section>
+
+  <section class="recipe" aria-labelledby="rt">
+    <div class="recipe-head">
+      <h2 id="rt">Glace au chocolat</h2>
+      <span>5 personnes · difficulté 2 sur 5</span>
+    </div>
+    <div class="recipe-body">
+      <div>
+        <h3>Ingrédients</h3>
+        <ul>
+          <li><span class="qty">1/2 L</span> de lait entier</li>
+          <li><span class="qty">50 mL</span> de crème liquide</li>
+          <li><span class="qty">5</span> jaunes d’œufs</li>
+          <li><span class="qty">110 g</span> de sucre</li>
+          <li><span class="qty">140 g</span> de chocolat noir</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Préparation</h3>
+        <ol>
+          <li>Faire fondre le chocolat dans une casserole avec 10 cL d’eau.</li>
+          <li>Chauffer le lait et la crème dans une autre casserole jusqu’à l’ébullition, puis filtrer.</li>
+          <li>Battre les jaunes d’œufs avec le sucre dans un saladier.</li>
+          <li>Verser peu à peu le lait et la crème sur les œufs sucrés en fouettant, puis ajouter le chocolat fondu.</li>
+          <li>Remettre dans la casserole et cuire à feu doux en remuant, jusqu’à ce que la crème nappe la cuillère.</li>
+          <li>Verser dans un saladier froid pour arrêter la cuisson.</li>
+          <li>Laisser refroidir 30 minutes au réfrigérateur, puis turbiner dans la sorbetière.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <div class="list" id="list"></div>
+
+  <section id="finale" hidden aria-live="polite">
+    <h2>Ta fiche est prête</h2>
+    <p>Les six exercices sont réussis. Vérifie que toutes les réponses sont recopiées sur ta fiche, puis coche ton niveau dans la case « Je m’évalue ».</p>
+  </section>
+</main>
+
+<script>
+(function(){
+  var $ = function(s, r){ return (r || document).querySelector(s); };
+  function h(tag, attrs){
+    var e = document.createElement(tag);
+    attrs = attrs || {};
+    Object.keys(attrs).forEach(function(k){
+      var v = attrs[k];
+      if (v == null || v === false) return;
+      if (k === 'class') e.className = v;
+      else if (k === 'html') e.innerHTML = v;
+      else if (k.slice(0,2) === 'on') e.addEventListener(k.slice(2), v);
+      else e.setAttribute(k, v === true ? '' : v);
+    });
+    for (var i = 2; i < arguments.length; i++){
+      var kids = [].concat(arguments[i]);
+      kids.forEach(function(c){
+        if (c == null || c === false) return;
+        e.append(c.nodeType ? c : document.createTextNode(c));
+      });
+    }
+    return e;
+  }
+  function parseNum(v){
+    var t = String(v).replace(/[\s  ]/g, '').replace(',', '.');
+    return /^\d+(\.\d+)?$/.test(t) ? parseFloat(t) : NaN;
+  }
+
+  /* ---------- Composants ---------- */
+
+  // Une liste de lignes ; pour chacune l'élève choisit la bonne étiquette.
+  function sorter(cfg){
+    var wrap = h('div', {class:'rows'});
+    var good = 0;
+    var api = { el: wrap };
+    api.add = function(item){
+      var tries = 0;
+      var hint = h('div', {class:'hint', role:'status'});
+      var opts = h('div', {class:'opts'});
+      var row = h('div', {class:'row'}, h('div', {class:'lab'}, item.label), opts, hint);
+      cfg.options.forEach(function(o){
+        var b = h('button', {type:'button', class:'opt'}, o.label);
+        b.addEventListener('click', function(){
+          if (o.id === item.answer){
+            row.classList.remove('bad');
+            row.classList.add('ok');
+            opts.replaceChildren(h('span', {class:'tag'}, '✓ ' + o.label));
+            hint.textContent = '';
+            good++;
+            if (good === cfg.expected) cfg.onDone();
+          } else {
+            tries++;
+            row.classList.remove('bad');
+            void row.offsetWidth;
+            row.classList.add('bad');
+            hint.textContent = (tries >= 2 && item.hint) ? item.hint : 'Pas tout à fait. Regarde bien et essaie une autre réponse.';
+          }
+        });
+        opts.append(b);
+      });
+      wrap.append(row);
+    };
+    cfg.items.forEach(api.add);
+    return api;
+  }
+
+  // Une série d'égalités à compléter avec un nombre.
+  function equations(cfg){
+    var inputs = [];
+    var box = h('div', {class:'eqs'});
+    cfg.rows.forEach(function(r, i){
+      var inp = h('input', {type:'text', inputmode:'decimal', autocomplete:'off', class:'field num', id:cfg.id + '-' + i, 'aria-label': r.pre + ' … ' + r.post});
+      inp.addEventListener('keydown', function(e){ if (e.key === 'Enter') check(); });
+      inputs.push(inp);
+      box.append(h('div', {class:'eq'}, h('span', {class:'pre'}, r.pre), inp, h('span', null, r.post)));
+    });
+    var msg = h('p', {class:'msg', role:'status'});
+    var btn = h('button', {type:'button', class:'btn'}, 'Vérifier');
+    btn.addEventListener('click', check);
+    function check(){
+      var empty = 0, bad = 0;
+      cfg.rows.forEach(function(r, i){
+        var inp = inputs[i];
+        if (inp.readOnly) return;
+        inp.classList.remove('bad');
+        if (!inp.value.trim()){ empty++; return; }
+        var v = parseNum(inp.value);
+        if (Math.abs(v - r.answer) < 1e-9){
+          inp.classList.add('ok');
+          inp.readOnly = true;
+        } else {
+          inp.classList.add('bad');
+          bad++;
+        }
+      });
+      if (empty){
+        msg.className = 'msg err';
+        msg.textContent = 'Remplis toutes les cases avant de vérifier.';
+      } else if (bad){
+        msg.className = 'msg err';
+        msg.textContent = bad + (bad > 1 ? ' réponses sont à revoir.' : ' réponse est à revoir.') + ' ' + (cfg.tip || '');
+      } else {
+        msg.className = 'msg good';
+        msg.textContent = 'Bravo, tout est juste.';
+        btn.disabled = true;
+        cfg.onDone();
+      }
+    }
+    return h('div', {class:'step-body', style:'display:flex;flex-direction:column;gap:12px'}, box, h('div', {style:'display:flex;gap:12px;align-items:center;flex-wrap:wrap'}, btn, msg));
+  }
+
+  // Ranger des unités dans les cases d'un tableau de conversion.
+  function orderTable(cfg){
+    var order = cfg.order;
+    var byId = {};
+    cfg.units.forEach(function(u){ byId[u.id] = u; });
+    var locked = order.map(function(id, i){ return cfg.fixed.indexOf(i) >= 0; });
+    var placed = order.map(function(id, i){ return locked[i] ? id : null; });
+    var wrong = order.map(function(){ return false; });
+    var sel = null;
+    var table = h('div', {class:'ctable'});
+    var pool = h('div', {class:'pool'});
+    var msg = h('p', {class:'msg', role:'status'});
+    var check = h('button', {type:'button', class:'btn', disabled:true}, 'Vérifier');
+    var finished = false;
+
+    function render(){
+      table.replaceChildren.apply(table, order.map(function(_, i){
+        var id = placed[i], u = id && byId[id];
+        var s = h('button', {type:'button', class:'slot' + (locked[i] ? ' lock' : '') + (u ? ' full' : '') + (wrong[i] ? ' wrong' : ''), 'aria-label': u ? 'Case ' + (i+1) + ' : ' + u.name : 'Case ' + (i+1) + ' vide'},
+          u ? [h('b', null, u.abbr), h('span', {class:'nm'}, u.name)] : h('span', {class:'ph'}, '?'));
+        s.addEventListener('click', function(){
+          if (locked[i] || finished) return;
+          if (placed[i]){ placed[i] = null; wrong[i] = false; sel = null; }
+          else if (sel){ placed[i] = sel; sel = null; }
+          else { msg.className = 'msg err'; msg.textContent = 'Touche d’abord une unité en dessous, puis la case où elle va.'; return; }
+          msg.textContent = '';
+          render();
+        });
+        return s;
+      }));
+      var used = {};
+      placed.forEach(function(x){ if (x) used[x] = true; });
+      pool.replaceChildren.apply(pool, cfg.units.filter(function(u){ return !used[u.id]; }).map(function(u){
+        var c = h('button', {type:'button', class:'chip' + (sel === u.id ? ' sel' : ''), 'aria-pressed': sel === u.id ? 'true' : 'false'}, u.abbr, h('span', {class:'nm'}, u.name));
+        c.addEventListener('click', function(){ sel = (sel === u.id) ? null : u.id; msg.textContent = ''; render(); });
+        return c;
+      }));
+      check.disabled = placed.some(function(x){ return !x; });
+    }
+    check.addEventListener('click', function(){
+      var bad = 0;
+      order.forEach(function(id, i){
+        if (locked[i]) return;
+        if (placed[i] === id){ locked[i] = true; wrong[i] = false; }
+        else { wrong[i] = true; bad++; }
+      });
+      if (bad){
+        msg.className = 'msg err';
+        msg.textContent = bad + (bad > 1 ? ' cases sont mal placées.' : ' case est mal placée.') + ' Touche-les pour retirer l’unité, puis réessaie.';
+      } else {
+        finished = true;
+        msg.className = 'msg good';
+        msg.textContent = 'Bravo, le tableau est bien rangé.';
+        check.hidden = true;
+        pool.hidden = true;
+        cfg.onDone();
+      }
+      render();
+    });
+    render();
+    return h('div', {style:'display:flex;flex-direction:column;gap:12px'}, h('div', {class:'scroll'}, table), pool, h('div', {style:'display:flex;gap:12px;align-items:center;flex-wrap:wrap'}, check, msg));
+  }
+
+  function step(title, body, hidden){
+    return h('div', {class:'step', hidden: hidden}, h('p', {class:'step-t'}, title), body);
+  }
+  function miniTable(head, cells){
+    return h('div', {class:'mini-wrap'}, h('table', {class:'mini'},
+      h('thead', null, h('tr', null, head.map(function(x){ return h('th', null, x); }))),
+      h('tbody', null, h('tr', null, cells.map(function(x){ return h('td', {html:x}); })))));
+  }
+  function list(items){ return h('ul', {class:'plain'}, items.map(function(x){ return h('li', null, x); })); }
+
+  /* ---------- Contenu des exercices ---------- */
+
+  var ICON = {
+    balance: '<svg class="ico" viewBox="0 0 48 48"><rect x="6" y="26" width="36" height="14" rx="4"/><path d="M10 26 Q24 12 38 26"/><rect x="17" y="30" width="14" height="6" rx="1.5"/></svg>',
+    verre: '<svg class="ico" viewBox="0 0 48 48"><path d="M14 9 H34 L31 41 H17 Z"/><path d="M14 9 L9 6"/><path d="M19 17 H25 M20 24 H25 M21 31 H25"/></svg>',
+    minuteur: '<svg class="ico" viewBox="0 0 48 48"><circle cx="24" cy="27" r="15"/><path d="M24 27 V18 M24 27 L30 31 M20 8 H28"/></svg>',
+    thermo: '<svg class="ico" viewBox="0 0 48 48"><rect x="20" y="5" width="8" height="27" rx="4"/><circle cx="24" cy="38" r="6"/><path d="M24 14 V34"/></svg>'
+  };
+
+  var UNITS_M = [
+    {id:'kg', abbr:'kg', name:'kilogramme'}, {id:'hg', abbr:'hg', name:'hectogramme'}, {id:'dag', abbr:'dag', name:'décagramme'},
+    {id:'g', abbr:'g', name:'gramme'}, {id:'dg', abbr:'dg', name:'décigramme'}, {id:'cg', abbr:'cg', name:'centigramme'}, {id:'mg', abbr:'mg', name:'milligramme'}
+  ];
+  var UNITS_V = [
+    {id:'kL', abbr:'kL', name:'milliers de litres'}, {id:'hL', abbr:'hL', name:'hectolitre'}, {id:'daL', abbr:'daL', name:'décalitre'},
+    {id:'L', abbr:'L', name:'litre'}, {id:'dL', abbr:'dL', name:'décilitre'}, {id:'cL', abbr:'cL', name:'centilitre'}, {id:'mL', abbr:'mL', name:'millilitre'}
+  ];
+  var TILES = [
+    ['mL','millilitre','volume'],['hg','hectogramme','masse'],['cm','centimètre','autre'],['dg','décigramme','masse'],['L','litre','volume'],['hL','hectolitre','volume'],
+    ['m','mètre','autre'],['cg','centigramme','masse'],['daL','décalitre','volume'],['g','gramme','masse'],['dm','décimètre','autre'],['cL','centilitre','volume'],
+    ['kg','kilogramme','masse'],['km','kilomètre','autre'],['dL','décilitre','volume'],['dag','décagramme','masse'],['mm','millimètre','autre'],['mg','milligramme','masse']
+  ];
+  var CAT_LABEL = {masse:'masse', volume:'volume', autre:'ni l’un ni l’autre'};
+
+  var EX = [];
+
+  // 1. Masse ou volume ?
+  EX.push({
+    id:'ex1', title:'Masse ou volume ?', skill:'Lire un document et trouver les informations importantes',
+    intro:'Lis la recette. Pour chaque quantité, dis si on mesure une masse, un volume, ou si on compte simplement.',
+    build:function(done){
+      var s = sorter({
+        expected:6, onDone:done,
+        options:[{id:'masse', label:'Masse'}, {id:'vol', label:'Volume'}, {id:'ni', label:'Ni masse ni volume'}],
+        items:[
+          {label:'1/2 L de lait entier', answer:'vol', hint:'Le litre (L) est une unité de volume.'},
+          {label:'50 mL de crème liquide', answer:'vol', hint:'Le millilitre (mL) est une unité de volume.'},
+          {label:'5 jaunes d’œufs', answer:'ni', hint:'Il n’y a pas d’unité ici : on compte les jaunes.'},
+          {label:'110 g de sucre', answer:'masse', hint:'Le gramme (g) est une unité de masse.'},
+          {label:'140 g de chocolat noir', answer:'masse', hint:'Le gramme (g) est une unité de masse.'}
+        ]
+      });
+      var inp = h('input', {type:'text', class:'field', id:'water', autocomplete:'off', style:'width:9em', 'aria-label':'Quantité d’eau'});
+      var msg = h('p', {class:'msg', role:'status', style:'color:#26170F'});
+      var btn = h('button', {type:'button', class:'btn'}, 'Valider');
+      var found = false;
+      function go(){
+        if (found) return;
+        if (/^\s*10\s*c\s*l\s*$/i.test(inp.value)){
+          found = true;
+          inp.readOnly = true;
+          btn.disabled = true;
+          msg.textContent = 'Bien vu ! Cette quantité s’ajoute à la liste.';
+          s.add({label:'10 cL d’eau', answer:'vol', hint:'Le centilitre (cL) est une unité de volume.'});
+        } else {
+          msg.textContent = 'Relis la première étape de la préparation, puis recopie la quantité avec son unité.';
+        }
+      }
+      btn.addEventListener('click', go);
+      inp.addEventListener('keydown', function(e){ if (e.key === 'Enter') go(); });
+      var find = h('div', {class:'find'},
+        h('label', {for:'water'}, 'Un ingrédient se cache dans la préparation. Quelle quantité d’eau faut-il ?'),
+        h('div', {class:'line'}, inp, btn), msg);
+      return h('div', {style:'display:flex;flex-direction:column;gap:14px'}, find, s.el);
+    },
+    copy:function(){
+      return [h('p', null, 'Complète ton tableau :'), miniTable(['Masse', 'Volume', 'Ni masse ni volume'], [
+        '110 g de sucre<br>140 g de chocolat noir',
+        '1/2 L de lait<br>50 mL de crème<br>10 cL d’eau',
+        '5 jaunes d’œufs<small>on les compte</small>'
+      ])];
+    }
+  });
+
+  // 2. Le bon instrument
+  EX.push({
+    id:'ex2', title:'Le bon instrument', skill:'Raisonner',
+    intro:'Dans une cuisine, chaque instrument mesure une seule grandeur. Classe ces quatre instruments.',
+    build:function(done){
+      function lab(icon, text){ return [h('span', {class:'ic', html:icon}), h('span', null, text)]; }
+      return sorter({
+        expected:4, onDone:done,
+        options:[{id:'masse', label:'Une masse'}, {id:'vol', label:'Un volume'}, {id:'ni', label:'Autre chose'}],
+        items:[
+          {label:lab(ICON.balance, 'Balance de cuisine'), answer:'masse', hint:'Elle affiche des grammes.'},
+          {label:lab(ICON.verre, 'Verre doseur'), answer:'vol', hint:'Il est gradué en mL, en cL ou en L.'},
+          {label:lab(ICON.minuteur, 'Minuteur'), answer:'ni', hint:'Il compte des minutes : ce n’est ni une masse ni un volume.'},
+          {label:lab(ICON.thermo, 'Thermomètre de cuisine'), answer:'ni', hint:'Il indique une température en °C.'}
+        ]
+      }).el;
+    },
+    copy:function(){
+      return [miniTable(['On mesure une masse avec…', 'On mesure un volume avec…'], ['la balance de cuisine', 'le verre doseur'])];
+    }
+  });
+
+  // 3. Les unités à surligner
+  EX.push({
+    id:'ex3', title:'Les unités : attention aux pièges', skill:'Repérer les pièges',
+    intro:'Choisis un surligneur, puis touche chaque unité pour la colorer. Sur ta fiche, utilise les mêmes couleurs. Certaines unités ne mesurent ni une masse ni un volume.',
+    build:function(done){
+      var tool = 'masse', painted = TILES.map(function(){ return null; }), locked = false;
+      var toolEls = {}, tileEls = [];
+      var bar = h('div', {class:'tools', role:'group', 'aria-label':'Surligneurs'});
+      [['masse','Masse'],['volume','Volume'],['autre','Ni l’un ni l’autre']].forEach(function(t){
+        var b = h('button', {type:'button', class:'tool', 'aria-pressed': t[0] === tool ? 'true' : 'false'}, h('span', {class:'sw ' + t[0]}), t[1]);
+        b.addEventListener('click', function(){
+          if (locked) return;
+          tool = t[0];
+          Object.keys(toolEls).forEach(function(k){ toolEls[k].setAttribute('aria-pressed', k === tool ? 'true' : 'false'); });
+        });
+        toolEls[t[0]] = b;
+        bar.append(b);
+      });
+      var grid = h('div', {class:'tiles'});
+      function paint(i){
+        var el = tileEls[i], p = painted[i], t = TILES[i];
+        el.className = 'tile' + (p ? ' ' + p : '');
+        el.setAttribute('aria-label', t[1] + ' (' + t[0] + ') : ' + (p ? CAT_LABEL[p] : 'sans couleur'));
+        $('.t', el).textContent = p ? CAT_LABEL[p] === 'ni l’un ni l’autre' ? 'aucune' : CAT_LABEL[p] : '';
+      }
+      TILES.forEach(function(t, i){
+        var el = h('button', {type:'button', class:'tile'}, h('b', null, t[0]), h('span', {class:'n'}, t[1]), h('span', {class:'t'}));
+        el.addEventListener('click', function(){
+          if (locked) return;
+          painted[i] = (painted[i] === tool) ? null : tool;
+          paint(i);
+        });
+        tileEls.push(el);
+        grid.append(el);
+        paint(i);
+      });
+      var msg = h('p', {class:'msg', role:'status'});
+      var btn = h('button', {type:'button', class:'btn'}, 'Vérifier');
+      btn.addEventListener('click', function(){
+        var missing = 0, wrong = 0;
+        TILES.forEach(function(t, i){
+          tileEls[i].classList.remove('wrong');
+          if (!painted[i]) missing++;
+          else if (painted[i] !== t[2]){ wrong++; tileEls[i].classList.add('wrong'); }
+        });
+        if (missing){
+          msg.className = 'msg err';
+          msg.textContent = 'Il reste ' + missing + (missing > 1 ? ' unités sans couleur.' : ' unité sans couleur.');
+        } else if (wrong){
+          msg.className = 'msg err';
+          msg.textContent = wrong + (wrong > 1 ? ' erreurs.' : ' erreur.') + ' Corrige les unités entourées en rouge. Attention aux pièges.';
+        } else {
+          locked = true;
+          msg.className = 'msg good';
+          msg.textContent = 'Bravo, aucune erreur.';
+          btn.disabled = true;
+          tileEls.forEach(function(e){ e.disabled = true; });
+          done();
+        }
+      });
+      return h('div', {style:'display:flex;flex-direction:column;gap:14px'}, bar, grid, h('div', {style:'display:flex;gap:12px;align-items:center;flex-wrap:wrap'}, btn, msg));
+    },
+    copy:function(){
+      function pills(cls, arr){ return h('div', {class:'pills'}, arr.map(function(x){ return h('span', {class:'pill ' + cls}, x); })); }
+      return [
+        h('p', null, 'Colorie tes unités avec ces couleurs :'),
+        h('div', {class:'groups'},
+          h('div', null, h('h4', null, 'Rose : les unités de masse'), pills('masse', ['kg','hg','dag','g','dg','cg','mg'])),
+          h('div', null, h('h4', null, 'Bleu : les unités de volume'), pills('volume', ['hL','daL','L','dL','cL','mL'])),
+          h('div', null, h('h4', null, 'Sans couleur : les longueurs'), pills('autre', ['km','m','dm','cm','mm']))
+        )
+      ];
+    }
+  });
+
+  // 4. Tableau des masses
+  EX.push({
+    id:'ex4', title:'Le tableau des masses', skill:'Utiliser un tableau de conversion',
+    intro:'Trois étapes : ranger les unités, compléter les conversions, choisir la bonne unité.',
+    build:function(done){
+      var s2, s3, tip;
+      var t1 = orderTable({units:UNITS_M, order:['kg','hg','dag','g','dg','cg','mg'], fixed:[3], onDone:function(){
+        tip.hidden = false; s2.hidden = false;
+      }});
+      tip = h('div', {class:'callout', hidden:true}, h('p', null, 'Vers la droite, chaque unité est 10 fois plus petite : on multiplie par 10. Vers la gauche, on divise par 10.'));
+      var eq = equations({id:'m', tip:'Regarde combien de cases séparent les deux unités.', onDone:function(){ s3.hidden = false; }, rows:[
+        {pre:'1 g =', post:'dg', answer:10}, {pre:'1 g =', post:'cg', answer:100}, {pre:'1 g =', post:'mg', answer:1000},
+        {pre:'1 dag =', post:'g', answer:10}, {pre:'1 hg =', post:'g', answer:100}, {pre:'1 kg =', post:'g', answer:1000}
+      ]});
+      s2 = step('Étape 2 · Complète les conversions', eq, true);
+      var pick = sorter({expected:2, onDone:done, options:[{id:'mg', label:'mg'}, {id:'g', label:'g'}, {id:'kg', label:'kg'}], items:[
+        {label:'La masse d’une personne : 42 …', answer:'kg', hint:'42 g, ce serait moins qu’un stylo. Une personne se mesure en kilogrammes.'},
+        {label:'Le chocolat de la recette : 140 …', answer:'g', hint:'140 kg, ce serait plus lourd qu’une personne. En cuisine, on pèse en grammes.'}
+      ]});
+      s3 = step('Étape 3 · Choisis la bonne unité', pick.el, true);
+      return h('div', {style:'display:flex;flex-direction:column;gap:16px'},
+        step('Étape 1 · Range les unités. Le gramme est déjà placé.', t1, false), tip, s2, s3);
+    },
+    copy:function(){
+      return [
+        h('p', null, 'Replace les unités dans ton tableau, dans cet ordre :'),
+        miniTable(['kg','hg','dag','g','dg','cg','mg'], ['kilo-<br>gramme','hecto-<br>gramme','déca-<br>gramme','gramme','déci-<br>gramme','centi-<br>gramme','milli-<br>gramme']),
+        h('p', null, '1 g = 10 dg = 100 cg = 1 000 mg'),
+        h('p', null, '1 dag = 10 g · 1 hg = 100 g · 1 kg = 1 000 g'),
+        h('p', null, 'La masse d’une personne s’exprime en kg. Les ingrédients d’une recette s’expriment en g.')
+      ];
+    }
+  });
+
+  // 5. Tableau des volumes
+  EX.push({
+    id:'ex5', title:'Le tableau des volumes', skill:'Utiliser un tableau de conversion',
+    intro:'Même méthode qu’avec les masses. Le litre et les milliers de litres sont déjà placés.',
+    build:function(done){
+      var s2, s3, tip;
+      var t1 = orderTable({units:UNITS_V, order:['kL','hL','daL','L','dL','cL','mL'], fixed:[0,3], onDone:function(){
+        tip.hidden = false; s2.hidden = false;
+      }});
+      tip = h('div', {class:'callout', hidden:true}, h('p', null, 'Comme pour les masses : vers la droite, on multiplie par 10. Vers la gauche, on divise par 10.'));
+      var eq = equations({id:'v', tip:'Regarde combien de cases séparent les deux unités.', onDone:function(){ s3.hidden = false; }, rows:[
+        {pre:'1 L =', post:'dL', answer:10}, {pre:'1 L =', post:'cL', answer:100}, {pre:'1 L =', post:'mL', answer:1000},
+        {pre:'1 daL =', post:'L', answer:10}, {pre:'1 hL =', post:'L', answer:100}
+      ]});
+      s2 = step('Étape 2 · Complète les conversions', eq, true);
+      var pick = sorter({expected:4, onDone:done, options:[{id:'mL', label:'mL'}, {id:'cL', label:'cL'}, {id:'L', label:'L'}, {id:'m3', label:'m³'}], items:[
+        {label:'Une bouteille d’eau : 1,5 …', answer:'L', hint:'1,5 mL, ce serait une goutte. Une bouteille d’eau contient 1,5 litre.'},
+        {label:'Une canette de soda : 33 …', answer:'cL', hint:'33 L, c’est plus qu’un grand seau. 33 mL, c’est deux cuillères à soupe.'},
+        {label:'Un flacon de sirop pour la toux : 125 …', answer:'mL', hint:'125 L, ce serait presque une baignoire.'},
+        {label:'Une piscine : 60 …', answer:'m3', hint:'Pour les très grands volumes, on utilise le mètre cube.'}
+      ]});
+      s3 = step('Étape 3 · Choisis la bonne unité', pick.el, true);
+      return h('div', {style:'display:flex;flex-direction:column;gap:16px'},
+        step('Étape 1 · Range les unités. Le litre et les milliers de litres sont déjà placés.', t1, false), tip, s2, s3);
+    },
+    copy:function(){
+      return [
+        h('p', null, 'Replace les unités dans ton tableau, dans cet ordre :'),
+        miniTable(['milliers de L','hL','daL','L','dL','cL','mL'], ['kL','hecto-<br>litre','déca-<br>litre','litre','déci-<br>litre','centi-<br>litre','milli-<br>litre']),
+        h('p', null, '1 L = 10 dL = 100 cL = 1 000 mL'),
+        h('p', null, '1 daL = 10 L · 1 hL = 100 L'),
+        h('p', null, 'Bouteille d’eau : 1,5 L · Canette : 33 cL · Flacon de sirop : 125 mL · Piscine : 60 m³ (1 m³ = 1 000 L).')
+      ];
+    }
+  });
+
+  // 6. Défi du chef
+  EX.push({
+    id:'ex6', title:'Le défi du chef', skill:'Convertir une quantité de la recette',
+    intro:'Le chef a besoin d’autres unités. Convertis chaque quantité de la recette. Aide-toi de tes deux tableaux.',
+    build:function(done){
+      return equations({id:'d', tip:'Place la quantité dans le bon tableau, puis lis la nouvelle unité.', onDone:done, rows:[
+        {pre:'140 g =', post:'kg', answer:0.14},
+        {pre:'1/2 L =', post:'mL', answer:500},
+        {pre:'10 cL =', post:'mL', answer:100},
+        {pre:'50 mL =', post:'cL', answer:5}
+      ]});
+    },
+    copy:function(){
+      return [miniTable(['140 g','1/2 L','10 cL','50 mL'], ['0,14 kg','500 mL','100 mL','5 cL'])];
+    }
+  });
+
+  /* ---------- Assemblage ---------- */
+
+  var listEl = $('#list'), dotsEl = $('#dots'), countEl = $('#count'), finale = $('#finale');
+  var doneSet = {};
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function go(id){
+    var el = document.getElementById(id);
+    if (el) el.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block:'start'});
+  }
+  function complete(i){
+    var e = EX[i];
+    if (doneSet[e.id]) return;
+    doneSet[e.id] = true;
+    var card = document.getElementById(e.id);
+    card.classList.add('done');
+    $('.copy', card).hidden = false;
+    e.dot.classList.add('done');
+    e.dot.textContent = '✓';
+    var n = Object.keys(doneSet).length;
+    countEl.textContent = n + ' / ' + EX.length;
+    if (n === EX.length){ finale.hidden = false; }
+  }
+  EX.forEach(function(e, i){
+    var dot = h('button', {type:'button', class:'dot', 'aria-label':'Aller à l’exercice ' + (i + 1)}, String(i + 1));
+    dot.addEventListener('click', function(){ go(e.id); });
+    e.dot = dot;
+    dotsEl.append(dot);
+    var copy = h('aside', {class:'copy', hidden:true, 'aria-live':'polite'},
+      h('p', {class:'copy-t'}, 'À recopier sur ta fiche · exercice ' + (i + 1)), e.copy());
+    var card = h('article', {class:'ex', id:e.id},
+      h('div', {class:'ex-head'}, h('span', {class:'ex-num'}, String(i + 1)), h('div', null, h('h2', null, e.title), h('p', {class:'skill'}, e.skill))),
+      h('p', {class:'intro'}, e.intro),
+      e.build(function(){ complete(i); }),
+      copy);
+    listEl.append(card);
+  });
+})();
+</script>
+
+</body></html>

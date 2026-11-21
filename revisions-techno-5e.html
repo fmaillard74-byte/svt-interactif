@@ -1,0 +1,572 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Révisions Techno 5e</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:wght@600;700;800&display=swap">
+<style>
+/* Layout: une colonne centrée, onglets collants en haut, un seul exercice visible à la fois. */
+:root {
+  --bg: #F3F6FA;
+  --surface: #FFFFFF;
+  --fg: #1F2933;
+  --muted: #5B6773;
+  --line: #D6DDE5;
+  --orange: #D9650F;
+  --orange-soft: #FCEEE0;
+  --blue: #2A64A8;
+  --blue-soft: #E5EFFA;
+  --good: #1F7A5A;
+  --good-soft: #E1F3EB;
+  --bad: #B3312B;
+  --bad-soft: #FBE7E5;
+  --font-display: "Bricolage Grotesque", "Trebuchet MS", "Segoe UI", sans-serif;
+  --font-body: "Atkinson Hyperlegible", "Verdana", "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171D; --surface: #1B222B; --fg: #E8EDF2; --muted: #9AA7B4; --line: #2E3945;
+    --orange: #F08A3C; --orange-soft: #3A2616; --blue: #7DB2EC; --blue-soft: #1B2D42;
+    --good: #5FD0A4; --good-soft: #17352B; --bad: #FF8D86; --bad-soft: #3D1D1B;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171D; --surface: #1B222B; --fg: #E8EDF2; --muted: #9AA7B4; --line: #2E3945;
+  --orange: #F08A3C; --orange-soft: #3A2616; --blue: #7DB2EC; --blue-soft: #1B2D42;
+  --good: #5FD0A4; --good-soft: #17352B; --bad: #FF8D86; --bad-soft: #3D1D1B;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 56px;
+}
+.wrap { max-width: 760px; margin: 0 auto; }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(28px, 6vw, 40px); font-weight: 800; }
+h2 { font-size: 24px; font-weight: 700; }
+h3 { font-size: 18px; font-weight: 700; }
+.lead { color: var(--muted); margin: 8px 0 0; }
+header { padding-block: 14px 18px; }
+.eyebrow { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; color: var(--orange); margin: 0 0 6px; }
+
+nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding-block: 8px; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); background: var(--bg); z-index: 10; }
+[role="tablist"] { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
+[role="tab"] {
+  font: inherit; font-weight: 700; color: var(--muted); background: var(--surface);
+  border: 2px solid var(--line); border-radius: 12px; padding: 9px 14px; cursor: pointer; white-space: nowrap;
+  display: inline-flex; gap: 8px; align-items: center;
+}
+[role="tab"][aria-selected="true"] { color: var(--fg); border-color: var(--orange); background: var(--orange-soft); }
+.badge { font-size: 13px; background: var(--good-soft); color: var(--good); border-radius: 999px; padding: 1px 8px; }
+
+button, select, input[type="text"] { font: inherit; color: var(--fg); }
+button:focus-visible, select:focus-visible, input:focus-visible, [role="tab"]:focus-visible, .pill:focus-within, .flip:focus-visible {
+  outline: 3px solid var(--blue); outline-offset: 2px;
+}
+.panel { padding-top: 14px; display: flex; flex-direction: column; gap: 16px; }
+.card {
+  background: var(--surface); border: 1.5px solid var(--line); border-radius: 16px; padding: 20px;
+}
+.meta { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; color: var(--muted); font-size: 15px; }
+.bar { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; }
+.bar > i { display: block; height: 100%; background: var(--orange); width: 0; transition: width .25s; }
+
+.btn {
+  border: 2px solid var(--line); background: var(--surface); border-radius: 12px; padding: 10px 16px; cursor: pointer; font-weight: 700;
+}
+.btn:hover { border-color: var(--muted); }
+.btn.primary { background: var(--orange); border-color: var(--orange); color: #fff; }
+:root[data-theme="dark"] .btn.primary { color: #1b1208; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn.primary { color: #1b1208; } }
+.btn.good { border-color: var(--good); color: var(--good); }
+.btn.bad { border-color: var(--bad); color: var(--bad); }
+.btn[disabled] { opacity: .5; cursor: default; }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* Flashcards */
+.flip {
+  width: 100%; min-height: 220px; text-align: center; cursor: pointer; border: 2px solid var(--blue); background: var(--blue-soft);
+  border-radius: 18px; padding: 24px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 10px;
+}
+.flip.back { border-color: var(--orange); background: var(--orange-soft); }
+.flip .tag { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; font-weight: 700; color: var(--muted); }
+.flip .txt { font-family: var(--font-display); font-weight: 700; font-size: clamp(20px, 4.5vw, 26px); }
+.flip.back .txt { font-family: var(--font-body); font-weight: 400; font-size: 19px; text-align: left; }
+
+/* Questions */
+.opts { display: grid; gap: 10px; margin: 16px 0 0; padding: 0; list-style: none; }
+.opt {
+  width: 100%; text-align: left; background: var(--surface); border: 2px solid var(--line); border-radius: 12px;
+  padding: 12px 14px; cursor: pointer; display: flex; gap: 10px; align-items: flex-start;
+}
+.opt:hover:not([disabled]) { border-color: var(--blue); }
+.opt .mark { width: 22px; flex: none; font-weight: 800; }
+.opt.right { border-color: var(--good); background: var(--good-soft); }
+.opt.wrong { border-color: var(--bad); background: var(--bad-soft); }
+.opt[disabled] { cursor: default; }
+.fb { margin-top: 14px; padding: 12px 14px; border-radius: 12px; background: var(--blue-soft); }
+.fb.ok { background: var(--good-soft); }
+.fb.ko { background: var(--bad-soft); }
+.fb b { display: block; margin-bottom: 2px; }
+
+/* Vrai/faux */
+.vf { display: grid; gap: 12px; }
+.vf .row { display: grid; gap: 10px; }
+.vf .stmt { margin: 0; font-weight: 700; }
+.vf .btns { display: flex; gap: 8px; }
+
+/* Exercices */
+.ex { display: grid; gap: 12px; }
+.line { display: flex; gap: 10px 14px; flex-wrap: wrap; align-items: center; padding: 10px 12px; border: 1.5px solid var(--line); border-radius: 12px; }
+.line.ok { border-color: var(--good); background: var(--good-soft); }
+.line.ko { border-color: var(--bad); background: var(--bad-soft); }
+.line .lbl { min-width: 9em; font-weight: 700; flex: 1 1 8em; }
+.pill { display: inline-flex; border: 2px solid var(--line); border-radius: 999px; padding: 5px 14px; cursor: pointer; background: var(--surface); }
+.pill input { position: absolute; opacity: 0; pointer-events: none; }
+.pill:has(input:checked) { border-color: var(--blue); background: var(--blue-soft); font-weight: 700; }
+select, input[type="text"] {
+  background: var(--surface); border: 2px solid var(--line); border-radius: 10px; padding: 7px 10px; max-width: 100%;
+}
+input[type="text"] { width: 9em; text-align: center; }
+.sentence { line-height: 2.2; }
+.chain { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.node { background: var(--blue-soft); border: 2px solid var(--blue); border-radius: 10px; padding: 6px 12px; font-weight: 700; }
+.arrow { color: var(--muted); font-weight: 800; }
+.res { font-weight: 700; margin: 0; }
+.corr { display: block; font-size: 15px; color: var(--muted); font-weight: 400; }
+.sub { color: var(--muted); margin: 4px 0 0; font-size: 16px; }
+.big { font-family: var(--font-display); font-weight: 800; font-size: 44px; line-height: 1; margin: 6px 0; }
+@media (prefers-reduced-motion: reduce) { .bar > i { transition: none; } }
+@media (max-width: 480px) { .card { padding: 16px; } body { font-size: 16px; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Technologie · 5e · Séquence 1</p>
+    <h1>Révisions Techno 5e</h1>
+    <p class="lead">L'ordinateur, les logiciels, le stockage et le réseau. Teste-toi avant l'évaluation : chaque réponse est corrigée tout de suite.</p>
+  </header>
+  <nav><div role="tablist" aria-label="Activités de révision" id="tabs"></div></nav>
+  <section class="panel" id="p-flashcards" role="tabpanel" aria-labelledby="t-flashcards"></section>
+  <section class="panel" id="p-quiz" role="tabpanel" aria-labelledby="t-quiz" hidden></section>
+  <section class="panel" id="p-vraifaux" role="tabpanel" aria-labelledby="t-vraifaux" hidden></section>
+  <section class="panel" id="p-exercices" role="tabpanel" aria-labelledby="t-exercices" hidden></section>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- Contenu ---------- */
+  var CARDS = [
+    ["Unité centrale (UC)", "Partie de l'ordinateur qui contient le micro-processeur et la mémoire. Elle traite l'information."],
+    ["Périphérique d'entrée", "Il envoie l'information vers l'unité centrale. Exemples : le clavier, la souris, le scanner, le micro."],
+    ["Périphérique de sortie", "Il restitue l'information. Exemples : l'écran, l'imprimante, les haut-parleurs."],
+    ["Logiciel", "Programme qui permet de créer ou de traiter des informations numériques. On choisit le logiciel adapté à son besoin."],
+    ["Traitement de texte", "Écrire des documents avec du texte et des images. Exemples : Word, Writer."],
+    ["Tableur-grapheur", "Faire des tableaux, des calculs automatisés et des graphiques. Exemples : Excel, Calc."],
+    ["Logiciel de C.F.A.O.", "Dessiner une pièce et piloter la machine qui la fabrique. Exemple : SolidWorks."],
+    ["Logiciel de présentation", "Préparer un diaporama à présenter à la classe. Exemples : PowerPoint, Impress."],
+    ["Logiciel de communication", "Aller sur Internet, écrire un message, échanger. Exemples : Firefox, l'ENT."],
+    ["Mémoire vive", "Elle sert pendant que tu travailles. Elle est effacée dès que tu quittes le logiciel : tout est perdu."],
+    ["Mémoire de masse", "Elle garde ton travail après l'extinction. Exemples : disque dur, clé USB, CD-ROM, espace de l'ENT."],
+    ["Avant de fermer un logiciel…", "J'enregistre mon fichier, sinon mon travail disparaît."],
+    ["Réseau informatique", "Ensemble d'ordinateurs et de périphériques reliés entre eux pour partager des informations et accéder à des services. Deux ordinateurs connectés forment déjà un réseau minimal."],
+    ["Poste de travail", "Un ordinateur du réseau."],
+    ["Serveur", "Ordinateur choisi pour organiser le réseau. Il contrôle tous les échanges et gère l'accès aux ressources, aux périphériques et aux connexions des utilisateurs."],
+    ["Poste client", "Ordinateur capable de se connecter au serveur. Il doit avoir une carte réseau."],
+    ["Commutateur (switch)", "Boîtier qui relie les postes, l'imprimante et les autres commutateurs. Chaque câble se branche sur un port différent."],
+    ["Réseau du collège : les câbles", "Postes et imprimante vers le commutateur de la salle, puis commutateur de salle vers commutateur central, puis commutateur central vers serveur."],
+    ["Pare-feu", "Dans la salle des serveurs, il est relié au serveur, entre le réseau du collège et Internet."],
+    ["Modem routeur", "Il relie le réseau à Internet."],
+    ["E.N.T.", "Espace Numérique de Travail."],
+    ["Pourquoi un réseau ?", "On accède aux données sans transporter les fichiers d'un poste à l'autre avec une clé USB. On partage aussi une imprimante et l'accès à Internet et à l'ENT."]
+  ];
+
+  var QUIZ = [
+    { q: "Que contient l'unité centrale ?", o: ["Le micro-processeur et la mémoire", "Le clavier et la souris", "L'écran et l'imprimante", "Le serveur et le pare-feu"], a: 0,
+      e: "L'unité centrale contient le micro-processeur et la mémoire. Le clavier, la souris et l'écran sont des périphériques." },
+    { q: "Lequel est un périphérique de sortie ?", o: ["La souris", "Le scanner", "L'imprimante", "Le micro"], a: 2,
+      e: "L'imprimante restitue l'information sur papier. La souris, le scanner et le micro sont des périphériques d'entrée." },
+    { q: "Quel périphérique envoie de l'information vers l'unité centrale ?", o: ["Les haut-parleurs", "L'écran", "L'imprimante", "Le clavier"], a: 3,
+      e: "Le clavier est un périphérique d'entrée : il envoie l'information vers l'UC." },
+    { q: "Tu veux faire un graphique avec des calculs automatiques. Quel logiciel choisis-tu ?", o: ["Un traitement de texte", "Un tableur-grapheur", "Un logiciel de jeu", "Un logiciel de présentation"], a: 1,
+      e: "Le tableur-grapheur (Excel, Calc) sert à faire des tableaux, des calculs automatisés et des graphiques." },
+    { q: "Léa a tapé son exposé, puis ferme le logiciel sans enregistrer. Que devient son travail ?", o: ["Il reste dans la mémoire vive", "Il est effacé de la mémoire vive : il est perdu", "Il est envoyé automatiquement au serveur", "Il est copié sur une clé USB"], a: 1,
+      e: "La mémoire vive est effacée dès qu'on quitte le logiciel. Il faut enregistrer le fichier avant de fermer." },
+    { q: "Lequel est une mémoire de masse ?", o: ["Le micro-processeur", "La clé USB", "La souris", "L'écran"], a: 1,
+      e: "La clé USB garde ton travail après l'extinction, comme le disque dur, le CD-ROM ou l'espace de l'ENT." },
+    { q: "Quel est le rôle du serveur ?", o: ["Il imprime les documents", "Il remplace la souris", "Il contrôle tous les échanges du réseau", "Il affiche l'image à l'écran"], a: 2,
+      e: "Le serveur organise le réseau et contrôle tous les échanges." },
+    { q: "Qu'est-ce qu'un réseau informatique ?", o: ["Un logiciel de dessin", "Un seul ordinateur très puissant", "Une mémoire de masse", "Des ordinateurs et périphériques reliés pour partager des informations et des services"], a: 3,
+      e: "Un réseau relie des ordinateurs et des périphériques. Deux ordinateurs connectés forment déjà un réseau minimal." },
+    { q: "Que signifie E.N.T. ?", o: ["Écran Numérique Tactile", "Espace Numérique de Travail", "Entrée Nationale de Travail", "Ensemble Nouveau Technique"], a: 1,
+      e: "L'ENT est l'Espace Numérique de Travail, accessible depuis le réseau du collège." },
+    { q: "Dans le réseau du collège, à quoi chaque commutateur de salle est-il relié ?", o: ["Directement à Internet", "Au commutateur central", "À l'imprimante du CDI", "Au clavier d'un poste"], a: 1,
+      e: "Chaque commutateur de salle est relié au commutateur central, qui est relié au serveur." },
+    { q: "Quel est l'avantage du réseau par rapport à la clé USB ?", o: ["On accède aux données sans transporter les fichiers d'un poste à l'autre", "On n'a plus besoin d'enregistrer", "Il n'y a plus de mot de passe", "L'imprimante devient inutile"], a: 0,
+      e: "Sur le réseau, les données sont sur le serveur : on y accède depuis n'importe quel poste." }
+  ];
+
+  var VF = [
+    { s: "Le micro-processeur est un périphérique de sortie.", a: false, e: "Faux : le micro-processeur est dans l'unité centrale. Il traite l'information." },
+    { s: "La souris envoie de l'information vers l'unité centrale.", a: true, e: "Vrai : c'est un périphérique d'entrée." },
+    { s: "Les haut-parleurs restituent l'information.", a: true, e: "Vrai : ce sont des périphériques de sortie, comme l'écran et l'imprimante." },
+    { s: "Excel et Calc sont des logiciels de traitement de texte.", a: false, e: "Faux : ce sont des tableurs-grapheurs. Les traitements de texte sont Word et Writer." },
+    { s: "La mémoire vive garde ton travail après l'extinction de l'ordinateur.", a: false, e: "Faux : elle est effacée quand on quitte le logiciel. C'est la mémoire de masse qui garde le travail." },
+    { s: "Une clé USB est une mémoire de masse.", a: true, e: "Vrai : comme le disque dur, le CD-ROM et l'espace de l'ENT." },
+    { s: "Deux ordinateurs connectés ensemble forment déjà un réseau.", a: true, e: "Vrai : c'est un réseau minimal." },
+    { s: "Chaque câble se branche sur le même port du commutateur.", a: false, e: "Faux : chaque câble se branche sur un port différent." },
+    { s: "Sur le réseau du collège, plusieurs postes peuvent partager la même imprimante.", a: true, e: "Vrai : le réseau permet de partager une imprimante." },
+    { s: "Un poste client doit avoir une carte réseau pour se connecter au serveur.", a: true, e: "Vrai : sans carte réseau, il ne peut pas se connecter." },
+    { s: "Firefox est un logiciel de C.F.A.O.", a: false, e: "Faux : Firefox est un logiciel de communication (Internet). La C.F.A.O. sert à dessiner une pièce et piloter la machine, comme SolidWorks." }
+  ];
+
+  var TABS = [
+    { id: "flashcards", label: "Flashcards" },
+    { id: "quiz", label: "Quiz" },
+    { id: "vraifaux", label: "Vrai-faux" },
+    { id: "exercices", label: "Exercices" }
+  ];
+
+  /* ---------- Outils ---------- */
+  function el(tag, props) {
+    var e = document.createElement(tag);
+    props = props || {};
+    Object.keys(props).forEach(function (k) {
+      var v = props[k];
+      if (k === "class") e.className = v;
+      else if (k === "text") e.textContent = v;
+      else if (k.indexOf("on") === 0) e.addEventListener(k.slice(2), v);
+      else e.setAttribute(k, v);
+    });
+    for (var i = 2; i < arguments.length; i++) {
+      var c = arguments[i];
+      if (c == null) continue;
+      if (Array.isArray(c)) c.forEach(function (x) { e.append(x); });
+      else e.append(c);
+    }
+    return e;
+  }
+  function shuffle(a) {
+    var r = a.slice();
+    for (var i = r.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = r[i]; r[i] = r[j]; r[j] = t;
+    }
+    return r;
+  }
+  function norm(s) {
+    return String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
+  }
+  function clear(n) { while (n.firstChild) n.removeChild(n.firstChild); }
+  function progress(pct) { var b = el("div", { class: "bar" }); var i = el("i"); i.style.width = pct + "%"; b.append(i); return b; }
+
+  var badges = {};
+  function setBadge(id, txt) {
+    var b = badges[id];
+    if (!b) return;
+    b.textContent = txt;
+    b.hidden = !txt;
+  }
+
+  /* ---------- Onglets ---------- */
+  var tablist = document.getElementById("tabs");
+  var tabEls = {};
+  TABS.forEach(function (t) {
+    var badge = el("span", { class: "badge", hidden: "" });
+    badges[t.id] = badge;
+    var b = el("button", { role: "tab", id: "t-" + t.id, "aria-controls": "p-" + t.id, "aria-selected": "false", tabindex: "-1" }, t.label, badge);
+    b.addEventListener("click", function () { show(t.id, true); });
+    b.addEventListener("keydown", function (ev) {
+      var i = TABS.map(function (x) { return x.id; }).indexOf(t.id);
+      if (ev.key === "ArrowRight") { ev.preventDefault(); show(TABS[(i + 1) % TABS.length].id, true, true); }
+      if (ev.key === "ArrowLeft") { ev.preventDefault(); show(TABS[(i + TABS.length - 1) % TABS.length].id, true, true); }
+    });
+    tabEls[t.id] = b;
+    tablist.append(b);
+  });
+  function show(id, setHash, focus) {
+    TABS.forEach(function (t) {
+      var on = t.id === id;
+      tabEls[t.id].setAttribute("aria-selected", on ? "true" : "false");
+      tabEls[t.id].tabIndex = on ? 0 : -1;
+      document.getElementById("p-" + t.id).hidden = !on;
+    });
+    if (focus) tabEls[id].focus();
+    if (setHash) { try { history.replaceState(null, "", "#" + id); } catch (e) { location.hash = id; } }
+    window.scrollTo(0, 0);
+  }
+  function fromHash() {
+    var h = (location.hash || "").slice(1);
+    var ok = TABS.some(function (t) { return t.id === h; });
+    show(ok ? h : "flashcards", false);
+  }
+  window.addEventListener("hashchange", fromHash);
+
+  /* ---------- Flashcards ---------- */
+  (function () {
+    var root = document.getElementById("p-flashcards");
+    var st = { deck: shuffle(CARDS), i: 0, back: false, known: 0, review: [], total: CARDS.length };
+    function restart(deck) {
+      st.deck = shuffle(deck); st.i = 0; st.back = false; st.known = 0; st.review = []; st.total = deck.length; draw();
+    }
+    function answer(ok) {
+      if (ok) st.known++; else st.review.push(st.deck[st.i]);
+      st.i++; st.back = false; draw();
+    }
+    function draw() {
+      clear(root);
+      if (st.i >= st.deck.length) {
+        setBadge("flashcards", st.known + "/" + st.total);
+        var c = el("div", { class: "card" },
+          el("h2", { text: "Série terminée" }),
+          el("p", { class: "big", text: st.known + " / " + st.total }),
+          el("p", { class: "sub", text: st.review.length ? "Il reste " + st.review.length + " carte(s) à revoir." : "Tu connais toutes les cartes de cette série." }),
+          el("div", { class: "actions", style: "margin-top:16px" },
+            st.review.length ? el("button", { class: "btn primary", text: "Revoir les " + st.review.length + " cartes", onclick: function () { restart(st.review); } }) : null,
+            el("button", { class: "btn", text: "Tout recommencer (mélangé)", onclick: function () { restart(CARDS); } })));
+        root.append(c);
+        return;
+      }
+      var card = st.deck[st.i];
+      root.append(
+        el("div", { class: "meta" }, el("span", { text: "Carte " + (st.i + 1) + " sur " + st.deck.length }), el("span", { text: st.known + " sues" })),
+        progress(100 * st.i / st.deck.length));
+      var f = el("button", { class: "flip" + (st.back ? " back" : ""), "aria-label": st.back ? "Réponse : " + card[1] : "Question : " + card[0] + ". Appuie pour voir la réponse." },
+        el("span", { class: "tag", text: st.back ? "Réponse" : "Notion" }),
+        el("span", { class: "txt", text: st.back ? card[1] : card[0] }),
+        st.back ? null : el("span", { class: "tag", text: "Appuie pour retourner" }));
+      f.addEventListener("click", function () { if (!st.back) { st.back = true; draw(); var n = root.querySelector(".actions .good"); if (n) n.focus(); } });
+      root.append(f);
+      if (st.back) {
+        root.append(el("div", { class: "actions" },
+          el("button", { class: "btn bad", text: "À revoir", onclick: function () { answer(false); } }),
+          el("button", { class: "btn good", text: "Je le savais", onclick: function () { answer(true); } })));
+      } else {
+        root.append(el("p", { class: "sub", text: "Dis la réponse à voix haute avant de retourner la carte." }));
+      }
+    }
+    draw();
+  })();
+
+  /* ---------- Quiz ---------- */
+  (function () {
+    var root = document.getElementById("p-quiz");
+    var st = { qs: shuffle(QUIZ), i: 0, score: 0, done: false };
+    function restart() { st = { qs: shuffle(QUIZ), i: 0, score: 0, done: false }; draw(); }
+    function draw() {
+      clear(root);
+      if (st.i >= st.qs.length) {
+        setBadge("quiz", st.score + "/" + st.qs.length);
+        var msg = st.score === st.qs.length ? "Sans faute. Tu es prêt(e) pour l'évaluation." : st.score >= st.qs.length * 0.7 ? "Bon score. Relis les notions des erreurs dans les fiches." : "Relis les fiches de révision, puis recommence.";
+        root.append(el("div", { class: "card" },
+          el("h2", { text: "Quiz terminé" }),
+          el("p", { class: "big", text: st.score + " / " + st.qs.length }),
+          el("p", { class: "sub", text: msg }),
+          el("div", { class: "actions", style: "margin-top:16px" }, el("button", { class: "btn primary", text: "Recommencer", onclick: restart }))));
+        return;
+      }
+      var q = st.qs[st.i];
+      var answered = false;
+      root.append(el("div", { class: "meta" }, el("span", { text: "Question " + (st.i + 1) + " sur " + st.qs.length }), el("span", { text: st.score + " bonne(s) réponse(s)" })),
+        progress(100 * st.i / st.qs.length));
+      var fb = el("div", { "aria-live": "polite" });
+      var next = el("button", { class: "btn primary", text: st.i + 1 === st.qs.length ? "Voir mon score" : "Question suivante", hidden: "", onclick: function () { st.i++; draw(); } });
+      var list = el("ul", { class: "opts" });
+      var btns = [];
+      q.o.forEach(function (txt, idx) {
+        var b = el("button", { class: "opt" }, el("span", { class: "mark", "aria-hidden": "true", text: "" }), el("span", { text: txt }));
+        b.addEventListener("click", function () {
+          if (answered) return;
+          answered = true;
+          var ok = idx === q.a;
+          if (ok) st.score++;
+          btns.forEach(function (x, j) {
+            x.disabled = true;
+            var m = x.firstChild;
+            if (j === q.a) { x.classList.add("right"); m.textContent = "✓"; }
+            else if (j === idx) { x.classList.add("wrong"); m.textContent = "✗"; }
+          });
+          fb.append(el("div", { class: "fb " + (ok ? "ok" : "ko") }, el("b", { text: ok ? "Bonne réponse" : "Pas tout à fait" }), q.e));
+          next.hidden = false;
+          next.focus();
+        });
+        btns.push(b);
+        list.append(el("li", {}, b));
+      });
+      root.append(el("div", { class: "card" }, el("h2", { text: q.q }), list, fb), el("div", { class: "actions" }, next));
+    }
+    draw();
+  })();
+
+  /* ---------- Vrai-faux ---------- */
+  (function () {
+    var root = document.getElementById("p-vraifaux");
+    var done = 0, score = 0;
+    var scoreEl = el("p", { class: "res", "aria-live": "polite" });
+    var resetBtn = el("button", { class: "btn", text: "Recommencer", hidden: "", onclick: build });
+    function build() {
+      clear(root); done = 0; score = 0; scoreEl.textContent = ""; resetBtn.hidden = true;
+      root.append(el("div", { class: "card" }, el("h2", { text: "Vrai ou faux ?" }), el("p", { class: "sub", text: "Réponds à chaque affirmation. La correction s'affiche aussitôt." })));
+      var list = el("div", { class: "vf" });
+      shuffle(VF).forEach(function (it) {
+        var fb = el("div", { "aria-live": "polite" });
+        var bV = el("button", { class: "btn", text: "Vrai" });
+        var bF = el("button", { class: "btn", text: "Faux" });
+        function pick(val) {
+          bV.disabled = bF.disabled = true;
+          var ok = val === it.a;
+          (val ? bV : bF).classList.add(ok ? "good" : "bad");
+          if (!ok) (it.a ? bV : bF).classList.add("good");
+          fb.append(el("div", { class: "fb " + (ok ? "ok" : "ko") }, el("b", { text: ok ? "✓ Bien vu" : "✗ Raté" }), it.e));
+          done++; if (ok) score++;
+          scoreEl.textContent = "Score : " + score + " / " + VF.length + (done === VF.length ? " · terminé" : "");
+          setBadge("vraifaux", done === VF.length ? score + "/" + VF.length : "");
+          if (done === VF.length) resetBtn.hidden = false;
+        }
+        bV.addEventListener("click", function () { pick(true); });
+        bF.addEventListener("click", function () { pick(false); });
+        list.append(el("div", { class: "card row" }, el("p", { class: "stmt", text: it.s }), el("div", { class: "btns" }, bV, bF), fb));
+      });
+      root.append(list, scoreEl, el("div", { class: "actions" }, resetBtn));
+    }
+    build();
+  })();
+
+  /* ---------- Exercices ---------- */
+  (function () {
+    var root = document.getElementById("p-exercices");
+    var results = { A: null, B: null, C: null, D: null };
+    function updateBadge() {
+      var got = 0, tot = 0, all = true;
+      Object.keys(results).forEach(function (k) {
+        if (!results[k]) { all = false; return; }
+        got += results[k][0]; tot += results[k][1];
+      });
+      setBadge("exercices", all ? got + "/" + tot : "");
+    }
+    function mark(line, ok, corr) {
+      line.classList.remove("ok", "ko");
+      line.classList.add(ok ? "ok" : "ko");
+      var old = line.querySelector(".corr-wrap"); if (old) old.remove();
+      var w = el("span", { class: "corr-wrap", style: "flex-basis:100%" }, el("b", { text: ok ? "✓ Correct" : "✗ À corriger" }));
+      if (!ok && corr) w.append(el("span", { class: "corr", text: "Réponse attendue : " + corr }));
+      line.append(w);
+    }
+    function exBlock(key, title, intro, body, checkFn, resetFn) {
+      var res = el("p", { class: "res", "aria-live": "polite" });
+      var check = el("button", { class: "btn primary", text: "Vérifier", onclick: function () {
+        var r = checkFn();
+        results[key] = r;
+        res.textContent = r[0] + " / " + r[1] + (r[0] === r[1] ? " · bravo !" : " · regarde les corrections ci-dessus");
+        updateBadge();
+      } });
+      var reset = el("button", { class: "btn", text: "Recommencer", onclick: function () {
+        resetFn(); res.textContent = ""; results[key] = null; updateBadge();
+        body.querySelectorAll(".line").forEach(function (l) { l.classList.remove("ok", "ko"); var w = l.querySelector(".corr-wrap"); if (w) w.remove(); });
+      } });
+      return el("div", { class: "card ex" }, el("h2", { text: title }), el("p", { class: "sub", text: intro }), body, el("div", { class: "actions" }, check, reset), res);
+    }
+
+    /* A : classer entrée / sortie */
+    var A_ITEMS = [["Le clavier", "entree"], ["L'écran", "sortie"], ["La souris", "entree"], ["L'imprimante", "sortie"], ["Le scanner", "entree"], ["Les haut-parleurs", "sortie"], ["Le micro", "entree"]];
+    var aBody = el("div", { class: "ex" });
+    var aLines = A_ITEMS.map(function (it, i) {
+      var name = "a" + i;
+      var inE = el("input", { type: "radio", name: name, value: "entree" });
+      var inS = el("input", { type: "radio", name: name, value: "sortie" });
+      var line = el("div", { class: "line" }, el("span", { class: "lbl", text: it[0] }),
+        el("label", { class: "pill" }, inE, "Entrée"), el("label", { class: "pill" }, inS, "Sortie"));
+      aBody.append(line);
+      return { line: line, inputs: [inE, inS], ans: it[1] };
+    });
+    root.append(exBlock("A", "1. Entrée ou sortie ?", "Classe chaque périphérique : envoie-t-il l'information vers l'UC (entrée) ou la restitue-t-il (sortie) ?", aBody,
+      function () {
+        var s = 0;
+        aLines.forEach(function (r) {
+          var v = r.inputs.filter(function (x) { return x.checked; })[0];
+          var ok = !!v && v.value === r.ans;
+          if (ok) s++;
+          mark(r.line, ok, r.ans === "entree" ? "périphérique d'entrée" : "périphérique de sortie");
+        });
+        return [s, aLines.length];
+      },
+      function () { aLines.forEach(function (r) { r.inputs.forEach(function (x) { x.checked = false; }); }); }));
+
+    /* B : associer besoin -> logiciel */
+    var SOFT = ["Traitement de texte", "Tableur-grapheur", "Logiciel de C.F.A.O.", "Logiciel de présentation", "Logiciel de communication", "Logiciel de jeu"];
+    var B_ITEMS = [["Écrire un compte rendu avec des images", 0], ["Calculer une moyenne et tracer un graphique", 1], ["Dessiner une pièce et piloter la machine qui la fabrique", 2], ["Préparer un diaporama pour la classe", 3], ["Aller sur Internet et écrire un message", 4], ["S'amuser un moment", 5]];
+    var bBody = el("div", { class: "ex" });
+    var bLines = B_ITEMS.map(function (it) {
+      var sel = el("select", { "aria-label": it[0] }, el("option", { value: "", text: "Choisis…" }), SOFT.map(function (s, i) { return el("option", { value: String(i), text: s }); }));
+      var line = el("div", { class: "line" }, el("span", { class: "lbl", text: it[0] }), sel);
+      bBody.append(line);
+      return { line: line, sel: sel, ans: it[1] };
+    });
+    root.append(exBlock("B", "2. Le bon logiciel", "Associe chaque besoin au logiciel adapté.", bBody,
+      function () {
+        var s = 0;
+        bLines.forEach(function (r) { var ok = r.sel.value === String(r.ans); if (ok) s++; mark(r.line, ok, SOFT[r.ans]); });
+        return [s, bLines.length];
+      },
+      function () { bLines.forEach(function (r) { r.sel.value = ""; }); }));
+
+    /* C : texte à trous */
+    var C_ITEMS = [
+      ["Un ordinateur est formé d'une unité ", " et de périphériques.", ["centrale"], "centrale"],
+      ["La mémoire ", " garde ton travail après l'extinction.", ["de masse", "masse"], "de masse"],
+      ["Le ", " contrôle tous les échanges du réseau.", ["serveur", "le serveur"], "serveur"],
+      ["Un ordinateur du réseau s'appelle un poste de ", ".", ["travail"], "travail"],
+      ["Chaque câble se branche sur un ", " différent du commutateur.", ["port"], "port"],
+      ["La mémoire ", " est effacée quand on quitte le logiciel.", ["vive"], "vive"]
+    ];
+    var cBody = el("div", { class: "ex" });
+    var cLines = C_ITEMS.map(function (it) {
+      var inp = el("input", { type: "text", autocomplete: "off", autocapitalize: "off", spellcheck: "false", "aria-label": "Mot manquant" });
+      var line = el("div", { class: "line sentence" }, el("span", { text: it[0] }), inp, el("span", { text: it[1] }));
+      cBody.append(line);
+      return { line: line, inp: inp, ok: it[2].map(norm), corr: it[3] };
+    });
+    root.append(exBlock("C", "3. Texte à trous", "Complète chaque phrase avec le mot qui manque. Les accents ne comptent pas.", cBody,
+      function () {
+        var s = 0;
+        cLines.forEach(function (r) { var ok = r.ok.indexOf(norm(r.inp.value)) !== -1; if (ok) s++; mark(r.line, ok, r.corr); });
+        return [s, cLines.length];
+      },
+      function () { cLines.forEach(function (r) { r.inp.value = ""; }); }));
+
+    /* D : trajet des câbles */
+    var STEPS = ["Commutateur de salle", "Commutateur central", "Serveur", "Pare-feu", "Imprimante"];
+    var D_ANS = [0, 1, 2, 3];
+    var dBody = el("div", { class: "ex" });
+    var chain = el("div", { class: "chain" });
+    var dSels = [];
+    chain.append(el("span", { class: "node", text: "Poste de travail" }));
+    D_ANS.forEach(function (a, i) {
+      var sel = el("select", { "aria-label": "Étape " + (i + 1) }, el("option", { value: "", text: "Étape " + (i + 1) + "…" }), STEPS.map(function (s, k) { return el("option", { value: String(k), text: s }); }));
+      dSels.push(sel);
+      chain.append(el("span", { class: "arrow", "aria-hidden": "true", text: "→" }), sel);
+    });
+    chain.append(el("span", { class: "arrow", "aria-hidden": "true", text: "→" }), el("span", { class: "node", text: "Internet" }));
+    var dLine = el("div", { class: "line" }, chain);
+    dBody.append(dLine);
+    root.append(exBlock("D", "4. Du poste jusqu'à Internet", "Dans le réseau du collège, un poste atteint Internet en passant par quatre éléments. Remets-les dans l'ordre du trajet.", dBody,
+      function () {
+        var s = 0;
+        dSels.forEach(function (sel, i) { if (sel.value === String(D_ANS[i])) s++; });
+        mark(dLine, s === D_ANS.length, D_ANS.map(function (a) { return STEPS[a]; }).join(" → "));
+        return [s, D_ANS.length];
+      },
+      function () { dSels.forEach(function (x) { x.value = ""; }); }));
+  })();
+
+  fromHash();
+})();
+</script>
+
+</body></html>

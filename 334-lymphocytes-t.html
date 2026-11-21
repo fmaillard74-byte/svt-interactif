@@ -1,0 +1,431 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>334 – L'action des lymphocytes T</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Lexend:wght@400;500;600&display=swap">
+<style>
+/* Mise en page : une question par écran. Consigne en haut, document rappelé à gauche, étapes de correction qui s'ajoutent à droite. Grands caractères pour la vidéoprojection. */
+:root {
+  --bg: #F6F5FA;
+  --surface: #FFFFFF;
+  --surface-2: #EEEBF6;
+  --ink: #1F1B2E;
+  --muted: #5D5873;
+  --line: #D9D4E8;
+  --accent: #5B3FA8;
+  --accent-ink: #FFFFFF;
+  --hl: #E3DBF7;
+  --virus: #C93A32;
+  --virus-bg: #FBE4E2;
+  --ok: #1B7556;
+  --ok-bg: #DCF1E8;
+  --font-display: "Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --font-body: "Lexend", "Verdana", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15121F; --surface: #1E1A2D; --surface-2: #282340; --ink: #EEEAF8; --muted: #A9A3C2;
+    --line: #38325A; --accent: #A58BFF; --accent-ink: #17102E; --hl: #3C2F6B;
+    --virus: #FF8A82; --virus-bg: #3A1F2A; --ok: #5FD3A4; --ok-bg: #173A2F;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15121F; --surface: #1E1A2D; --surface-2: #282340; --ink: #EEEAF8; --muted: #A9A3C2;
+  --line: #38325A; --accent: #A58BFF; --accent-ink: #17102E; --hl: #3C2F6B;
+  --virus: #FF8A82; --virus-bg: #3A1F2A; --ok: #5FD3A4; --ok-bg: #173A2F;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0;
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
+  z-index: 10; background: var(--bg);
+}
+.wrap { max-width: 1280px; margin: 0 auto; }
+
+/* Barre du haut */
+.top {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg);
+  padding-block: 12px 10px; border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+}
+.brand { font-family: var(--font-display); font-weight: 800; font-size: 22px; color: var(--accent); margin: 0; white-space: nowrap; }
+.tabs { display: flex; gap: 6px; overflow-x: auto; flex: 1 1 320px; padding-block: 2px; }
+.tab {
+  font: inherit; font-size: 16px; font-weight: 600; cursor: pointer; white-space: nowrap;
+  background: var(--surface-2); color: var(--ink); border: 2px solid transparent;
+  border-radius: 10px; padding: 6px 14px; position: relative;
+}
+.tab[aria-current="true"] { background: var(--accent); color: var(--accent-ink); }
+.tab.seen:not([aria-current="true"])::after {
+  content: ""; position: absolute; right: 5px; top: 5px; width: 7px; height: 7px; border-radius: 50%; background: var(--ok);
+}
+.tool {
+  font: inherit; font-size: 14px; background: none; color: var(--muted); border: 1px solid var(--line);
+  border-radius: 8px; padding: 5px 10px; cursor: pointer;
+}
+.tool:hover { color: var(--ink); border-color: var(--muted); }
+button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* Scène */
+main { padding-block: 22px 12px; min-height: calc(100vh - 220px); }
+.eyebrow { font-size: 14px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px; }
+.consigne {
+  font-family: var(--font-display); font-weight: 600; font-size: clamp(22px, 2.5vw, 32px);
+  line-height: 1.3; margin: 0 0 22px; text-wrap: balance;
+}
+.consigne b { color: var(--accent); font-weight: 800; }
+.stage { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 24px; align-items: start; }
+.stage.solo { grid-template-columns: minmax(0, 1fr); max-width: 900px; }
+@media (max-width: 860px) { .stage { grid-template-columns: minmax(0, 1fr); } }
+
+/* Documents */
+.doc { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; min-width: 0; }
+.doc-title { font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0 0 12px; font-weight: 600; }
+.doc p { margin: 0 0 10px; font-size: 16px; }
+.dimmable { transition: opacity .25s, background .25s, border-color .25s; }
+.dim { opacity: .38; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.steps li {
+  display: grid; grid-template-columns: 34px 1fr; gap: 10px; align-items: start;
+  padding: 8px 10px; border-radius: 10px; background: var(--surface-2); border: 2px solid transparent; font-size: 16px;
+}
+.steps .n {
+  width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: var(--accent-ink);
+  display: grid; place-items: center; font-weight: 600; font-size: 14px;
+}
+.steps .tag { display: none; grid-column: 2; font-size: 13px; font-weight: 600; color: var(--virus); }
+.steps li.hl { background: var(--virus-bg); border-color: var(--virus); }
+.steps li.hl .tag { display: block; }
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; min-width: 420px; font-size: 16px; }
+th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+td.xp { font-family: var(--font-display); font-weight: 800; font-size: 22px; color: var(--accent); }
+tr.hl td { background: var(--hl); }
+.res { display: inline-block; font-weight: 600; padding: 1px 10px; border-radius: 999px; font-size: 14px; }
+.res.no { background: var(--ok-bg); color: var(--ok); }
+.res.yes { background: var(--virus-bg); color: var(--virus); }
+.micro { display: grid; gap: 10px; }
+.micro > div { background: var(--surface-2); border-radius: 10px; padding: 10px 14px; font-size: 16px; border: 2px solid transparent; }
+.micro > div.hl { background: var(--hl); border-color: var(--accent); }
+.micro b { display: block; font-size: 13px; letter-spacing: .05em; text-transform: uppercase; color: var(--accent); }
+.note { font-size: 13px; color: var(--muted); margin: 10px 0 0; }
+
+/* Étapes de correction */
+.reveals { display: grid; gap: 14px; min-width: 0; }
+.placeholder {
+  border: 2px dashed var(--line); border-radius: 14px; padding: 28px 22px; color: var(--muted);
+  font-size: 18px; text-align: center;
+}
+.card {
+  background: var(--surface); border: 1px solid var(--line); border-left: 6px solid var(--accent);
+  border-radius: 12px; padding: 14px 18px; font-size: clamp(19px, 2vw, 26px); line-height: 1.5; overflow-wrap: anywhere;
+}
+.card .lab {
+  display: block; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent);
+  font-weight: 600; margin-bottom: 4px;
+}
+.card.model { background: var(--ok-bg); border-left-color: var(--ok); }
+.card.model .lab { color: var(--ok); }
+.card.fresh { animation: rise .35s ease both; }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+mark { background: var(--hl); color: var(--ink); font-weight: 600; padding: 0 .2em; border-radius: 4px; }
+.card.model mark { background: transparent; color: inherit; font-weight: 600; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+
+/* Commandes du bas */
+.controls {
+  position: sticky; bottom: 0; z-index: 5; background: var(--bg); border-top: 1px solid var(--line);
+  padding-block: 10px calc(10px + env(safe-area-inset-bottom, 0px));
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+}
+.btn {
+  font: inherit; font-weight: 600; font-size: 18px; cursor: pointer; border-radius: 12px; padding: 10px 26px;
+  background: var(--accent); color: var(--accent-ink); border: 2px solid var(--accent);
+}
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn:disabled { opacity: .4; cursor: default; }
+.count { font-size: 15px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.keys { margin-left: auto; font-size: 13px; color: var(--muted); }
+@media (max-width: 640px) { .keys { display: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .card.fresh { animation: none; }
+  .dimmable { transition: none; }
+}
+</style>
+
+<div class="wrap">
+  <div class="top">
+    <p class="brand">334</p>
+    <nav class="tabs" id="tabs" aria-label="Questions"></nav>
+    <button class="tool" id="fsBtn" type="button" hidden>Plein écran</button>
+  </div>
+
+  <main id="main"></main>
+
+  <div class="controls">
+    <button class="btn ghost" id="prevBtn" type="button">← Précédent</button>
+    <button class="btn" id="nextBtn" type="button">Suivant →</button>
+    <span class="count" id="count"></span>
+    <span class="keys">Espace ou → : afficher la suite · ← : revenir en arrière</span>
+  </div>
+</div>
+
+<script>
+(function () {
+  /* Documents */
+  var DOC1 = '<div class="doc"><p class="doc-title">Doc. 1 · Le cycle de vie d\'un virus</p>'
+    + '<ol class="steps">'
+    + '<li class="dimmable" data-key="out"><span class="n">1</span><span>Fixation du virus sur sa cellule hôte</span></li>'
+    + '<li class="dimmable" data-key="in"><span class="n">2</span><span>Injection du programme génétique dans la cellule</span><span class="tag">Virus dans la cellule</span></li>'
+    + '<li class="dimmable" data-key="in"><span class="n">3</span><span>Reproduction du programme génétique dans le noyau</span><span class="tag">Virus dans la cellule</span></li>'
+    + '<li class="dimmable" data-key="in"><span class="n">4</span><span>Fabrication des nouveaux virus dans le cytoplasme</span><span class="tag">Virus dans la cellule</span></li>'
+    + '<li class="dimmable" data-key="out"><span class="n">5</span><span>Éclatement de la cellule hôte et infection d\'une nouvelle cellule</span></li>'
+    + '</ol></div>';
+
+  var DOC2 = '<div class="doc"><p class="doc-title">Doc. 2 · L\'action de lymphocytes particuliers contre les virus</p>'
+    + '<p><b>Expérience a.</b> Une souris reçoit le virus de la chorioméningite. Une semaine plus tard, on prélève ses lymphocytes T.</p>'
+    + '<div class="scroll"><table><thead><tr><th>Exp.</th><th>Lymphocytes T de a + …</th><th>Résultat</th></tr></thead><tbody>'
+    + '<tr class="dimmable" data-key="b1"><td class="xp">b1</td><td>cellules non infectées</td><td><span class="res no">non détruites</span></td></tr>'
+    + '<tr class="dimmable" data-key="b2"><td class="xp">b2</td><td>cellules infectées par le virus de la chorioméningite</td><td><span class="res yes">détruites</span></td></tr>'
+    + '<tr class="dimmable" data-key="b3"><td class="xp">b3</td><td>cellules infectées par le virus de la vaccine</td><td><span class="res no">non détruites</span></td></tr>'
+    + '</tbody></table></div></div>';
+
+  var DOC3 = '<div class="doc"><p class="doc-title">Doc. 3 · Deux étapes de l\'action d\'un lymphocyte T sur une cellule infectée par un virus</p>'
+    + '<div class="micro">'
+    + '<div class="dimmable" data-key="s1"><b>Étape 1</b>Le lymphocyte Tc (petite cellule) est au contact d\'une cellule étrangère ou infectée, plus grosse.</div>'
+    + '<div class="dimmable" data-key="s2"><b>Étape 2</b>La cellule infectée est profondément abîmée : son contour est déchiré et son contenu apparaît vidé.</div>'
+    + '</div><p class="note">Description des photographies au microscope électronique (échelle 7 µm), « Le baiser de la mort ».</p></div>';
+
+  /* Écrans : id (pour l'adresse), onglet, consigne, document, étapes.
+     Chaque étape : label, html, doc (éléments du document à mettre en avant), model (réponse rédigée). */
+  var SLIDES = [
+    {
+      id: "q1", tab: "Q1", eyebrow: "Question 1", doc: DOC1,
+      consigne: '1) Grâce à l\'étude du <b>document 1</b>, expliquez pourquoi les lymphocytes B ne sont pas efficaces pour lutter contre les infections virales.',
+      steps: [
+        { label: "Rappel", html: 'Les lymphocytes B fabriquent des <mark>anticorps</mark>. Ces anticorps agissent sur les <mark>antigènes qui circulent librement</mark>, hors des cellules.' },
+        { label: "Document 1", doc: ["in"], html: 'Le virus ne reste pas dehors : après la fixation (1), il <mark>injecte son programme génétique dans la cellule</mark> (2), s\'y reproduit (3) et y fabrique de nouveaux virus (4).' },
+        { label: "Conclusion", html: 'Pendant presque tout son cycle, le virus est <mark>caché dans la cellule</mark> : les anticorps ne peuvent pas l\'atteindre. <mark>Les lymphocytes B sont inefficaces</mark> contre un virus.' },
+        { model: true, html: 'Les anticorps des lymphocytes B agissent sur les antigènes libres dans l\'organisme. D\'après le document 1, le virus injecte son programme génétique dans la cellule et s\'y reproduit (étapes 2 à 4) : il est caché dans la cellule, où les anticorps ne l\'atteignent pas. Les lymphocytes B sont donc inefficaces contre un virus.' }
+      ]
+    },
+    {
+      id: "b1", tab: "b1", eyebrow: "Question 2 · Expérience b1", doc: DOC2,
+      consigne: '2) <b>Analysez l\'expérience b1</b> du document 2.',
+      steps: [
+        { label: "Observation", doc: ["b1"], html: 'Les lymphocytes T de l\'expérience a sont mis avec des <mark>cellules non infectées</mark> : elles <mark>ne sont pas détruites</mark>.' },
+        { label: "Conclusion", doc: ["b1"], html: 'Les lymphocytes T <mark>n\'attaquent pas les cellules saines</mark> de l\'organisme.' },
+        { model: true, html: 'Les lymphocytes T prélevés chez la souris infectée, mis en présence de cellules non infectées, ne les détruisent pas : ils n\'attaquent pas les cellules saines.' }
+      ]
+    },
+    {
+      id: "b2", tab: "b2", eyebrow: "Question 2 · Expérience b2", doc: DOC2,
+      consigne: '2) <b>Analysez l\'expérience b2</b> du document 2.',
+      steps: [
+        { label: "Observation", doc: ["b2"], html: 'Mêmes lymphocytes T, mais les cellules sont maintenant <mark>infectées par le virus de la chorioméningite</mark> : elles sont <mark>détruites</mark>.' },
+        { label: "Interprétation", doc: ["b2"], html: 'C\'est le <mark>même virus</mark> que celui donné à la souris dans l\'expérience a : ces lymphocytes T ont été produits contre lui.' },
+        { label: "Conclusion", doc: ["b2"], html: 'Les lymphocytes T <mark>détruisent les cellules infectées</mark> par le virus qui a déclenché leur production.' },
+        { model: true, html: 'Les lymphocytes T mis en présence de cellules infectées par le virus de la chorioméningite détruisent ces cellules : ils détruisent les cellules infectées par le virus contre lequel ils ont été produits.' }
+      ]
+    },
+    {
+      id: "b3", tab: "b3", eyebrow: "Question 2 · Expérience b3", doc: DOC2,
+      consigne: '2) <b>Analysez l\'expérience b3</b> du document 2.',
+      steps: [
+        { label: "Observation", doc: ["b3"], html: 'Cette fois, les cellules sont <mark>infectées par le virus de la vaccine</mark> : elles <mark>ne sont pas détruites</mark>.' },
+        { label: "Interprétation", doc: ["b3"], html: 'Le virus de la vaccine est <mark>un autre virus</mark> que celui donné à la souris dans l\'expérience a.' },
+        { label: "Conclusion", doc: ["b3"], html: 'Les lymphocytes T <mark>ne détruisent pas</mark> les cellules infectées par un autre virus : ils ne sont efficaces que contre <mark>le virus de la chorioméningite</mark>.' },
+        { model: true, html: 'Les lymphocytes T ne détruisent pas les cellules infectées par le virus de la vaccine, un autre virus : ils n\'agissent que contre le virus de la chorioméningite.' }
+      ]
+    },
+    {
+      id: "qa", tab: "a", eyebrow: "Question 2 · a", doc: DOC2,
+      consigne: 'a) <b>Quelles sont les cellules immunitaires</b> impliquées lors d\'une infection par un virus ?',
+      steps: [
+        { label: "On cherche", doc: ["b2"], html: 'Dans l\'expérience b2, ce qui détruit les cellules infectées, ce sont les <mark>lymphocytes T</mark>.' },
+        { label: "Précision", html: 'Plus précisément les <mark>lymphocytes T cytotoxiques</mark> (notés Tc). Les lymphocytes B sont inefficaces contre un virus caché dans une cellule.' },
+        { model: true, html: 'Lors d\'une infection par un virus, ce sont les lymphocytes T cytotoxiques (Tc) qui interviennent : ils détruisent les cellules infectées.' }
+      ]
+    },
+    {
+      id: "qb", tab: "b", eyebrow: "Question 2 · b", doc: DOC2,
+      consigne: 'b) Ces lymphocytes sont-ils des cellules spécifiques ? <b>Justifiez</b> en utilisant vos analyses d\'expériences.',
+      steps: [
+        { label: "Sens du mot", html: 'Une cellule <mark>spécifique</mark> ne reconnaît qu\'<mark>un seul</mark> antigène, ici un seul virus.' },
+        { label: "Expérience b1", doc: ["b1"], html: 'Les cellules saines <mark>ne sont pas attaquées</mark>.' },
+        { label: "Comparer b2 et b3", doc: ["b2", "b3"], html: 'Cellules infectées dans les deux cas, mais seules celles infectées par <mark>le même virus</mark> (b2) sont détruites. Celles infectées par <mark>un autre virus</mark> (b3) ne le sont pas.' },
+        { model: true, html: 'Oui, ces lymphocytes T sont spécifiques : ils épargnent les cellules saines (b1), détruisent les cellules infectées par le virus de la chorioméningite (b2) mais pas celles infectées par un autre virus (b3). Chaque lymphocyte T ne reconnaît qu\'un seul virus.' }
+      ]
+    },
+    {
+      id: "q3", tab: "Q3", eyebrow: "Question 3", doc: DOC3,
+      consigne: '3) Grâce au <b>document 3</b>, expliquez rapidement l\'action des lymphocytes T <b>en justifiant le nom</b> qui lui est donné.',
+      steps: [
+        { label: "Étape 1", doc: ["s1"], html: 'Le lymphocyte T se place <mark>au contact</mark> de la cellule infectée par le virus.' },
+        { label: "Étape 2", doc: ["s2"], html: 'La cellule infectée est <mark>abîmée</mark> : son contour se déchire et son contenu s\'échappe. Elle est <mark>détruite</mark>.' },
+        { label: "Le nom « baiser de la mort »", doc: ["s1", "s2"], html: 'Le <mark>baiser</mark> : le contact étroit entre le lymphocyte T et la cellule. La <mark>mort</mark> : la destruction de la cellule infectée.' },
+        { model: true, html: 'Le lymphocyte T se place au contact de la cellule infectée, qui est ensuite détruite. On parle de « baiser de la mort » : le contact étroit (le baiser) provoque la destruction de la cellule (la mort). Le virus ne peut plus s\'y reproduire.' }
+      ]
+    },
+    {
+      id: "bilan", tab: "Bilan", eyebrow: "Bilan", doc: null,
+      consigne: '<b>Ce qu\'il faut retenir</b>',
+      steps: [
+        { label: "Les virus", html: 'Un virus se reproduit <mark>à l\'intérieur des cellules</mark> : caché là, il n\'est pas atteint par les anticorps des lymphocytes B.' },
+        { label: "Les lymphocytes T", html: 'Les <mark>lymphocytes T cytotoxiques</mark> reconnaissent les cellules infectées par un virus précis et les <mark>détruisent</mark>.' },
+        { label: "Spécifiques", html: 'Un lymphocyte T qui reconnaît un virus <mark>n\'attaque ni les cellules saines, ni celles infectées par un autre virus</mark>.' }
+      ]
+    }
+  ];
+
+  var si = 0, ri = 0, fresh = false;
+  var seen = {};
+
+  var tabsEl = document.getElementById("tabs");
+  var mainEl = document.getElementById("main");
+  var prevBtn = document.getElementById("prevBtn");
+  var nextBtn = document.getElementById("nextBtn");
+  var countEl = document.getElementById("count");
+
+  /* Onglets */
+  SLIDES.forEach(function (s, i) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "tab";
+    b.textContent = s.tab;
+    b.setAttribute("data-i", i);
+    b.addEventListener("click", function () { si = i; ri = 0; fresh = false; render(); });
+    tabsEl.appendChild(b);
+  });
+
+  function activeKeys(s) {
+    var keys = null;
+    for (var i = 0; i < ri && i < s.steps.length; i++) {
+      if (s.steps[i].doc) keys = s.steps[i].doc;
+    }
+    return keys;
+  }
+
+  function applyDocState(root, keys) {
+    var els = root.querySelectorAll("[data-key]");
+    for (var i = 0; i < els.length; i++) {
+      var k = els[i].getAttribute("data-key");
+      els[i].classList.remove("hl", "dim");
+      if (keys) {
+        if (keys.indexOf(k) !== -1) els[i].classList.add("hl");
+        else els[i].classList.add("dim");
+      }
+    }
+  }
+
+  function render() {
+    var s = SLIDES[si];
+    var html = '<p class="eyebrow">' + s.eyebrow + '</p>';
+    html += '<p class="consigne">' + s.consigne + '</p>';
+    html += '<div class="stage' + (s.doc ? '' : ' solo') + '">';
+    if (s.doc) html += '<div id="docHost">' + s.doc + '</div>';
+    html += '<div class="reveals" aria-live="polite">';
+    if (ri === 0) {
+      html += '<div class="placeholder">Appuie sur <b>Espace</b> ou sur <b>Suivant</b> pour afficher la correction, étape par étape.</div>';
+    }
+    for (var i = 0; i < ri; i++) {
+      var st = s.steps[i];
+      var cls = "card" + (st.model ? " model" : "") + (fresh && i === ri - 1 ? " fresh" : "");
+      html += '<div class="' + cls + '"><span class="lab">' + (st.model ? "Réponse rédigée" : st.label) + '</span>' + st.html + '</div>';
+    }
+    html += '</div></div>';
+    mainEl.innerHTML = html;
+
+    var host = document.getElementById("docHost");
+    if (host) applyDocState(host, activeKeys(s));
+
+    /* Onglets : écran courant et écrans déjà parcourus */
+    if (ri > 0) seen[s.id] = true;
+    var tabs = tabsEl.children;
+    for (var t = 0; t < tabs.length; t++) {
+      if (t === si) tabs[t].setAttribute("aria-current", "true"); else tabs[t].removeAttribute("aria-current");
+      if (seen[SLIDES[t].id]) tabs[t].classList.add("seen"); else tabs[t].classList.remove("seen");
+    }
+
+    var atStart = si === 0 && ri === 0;
+    var atEnd = si === SLIDES.length - 1 && ri === s.steps.length;
+    prevBtn.disabled = atStart;
+    nextBtn.disabled = atEnd;
+    var lastOfSlide = ri === s.steps.length;
+    nextBtn.textContent = lastOfSlide && !atEnd ? "Question suivante →" : "Suivant →";
+    countEl.textContent = "Écran " + (si + 1) + " / " + SLIDES.length + " · étape " + ri + " / " + s.steps.length;
+
+    try {
+      if (location.hash !== "#" + s.id) history.replaceState(null, "", "#" + s.id);
+    } catch (e) {
+      try { location.hash = s.id; } catch (e2) {}
+    }
+  }
+
+  function next() {
+    var s = SLIDES[si];
+    if (ri < s.steps.length) { ri++; fresh = true; }
+    else if (si < SLIDES.length - 1) { si++; ri = 0; fresh = false; window.scrollTo(0, 0); }
+    else return;
+    render();
+  }
+
+  function prev() {
+    if (ri > 0) { ri--; fresh = false; }
+    else if (si > 0) { si--; ri = SLIDES[si].steps.length; fresh = false; }
+    else return;
+    render();
+  }
+
+  nextBtn.addEventListener("click", next);
+  prevBtn.addEventListener("click", prev);
+
+  document.addEventListener("keydown", function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    var onButton = e.target && e.target.closest && e.target.closest("button");
+    if (e.key === "ArrowRight") { e.preventDefault(); next(); }
+    else if (e.key === "ArrowLeft") { e.preventDefault(); prev(); }
+    else if ((e.key === " " || e.key === "Enter") && !onButton) { e.preventDefault(); next(); }
+    else if (e.key === "Home" && !onButton) { e.preventDefault(); si = 0; ri = 0; fresh = false; render(); }
+  });
+
+  function fromHash() {
+    var h = (location.hash || "").replace("#", "");
+    for (var i = 0; i < SLIDES.length; i++) {
+      if (SLIDES[i].id === h) { if (i !== si) { si = i; ri = 0; fresh = false; } return; }
+    }
+  }
+  window.addEventListener("hashchange", function () { fromHash(); render(); });
+
+  /* Plein écran, si le navigateur l'autorise */
+  var fsBtn = document.getElementById("fsBtn");
+  if (document.fullscreenEnabled) {
+    fsBtn.hidden = false;
+    fsBtn.addEventListener("click", function () {
+      try {
+        if (document.fullscreenElement) { document.exitFullscreen(); }
+        else {
+          var p = document.documentElement.requestFullscreen();
+          if (p && p.catch) p.catch(function () {});
+        }
+      } catch (e) {}
+    });
+  }
+
+  fromHash();
+  render();
+})();
+</script>
+
+</body></html>
