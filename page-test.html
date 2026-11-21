@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page test</title>
+<style>
+  :root {
+    --bg: #f4f7f2; --carte: #ffffff; --texte: #1f2a1f; --doux: #5b6b5b;
+    --accent: #2e7d4f; --bon: #2e7d4f; --bon-fond: #e3f4e9;
+    --faux: #b3261e; --faux-fond: #fbe7e5; --bord: #d6dfd3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141a15; --carte: #1e2620; --texte: #e8eee8; --doux: #a3b2a4;
+      --accent: #6fcf97; --bon: #6fcf97; --bon-fond: #1d3626;
+      --faux: #f28b82; --faux-fond: #3d1f1c; --bord: #33403a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--texte);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5; padding: 24px 16px 48px;
+  }
+  main { max-width: 640px; margin: 0 auto; }
+  h1 { font-size: 1.6rem; margin: 0 0 4px; }
+  .sous-titre { color: var(--doux); margin: 0 0 24px; }
+  .question {
+    background: var(--carte); border: 1px solid var(--bord);
+    border-radius: 14px; padding: 18px; margin-bottom: 18px;
+  }
+  .question h2 { font-size: 1.1rem; margin: 0 0 12px; }
+  .choix { display: grid; gap: 10px; }
+  .choix button {
+    font: inherit; text-align: left; padding: 12px 14px; border-radius: 10px;
+    border: 2px solid var(--bord); background: transparent; color: var(--texte);
+    cursor: pointer; transition: border-color .15s, background .15s;
+  }
+  .choix button:hover:not(:disabled) { border-color: var(--accent); }
+  .choix button:disabled { cursor: default; }
+  .choix button.bon { border-color: var(--bon); background: var(--bon-fond); }
+  .choix button.faux { border-color: var(--faux); background: var(--faux-fond); }
+  .retour { margin: 12px 0 0; font-weight: 600; min-height: 1.5em; }
+  .retour.bon { color: var(--bon); }
+  .retour.faux { color: var(--faux); }
+  .bilan {
+    text-align: center; background: var(--carte); border: 1px solid var(--bord);
+    border-radius: 14px; padding: 18px;
+  }
+  .bilan strong { font-size: 1.4rem; color: var(--accent); }
+  #recommencer {
+    font: inherit; margin-top: 12px; padding: 10px 18px; border-radius: 999px;
+    border: none; background: var(--accent); color: var(--bg); font-weight: 600; cursor: pointer;
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Page test</h1>
+  <p class="sous-titre">Deux questions pour vérifier que tout fonctionne.</p>
+
+  <section class="question" data-bonne="1">
+    <h2>1. De quelle couleur est le ciel par beau temps&nbsp;?</h2>
+    <div class="choix">
+      <button>Vert</button>
+      <button>Bleu</button>
+      <button>Violet à pois</button>
+    </div>
+    <p class="retour" aria-live="polite"></p>
+  </section>
+
+  <section class="question" data-bonne="2">
+    <h2>2. Combien de pattes a un chat&nbsp;?</h2>
+    <div class="choix">
+      <button>2</button>
+      <button>12</button>
+      <button>4</button>
+    </div>
+    <p class="retour" aria-live="polite"></p>
+  </section>
+
+  <div class="bilan">
+    <div>Score : <strong id="score">0 / 2</strong></div>
+    <button id="recommencer">Recommencer</button>
+  </div>
+</main>
+
+<script>
+  const questions = document.querySelectorAll(".question");
+  const scoreEl = document.getElementById("score");
+  let score = 0;
+
+  questions.forEach(q => {
+    const bonne = Number(q.dataset.bonne);
+    const boutons = q.querySelectorAll(".choix button");
+    const retour = q.querySelector(".retour");
+    boutons.forEach((b, i) => {
+      b.addEventListener("click", () => {
+        boutons.forEach(x => x.disabled = true);
+        boutons[bonne].classList.add("bon");
+        if (i === bonne) {
+          score++;
+          retour.textContent = "Bravo, bonne réponse !";
+          retour.className = "retour bon";
+        } else {
+          b.classList.add("faux");
+          retour.textContent = "Raté ! La bonne réponse est : " + boutons[bonne].textContent + ".";
+          retour.className = "retour faux";
+        }
+        scoreEl.textContent = score + " / " + questions.length;
+      });
+    });
+  });
+
+  document.getElementById("recommencer").addEventListener("click", () => {
+    score = 0;
+    scoreEl.textContent = "0 / " + questions.length;
+    questions.forEach(q => {
+      q.querySelectorAll(".choix button").forEach(b => { b.disabled = false; b.className = ""; });
+      const r = q.querySelector(".retour");
+      r.textContent = ""; r.className = "retour";
+    });
+  });
+</script>
+</body>
+</html>
