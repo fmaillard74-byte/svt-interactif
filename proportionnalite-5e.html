@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proportionnalité – 5e</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f6fb;--card:#fff;--ink:#1d2433;--muted:#5b6475;--line:#dde3ee;
+  --accent:#2f6fde;--accent-soft:#e8f0ff;--ok:#178a52;--ok-soft:#e2f5ea;
+  --ko:#cf3d35;--ko-soft:#fde8e6;--warn:#a96300;--warn-soft:#fff3db;
+  --pink:#c2338f;--pink-soft:#fbe8f4;--green:#2b8a3e;--grid:#e6ebf3;--axis:#33415c;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Nunito",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5;font-size:17px}
+main{max-width:900px;margin:0 auto;padding:20px 16px 80px}
+h1{margin:0;font-size:1.7rem;font-weight:800}
+.sub{color:var(--muted);margin:2px 0 14px}
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px;margin-bottom:10px}
+.score{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 12px;font-size:.92rem}
+.score b{color:var(--accent)}
+details.rappel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px;margin:10px 0 16px}
+details.rappel summary{cursor:pointer;font-weight:800;color:var(--accent)}
+details.rappel h4{margin:14px 0 4px}
+.def{background:var(--accent-soft);border-left:4px solid var(--accent);padding:8px 12px;border-radius:8px;margin:8px 0}
+nav.exos{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 18px}
+nav.exos button{font:inherit;font-size:.9rem;font-weight:700;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer}
+nav.exos button.cur{border-color:var(--accent);background:var(--accent);color:#fff}
+nav.exos button .st{margin-left:4px}
+.part{font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:800;width:100%;margin-top:4px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:0 0 18px;box-shadow:0 2px 8px rgba(30,40,70,.05)}
+.card.sim{border:2px dashed var(--pink)}
+.card-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.card-head h2{margin:0;font-size:1.25rem}
+.badge{background:var(--accent);color:#fff;font-weight:800;border-radius:8px;padding:2px 10px;font-size:.9rem}
+.badge.sim{background:var(--pink)}
+.badge.cours{background:var(--green)}
+.enonce p{margin:6px 0}
+.fig{margin:10px 0;display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.fig svg{max-width:100%;height:auto}
+.fig .one{flex:1 1 300px;max-width:430px}
+section.final,section.aide,section.bilan{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+h3{margin:0 0 8px;font-size:1.05rem}
+.block .q{margin:4px 0 8px}
+.frow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:8px 0}
+.frow label{font-weight:600}
+.after{color:var(--muted);font-weight:600}
+input.num{font:inherit;font-weight:700;width:6.5em;padding:6px 8px;border:2px solid #b9c3d6;border-radius:8px;background:#fff;color:var(--ink);text-align:center}
+input.num:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+input.num:disabled{opacity:1;-webkit-text-fill-color:var(--ink)}
+.ok{border-color:var(--ok)!important;background:var(--ok-soft)!important}
+.ko{border-color:var(--ko)!important;background:var(--ko-soft)!important}
+.choice{display:inline-flex;gap:6px;flex-wrap:wrap;border-radius:10px;padding:2px;border:2px solid transparent}
+.choice .opt{font:inherit;font-weight:700;border:2px solid #b9c3d6;background:#fff;color:var(--ink);border-radius:8px;padding:5px 14px;cursor:pointer}
+.choice .opt.sel{background:var(--accent);border-color:var(--accent);color:#fff}
+.choice.locked .opt{cursor:default}
+.tablewrap{display:flex;align-items:center;gap:8px;overflow-x:auto;padding:4px 0;max-width:100%}
+table.prop{border-collapse:collapse;font-weight:700}
+table.prop th,table.prop td{border:2px solid #4a5a7a;padding:6px 8px;text-align:center;white-space:nowrap}
+table.prop th{background:#eef2f9;text-align:left;font-weight:700;white-space:normal;min-width:120px;max-width:190px;font-size:.92rem}
+table.prop td input.num{width:4.8em;padding:4px}
+.side{color:var(--green);font-weight:800;white-space:nowrap;font-size:1.05rem}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.btn{font:inherit;font-weight:800;border:none;border-radius:10px;padding:9px 16px;cursor:pointer;background:var(--accent);color:#fff}
+.btn.sec{background:var(--accent-soft);color:var(--accent)}
+.btn.help{background:var(--warn-soft);color:var(--warn);border:2px solid #f0c77a}
+.btn.pink{background:var(--pink);color:#fff}
+.btn.ghost{background:transparent;color:var(--muted);border:2px solid var(--line)}
+.btn[hidden]{display:none}
+.msg{margin-top:10px;border-radius:10px;padding:8px 12px;font-weight:600}
+.msg:empty{display:none}
+.msg.good{background:var(--ok-soft);color:var(--ok)}
+.msg.bad{background:var(--ko-soft);color:var(--ko)}
+.msg.info{background:var(--warn-soft);color:var(--warn)}
+.step{background:#fafbfe;border:1px solid var(--line);border-left:5px solid var(--warn);border-radius:12px;padding:10px 12px;margin:10px 0}
+.step.done{border-left-color:var(--ok)}
+.hint{background:var(--warn-soft);border-radius:10px;padding:8px 12px;margin-top:8px}
+.hint:empty{display:none}
+.sol{background:var(--ok-soft);border-radius:10px;padding:8px 12px;margin-top:8px}
+.sol:empty{display:none}
+.recap{background:#f7fafc;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.recap p{margin:6px 0}
+.note{color:var(--muted);font-size:.95rem;margin-top:6px}
+.plotwrap{width:100%;max-width:440px}
+.plotwrap svg{cursor:crosshair;touch-action:manipulation;border:2px solid transparent;border-radius:10px;background:#fff;width:100%;height:auto}
+.plothelp{font-size:.85rem;color:var(--muted)}
+svg text{font-family:"Nunito",system-ui,sans-serif}
+.grid{stroke:var(--grid);stroke-width:1}
+.axisl{stroke:var(--axis);stroke-width:1.6}
+.nextbar{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+footer{color:var(--muted);font-size:.9rem;margin-top:24px}
+footer a{color:var(--accent)}
+@media (max-width:520px){
+  body{font-size:16px}
+  .card{padding:12px}
+  h1{font-size:1.4rem}
+  table.prop th{min-width:90px;font-size:.85rem}
+}
+</style>
+</head>
+<body>
+<main>
+<header class="top">
+  <div>
+    <h1>📐 Proportionnalité</h1>
+    <p class="sub">Mathématiques – 5<sup>e</sup> · exercices autocorrectifs du chapitre</p>
+  </div>
+  <div class="score" id="score"></div>
+</header>
+
+<details class="rappel">
+  <summary>📘 Rappels du cours (clique pour ouvrir)</summary>
+  <h4>I. Proportion et pourcentage</h4>
+  <div class="def">Deux grandeurs sont <b>proportionnelles</b> lorsque les valeurs de l'une s'obtiennent en <b>multipliant</b> les valeurs de l'autre par un <b>même nombre</b>, appelé <b>coefficient de proportionnalité</b>.</div>
+  <div class="tablewrap"><table class="prop"><tr><th>Volume de gazole (L)</th><td>10</td><td>20</td><td>30</td><td>40</td></tr><tr><th>Prix (€)</th><td>15</td><td>30</td><td>45</td><td>60</td></tr></table><span class="side">↓ × 1,5</span></div>
+  <div class="def">Calculer un <b>pourcentage</b>, c'est écrire une proportion avec un <b>dénominateur 100</b>.<br>
+  Méthode : on calcule le quotient <i>quantité ÷ quantité totale</i> (au centième), puis on l'écrit sur 100.<br>
+  Exemple : 6 voix sur 24 → 6 ÷ 24 = 0,25 = 25/100 = <b>25 %</b>.</div>
+  <h4>II. Proportionnalité et représentation graphique</h4>
+  <div class="def">Si deux grandeurs sont proportionnelles, alors elles sont représentées par des points <b>alignés sur une droite qui passe par l'origine</b> du repère.<br>
+  Réciproquement, si les points sont alignés avec l'origine, les grandeurs sont proportionnelles.</div>
+  <p class="note">À retenir : <b>pourcentage de réduction = réduction ÷ prix de départ</b> (puis on écrit le résultat sur 100).</p>
+</details>
+
+<nav class="exos" id="nav"></nav>
+<div id="stage"></div>
+
+<footer>
+  <p>📄 Corrections manuscrites des exercices : <a href="pdf/pourcentages-proportionnalite-corrections.pdf">PDF « Pourcentages et proportionnalité »</a></p>
+  <p>Conseil : essaie d'abord <b>seul</b>. Si ta réponse est fausse, le bouton <b>« Coup de pouce »</b> te guide étape par étape. Une fois l'exercice réussi, entraîne-toi avec un <b>exercice similaire</b> (nouveaux nombres à chaque fois).</p>
+</footer>
+</main>
+
+<script>
+"use strict";
+/* ================= Outils ================= */
+const fmt=(n,d)=>{
+  if(d===undefined){const r=Math.round(n*1000)/1000;return r.toLocaleString("fr-FR",{maximumFractionDigits:3});}
+  return n.toLocaleString("fr-FR",{minimumFractionDigits:d,maximumFractionDigits:d});
+};
+const isInt=n=>Math.abs(n-Math.round(n))<1e-9;
+const eur=n=>(isInt(n)?fmt(Math.round(n),0):fmt(n,2))+" €";
+const m2=n=>fmt(n,2);
+const parseNum=s=>{
+  s=String(s).trim().replace(/[\s  ]/g,"").replace(/[€%]/g,"").replace(/(cm|km|kg|min|m|L|h)$/i,"").replace(",",".");
+  if(!/^-?(\d+\.?\d*|\.\d+)$/.test(s))return NaN;return parseFloat(s);
+};
+const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const sample=(a,k)=>{const c=a.slice(),r=[];while(r.length<k&&c.length)r.push(c.splice(Math.floor(Math.random()*c.length),1)[0]);return r;};
+const r2=x=>Math.round(x*100)/100;
+function el(tag,cls,html){const e=document.createElement(tag);if(cls)e.className=cls;if(html!==undefined)e.innerHTML=html;return e;}
+const YN=[["oui","Oui"],["non","Non"]];
+
+/* Tableau statique (cellules objets -> valeur attendue) */
+function staticTable(rows,side){
+  let h=`<div class="tablewrap"><table class="prop">`;
+  rows.forEach(r=>{h+=`<tr><th>${r[0]}</th>`;r.slice(1).forEach(c=>{
+    const v=(c&&typeof c==="object")?`<span style="color:var(--pink)">${fmt(c.a,c.d)}</span>`:(typeof c==="number"?fmt(c):c);
+    h+=`<td>${v}</td>`;});h+=`</tr>`;});
+  return h+`</table>${side?`<span class="side">${side}</span>`:""}</div>`;
+}
+
+/* ================= Graphiques SVG ================= */
+function scale(o){
+  const ml=o.ml??48,mr=o.mr??16,mt=o.mt??30,mb=o.mb??36,pw=o.W-ml-mr,ph=o.H-mt-mb;
+  return{ml,mr,mt,mb,pw,ph,sx:x=>ml+x/o.xmax*pw,sy:y=>mt+ph-y/o.ymax*ph,ix:X=>(X-ml)/pw*o.xmax,iy:Y=>(mt+ph-Y)/ph*o.ymax};
+}
+function chart(o){
+  o=Object.assign({W:360,H:280},o);const S=scale(o);
+  const nx=Math.floor(o.xmax/o.xstep+1e-9),ny=Math.floor(o.ymax/o.ystep+1e-9);
+  const xt=o.xtick||o.xstep,yt=o.ytick||o.ystep;
+  let s=`<svg viewBox="0 0 ${o.W} ${o.H}" role="img" aria-label="${o.aria||"graphique"}">`;
+  if(o.title)s+=`<text x="${o.W/2}" y="14" text-anchor="middle" font-weight="800" font-size="13" fill="#1d2433">${o.title}</text>`;
+  for(let i=0;i<=nx;i++){const X=S.sx(i*o.xstep);s+=`<line class="grid" x1="${X}" y1="${S.sy(0)}" x2="${X}" y2="${S.sy(o.ymax)}"/>`;}
+  for(let j=0;j<=ny;j++){const Y=S.sy(j*o.ystep);s+=`<line class="grid" x1="${S.sx(0)}" y1="${Y}" x2="${S.sx(o.xmax)}" y2="${Y}"/>`;}
+  const X0=S.sx(0),Y0=S.sy(0),XM=S.sx(o.xmax)+6,YM=S.sy(o.ymax)-6;
+  s+=`<line class="axisl" x1="${X0}" y1="${Y0}" x2="${XM}" y2="${Y0}"/><polygon points="${XM+6},${Y0} ${XM-2},${Y0-4} ${XM-2},${Y0+4}" fill="#33415c"/>`;
+  s+=`<line class="axisl" x1="${X0}" y1="${Y0}" x2="${X0}" y2="${YM}"/><polygon points="${X0},${YM-6} ${X0-4},${YM+2} ${X0+4},${YM+2}" fill="#33415c"/>`;
+  for(let x=xt;x<=o.xmax+1e-9;x+=xt){const X=S.sx(x);s+=`<line x1="${X}" y1="${Y0}" x2="${X}" y2="${Y0+4}" stroke="#33415c"/><text x="${X}" y="${Y0+17}" font-size="11.5" text-anchor="middle" fill="#33415c">${fmt(Math.round(x*1000)/1000)}</text>`;}
+  for(let y=yt;y<=o.ymax+1e-9;y+=yt){const Y=S.sy(y);s+=`<line x1="${X0-4}" y1="${Y}" x2="${X0}" y2="${Y}" stroke="#33415c"/><text x="${X0-7}" y="${Y+4}" font-size="11.5" text-anchor="end" fill="#33415c">${fmt(Math.round(y*1000)/1000)}</text>`;}
+  s+=`<text x="${X0-7}" y="${Y0+15}" font-size="11.5" text-anchor="end" fill="#33415c">0</text>`;
+  if(o.ylabel)s+=`<text x="${X0+8}" y="${S.sy(o.ymax)+4}" font-size="12" font-weight="700" fill="#1d2433"><tspan fill="#fff" stroke="#fff" stroke-width="4" paint-order="stroke">${o.ylabel}</tspan></text><text x="${X0+8}" y="${S.sy(o.ymax)+4}" font-size="12" font-weight="700" fill="#1d2433">${o.ylabel}</text>`;
+  if(o.xlabel)s+=`<text x="${S.sx(o.xmax)}" y="${Y0-8}" font-size="12" font-weight="700" text-anchor="end" fill="#1d2433" stroke="#fff" stroke-width="4" paint-order="stroke">${o.xlabel}</text>`;
+  (o.fns||[]).forEach(fn=>{
+    const x0=fn.x0??0,x1=fn.x1??o.xmax,N=120;let d="";
+    for(let i=0;i<=N;i++){const x=x0+(x1-x0)*i/N,y=fn.f(x);if(y>o.ymax*1.01||y<0)continue;d+=(d?"L":"M")+S.sx(x).toFixed(1)+","+S.sy(y).toFixed(1);}
+    s+=`<path d="${d}" fill="none" stroke="${fn.color||"#2f6fde"}" stroke-width="${fn.w||3}" ${fn.dash?`stroke-dasharray="${fn.dash}"`:""}/>`;
+  });
+  (o.segs||[]).forEach(g=>{s+=`<line x1="${S.sx(g[0])}" y1="${S.sy(g[1])}" x2="${S.sx(g[2])}" y2="${S.sy(g[3])}" stroke="${g[4]||"#2b8a3e"}" stroke-width="2.5" ${g[5]?`stroke-dasharray="${g[5]}"`:""}/>`;});
+  (o.pts||[]).forEach(p=>{s+=`<circle cx="${S.sx(p.x)}" cy="${S.sy(p.y)}" r="5" fill="${p.color||"#c2338f"}" stroke="#fff" stroke-width="1.5"/>`;if(p.label)s+=`<text x="${S.sx(p.x)+7}" y="${S.sy(p.y)-7}" font-size="11" font-weight="700" fill="${p.color||"#c2338f"}" stroke="#fff" stroke-width="3" paint-order="stroke">${p.label}</text>`;});
+  if(o.origin)s+=`<circle cx="${X0}" cy="${Y0}" r="6" fill="none" stroke="#cf3d35" stroke-width="2.5"/><text x="${X0+8}" y="${Y0-8}" font-size="11" font-weight="800" fill="#cf3d35">origine</text>`;
+  return s+`<g class="userpts"></g></svg>`;
+}
+
+/* Modèle en barres */
+function barModel(rows,opt={}){
+  const W=360,lw=opt.lw??78,bw=W-lw-12,rh=34,gap=30,top=opt.brace?34:10;
+  const max=Math.max(...rows.map(r=>r.segs.reduce((a,s)=>a+s.v,0)));
+  const H=top+rows.length*(rh+gap)-gap+12;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="schéma en barres">`;
+  rows.forEach((r,i)=>{
+    const y=top+i*(rh+gap);let x=lw;
+    s+=`<text x="${lw-8}" y="${y+rh/2+5}" text-anchor="end" font-size="13" font-weight="700" fill="#1d2433">${r.label}</text>`;
+    r.segs.forEach(sg=>{const w=sg.v/max*bw;
+      s+=`<rect x="${x}" y="${y}" width="${w}" height="${rh}" rx="5" fill="${sg.fill}" stroke="#fff" stroke-width="2" ${sg.dash?`stroke="#c2338f" stroke-dasharray="5 3"`:""}/>`;
+      s+=`<text x="${x+w/2}" y="${y+rh/2+5}" text-anchor="middle" font-size="12.5" font-weight="800" fill="${sg.ink||"#fff"}">${sg.txt}</text>`;x+=w;});
+    if(opt.brace&&i===0){const x1=lw,x2=x,yb=y-6;
+      s+=`<path d="M${x1},${yb} q0,-8 8,-8 L${(x1+x2)/2-6},${yb-8} l6,-7 l6,7 L${x2-8},${yb-8} q8,0 8,8" fill="none" stroke="#2b8a3e" stroke-width="2"/>`;
+      s+=`<text x="${(x1+x2)/2}" y="${yb-18}" text-anchor="middle" font-size="12.5" font-weight="800" fill="#2b8a3e">${opt.brace}</text>`;}
+  });
+  return s+`</svg>`;
+}
+
+/* Illustrations */
+function figPump(q,p,unit){return `<svg viewBox="0 0 300 160" role="img" aria-label="pompe à essence" style="width:300px">
+<rect x="20" y="14" width="96" height="132" rx="12" fill="#2f6fde"/><rect x="32" y="28" width="72" height="50" rx="6" fill="#e9f3ff"/>
+<text x="68" y="48" text-anchor="middle" font-size="15" font-weight="800" fill="#1d2433">${fmt(q)} ${unit}</text>
+<text x="68" y="69" text-anchor="middle" font-size="15" font-weight="800" fill="#c2338f">${m2(p)} €</text>
+<rect x="40" y="90" width="56" height="16" rx="4" fill="#9bbcf5"/><text x="68" y="102" text-anchor="middle" font-size="10" font-weight="800" fill="#1d2433">GAZOLE</text>
+<rect x="10" y="144" width="116" height="10" rx="3" fill="#33415c"/>
+<path d="M116,50 h18 q10,0 10,10 v50 q0,12 12,12 h10" fill="none" stroke="#33415c" stroke-width="5"/>
+<path d="M166,112 l22,-6 l4,10 l-22,6z" fill="#33415c"/>
+<text x="200" y="60" font-size="14" font-weight="700" fill="#1d2433">Le prix est</text><text x="200" y="78" font-size="14" font-weight="700" fill="#1d2433">proportionnel</text><text x="200" y="96" font-size="14" font-weight="700" fill="#1d2433">au volume.</text></svg>`;}
+function figEmoji(emo,line1,line2){return `<svg viewBox="0 0 300 120" role="img" aria-label="${line1}" style="width:300px">
+<text x="56" y="82" font-size="62" text-anchor="middle">${emo}</text>
+<path d="M120,30 h150 a8,8 0 0 1 8,8 v44 a8,8 0 0 1 -8,8 h-150 l-18,-30z" fill="#fff3db" stroke="#a96300" stroke-width="2"/><circle cx="118" cy="60" r="4" fill="#a96300"/>
+<text x="195" y="56" text-anchor="middle" font-size="16" font-weight="800" fill="#1d2433">${line1}</text>
+<text x="195" y="78" text-anchor="middle" font-size="16" font-weight="800" fill="#c2338f">${line2}</text></svg>`;}
+function figVotes(names,votes){
+  const W=360,H=200,ml=30,base=160,max=Math.max(...votes),bw=(W-ml-10)/names.length;
+  const cols=["#2f6fde","#c2338f","#2b8a3e","#a96300","#7048e8"];
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="résultats du vote" style="width:360px">`;
+  names.forEach((n,i)=>{const h=votes[i]/max*120,x=ml+i*bw+bw*0.18,w=bw*0.64;
+    s+=`<rect x="${x}" y="${base-h}" width="${w}" height="${h}" rx="5" fill="${cols[i%5]}"/>
+    <text x="${x+w/2}" y="${base-h-6}" text-anchor="middle" font-size="14" font-weight="800" fill="#1d2433">${votes[i]}</text>
+    <text x="${x+w/2}" y="${base+18}" text-anchor="middle" font-size="13" font-weight="700" fill="#1d2433">${n}</text>`;});
+  s+=`<line x1="${ml-6}" y1="${base}" x2="${W-6}" y2="${base}" stroke="#33415c" stroke-width="2"/><text x="${ml-6}" y="${base+38}" font-size="12" fill="#5b6475">Nombre de voix obtenues (🗳️ total : ${votes.reduce((a,b)=>a+b,0)} votants)</text></svg>`;
+  return s;
+}
+function figMountain(emoji){return `<svg viewBox="0 0 320 150" role="img" aria-label="montagne" style="width:320px">
+<rect width="320" height="150" fill="#eaf3ff" rx="12"/><polygon points="10,140 120,30 175,85 215,50 310,140" fill="#8aa0c2"/>
+<polygon points="120,30 98,52 112,48 122,58 134,44" fill="#fff"/><polygon points="215,50 200,65 212,62 222,70" fill="#fff"/>
+<path d="M30,138 C70,120 80,110 95,95 S120,70 118,40" fill="none" stroke="#c2338f" stroke-width="3" stroke-dasharray="6 4"/>
+<text x="92" y="100" font-size="22">${emoji||"🧗"}</text><line x1="120" y1="30" x2="120" y2="12" stroke="#33415c" stroke-width="2"/><polygon points="120,12 136,17 120,22" fill="#cf3d35"/>
+<line x1="250" y1="140" x2="250" y2="60" stroke="#2b8a3e" stroke-width="2"/><polygon points="250,56 245,66 255,66" fill="#2b8a3e"/><text x="258" y="100" font-size="12" font-weight="800" fill="#2b8a3e">dénivelé</text></svg>`;}
+function figTickets(n,p,emo){
+  let s=`<svg viewBox="0 0 330 120" role="img" aria-label="billets" style="width:330px">`;
+  const k=Math.min(n,5);
+  for(let i=0;i<k;i++){const x=10+i*40,y=20+(i%2)*8;
+    s+=`<g transform="rotate(${-8+i*4} ${x+30} ${y+30})"><rect x="${x}" y="${y}" width="60" height="62" rx="6" fill="#ffd8a8" stroke="#a96300" stroke-width="2"/><circle cx="${x+30}" cy="${y}" r="6" fill="#fff"/><text x="${x+30}" y="${y+42}" text-anchor="middle" font-size="24">${emo}</text></g>`;}
+  s+=`<text x="${k*40+70}" y="56" font-size="17" font-weight="800" fill="#1d2433">${n} personnes</text><text x="${k*40+70}" y="80" font-size="17" font-weight="800" fill="#c2338f">${m2(p)} €</text></svg>`;
+  return s;
+}
+function figReceipt(title,item,ht,rate){return `<svg viewBox="0 0 280 200" role="img" aria-label="ticket de caisse" style="width:280px">
+<path d="M30,8 h220 v172 l-14,10 l-14,-10 l-14,10 l-14,-10 l-14,10 l-14,-10 l-14,10 l-14,-10 l-14,10 l-14,-10 l-14,10 l-14,-10 l-14,10 l-14,-10 l-16,10z" fill="#fff" stroke="#b9c3d6" stroke-width="2"/>
+<text x="140" y="34" text-anchor="middle" font-size="15" font-weight="800" fill="#1d2433">${title}</text>
+<line x1="44" y1="44" x2="236" y2="44" stroke="#b9c3d6" stroke-dasharray="4 3"/>
+<text x="46" y="70" font-size="13" fill="#1d2433">${item} (HT)</text><text x="234" y="70" text-anchor="end" font-size="13" font-weight="800" fill="#1d2433">${m2(ht)} €</text>
+<text x="46" y="96" font-size="13" fill="#1d2433">TVA ${fmt(rate)} %</text><text x="234" y="96" text-anchor="end" font-size="15" font-weight="800" fill="#c2338f">? €</text>
+<line x1="44" y1="112" x2="236" y2="112" stroke="#33415c"/>
+<text x="46" y="138" font-size="14" font-weight="800" fill="#1d2433">TOTAL (TTC)</text><text x="234" y="138" text-anchor="end" font-size="15" font-weight="800" fill="#c2338f">? €</text>
+<text x="140" y="166" text-anchor="middle" font-size="11" fill="#5b6475">Merci de votre visite !</text></svg>`;}
+function figDress(old,nw){return `<svg viewBox="0 0 300 170" role="img" aria-label="robe soldée" style="width:300px">
+<path d="M70,12 l12,0 l10,26 l10,-26 l12,0 l4,40 l-8,10 l26,90 l-88,0 l26,-90 l-8,-10z" fill="#1d2433"/>
+<text x="92" y="166" text-anchor="middle" font-size="12" fill="#5b6475">la robe</text>
+<path d="M150,46 h120 a8,8 0 0 1 8,8 v60 a8,8 0 0 1 -8,8 h-120 l-16,-38z" fill="#fde8e6" stroke="#cf3d35" stroke-width="2"/><circle cx="148" cy="84" r="4" fill="#cf3d35"/>
+<text x="212" y="76" text-anchor="middle" font-size="16" font-weight="700" fill="#5b6475">${m2(old)} €</text><line x1="172" y1="71" x2="252" y2="71" stroke="#cf3d35" stroke-width="2.5"/>
+<text x="212" y="104" text-anchor="middle" font-size="22" font-weight="800" fill="#cf3d35">${m2(nw)} €</text>
+<text x="210" y="36" text-anchor="middle" font-size="13" font-weight="800" fill="#cf3d35">SOLDES !</text></svg>`;}
+function figSale(emo,name,old,nw){return `<svg viewBox="0 0 300 150" role="img" aria-label="article soldé" style="width:300px">
+<text x="70" y="96" font-size="70" text-anchor="middle">${emo}</text><text x="70" y="140" text-anchor="middle" font-size="12" fill="#5b6475">${name}</text>
+<path d="M150,40 h120 a8,8 0 0 1 8,8 v60 a8,8 0 0 1 -8,8 h-120 l-16,-38z" fill="#fde8e6" stroke="#cf3d35" stroke-width="2"/><circle cx="148" cy="78" r="4" fill="#cf3d35"/>
+<text x="212" y="70" text-anchor="middle" font-size="16" font-weight="700" fill="#5b6475">${m2(old)} €</text><line x1="172" y1="65" x2="252" y2="65" stroke="#cf3d35" stroke-width="2.5"/>
+<text x="212" y="98" text-anchor="middle" font-size="22" font-weight="800" fill="#cf3d35">${m2(nw)} €</text>
+<text x="210" y="30" text-anchor="middle" font-size="13" font-weight="800" fill="#cf3d35">SOLDES !</text></svg>`;}
+
+/* ================= Champs de réponse ================= */
+function makeField(spec){
+  const f={spec,listeners:[]};
+  const changed=()=>{f.clearMark();f.listeners.forEach(l=>l());};
+  if(spec.t==="choice"){
+    const w=el("span","choice");let val=null;
+    spec.opts.forEach(([v,t])=>{const b=el("button","opt",t);b.type="button";b.dataset.v=v;
+      b.onclick=()=>{if(f.locked)return;val=v;[...w.children].forEach(c=>c.classList.toggle("sel",c===b));changed();};w.append(b);});
+    f.el=w;f.target=w;f.get=()=>val;f.ok=()=>val===spec.a;
+    f.fill=()=>{val=spec.a;[...w.children].forEach(c=>c.classList.toggle("sel",c.dataset.v===spec.a));changed();};
+  }else if(spec.t==="plot"){
+    const o=Object.assign({W:360,H:300},spec);const S=scale(o);
+    const w=el("div","plotwrap",chart(o)+`<div class="plothelp">👆 Touche le quadrillage pour placer un point ; touche-le à nouveau pour l'effacer.</div>`);
+    const svg=w.querySelector("svg"),g=svg.querySelector(".userpts");let pts=[];
+    const draw=()=>{g.innerHTML=pts.map(p=>`<circle cx="${S.sx(p[0])}" cy="${S.sy(p[1])}" r="6" fill="#c2338f" stroke="#fff" stroke-width="2"/><text x="${S.sx(p[0])+8}" y="${S.sy(p[1])-8}" font-size="11" font-weight="800" fill="#c2338f" stroke="#fff" stroke-width="3" paint-order="stroke">(${fmt(p[0])} ; ${fmt(p[1])})</text>`).join("");};
+    svg.addEventListener("click",e=>{
+      if(f.locked)return;const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;
+      const P=pt.matrixTransform(svg.getScreenCTM().inverse());
+      const x=Math.round(S.ix(P.x)/o.xstep)*o.xstep,y=Math.round(S.iy(P.y)/o.ystep)*o.ystep;
+      if(x<-1e-9||y<-1e-9||x>o.xmax+1e-9||y>o.ymax+1e-9)return;
+      const i=pts.findIndex(p=>Math.abs(p[0]-x)<1e-6&&Math.abs(p[1]-y)<1e-6);
+      if(i>=0)pts.splice(i,1);else pts.push([x,y]);draw();changed();
+    });
+    f.el=w;f.target=svg;f.get=()=>pts;
+    f.ok=()=>pts.length===spec.targets.length&&spec.targets.every(t=>pts.some(p=>Math.abs(p[0]-t[0])<1e-6&&Math.abs(p[1]-t[1])<1e-6));
+    f.fill=()=>{pts=spec.targets.map(t=>t.slice());draw();};
+  }else{
+    const i=el("input","num");i.type="text";i.inputMode="decimal";i.autocomplete="off";i.spellcheck=false;i.placeholder="…";
+    if(spec.w)i.style.width=spec.w;
+    i.addEventListener("input",changed);
+    i.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();f.enter&&f.enter();}});
+    f.el=i;f.target=i;f.get=()=>i.value;
+    f.ok=()=>{const x=parseNum(i.value);return !isNaN(x)&&Math.abs(x-spec.a)<=(spec.tol??0.01)+1e-9;};
+    f.fill=()=>{i.value=fmt(spec.a,spec.d);};
+  }
+  f.mark=ok=>{f.target.classList.remove("ok","ko");f.target.classList.add(ok?"ok":"ko");};
+  f.clearMark=()=>f.target.classList.remove("ok","ko");
+  f.lock=()=>{f.locked=true;if(f.target.tagName==="INPUT")f.target.disabled=true;else f.target.classList.add("locked");};
+  return f;
+}
+
+function createBlock(b){
+  const root=el("div","block"),fields=[],api={el:root,fields};
+  if(b.q)root.append(el("p","q",b.q));
+  if(b.fig)root.append(el("div","fig",b.fig));
+  if(b.table){
+    const wrap=el("div","tablewrap"),t=el("table","prop");
+    b.table.rows.forEach(r=>{const tr=el("tr");tr.append(el("th","",r[0]));
+      r.slice(1).forEach(c=>{const td=el("td");
+        if(c&&typeof c==="object"){const f=makeField(c);fields.push(f);td.append(f.el);}
+        else td.innerHTML=typeof c==="number"?fmt(c):c;tr.append(td);});t.append(tr);});
+    wrap.append(t);if(b.table.side)wrap.append(el("span","side",b.table.side));root.append(wrap);
+  }
+  (b.fields||[]).forEach(spec=>{
+    const row=el("div","frow");if(spec.label)row.append(el("label","",spec.label));
+    const f=makeField(spec);fields.push(f);row.append(f.el);
+    if(spec.after)row.append(el("span","after",spec.after));root.append(row);f.row=row;
+  });
+  fields.forEach(f=>{if(f.spec.show){const ctl=fields.find(g=>g.spec.key===f.spec.show.key);f.ctl=ctl;
+    const upd=()=>{f.row.hidden=ctl.get()!==f.spec.show.eq;};ctl.listeners.push(upd);upd();}});
+  if(b.after)root.append(el("div","note",b.after));
+  const graded=f=>!(f.ctl&&f.ctl.spec.a!==f.spec.show.eq);
+  fields.forEach(f=>f.enter=()=>api.onEnter&&api.onEnter());
+  api.check=()=>{let ok=true;fields.forEach(f=>{if(!graded(f)){f.clearMark();return;}const g=f.ok();f.mark(g);ok=ok&&g;});return ok;};
+  api.fill=()=>{fields.forEach(f=>f.fill());fields.forEach(f=>{if(graded(f))f.mark(true);});};
+  api.lock=()=>fields.forEach(f=>f.lock());
+  api.badCount=()=>fields.filter(f=>graded(f)&&!f.ok()).length;
+  return api;
+}
+
+/* ================= Vue d'un exercice ================= */
+function mountProblem(p,host,opts){
+  const card=el("article","card"+(opts.similar?" sim":""));
+  card.innerHTML=`<div class="card-head"><span class="badge ${opts.similar?"sim":(opts.cours?"cours":"")}">${opts.label}</span><h2>${p.title}</h2></div><div class="enonce">${p.intro}</div>${p.figure?`<div class="fig">${p.figure}</div>`:""}`;
+  const fin=el("section","final");fin.append(el("h3","","✍️ Ta réponse"));
+  const fb=createBlock(p.final);fin.append(fb.el);
+  const bt=el("div","btns"),bCheck=el("button","btn","Vérifier"),bHelp=el("button","btn help","🧭 Coup de pouce"),bShow=el("button","btn ghost","Voir la correction");
+  bHelp.hidden=true;bShow.hidden=true;bt.append(bCheck,bHelp,bShow);fin.append(bt);
+  const msg=el("div","msg");fin.append(msg);card.append(fin);
+  const aide=el("section","aide");aide.hidden=true;aide.append(el("h3","","🧭 Résolution pas à pas"));card.append(aide);
+  const bil=el("section","bilan");bil.hidden=true;card.append(bil);
+  host.append(card);
+  let attempts=0,stepIdx=0,usedHelp=false,done=false;
+
+  function finish(mode){
+    done=true;fb.lock();bCheck.hidden=bHelp.hidden=bShow.hidden=true;
+    bil.hidden=false;bil.innerHTML=`<h3>✅ Correction</h3><div class="recap">${p.recap}</div>`;
+    const nb=el("div","btns"),bs=el("button","btn pink",opts.similar?"🎲 Un autre exercice similaire":"🎲 Exercice similaire");
+    bs.onclick=()=>opts.onSimilar();nb.append(bs);bil.append(nb);
+    opts.onDone&&opts.onDone(mode);
+  }
+  fb.onEnter=()=>bCheck.click();
+  bCheck.onclick=()=>{
+    if(done)return;attempts++;
+    if(fb.check()){
+      msg.className="msg good";
+      msg.innerHTML=usedHelp?"Bravo ! C'est juste 👏 (avec un coup de pouce).":"Excellent ! Tout est juste, et tu as trouvé seul(e) 🌟";
+      finish(usedHelp?"aide":"seul");
+    }else{
+      const n=fb.badCount();msg.className="msg bad";
+      msg.innerHTML=`${n>1?n+" réponses sont fausses ou incomplètes":"Une réponse est fausse ou incomplète"} (en rouge). ${stepIdx<p.steps.length?"Réessaie, ou demande un coup de pouce.":"Utilise les étapes ci-dessous pour corriger."}`;
+      if(stepIdx<p.steps.length&&!usedHelp)bHelp.hidden=false;
+      if(attempts>=3)bShow.hidden=false;
+    }
+  };
+  bHelp.onclick=()=>{usedHelp=true;bHelp.hidden=true;aide.hidden=false;nextStep();};
+  bShow.onclick=()=>{fb.fill();msg.className="msg info";msg.innerHTML="Voici les bonnes réponses. Lis bien la correction, puis entraîne-toi avec un exercice similaire !";usedHelp=true;finish("vu");};
+
+  function nextStep(){
+    if(stepIdx>=p.steps.length)return;
+    const s=p.steps[stepIdx],i=stepIdx;stepIdx++;
+    const box=el("div","step");box.append(el("div","",`<b>Étape ${i+1} / ${p.steps.length}</b>`));
+    const blk=createBlock(s);box.append(blk.el);
+    const sb=el("div","btns"),c=el("button","btn sec","Vérifier l'étape"),sh=el("button","btn ghost","Montrer cette étape");sh.hidden=true;sb.append(c,sh);box.append(sb);
+    const hint=el("div","hint"),sol=el("div","sol");box.append(hint,sol);aide.append(box);
+    let tries=0;
+    const ok=()=>{blk.lock();c.hidden=sh.hidden=true;hint.innerHTML="";box.classList.add("done");
+      sol.innerHTML="✔️ "+(s.sol||"C'est juste !");
+      if(i<p.steps.length-1){const nx=el("button","btn help","Étape suivante ➜");nx.onclick=()=>{nx.remove();nextStep();};const w=el("div","btns");w.append(nx);sol.append(w);}
+      else{const back=el("button","btn","⬆️ Retour à ma réponse");back.onclick=()=>fin.scrollIntoView({behavior:"smooth"});
+        const d=el("div","",`<p style="margin:8px 0 0"><b>Tu as tout ce qu'il faut : complète maintenant « Ta réponse » en haut et vérifie.</b></p>`);const w=el("div","btns");w.append(back);d.append(w);sol.append(d);}
+    };
+    blk.onEnter=()=>c.click();
+    c.onclick=()=>{tries++;
+      if(blk.check())ok();
+      else{hint.innerHTML="💡 <b>Indice :</b> "+s.hint;if(tries>=2)sh.hidden=false;}
+    };
+    sh.onclick=()=>{blk.fill();ok();};
+    box.scrollIntoView({behavior:"smooth",block:"nearest"});
+  }
+  return card;
+}
+
+/* ================= Exercices ================= */
+
+/* --- Cours : prix proportionnel (gazole) --- */
+function bPrix(P){
+  const p0=P.q0*P.c,cells=P.qs.map(q=>({a:q*P.c,tol:0.011,d:2}));
+  const r1=[P.qLabel,P.q0,...P.qs],r2=["Prix (en €)",m2(p0),...cells];
+  return{
+    title:P.title,
+    intro:`<p>${P.text} <b>${fmt(P.q0)} ${P.unit}</b> de ${P.prod} coûtent <b>${eur(p0)}</b>. Le prix payé est <b>proportionnel</b> à la quantité achetée.</p><p>• Complète le tableau de proportionnalité.<br>• Donne le coefficient de proportionnalité.</p>`,
+    figure:P.icon==="pump"?figPump(P.q0,p0,P.unit):figEmoji(P.icon,`${fmt(P.q0)} ${P.unit}`,`${m2(p0)} €`),
+    final:{table:{rows:[r1,r2]},fields:[{label:"Coefficient de proportionnalité :",a:P.c,tol:0.001,d:2,after:`(€ par ${P.uName})`}]},
+    steps:[
+      {q:`Cherche d'abord le prix d'<b>un seul ${P.uName}</b>.`,fields:[{label:`${m2(p0)} ÷ ${fmt(P.q0)} =`,a:P.c,tol:0.001,d:2,after:"€"}],
+       hint:`${fmt(P.q0)} ${P.unit} coûtent ${eur(p0)}. Pour 1 ${P.uName}, c'est ${fmt(P.q0)} fois moins cher : divise ${m2(p0)} par ${fmt(P.q0)}.`,
+       sol:`1 ${P.uName} coûte ${eur(P.c)}. Pour passer de la quantité au prix, on multiplie par <b>${m2(P.c)}</b> : c'est le <b>coefficient de proportionnalité</b>.`},
+      {q:`Complète le tableau : <b>multiplie</b> chaque quantité par ${m2(P.c)}.`,table:{rows:[r1,r2],side:`↓ × ${m2(P.c)}`},
+       hint:`Exemple : ${fmt(P.qs[0])} × ${m2(P.c)} = ${m2(P.qs[0]*P.c)}. Fais de même pour chaque colonne (avec la calculatrice).`,
+       sol:`Le tableau est complet !`}
+    ],
+    recap:`<p>Prix d'1 ${P.uName} : ${m2(p0)} ÷ ${fmt(P.q0)} = <b>${m2(P.c)} €</b> → coefficient de proportionnalité : <b>${m2(P.c)}</b>.</p>${staticTable([r1,r2],"↓ × "+m2(P.c))}<p>Chaque prix = quantité × ${m2(P.c)}, par exemple ${fmt(P.qs[0])} × ${m2(P.c)} = ${m2(P.qs[0]*P.c)} €.</p>`
+  };
+}
+const oPrix={title:"Le prix du gazole",text:"À la station-service,",prod:"gazole",unit:"L",uName:"litre",qLabel:"Volume de gazole (en L)",c:1.5,q0:10,qs:[20,30,40,50],icon:"pump"};
+function gPrix(){
+  const C=pick([
+    {title:"Le prix du gazole",text:"À la station-service,",prod:"gazole",unit:"L",uName:"litre",qLabel:"Volume de gazole (en L)",cm:[150,199],icon:"pump"},
+    {title:"Au marché",text:"Au marché,",prod:"pommes",unit:"kg",uName:"kilogramme",qLabel:"Masse de pommes (en kg)",cm:[180,350],icon:"🍎"},
+    {title:"À la mercerie",text:"Dans une mercerie,",prod:"tissu",unit:"m",uName:"mètre",qLabel:"Longueur de tissu (en m)",cm:[450,950],icon:"🧵"},
+    {title:"À la fromagerie",text:"À la fromagerie,",prod:"comté",unit:"kg",uName:"kilogramme",qLabel:"Masse de fromage (en kg)",cm:[1500,2400],icon:"🧀"}]);
+  const q0=pick([2,4,5,10]);
+  return Object.assign({},C,{c:rnd(C.cm[0],C.cm[1])/100,q0,qs:sample([1,3,6,8,12,15,20,25].filter(x=>x!==q0),4).sort((a,b)=>a-b)});
+}
+
+/* --- Ex 6 : tableau de proportionnalité ? --- */
+function bTab(P){
+  const c=P.ds[1]/P.ts[1];
+  const prop=P.ts.every((t,i)=>t===0?P.ds[i]===0:Math.abs(P.ds[i]/t-c)<1e-9);
+  const idx=P.ts.map((t,i)=>i).filter(i=>P.ts[i]>0);
+  const bad=idx.find(i=>Math.abs(P.ds[i]/P.ts[i]-c)>1e-9);
+  const quot=idx.map(i=>({a:P.ds[i]/P.ts[i],tol:0.06,d:2}));
+  const r1=P.r1,r2=P.r2;
+  const ymax=Math.ceil(Math.max(...P.ds,c*P.ts[P.ts.length-1])*1.1/P.ystep)*P.ystep;
+  const graph=chart({W:360,H:260,xmax:P.ts[P.ts.length-1]+0.5,ymax,xstep:0.5,xtick:1,ystep:P.ystep,ytick:P.ystep*2,xlabel:r1,ylabel:r2,
+    fns:[{f:x=>c*x,color:"#2b8a3e",w:2,dash:"6 4"}],pts:P.ts.map((t,i)=>({x:t,y:P.ds[i],color:(bad!==undefined&&i===bad)?"#cf3d35":"#2f6fde"}))});
+  const m1=idx.map(i=>`${fmt(P.ts[i])} × ${fmt(c)} = ${fmt(P.ts[i]*c)}${Math.abs(P.ts[i]*c-P.ds[i])<1e-9?"":` <b style="color:var(--ko)">≠ ${fmt(P.ds[i])}</b>`}`).join("<br>");
+  const m2l=idx.map(i=>`${fmt(P.ds[i])} ÷ ${fmt(P.ts[i])} ${isInt(P.ds[i]/P.ts[i]*100)?"=":"≈"} ${fmt(r2v(P.ds[i]/P.ts[i]))}${Math.abs(P.ds[i]/P.ts[i]-c)<1e-9?"":` <b style="color:var(--ko)">≠ ${fmt(c)}</b>`}`).join("<br>");
+  function r2v(x){return Math.round(x*100)/100;}
+  return{
+    title:P.title,
+    intro:`<p>${P.story}</p>${staticTable([[r1,...P.ts],[r2,...P.ds]])}<p>• Ce tableau est-il un tableau de proportionnalité ? Si oui, donner le coefficient de proportionnalité.</p>`,
+    figure:figMountain(P.emoji),
+    final:{fields:[{key:"p",t:"choice",opts:YN,a:prop?"oui":"non",label:"Tableau de proportionnalité ?"},
+      {label:"Coefficient de proportionnalité :",a:c,tol:0.001,show:{key:"p",eq:"oui"}}]},
+    steps:[
+      {q:`Pour chaque colonne (sauf celle du 0), calcule le quotient <b>${r2.replace(/ \(.*\)/,"")} ÷ ${r1.replace(/ \(.*\)/,"").toLowerCase()}</b>.`,
+       table:{rows:[[r1,...idx.map(i=>P.ts[i])],[r2,...idx.map(i=>P.ds[i])],["Quotient (ligne 2 ÷ ligne 1)",...quot]]},
+       hint:`Par exemple : ${fmt(P.ds[idx[1]])} ÷ ${fmt(P.ts[idx[1]])} = ? Utilise la calculatrice. Si le résultat n'est pas entier, arrondis au centième.`,
+       sol:prop?`On trouve toujours <b>${fmt(c)}</b>.`:`Les quotients ne sont <b>pas tous égaux</b> : regarde la colonne ${fmt(P.ts[bad])} !`},
+      {q:`Obtient-on <b>toujours le même quotient</b> ?`,fields:[{t:"choice",opts:YN,a:prop?"oui":"non"}],
+       hint:`Compare les nombres de la dernière ligne du tableau de l'étape 1.`,
+       sol:(prop?`Oui : c'est un <b>tableau de proportionnalité</b> de coefficient <b>${fmt(c)}</b> (on multiplie la 1<sup>re</sup> ligne par ${fmt(c)}).`
+         :`Non : ce n'est <b>pas</b> un tableau de proportionnalité. Avec × ${fmt(c)}, on devrait trouver ${fmt(P.ts[bad]*c)} et non ${fmt(P.ds[bad])}. Sur le graphique, le point rouge n'est pas sur la droite verte :`)+`<div class="fig"><div class="one">${graph}</div></div>`}
+    ],
+    recap:`<p><b>Méthode 1</b> (on multiplie par ${fmt(c)}) :<br>${m1}</p><p><b>Méthode 2</b> (on calcule les quotients) :<br>${m2l}</p><p><b>Conclusion :</b> ${prop?`c'est un tableau de proportionnalité, de coefficient <b>${fmt(c)}</b>.`:`le tableau <b>n'est pas</b> un tableau de proportionnalité.`}</p>`
+  };
+}
+const oTab={title:"L'ascension de l'alpiniste",story:"Un alpiniste a relevé le dénivelé (c'est-à-dire la différence d'altitude) effectué depuis le départ de son ascension en fonction du nombre d'heures de marche.",
+  r1:"Temps de marche (en h)",r2:"Dénivelé (en m)",ts:[0,1,2.5,4,5.5],ds:[0,300,750,1200,1500],ystep:100,emoji:"🧗"};
+function gTab(){
+  const C=pick([
+    {title:"L'ascension",story:"Une alpiniste a relevé le dénivelé effectué depuis le départ en fonction du nombre d'heures de marche.",r1:"Temps de marche (en h)",r2:"Dénivelé (en m)",cs:[200,250,350,400,450],ystep:100,emoji:"🧗"},
+    {title:"La sortie à vélo",story:"Un cycliste a noté la distance parcourue depuis le départ en fonction du temps.",r1:"Temps (en h)",r2:"Distance (en km)",cs:[12,14,16,18,20,24],ystep:5,emoji:"🚴"},
+    {title:"La randonnée",story:"Une randonneuse a noté la distance parcourue en fonction du temps de marche.",r1:"Temps de marche (en h)",r2:"Distance (en km)",cs:[3,4,5,6],ystep:2,emoji:"🥾"}]);
+  const c=pick(C.cs);const ts=[0,1,pick([1.5,2,2.5]),pick([3,3.5,4]),pick([4.5,5,5.5,6])];
+  const ds=ts.map(t=>r2(t*c));
+  if(Math.random()<0.55){const i=rnd(2,4);const dlt=Math.max(1,Math.round(c*pick([0.25,0.5,0.75])));ds[i]=r2(ds[i]+pick([-1,1])*dlt);}
+  return Object.assign({},C,{ts,ds});
+}
+
+/* --- Ex 11 : prix pour n personnes --- */
+function bGroupe(P){
+  const u=P.p0/P.n0,cells=P.targets.map(t=>({a:t*u,tol:0.011,d:2}));
+  const r1=["Nombre de personnes",P.n0,...P.targets],r2=["Prix (en €)",m2(P.p0),...cells];
+  const tricks=P.targets.filter(t=>t%P.n0===0).map(t=>`${t} = ${P.n0} × ${t/P.n0} donc prix = ${m2(P.p0)} × ${t/P.n0} = ${m2(P.p0*t/P.n0)} €`);
+  return{
+    title:P.title,
+    intro:`<p>${P.who} veut ${P.verb}, mais ne se rappelle plus le prix. La dernière fois, pour <b>${P.n0} personnes</b>, le prix payé était <b>${eur(P.p0)}</b>. Le prix est proportionnel au nombre de personnes.</p><p>• Calculer le tarif pour ${P.targets.join(", ").replace(/, ([^,]*)$/," et $1")} personnes.</p>`,
+    figure:figTickets(P.n0,P.p0,P.emo),
+    final:{table:{rows:[r1,r2]}},
+    steps:[
+      {q:`Calcule d'abord le prix pour <b>1 personne</b>.`,fields:[{label:`${m2(P.p0)} ÷ ${P.n0} =`,a:u,tol:0.001,d:2,after:"€"}],
+       hint:`Pour ${P.n0} personnes on paie ${eur(P.p0)}. Pour 1 personne, c'est ${P.n0} fois moins : divise par ${P.n0}.`,
+       sol:`Une place coûte <b>${eur(u)}</b> : c'est le coefficient de proportionnalité.`},
+      {q:`Complète le tableau en multipliant chaque nombre de personnes par ${m2(u)}.`,
+       table:{rows:[["Nombre de personnes",1,P.n0,...P.targets],["Prix (en €)",m2(u),m2(P.p0),...cells]],side:`↓ × ${m2(u)}`},
+       hint:`Exemple : ${P.targets[0]} × ${m2(u)} = ? ${tricks.length?`<br>Autre astuce : ${tricks[0]}.`:""}`,
+       sol:`Bravo, le tableau est complet !`}
+    ],
+    recap:`<p>Prix pour 1 personne : ${m2(P.p0)} ÷ ${P.n0} = <b>${m2(u)} €</b>.</p>${staticTable([["Nombre de personnes",1,P.n0,...P.targets],["Prix (en €)",m2(u),m2(P.p0),...cells]],"↓ × "+m2(u))}${tricks.length?`<p>Autre méthode (sans passer par 1) : ${tricks.join(" ; ")}.</p>`:""}`
+  };
+}
+const oGroupe={title:"Sortie au cinéma",who:"Céline",verb:"emmener sa classe au cinéma",n0:4,p0:19.6,targets:[8,12,6,14],emo:"🎬"};
+function gGroupe(){
+  const C=pick([{title:"Sortie au cinéma",who:"Yanis",verb:"emmener son équipe au cinéma",emo:"🎬"},{title:"Sortie à la piscine",who:"Mme Martin",verb:"emmener son groupe à la piscine",emo:"🏊"},
+    {title:"Sortie au musée",who:"Lina",verb:"emmener sa classe au musée",emo:"🖼️"},{title:"Au bowling",who:"Tom",verb:"aller au bowling avec ses amis",emo:"🎳"}]);
+  const n0=pick([3,4,5]),u=rnd(45,99)/10;
+  return Object.assign({},C,{n0,p0:r2(n0*u),targets:sample([2,6,8,9,10,12,15,16,20,24,25,30].filter(x=>x!==n0),4)});
+}
+
+/* --- Cours : pourcentages (délégués) --- */
+function bVotes(P){
+  const T=P.votes.reduce((a,b)=>a+b,0),pc=P.votes.map(v=>v*100/T);
+  const cells=pc.map(x=>({a:x,tol:0.51,d:isInt(x)?0:1}));
+  const rA=["Nombre de voix",T,...P.votes],rB=["Pourcentage (%)",100,...cells];
+  const q0=P.votes[0]/T;
+  return{
+    title:P.title,
+    intro:`<p>${P.ctx}</p>${staticTable([["Candidat",...P.names,"Total"],["Voix",...P.votes,T]])}<p>• Calculer le pourcentage de voix de chaque candidat (arrondir à l'unité si besoin).</p>`,
+    figure:figVotes(P.names,P.votes),
+    final:{fields:P.names.map((n,i)=>({label:`${n} :`,a:pc[i],tol:0.51,d:isInt(pc[i])?0:1,after:"%"}))},
+    steps:[
+      {q:`Quel est le <b>nombre total</b> de voix ?`,fields:[{label:"Total =",a:T,tol:0}],hint:`Additionne les voix de tous les candidats.`,sol:`Il y a <b>${T}</b> voix en tout : c'est la « quantité totale ».`},
+      {q:`Calcule la <b>proportion</b> de voix de ${P.names[0]} : nombre de voix ÷ total (au centième).`,fields:[{label:`${P.votes[0]} ÷ ${T} ≈`,a:q0,tol:0.006,d:2}],
+       hint:`Proportion = voix de ${P.names[0]} ÷ total des voix = ${P.votes[0]} ÷ ${T}. Arrondis au centième (2 chiffres après la virgule).`,
+       sol:`${P.votes[0]} ÷ ${T} ${isInt(q0*100)?"=":"≈"} ${m2(q0)} = ${fmt(r2(q0)*100)}/100, soit <b>${fmt(Math.round(q0*100))} %</b>.`},
+      {q:`Avec un tableau de proportionnalité : le total (${T} voix) correspond à <b>100 %</b>. Complète la ligne des pourcentages.`,table:{rows:[rA,rB],side:`↓ × 100 ÷ ${T}`},
+       hint:`Pour ${P.names[1]} : ${P.votes[1]} × 100 ÷ ${T} = ? On multiplie par 100 puis on divise par ${T}.`,
+       sol:`Vérification : la somme des pourcentages fait bien 100 %.`}
+    ],
+    recap:`<p>Total : ${P.votes.join(" + ")} = <b>${T}</b> voix.</p>${P.names.map((n,i)=>`<p>${n} : ${P.votes[i]} ÷ ${T} ${isInt(pc[i])?"=":"≈"} ${fmt(r2(pc[i]/100))} → <b>${fmt(Math.round(pc[i]*10)/10)} %</b></p>`).join("")}${staticTable([rA,rB],"↓ × 100 ÷ "+T)}`
+  };
+}
+const oVotes={title:"L'élection des délégués",ctx:"Lors de l'élection des délégués de la classe, 4 élèves se présentent. Chaque élève a voté pour un seul candidat. Voici les résultats :",names:["Alexis","Chloé","Salma","Djibril"],votes:[6,12,3,3]};
+function gVotes(){
+  const T=pick([20,25,40,50]);let v;do{const a=rnd(1,T-3),b=rnd(1,T-a-2),c=rnd(1,T-a-b-1);v=[a,b,c,T-a-b-c];}while(v.some(x=>x<1));
+  const C=pick([{title:"L'élection des délégués",ctx:`Lors de l'élection des délégués, ${T} élèves ont voté pour un seul des 4 candidats. Voici les résultats :`},
+    {title:"Le sport préféré",ctx:`On a demandé à ${T} élèves leur sport préféré (une seule réponse). Voici les résultats :`,sports:true}]);
+  const names=C.sports?sample(["Foot","Basket","Danse","Natation","Judo","Tennis"],4):sample(["Emma","Noah","Jade","Liam","Inès","Adam","Léa","Sami","Maël","Zoé"],4);
+  return{title:C.title,ctx:C.ctx,names,votes:v};
+}
+
+/* --- Ex 15 : TVA --- */
+function bTVA(P){
+  const tva=P.ht*P.rate/100,ttc=P.ht+tva;
+  return{
+    title:P.title,
+    intro:`<p>${P.place}, la TVA appliquée est de <b>${fmt(P.rate)} %</b>. Le prix ${P.item} est de <b>${eur(P.ht)} hors taxes</b> (HT).</p><p>• Calculer le montant de la TVA, puis le prix total ${P.item}.</p>`,
+    figure:figReceipt(P.shop,P.itemShort,P.ht,P.rate),
+    final:{fields:[{label:"Montant de la TVA :",a:tva,tol:0.011,d:2,after:"€"},{label:`Prix total ${P.item} :`,a:ttc,tol:0.011,d:2,after:"€"}]},
+    steps:[
+      {q:`Le prix <b>hors taxes</b> (HT) est l'argent gardé par le commerçant. Mais à qui revient l'argent de la <b>TVA</b> ?`,fields:[{t:"choice",opts:[["com","au commerçant"],["etat","à l'État"]],a:"etat"}],
+       hint:`TVA signifie « Taxe sur la Valeur Ajoutée ». Une taxe, c'est un impôt.`,
+       sol:`La TVA est un impôt versé à l'État. Donc :<br><b>prix payé = prix HT + TVA</b>${barModel([{label:"Prix payé",segs:[{v:100,txt:"Prix HT : "+eur(P.ht),fill:"#2f6fde"},{v:Math.max(P.rate,18),txt:"TVA ?",fill:"#c2338f"}]}],{})}`},
+      {q:`« ${fmt(P.rate)} % de TVA » signifie : pour <b>100 €</b> hors taxes, on paie <b>${fmt(P.rate)} €</b> de TVA. Complète le tableau de proportionnalité.`,
+       table:{rows:[["TVA (en €)",fmt(P.rate),{a:tva,tol:0.011,d:2}],["Prix HT (en €)",100,m2(P.ht)]]},
+       hint:`Pour passer de 100 à ${fmt(P.ht)} : on divise par 100 puis on multiplie par ${fmt(P.ht)}. Donc TVA = ${fmt(P.rate)} ÷ 100 × ${fmt(P.ht)}.`,
+       sol:`TVA = ${fmt(P.rate)} ÷ 100 × ${fmt(P.ht)} = <b>${eur(tva)}</b>.`},
+      {q:`Calcule le prix total (prix payé).`,fields:[{label:`${m2(P.ht)} + ${m2(tva)} =`,a:ttc,tol:0.011,d:2,after:"€"}],
+       hint:`Prix payé = prix HT + TVA.`,sol:`Prix total : <b>${eur(ttc)}</b>.`}
+    ],
+    recap:`<p>prix payé = prix HT (pour le commerçant) + TVA (pour l'État)</p>${staticTable([["TVA (en €)",fmt(P.rate),{a:tva,d:2}],["Prix HT (en €)",100,m2(P.ht)]])}<p>TVA = ${fmt(P.rate)} × ${fmt(P.ht)} ÷ 100 = <b>${eur(tva)}</b></p><p>Prix total = ${m2(P.ht)} + ${m2(tva)} = <b>${eur(ttc)}</b></p>`
+  };
+}
+const oTVA={title:"La TVA au restaurant",place:"Au restaurant",rate:10,ht:11,item:"du repas",itemShort:"Repas",shop:"Restaurant"};
+function gTVA(){
+  const C=pick([
+    {title:"La TVA au restaurant",place:"Au restaurant",rate:10,item:"du repas",itemShort:"Repas",shop:"Restaurant",ht:()=>rnd(80,400)/10},
+    {title:"La TVA à la librairie",place:"À la librairie",rate:5.5,item:"du livre",itemShort:"Livre",shop:"Librairie",ht:()=>2*rnd(4,16)},
+    {title:"La TVA au magasin",place:"Dans un magasin d'électronique",rate:20,item:"du casque audio",itemShort:"Casque",shop:"Magasin",ht:()=>rnd(15,150)},
+    {title:"La TVA chez le coiffeur",place:"Chez le coiffeur",rate:20,item:"de la coupe",itemShort:"Coupe",shop:"Salon de coiffure",ht:()=>rnd(12,45)}]);
+  return Object.assign({},C,{ht:C.ht()});
+}
+
+/* --- Ex 16 : pourcentage d'économie --- */
+function bEco(P){
+  const eco=P.before-P.after,q=eco/P.before,p=q*100;
+  return{
+    title:P.title,
+    intro:`<p>${P.story}</p><p>• ${P.question}</p>`,
+    figure:barModel([{label:"Avant",segs:[{v:P.before,txt:eur(P.before),fill:"#2f6fde"}]},{label:"Après",segs:[{v:P.after,txt:eur(P.after),fill:"#5c8ae6"},{v:eco,txt:"économie",fill:"#ffe3f3",ink:"#c2338f",dash:true}]}],{lw:70}),
+    final:{fields:[{label:"Pourcentage d'économie :",a:p,tol:0.05,after:"%"}]},
+    steps:[
+      {q:`Calcule le montant de l'<b>économie</b> (en €).`,fields:[{label:`${m2(P.before)} − ${m2(P.after)} =`,a:eco,tol:0.011,d:2,after:"€"}],
+       hint:`L'économie, c'est ce qu'on ne paie plus : ancienne dépense − nouvelle dépense.`,sol:`Économie : <b>${eur(eco)}</b>.`},
+      {q:`Calcule la proportion : <b>économie ÷ dépense de départ</b>.`,fields:[{label:`${m2(eco)} ÷ ${m2(P.before)} =`,a:q,tol:0.005,d:2}],
+       hint:`On compare l'économie à ce qu'on payait <b>au départ</b> (${eur(P.before)}), pas au nouveau prix.`,sol:`${m2(eco)} ÷ ${m2(P.before)} = <b>${fmt(q)}</b>`},
+      {q:`Écris cette proportion sur 100 avec un tableau de proportionnalité.`,table:{rows:[["Économie (en €)",m2(eco),{a:p,tol:0.05}],["Dépense de départ (en €)",m2(P.before),100]]},
+       hint:`${fmt(q)} = ?/100. Multiplie ${fmt(q)} par 100.`,sol:`${fmt(q)} = ${fmt(p)}/100 = <b>${fmt(p)} %</b>`}
+    ],
+    recap:`<p>P = économie ÷ dépense de départ</p><p>P = (${m2(P.before)} − ${m2(P.after)}) ÷ ${m2(P.before)} = ${m2(eco)} ÷ ${m2(P.before)} = ${fmt(q)} = ${fmt(p)}/100</p><p><b>P = ${fmt(p)} %</b></p>`
+  };
+}
+const oEco={title:"Les économies de chauffage",story:"Luc a fait des travaux d'isolation dans sa maison. Il payait 870 € de chauffage pour l'année avant les travaux. Aujourd'hui, il paie 739,50 € pour l'année.",question:"Quel pourcentage d'économie Luc a-t-il réalisé ?",before:870,after:739.5};
+function gEco(){
+  const b=rnd(40,150)*10,p=pick([5,8,10,12,15,20,25,30,35,40]),a=r2(b*(1-p/100));
+  const C=pick([
+    {title:"Les ampoules LED",story:`Nora a remplacé toutes ses ampoules par des LED. Sa facture d'électricité annuelle est passée de ${eur(b)} à ${eur(a)}.`,question:"Quel pourcentage d'économie Nora a-t-elle réalisé ?"},
+    {title:"L'eau du collège",story:`Un collège a installé des robinets économes. Sa facture d'eau annuelle est passée de ${eur(b)} à ${eur(a)}.`,question:"Quel pourcentage d'économie le collège a-t-il réalisé ?"},
+    {title:"Le forfait téléphone",story:`La famille Diallo a changé de forfait. Elle payait ${eur(b)} par an ; elle paie maintenant ${eur(a)} par an.`,question:"Quel pourcentage d'économie la famille a-t-elle réalisé ?"}]);
+  return Object.assign({},C,{before:b,after:a});
+}
+
+/* --- Ex 37 : pourcentage de réduction (soldes) --- */
+function bSolde(P){
+  const red=P.old-P.nw,q=red/P.old,p=q*100,pr=Math.round(p);
+  return{
+    title:P.title,
+    intro:`<p>${P.who} a trouvé ${P.item} suivant${P.fem?"e":""} sur un site de vente en ligne : <b>${eur(P.nw)}</b> au lieu de <s>${eur(P.old)}</s>.</p><p>• Quel est le pourcentage de réduction du prix ? (arrondir à l'unité)</p>`,
+    figure:P.emo==="dress"?figDress(P.old,P.nw):figSale(P.emo,P.short,P.old,P.nw),
+    final:{fields:[{label:"Pourcentage de réduction :",a:p,tol:0.51,after:"%"}]},
+    steps:[
+      {q:`Calcule le montant de la <b>réduction</b> (en €).`,fields:[{label:`${m2(P.old)} − ${m2(P.nw)} =`,a:red,tol:0.011,d:2,after:"€"}],
+       hint:`La réduction, c'est ce qu'on ne paie pas : prix de départ − prix soldé.`,sol:`Réduction : <b>${eur(red)}</b>.`},
+      {q:`Calcule la proportion <b>réduction ÷ prix de départ</b> (arrondie au centième).`,fields:[{label:`${m2(red)} ÷ ${m2(P.old)} ≈`,a:q,tol:0.006,d:2}],
+       hint:`On divise par le prix <b>de départ</b> (${eur(P.old)}), pas par le prix soldé. Arrondis à 2 chiffres après la virgule.`,sol:`${m2(red)} ÷ ${m2(P.old)} ≈ <b>${m2(q)}</b>`},
+      {q:`Écris le résultat sur 100 (tableau de proportionnalité), arrondi à l'unité.`,table:{rows:[["Réduction (en €)",m2(red),{a:p,tol:0.51,d:0}],["Prix de départ (en €)",m2(P.old),100]]},
+       hint:`${m2(q)} = ?/100 : multiplie par 100.`,sol:`${m2(q)} = ${pr}/100, soit environ <b>${pr} %</b>.`}
+    ],
+    recap:`<p>P = réduction ÷ prix de départ</p><p>P = (${m2(P.old)} − ${m2(P.nw)}) ÷ ${m2(P.old)} = ${m2(red)} ÷ ${m2(P.old)}</p><p>P ≈ ${m2(q)} = ${pr}/100</p><p><b>P ≈ ${pr} %</b></p>`
+  };
+}
+const oSolde={title:"Les soldes",who:"Mathilde",item:"la robe",fem:true,emo:"dress",old:59.9,nw:19.9};
+function gSolde(){
+  const C=pick([{item:"la paire de baskets",short:"baskets",fem:true,emo:"👟"},{item:"le sac à dos",short:"sac à dos",fem:false,emo:"🎒"},{item:"la veste",short:"veste",fem:true,emo:"🧥"},{item:"le jeu vidéo",short:"jeu vidéo",fem:false,emo:"🎮"},{item:"la robe",fem:true,emo:"dress"}]);
+  let old,nw,p;do{old=rnd(30,120)-0.1;nw=Math.round(old*(1-rnd(15,70)/100))-0.1;p=(old-nw)/old*100;}while(nw<4||nw>old-2||Math.abs(p-Math.floor(p)-0.5)<0.08);
+  return Object.assign({title:"Les soldes",who:pick(["Lucas","Manon","Hugo","Chloé","Rayan","Camille"])},C,{old:r2(old),nw:r2(nw)});
+}
+
+/* --- Ex 38 : remise --- */
+function bRemise(P){
+  const start=P.paid+P.rem,q=P.rem/start,p=q*100,pr=Math.round(p*10)/10;
+  return{
+    title:P.title,
+    intro:`<p>${P.who} commande ${P.item} sur Internet. ${P.pron} a une réduction de <b>${eur(P.rem)}</b>. ${P.pron} paie <b>${eur(P.paid)}</b> après la remise.</p><p>• Quel pourcentage représente la réduction ? (arrondir au dixième)</p>`,
+    figure:barModel([{label:"",segs:[{v:P.paid,txt:"payé : "+eur(P.paid),fill:"#2f6fde"},{v:Math.max(P.rem,P.paid*0.38),txt:"remise "+eur(P.rem),fill:"#c2338f"}]}],{lw:8,brace:"prix de départ = ?"}),
+    final:{fields:[{label:"Pourcentage de la réduction :",a:p,tol:0.051,after:"%"}]},
+    steps:[
+      {q:`⚠️ Attention au piège ! Quel était le <b>prix de départ</b> (avant la remise) ?`,fields:[{label:"Prix de départ =",a:start,tol:0.011,d:2,after:"€"}],
+       hint:`${eur(P.paid)} est le prix payé <b>après</b> la remise. Avant la remise, c'était plus cher : ${m2(P.paid)} + ${m2(P.rem)}.`,sol:`Prix de départ : ${m2(P.paid)} + ${m2(P.rem)} = <b>${eur(start)}</b>.`},
+      {q:`Calcule la proportion <b>remise ÷ prix de départ</b> (arrondie au millième).`,fields:[{label:`${m2(P.rem)} ÷ ${m2(start)} ≈`,a:q,tol:0.0006,d:3}],
+       hint:`Divise la remise (${eur(P.rem)}) par le prix de départ (${eur(start)}), pas par le prix payé. Garde 3 chiffres après la virgule.`,sol:`${m2(P.rem)} ÷ ${m2(start)} ≈ <b>${fmt(Math.round(q*1000)/1000,3)}</b>`},
+      {q:`Écris ce nombre sur 100 (arrondi au dixième).`,table:{rows:[["Remise (en €)",m2(P.rem),{a:p,tol:0.051,d:1}],["Prix de départ (en €)",m2(start),100]]},
+       hint:`${fmt(Math.round(q*1000)/1000,3)} = ?/100 : multiplie par 100.`,sol:`${fmt(Math.round(q*1000)/1000,3)} = ${fmt(pr,1)}/100, soit environ <b>${fmt(pr,1)} %</b>.`}
+    ],
+    recap:`<p>P = remise ÷ prix de départ</p><p>P = ${m2(P.rem)} ÷ (${m2(P.paid)} + ${m2(P.rem)}) = ${m2(P.rem)} ÷ ${m2(start)}</p><p>P ≈ ${fmt(Math.round(q*1000)/1000,3)} = ${fmt(pr,1)}/100</p><p><b>P ≈ ${fmt(pr,1)} %</b></p>`
+  };
+}
+const oRemise={title:"L'album photo",who:"Marina",pron:"Elle",item:"un album photo",rem:10,paid:26.5};
+function gRemise(){
+  let rem,paid,p;do{rem=pick([4,5,6,8,12,15,20]);paid=rnd(30,180)/2;p=rem/(rem+paid)*1000;}while(Math.abs(p-Math.floor(p)-0.5)<0.08);
+  const C=pick([{who:"Théo",pron:"Il",item:"un casque audio"},{who:"Nina",pron:"Elle",item:"une paire de rollers"},{who:"Sacha",pron:"Il",item:"un livre de mangas"},{who:"Aya",pron:"Elle",item:"une lampe de bureau"}]);
+  return Object.assign({title:"La commande en ligne"},C,{rem,paid});
+}
+
+/* --- Cours : proportionnalité et graphique --- */
+function bGraph(P){
+  const c=P.ys[0]/P.xs[0],prop=P.xs.every((x,i)=>Math.abs(P.ys[i]-c*x)<1e-9);
+  const xmax=Math.max(...P.xs)+1,ymax=Math.ceil((Math.max(...P.ys)+P.ystep)/P.ystep)*P.ystep;
+  const targets=P.xs.map((x,i)=>[x,P.ys[i]]);
+  const solGraph=chart({W:360,H:300,xmax,ymax,xstep:1,ystep:P.ystep,ytick:P.ystep<1?1:(ymax>10?2:1),xlabel:"x",ylabel:"y",origin:true,
+    fns:[{f:x=>c*x,color:"#2b8a3e",w:2,dash:"6 4"}],pts:targets.map(t=>({x:t[0],y:t[1],label:`(${fmt(t[0])} ; ${fmt(t[1])})`}))});
+  return{
+    title:P.title,
+    intro:`<p>Deux grandeurs x et y sont données par le tableau suivant :</p>${staticTable([["y",...P.ys],["x",...P.xs]])}<p>• Les grandeurs x et y sont-elles proportionnelles ? Si oui, donner le coefficient k tel que y = k × x.</p>`,
+    figure:"",
+    final:{fields:[{key:"p",t:"choice",opts:YN,a:prop?"oui":"non",label:"x et y proportionnelles ?"},{label:"Coefficient k :",a:c,tol:0.001,show:{key:"p",eq:"oui"}}]},
+    steps:[
+      {q:`Place dans le repère les points de coordonnées (x ; y) : ${targets.map(t=>`(${fmt(t[0])} ; ${fmt(t[1])})`).join(", ")}.`,
+       fields:[{t:"plot",xmax,ymax,xstep:1,ystep:P.ystep,ytick:P.ystep<1?1:(ymax>10?2:1),xlabel:"x",ylabel:"y",targets,aria:"repère pour placer les points"}],
+       hint:`Pour le point (${fmt(targets[0][0])} ; ${fmt(targets[0][1])}) : pars de l'origine, avance de ${fmt(targets[0][0])} vers la droite, puis monte de ${fmt(targets[0][1])}. Vérifie que tu n'as pas placé de point en trop.`,
+       sol:`Voici les points, avec la droite qui part de l'origine :<div class="fig"><div class="one">${solGraph}</div></div>`},
+      {q:`Les points sont-ils <b>alignés avec l'origine</b> du repère (sur une même droite qui passe par (0 ; 0)) ?`,fields:[{t:"choice",opts:YN,a:prop?"oui":"non"}],
+       hint:`Regarde le graphique de l'étape 1 : tous les points sont-ils sur la droite verte ?`,
+       sol:prop?`Oui ! D'après le cours, les grandeurs x et y sont donc <b>proportionnelles</b>.`:`Non, un point n'est pas sur la droite. Les grandeurs ne sont donc <b>pas proportionnelles</b>.`},
+      {q:`Vérifie par le calcul : complète la ligne des quotients y ÷ x.`,table:{rows:[["y",...P.ys],["x",...P.xs],["y ÷ x",...P.xs.map((x,i)=>({a:P.ys[i]/x,tol:0.006,d:2}))]]},
+       hint:`Par exemple : ${fmt(P.ys[0])} ÷ ${fmt(P.xs[0])} = ? (calculatrice si besoin)`,
+       sol:prop?`Le quotient vaut toujours <b>${fmt(c)}</b> : y = ${fmt(c)} × x.`:`Les quotients ne sont pas tous égaux : pas de coefficient de proportionnalité.`}
+    ],
+    recap:`<div class="fig"><div class="one">${solGraph}</div></div><p>${prop?`Les points sont alignés avec l'origine du repère, donc x et y sont <b>proportionnelles</b>. Coefficient : ${fmt(P.ys[0])} ÷ ${fmt(P.xs[0])} = <b>${fmt(c)}</b> (y = ${fmt(c)} × x).`:`Les points ne sont pas tous alignés avec l'origine, donc x et y <b>ne sont pas proportionnelles</b>.`}</p>`
+  };
+}
+const oGraph={title:"Proportionnalité et graphique",xs:[2,3,6],ys:[1,1.5,3],ystep:0.5};
+function gGraph(){
+  let c,ystep;if(Math.random()<0.5){c=pick([0.5,1.5]);ystep=0.5;}else{c=pick([2,3]);ystep=1;}
+  const xs=sample([1,2,3,4,5,6],3).sort((a,b)=>a-b),ys=xs.map(x=>x*c);
+  if(Math.random()<0.5){const i=rnd(1,2);ys[i]+=pick([-1,1])*ystep;}
+  return{title:"Proportionnalité et graphique",xs,ys,ystep};
+}
+
+/* --- Ex 8 : graphiques --- */
+function bCourbes(P){
+  const info=P.graphs.map(g=>{const a=g.a,line=Math.abs(g.f(a)+g.f(3*a)-2*g.f(2*a))<1e-6,zero=Math.abs(g.f(0))<1e-9;return{line,zero,prop:line&&zero};});
+  const charts=P.graphs.map((g,i)=>chart({W:360,H:270,xmax:g.xmax,ymax:g.ymax,xstep:g.xstep,ystep:g.ystep,xtick:g.xtick,ytick:g.ytick,xlabel:g.xl,ylabel:g.yl,title:`Graphique ${i+1}`,fns:[{f:g.f,x0:0,x1:g.x1}],ml:g.ymax>=1000?50:42}));
+  const steps=[];
+  P.graphs.forEach((g,i)=>{const I=info[i];
+    steps.push({q:`<b>Graphique ${i+1}</b> : observe la représentation graphique.`,fig:`<div class="one">${charts[i]}</div>`,
+      fields:[{label:"Est-ce une droite ?",t:"choice",opts:YN,a:I.line?"oui":"non"},{label:"Passe-t-elle par l'origine du repère (0 ; 0) ?",t:"choice",opts:YN,a:I.zero?"oui":"non"}],
+      hint:`Une droite est une ligne bien « droite », comme tracée à la règle. L'origine est le point en bas à gauche, là où les deux axes se croisent (0 ; 0).`,
+      sol:I.prop?`C'est une droite qui passe par l'origine : il y a <b>proportionnalité</b>.`:(I.line?`C'est une droite, mais elle <b>ne passe pas par l'origine</b> : pas de proportionnalité.`:`Ce n'est <b>pas une droite</b> : pas de proportionnalité.`)});
+    const ya=g.f(g.a),yb=g.f(2*g.a),tol=g.ymax*0.05;
+    steps.push({q:`<b>Graphique ${i+1}</b>, vérification : lis sur le graphique ${g.yname} pour ${g.xname} = ${fmt(g.a)}, puis pour ${g.xname} = ${fmt(2*g.a)} (valeurs approchées).`,fig:`<div class="one">${charts[i]}</div>`,
+      fields:[{label:`Pour ${fmt(g.a)} :`,a:ya,tol,d:g.rd??0,after:g.yu},{label:`Pour ${fmt(2*g.a)} :`,a:yb,tol,d:g.rd??0,after:g.yu},
+        {label:`Quand ${g.xname} double, ${g.yname} double-t-${g.ypron} ?`,t:"choice",opts:YN,a:I.prop?"oui":"non"}],
+      hint:`Pars de ${fmt(g.a)} sur l'axe horizontal, monte jusqu'à la courbe, puis va horizontalement jusqu'à l'axe vertical pour lire la valeur. Ensuite compare : ${fmt(2*g.a)} c'est 2 × ${fmt(g.a)} ; le résultat est-il 2 fois plus grand ?`,
+      sol:`On lit environ ${fmt(ya,g.rd??0)} et ${fmt(yb,g.rd??0)}. Or ${fmt(ya,g.rd??0)} × 2 = ${fmt(2*ya,g.rd??0)} ${I.prop?"✔️":`≠ ${fmt(yb,g.rd??0)}`}.`});
+  });
+  return{
+    title:P.title,
+    intro:`<p>${P.ctx}</p><ol>${P.graphs.map(g=>`<li>${g.q}</li>`).join("")}</ol>`,
+    figure:charts.map(c=>`<div class="one">${c}</div>`).join(""),
+    final:{fields:P.graphs.map((g,i)=>({label:`${i+1}. Proportionnel ?`,t:"choice",opts:YN,a:info[i].prop?"oui":"non"}))},
+    steps,
+    recap:P.graphs.map((g,i)=>{const I=info[i];return `<p><b>${i+1})</b> La représentation graphique ${I.prop?"est :<br>– une droite<br>– qui passe par l'origine du repère.":(I.line?"est une droite, mais elle <b>ne passe pas</b> par l'origine du repère.":"<b>n'est pas</b> une droite.")}<br>Donc ${g.yname} <b>${I.prop?"est":"n'est pas"}</b> proportionnel${g.ypron==="elle"?"le":""} à ${g.xname}.</p>`;}).join("")
+  };
+}
+const oCourbes={title:"Les assiettes",ctx:"Une usine fabrique différentes assiettes en porcelaine blanche bordées d'un liseré bleu. On a représenté la longueur du liseré bleu en cm (graphique 1) et le volume de porcelaine en cm³ (graphique 2) en fonction du diamètre de l'assiette, en cm.",
+  graphs:[
+    {q:"La longueur du liseré bleu est-elle proportionnelle au diamètre de l'assiette ?",f:x=>Math.PI*x,xmax:22,ymax:70,xstep:5,ystep:10,x1:20.5,a:10,xl:"Diamètre (cm)",yl:"Longueur du liseré (cm)",yname:"la longueur du liseré",ypron:"elle",xname:"le diamètre",yu:"cm"},
+    {q:"Le volume de porcelaine est-il proportionnel au diamètre de l'assiette ?",f:x=>Math.PI*x*x,xmax:22,ymax:1300,xstep:5,ystep:200,x1:20,a:10,xl:"Diamètre (cm)",yl:"Volume de porcelaine (cm³)",yname:"le volume de porcelaine",ypron:"il",xname:"le diamètre",yu:"cm³"}]};
+const CAT_PROP=[
+  {q:"Le périmètre d'un carré est-il proportionnel à la longueur de son côté ?",f:x=>4*x,xmax:11,ymax:48,xstep:1,xtick:2,ystep:4,ytick:8,x1:11,a:3,xl:"Côté (cm)",yl:"Périmètre (cm)",yname:"le périmètre",ypron:"il",xname:"le côté",yu:"cm"},
+  {q:"Le prix des pommes est-il proportionnel à leur masse ?",f:x=>2.5*x,xmax:11,ymax:30,xstep:1,xtick:2,ystep:2.5,ytick:5,x1:11,a:2,xl:"Masse (kg)",yl:"Prix (€)",yname:"le prix",ypron:"il",xname:"la masse",yu:"€",rd:1},
+  {q:"La distance parcourue (à vitesse constante) est-elle proportionnelle à la durée du trajet ?",f:x=>60*x,xmax:5.5,ymax:330,xstep:0.5,xtick:1,ystep:30,ytick:60,x1:5.5,a:2,xl:"Durée (h)",yl:"Distance (km)",yname:"la distance",ypron:"elle",xname:"la durée",yu:"km"}];
+const CAT_NON=[
+  {q:"L'aire d'un carré est-elle proportionnelle à la longueur de son côté ?",f:x=>x*x,xmax:11,ymax:110,xstep:1,xtick:2,ystep:10,ytick:20,x1:10.4,a:4,xl:"Côté (cm)",yl:"Aire (cm²)",yname:"l'aire",ypron:"elle",xname:"le côté",yu:"cm²"},
+  {q:"Le prix d'une course en taxi est-il proportionnel à la distance parcourue ?",f:x=>3+1.5*x,xmax:22,ymax:36,xstep:2,xtick:4,ystep:3,ytick:6,x1:21,a:6,xl:"Distance (km)",yl:"Prix (€)",yname:"le prix",ypron:"il",xname:"la distance",yu:"€",rd:1},
+  {q:"La hauteur d'une bougie qui brûle est-elle proportionnelle au temps écoulé ?",f:x=>24-2*x,xmax:13,ymax:26,xstep:1,xtick:2,ystep:2,ytick:4,x1:12,a:3,xl:"Temps (h)",yl:"Hauteur (cm)",yname:"la hauteur",ypron:"elle",xname:"le temps",yu:"cm"},
+  {q:"La température de l'eau qui chauffe est-elle proportionnelle au temps de chauffage ?",f:x=>20+8*x,xmax:11,ymax:110,xstep:1,xtick:2,ystep:10,ytick:20,x1:10,a:3,xl:"Temps (min)",yl:"Température (°C)",yname:"la température",ypron:"elle",xname:"le temps",yu:"°C"}];
+function gCourbes(){
+  const g=[pick(CAT_PROP),pick(CAT_NON)];if(Math.random()<0.5)g.reverse();
+  return{title:"Deux situations à comparer",ctx:"Voici deux représentations graphiques de deux situations différentes.",graphs:g};
+}
+
+/* ================= Liste des exercices ================= */
+const EXOS=[
+  {id:"gazole",lab:"Cours",part:"I. Proportion et pourcentage",cours:true,b:bPrix,o:oPrix,g:gPrix},
+  {id:"ex6",lab:"Ex. 6",b:bTab,o:oTab,g:gTab},
+  {id:"ex11",lab:"Ex. 11",b:bGroupe,o:oGroupe,g:gGroupe},
+  {id:"votes",lab:"Cours",cours:true,b:bVotes,o:oVotes,g:gVotes},
+  {id:"ex15",lab:"Ex. 15",b:bTVA,o:oTVA,g:gTVA},
+  {id:"ex16",lab:"Ex. 16",b:bEco,o:oEco,g:gEco},
+  {id:"ex37",lab:"Ex. 37",b:bSolde,o:oSolde,g:gSolde},
+  {id:"ex38",lab:"Ex. 38",b:bRemise,o:oRemise,g:gRemise},
+  {id:"graph",lab:"Cours",part:"II. Proportionnalité et graphique",cours:true,b:bGraph,o:oGraph,g:gGraph},
+  {id:"ex8",lab:"Ex. 8",b:bCourbes,o:oCourbes,g:gCourbes}
+];
+EXOS.forEach(e=>e.title=e.b(e.o).title);
+
+/* ================= Suivi & navigation ================= */
+const KEY="proportionnalite-5e-v1";
+let state={st:{},sim:0};
+try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.st)state=s;}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}};
+const ICON={seul:"🌟",aide:"✅",vu:"👀"};
+function renderScore(){
+  const v=Object.values(state.st),ok=v.filter(x=>x==="seul"||x==="aide").length,seul=v.filter(x=>x==="seul").length;
+  document.getElementById("score").innerHTML=`Réussis : <b>${ok}/${EXOS.length}</b> (🌟 seul : ${seul})<br>Exercices similaires réussis : <b>${state.sim}</b>`;
+}
+const nav=document.getElementById("nav"),stage=document.getElementById("stage");
+let cur=0;
+function renderNav(){
+  nav.innerHTML="";
+  EXOS.forEach((e,i)=>{
+    if(e.part)nav.append(el("div","part",e.part));
+    const b=el("button",i===cur?"cur":"",`${e.lab} · ${e.title}<span class="st">${ICON[state.st[e.id]]||""}</span>`);
+    b.onclick=()=>show(i);nav.append(b);
+  });
+}
+function show(i){
+  cur=i;renderNav();stage.innerHTML="";const e=EXOS[i];
+  const main=el("div"),simHost=el("div");stage.append(main,simHost);
+  const launchSim=()=>{simHost.innerHTML="";
+    const c=mountProblem(e.b(e.g()),simHost,{label:"Exercice similaire",similar:true,
+      onSimilar:launchSim,onDone:m=>{if(m!=="vu"){state.sim++;save();renderScore();}}});
+    c.scrollIntoView({behavior:"smooth",block:"start"});};
+  mountProblem(e.b(e.o),main,{label:e.lab,cours:e.cours,onSimilar:launchSim,
+    onDone:m=>{const old=state.st[e.id];if(!old||old==="vu"||(old==="aide"&&m==="seul"))state.st[e.id]=m;save();renderScore();renderNav();}});
+  const nb=el("div","nextbar");
+  if(i>0){const p=el("button","btn ghost","⬅ Exercice précédent");p.onclick=()=>{show(i-1);window.scrollTo({top:0,behavior:"smooth"});};nb.append(p);}else nb.append(el("span"));
+  if(i<EXOS.length-1){const n=el("button","btn sec","Exercice suivant ➜");n.onclick=()=>{show(i+1);window.scrollTo({top:0,behavior:"smooth"});};nb.append(n);}
+  stage.append(nb);
+}
+renderScore();show(0);
+</script>
+</body>
+</html>
