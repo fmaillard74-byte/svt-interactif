@@ -80,12 +80,12 @@ function okErr(q){const n=ERR.length;ERR=ERR.filter(e=>e.q!==q);if(n!==ERR.lengt
 function hdr(){document.getElementById('sc').textContent='⭐ '+S.score;document.getElementById('st').textContent='🔥 '+S.streak}
 function good(){S.score+=10+Math.min(S.streak,5)*2;S.streak++;hdr()}
 function bad(){S.streak=0;hdr()}
-function top(t,extra){return `<button class="back" onclick="home()">← Accueil</button><h2>${t}${extra?` <span class="mute">${extra}</span>`:''}</h2>`}
+function pageTop(t,extra){return `<button class="back" onclick="home()">← Accueil</button><h2>${t}${extra?` <span class="mute">${extra}</span>`:''}</h2>`}
 function bar(p){return `<div class="bar"><i style="width:${Math.round(p*100)}%"></i></div>`}
 function end(title,g,n,what,again){
   const p=n?g/n:0,st=p>=.9?'⭐⭐⭐':p>=.6?'⭐⭐':'⭐';
   const msg=p>=.9?'Bravo, tu maîtrises !':p>=.6?'Bien joué, encore un effort !':'Courage : refais une partie, les erreurs sont gardées dans « Mes erreurs ».';
-  app.innerHTML=top(title)+`<div class="card"><div class="stars">${st}</div><p class="q" style="text-align:center">${g} / ${n} ${what}</p><p class="mute" style="text-align:center">${msg}</p></div>
+  app.innerHTML=pageTop(title)+`<div class="card"><div class="stars">${st}</div><p class="q" style="text-align:center">${g} / ${n} ${what}</p><p class="mute" style="text-align:center">${msg}</p></div>
   <button class="btn main" onclick="${again}">Rejouer 🔄</button>
   ${ERR.length?`<button class="btn c" onclick="startErrors()">Revoir mes erreurs (${ERR.length}) 🔁</button>`:''}
   <button class="btn c" onclick="home()">Accueil</button>`;
@@ -172,7 +172,7 @@ function cardDeck(){
 }
 function startCards(){cards(cardDeck(),"Cartes mémoire")}
 function startErrors(){
-  if(!ERR.length){app.innerHTML=top("Mes erreurs")+`<div class="card"><p class="q">Aucune erreur à revoir 🎉</p><p class="mute">Joue au quiz ou au vrai/faux : tes erreurs seront gardées ici.</p></div>`;return}
+  if(!ERR.length){app.innerHTML=pageTop("Mes erreurs")+`<div class="card"><p class="q">Aucune erreur à revoir 🎉</p><p class="mute">Joue au quiz ou au vrai/faux : tes erreurs seront gardées ici.</p></div>`;return}
   cards(ERR.slice(),"Mes erreurs");
 }
 function cards(deck,title){
@@ -180,7 +180,7 @@ function cards(deck,title){
   function r(){
     if(!q.length){end(title,known,total,"cartes sues du premier coup ou après révision","startCards()");return}
     const c=q[0];
-    app.innerHTML=top(title,`${known}/${total}`)+bar(known/total)+
+    app.innerHTML=pageTop(title,`${known}/${total}`)+bar(known/total)+
      `<div class="card fc ${flip?'back':''}" onclick="CUR.flip()">${flip?c.a:c.q}<div class="hint">${flip?'':'Touche pour retourner'}</div></div>`+
      (flip?`<div class="row"><button class="btn" onclick="CUR.again()">À revoir 🔁</button><button class="btn" onclick="CUR.know()">Je savais ✅</button></div>`:'');
   }
@@ -218,7 +218,7 @@ function runQuiz(title,qs,again){
   function r(){
     if(i>=qs.length){end(title,g,qs.length,"bonnes réponses",again);return}
     const x=qs[i];answered=false;
-    app.innerHTML=top(title,`${i+1}/${qs.length}`)+bar(i/qs.length)+
+    app.innerHTML=pageTop(title,`${i+1}/${qs.length}`)+bar(i/qs.length)+
      `<div class="card"><p class="q">${x.q}</p>${x.opts.map((o,k)=>`<button class="btn" id="o${k}" onclick="CUR.pick(${k})">${o}</button>`).join('')}<div id="fb"></div></div>`;
   }
   CUR={pick(k){
@@ -254,7 +254,7 @@ function startVF(){
   function r(){
     if(i>=qs.length){end("Vrai ou faux",g,qs.length,"bonnes réponses","startVF()");return}
     answered=false;
-    app.innerHTML=top("Vrai ou faux",`${i+1}/${qs.length}`)+bar(i/qs.length)+
+    app.innerHTML=pageTop("Vrai ou faux",`${i+1}/${qs.length}`)+bar(i/qs.length)+
      `<div class="card"><p class="q">${qs[i][0]}</p><div class="row"><button class="btn" id="v1" onclick="CUR.pick(true)">Vrai ✔️</button><button class="btn" id="v0" onclick="CUR.pick(false)">Faux ✖️</button></div><div id="fb"></div></div>`;
   }
   CUR={pick(v){
@@ -282,7 +282,7 @@ function match(title,pairs,again,big){
   const L=pairs.map((p,i)=>({...p,id:i})),R=shuffle(L);
   let sl=null,sr=null,done=new Set(),mistakes=0;
   function r(){
-    app.innerHTML=top(title,`${done.size}/${L.length}`)+bar(done.size/L.length)+
+    app.innerHTML=pageTop(title,`${done.size}/${L.length}`)+bar(done.size/L.length)+
      `<p class="mute">Touche un élément à gauche, puis celui qui lui correspond à droite.</p><div class="cols">`+
      L.map((p,i)=>`<button class="btn ${done.has('l'+i)?'ok':sl===i?'sel':''}" id="l${i}" ${done.has('l'+i)?'disabled':''} onclick="CUR.pickL(${i})" style="grid-column:1">${p.l}</button><button class="btn ${big?'y':''} ${done.has('r'+R[i].id)?'ok':sr===R[i].id?'sel':''}" id="r${R[i].id}" ${done.has('r'+R[i].id)?'disabled':''} onclick="CUR.pickR(${R[i].id})" style="grid-column:2">${R[i].r}</button>`).join('')+`</div>`;
   }
@@ -308,7 +308,7 @@ function startOrder(){
   function r(){
     const left=pool.filter(e=>!seq.includes(e));
     const sorted=items.slice().sort((a,b)=>a.y-b.y);
-    app.innerHTML=top("Remets la frise")+`<p class="mute">Touche les événements du <b>plus ancien</b> au <b>plus récent</b>. Touche un événement placé pour l'enlever.</p>
+    app.innerHTML=pageTop("Remets la frise")+`<p class="mute">Touche les événements du <b>plus ancien</b> au <b>plus récent</b>. Touche un événement placé pour l'enlever.</p>
      <div class="card">${seq.map((e,i)=>`<div class="slot" ${checked?'':`onclick="CUR.rm(${i})" style="cursor:pointer"`}><b>${i+1}</b><span>${e.s}${checked?` — <b style="background:none;color:var(--pur);min-width:0">${e.y}</b>`:''}</span></div>`).join('')||'<p class="mute">Rien de placé pour l\'instant…</p>'}</div>`+
      (checked?'':left.map(e=>`<button class="btn" onclick="CUR.add(${items.indexOf(e)})">${e.s}</button>`).join(''))+
      (checked?`<div class="fb ${CUR.ok?'ok':'ko'}">${CUR.ok?'✅ Parfait, frise juste !':'❌ Pas tout à fait. Ordre correct : '+sorted.map(e=>e.y+' '+e.s).join(' → ')}</div><button class="btn main" onclick="startOrder()">Nouvelle frise 🔄</button><button class="btn c" onclick="home()">Accueil</button>`:
@@ -326,7 +326,7 @@ function startColors(){
   function r(){
     if(i>=qs.length){end("Couleurs des droits",g,qs.length,"bien classés","startColors()");return}
     answered=false;const x=qs[i];
-    app.innerHTML=top("Couleurs des droits",`${i+1}/${qs.length}`)+bar(i/qs.length)+
+    app.innerHTML=pageTop("Couleurs des droits",`${i+1}/${qs.length}`)+bar(i/qs.length)+
      `<p class="mute"><span class="dot rouge"></span>travail <span class="dot bleu"></span>politique <span class="dot vert"></span>santé <span class="dot jaune"></span>justice</p>
       <div class="card"><p class="mute" style="margin:0">${x.y}</p><p class="q">${x.t}</p><div class="cat">${Object.keys(CATS).map(k=>`<button class="btn ${CATS[k].c}" id="c_${k}" onclick="CUR.pick('${k}')">${CATS[k].n}</button>`).join('')}</div><div id="fb"></div></div>`;
   }
