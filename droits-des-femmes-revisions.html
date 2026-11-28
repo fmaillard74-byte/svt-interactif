@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Révisions – Droits des femmes et grandes dates</title>
+<style>
+:root{--bg:#faf7fc;--card:#fff;--ink:#241a2e;--mute:#6d6277;--pur:#6b2d8c;--pur2:#ece1f4;--ok:#1f7a45;--okbg:#dff4e7;--ko:#b42330;--kobg:#fbe2e4;--gold:#f2b705;--line:#e2d8ea;--sh:0 2px 8px rgba(60,20,80,.08)}
+@media(prefers-color-scheme:dark){:root{--bg:#17111d;--card:#241b2e;--ink:#f3eef7;--mute:#a99db6;--pur:#c79be3;--pur2:#3a2a48;--ok:#6fd99a;--okbg:#1d3a2a;--ko:#ff8a94;--kobg:#42202a;--line:#3d3048;--sh:none}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+#wrap{max-width:640px;margin:0 auto;padding:0 14px 40px}
+#hdr{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;background:var(--bg);padding:10px 2px;border-bottom:1px solid var(--line);font-weight:700}
+#hdr span{background:var(--pur2);color:var(--pur);padding:4px 12px;border-radius:99px;font-size:14px}
+h1{font-size:23px;line-height:1.2;margin:18px 0 6px}
+h2{font-size:18px;margin:14px 0 8px}
+.sub{color:var(--mute);margin:0 0 14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 12px;text-align:left;color:var(--ink);box-shadow:var(--sh);cursor:pointer;font:inherit;min-height:104px}
+.tile:active{transform:scale(.97)}
+.tile b{display:block;font-size:16px;margin:4px 0 2px}
+.tile small{color:var(--mute);font-size:13px;line-height:1.25;display:block}
+.tile .e{font-size:26px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--sh);margin:12px 0}
+.btn{display:block;width:100%;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:13px 14px;font:inherit;text-align:left;margin:8px 0;cursor:pointer;min-height:48px}
+.btn.c{text-align:center;font-weight:700}
+.btn.main{background:var(--pur);border-color:var(--pur);color:#fff;text-align:center;font-weight:700}
+@media(prefers-color-scheme:dark){.btn.main{color:#17111d}}
+.btn.ok{background:var(--okbg);border-color:var(--ok);color:var(--ok);font-weight:700}
+.btn.ko{background:var(--kobg);border-color:var(--ko);color:var(--ko)}
+.btn.sel{border-color:var(--pur);background:var(--pur2)}
+.btn[disabled]{cursor:default}
+.back{background:none;border:0;color:var(--pur);font:inherit;font-weight:700;padding:10px 0;cursor:pointer}
+.bar{height:8px;background:var(--pur2);border-radius:9px;overflow:hidden;margin:4px 0 10px}
+.bar i{display:block;height:100%;background:var(--pur);transition:width .3s}
+.q{font-size:18px;font-weight:700;margin:0 0 6px}
+.fb{border-radius:12px;padding:10px 12px;margin:10px 0;font-size:15px}
+.fb.ok{background:var(--okbg);color:var(--ok)}
+.fb.ko{background:var(--kobg);color:var(--ko)}
+.fc{min-height:210px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;font-size:19px;cursor:pointer;user-select:none}
+.fc .hint{font-size:13px;color:var(--mute);margin-top:14px}
+.fc.back{background:var(--pur2);color:var(--ink)}
+.row{display:flex;gap:10px}.row .btn{text-align:center;font-weight:700}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cols .btn{margin:0;font-size:14px;padding:10px 8px;text-align:center}
+.cols .btn.y{font-size:20px;font-weight:800}
+.shake{animation:sh .35s}
+@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.cat{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cat .btn{margin:0;text-align:center;font-weight:700;color:#1a1a1a;border-color:transparent}
+.rouge{background:#f08d92}.bleu{background:#8fb5f2}.vert{background:#8fd9a8}.jaune{background:#f7dc6a}
+.dot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.stars{font-size:38px;text-align:center;margin:6px 0}
+details{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px;margin:16px 0}
+summary{font-weight:700;cursor:pointer}
+table{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px}
+td{padding:6px 4px;border-bottom:1px solid var(--line);vertical-align:top}
+td:first-child{font-weight:800;color:var(--pur);white-space:nowrap;padding-right:10px}
+.slot{display:flex;gap:8px;align-items:center;background:var(--pur2);border-radius:12px;padding:9px 10px;margin:6px 0;min-height:44px;font-size:15px}
+.slot b{background:var(--pur);color:#fff;border-radius:50%;min-width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:13px}
+@media(prefers-color-scheme:dark){.slot b{color:#17111d}}
+.mute{color:var(--mute);font-size:14px}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="hdr"><span id="sc">⭐ 0</span><span id="st">🔥 0</span></div>
+  <div id="app"></div>
+</div>
+<script>
+/* ---------- utilitaires ---------- */
+const app=document.getElementById('app');
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const pick=(a,n)=>shuffle(a).slice(0,n);
+let S={score:0,streak:0},ERR=[],CUR={};
+try{const s=JSON.parse(localStorage.getItem('rev_droits')||'{}');ERR=Array.isArray(s.err)?s.err:[]}catch(e){}
+function save(){try{localStorage.setItem('rev_droits',JSON.stringify({err:ERR}))}catch(e){}}
+function addErr(q,a){if(!ERR.some(e=>e.q===q)){ERR.push({q,a});save()}}
+function okErr(q){const n=ERR.length;ERR=ERR.filter(e=>e.q!==q);if(n!==ERR.length)save()}
+function hdr(){document.getElementById('sc').textContent='⭐ '+S.score;document.getElementById('st').textContent='🔥 '+S.streak}
+function good(){S.score+=10+Math.min(S.streak,5)*2;S.streak++;hdr()}
+function bad(){S.streak=0;hdr()}
+function top(t,extra){return `<button class="back" onclick="home()">← Accueil</button><h2>${t}${extra?` <span class="mute">${extra}</span>`:''}</h2>`}
+function bar(p){return `<div class="bar"><i style="width:${Math.round(p*100)}%"></i></div>`}
+function end(title,g,n,what,again){
+  const p=n?g/n:0,st=p>=.9?'⭐⭐⭐':p>=.6?'⭐⭐':'⭐';
+  const msg=p>=.9?'Bravo, tu maîtrises !':p>=.6?'Bien joué, encore un effort !':'Courage : refais une partie, les erreurs sont gardées dans « Mes erreurs ».';
+  app.innerHTML=top(title)+`<div class="card"><div class="stars">${st}</div><p class="q" style="text-align:center">${g} / ${n} ${what}</p><p class="mute" style="text-align:center">${msg}</p></div>
+  <button class="btn main" onclick="${again}">Rejouer 🔄</button>
+  ${ERR.length?`<button class="btn c" onclick="startErrors()">Revoir mes erreurs (${ERR.length}) 🔁</button>`:''}
+  <button class="btn c" onclick="home()">Accueil</button>`;
+}
+
+/* ---------- données ---------- */
+const EV=[
+ {y:1789,s:"Abolition des privilèges",t:"Abolition des privilèges (nuit du 4 août)",tip:"Révolution française : plus de droits réservés à certains."},
+ {y:1848,s:"Fin de l'esclavage",t:"Suppression de l'esclavage en France",tip:"Décret du 27 avril 1848 : tous les hommes sont libres et égaux."},
+ {y:1848,s:"Suffrage universel masculin",t:"Suffrage universel masculin (tous les hommes votent)",tip:"Tous les hommes… mais pas les femmes !"},
+ {y:1881,s:"École laïque, gratuite, obligatoire",t:"Lois rendant l'école laïque, gratuite et obligatoire",tip:"Lois Jules Ferry : gratuité en 1881, obligation et laïcité en 1882."},
+ {y:1914,s:"Impôt sur le revenu",t:"Création des impôts calculés en fonction du revenu",tip:"Plus on gagne, plus on paie."},
+ {y:1944,s:"Droit de vote des femmes",t:"Les Françaises obtiennent le droit de vote",tip:"Ordonnance du 21 avril 1944. Premier vote des femmes : 1945 (municipales)."},
+ {y:1965,s:"Travailler sans l'accord du mari",t:"Les femmes peuvent avoir un emploi et gérer leurs biens sans l'accord de leur mari",tip:"Loi du 13 juillet 1965."},
+ {y:1970,s:"Autorité parentale conjointe",t:"Loi sur l'autorité parentale conjointe",tip:"Le père et la mère décident ensemble pour leurs enfants."},
+ {y:1975,s:"Loi Veil (IVG)",t:"Loi sur l'interruption volontaire de grossesse (IVG)",tip:"Loi Veil du 17 janvier 1975."},
+ {y:2000,s:"Loi sur la parité",t:"Loi sur la parité : autant de femmes que d'hommes en politique",tip:"Loi du 6 juin 2000."},
+ {y:2005,s:"Égalité des chances (handicap)",t:"Loi pour l'égalité des chances des personnes handicapées",tip:"Loi du 11 février 2005."},
+ {y:2006,s:"Égalité salariale",t:"Égalité salariale entre les femmes et les hommes",tip:"Loi du 23 mars 2006 : à travail égal, salaire égal."},
+ {y:2013,s:"Mariage pour tous",t:"Loi permettant aux couples homosexuels de se marier",tip:"Loi Taubira du 17 mai 2013."}
+];
+const EXTRA_YEARS=[1945,1946,1882,1983,1999,1975,1968];
+const YEARS=[...new Set(EV.map(e=>e.y))];
+const CATS={travail:{n:"Travail",c:"rouge"},politique:{n:"Politique",c:"bleu"},sante:{n:"Santé",c:"vert"},justice:{n:"Justice",c:"jaune"}};
+const CAT=[
+ {t:"Les Françaises obtiennent le droit de vote",y:"1944",c:"politique",tip:"Droit de vote = droit politique."},
+ {t:"Les femmes peuvent travailler et gérer leurs biens sans l'accord du mari",y:"1965",c:"travail",tip:"Il s'agit surtout du droit de travailler librement."},
+ {t:"Loi sur l'autorité parentale conjointe",y:"1970",c:"justice",tip:"Droit de la famille : les deux parents ont les mêmes droits devant la loi."},
+ {t:"Loi Veil : interruption volontaire de grossesse",y:"1975",c:"sante",tip:"Droit lié à la santé des femmes."},
+ {t:"Loi sur la féminisation des noms de métiers",y:"années 1980",c:"travail",tip:"Pouvoir dire « une ingénieure », « une directrice »… (circulaire du 11 mars 1986 ; ta feuille indique 1987, vérifie avec ta correction)."},
+ {t:"Loi sur la parité en politique",y:"2000",c:"politique",tip:"Autant de femmes que d'hommes parmi les candidats."},
+ {t:"Égalité salariale entre les femmes et les hommes",y:"2006",c:"travail",tip:"Même salaire pour un même travail."}
+];
+const DEFS=[
+ {w:"Un privilège",d:"Un droit réservé à certaines personnes (noblesse, clergé) et refusé aux autres."},
+ {w:"Abolir",d:"Supprimer officiellement (une loi, un droit, l'esclavage…)."},
+ {w:"Le suffrage universel masculin",d:"Tous les hommes adultes ont le droit de voter (les femmes en sont exclues)."},
+ {w:"Une suffragiste",d:"Une militante qui se bat pour le droit de vote des femmes."},
+ {w:"La parité",d:"Un nombre égal de femmes et d'hommes, en particulier en politique."},
+ {w:"L'IVG",d:"L'interruption volontaire de grossesse : le droit pour une femme de décider d'arrêter une grossesse."},
+ {w:"L'autorité parentale",d:"L'ensemble des droits et devoirs des parents envers leurs enfants."},
+ {w:"Une école laïque",d:"Une école qui ne favorise aucune religion."},
+ {w:"L'égalité salariale",d:"À travail égal, salaire égal, quel que soit le sexe."},
+ {w:"L'impôt sur le revenu",d:"Un impôt calculé selon ce que gagne chaque personne."},
+ {w:"Féminiser un nom de métier",d:"Mettre le nom du métier au féminin : une professeure, une autrice."},
+ {w:"Une ordonnance",d:"Un texte de loi pris directement par le gouvernement (comme celle du 21 avril 1944)."},
+ {w:"Le garde des Sceaux",d:"Le ministre de la Justice."}
+];
+const PEOPLE=[
+ {n:"Hubertine Auclert",life:"1848–1914, France",job:"Journaliste et militante suffragiste",fight:"Le droit de vote des femmes",diff:"Moqueries et refus des autorités ; elle refuse de payer ses impôts tant que les femmes ne votent pas",chg:"Elle ouvre la voie au droit de vote obtenu en 1944 ; elle fonde le journal La Citoyenne (1881) et emploie le mot « féministe »",clues:["Elle refuse de payer ses impôts pour protester contre l'absence du droit de vote","Fondatrice du journal La Citoyenne (1881)"]},
+ {n:"Gisèle Halimi",life:"1927–2020, Tunisie et France",job:"Avocate et femme politique",fight:"Le droit des femmes à disposer de leur corps et la défense des victimes de viol",diff:"Hostilité de la société et de la justice de son époque",chg:"Procès de Bobigny (1972, avortement) ; procès d'Aix (1978) puis loi de 1980 qui définit le viol comme un crime",clues:["Avocate au procès de Bobigny (1972)","Elle défend des victimes de viol au procès d'Aix (1978)"]},
+ {n:"Simone Veil",life:"1927–2017, France",job:"Magistrate, ministre de la Santé, présidente du Parlement européen",fight:"Le droit à l'IVG et la santé des femmes",diff:"Débats très violents et insultes à l'Assemblée nationale en 1974",chg:"Loi du 17 janvier 1975 sur l'IVG ; elle entre au Panthéon en 2018",clues:["Ministre de la Santé, elle défend la loi sur l'IVG (1975)","Première présidente du Parlement européen élu (1979)"]},
+ {n:"Christiane Taubira",life:"née en 1952, Guyane (France)",job:"Femme politique, garde des Sceaux (ministre de la Justice)",fight:"La reconnaissance de l'esclavage et l'égalité des droits",diff:"Manifestations hostiles et insultes pendant le débat sur le mariage pour tous",chg:"Loi de 2001 : la traite et l'esclavage sont reconnus crimes contre l'humanité ; loi sur le mariage pour tous (2013)",clues:["Ministre de la Justice, elle porte la loi sur le mariage pour tous (2013)","Sa loi de 2001 reconnaît l'esclavage comme crime contre l'humanité"]}
+];
+
+/* ---------- accueil ---------- */
+function tile(fn,e,t,s){return `<button class="tile" onclick="${fn}"><span class="e">${e}</span><b>${t}</b><small>${s}</small></button>`}
+function home(){
+  CUR={};hdr();window.scrollTo(0,0);
+  const rows=EV.map(e=>`<tr><td>${e.y}</td><td>${e.s}</td></tr>`).join('');
+  app.innerHTML=`<h1>Les droits : grandes dates à retenir</h1>
+  <p class="sub">De 1789 à 2013, plus 4 personnalités. Joue, corrige-toi tout de suite, recommence !</p>
+  <div class="grid">
+   ${tile("startCards()","🃏","Cartes mémoire","Notions, dates, personnalités")}
+   ${tile("startQuiz()","❓","Quiz","12 questions corrigées")}
+   ${tile("startVF()","✅","Vrai ou faux ?","Attention aux pièges !")}
+   ${tile("startMatch()","🔗","Relie les dates","Chaque événement à sa date")}
+   ${tile("startOrder()","📏","Remets la frise","Dans l'ordre chronologique")}
+   ${tile("startColors()","🎨","Couleurs des droits","Travail, politique, santé, justice")}
+   ${tile("startPeople()","👩","Qui est-ce ?","Auclert, Halimi, Veil, Taubira")}
+   ${tile("startErrors()","🔁","Mes erreurs",ERR.length?ERR.length+" à revoir":"Aucune pour l'instant")}
+  </div>
+  <details><summary>📌 Fiche mémo des dates</summary><table>${rows}</table></details>`;
+}
+
+/* ---------- cartes mémoire ---------- */
+function cardDeck(){
+  const d=[];
+  EV.forEach(e=>d.push({q:"📅 "+e.t+"<br><small>En quelle année ?</small>",a:`<b style="font-size:30px">${e.y}</b><br>${e.tip}`}));
+  d.push({q:"📅 Quand les Françaises ont-elles voté pour la première fois ?",a:"<b style=\"font-size:30px\">1945</b><br>Le droit est accordé en 1944, premier vote aux municipales de 1945."});
+  DEFS.forEach(x=>d.push({q:"📖 "+x.w+"<br><small>Que signifie ?</small>",a:x.d}));
+  PEOPLE.forEach(p=>d.push({q:"👩 "+p.n+"<br><small>Qui est-ce ?</small>",a:`<b>${p.life}</b><br>${p.job}<br><br><i>Combat :</i> ${p.fight}<br><i>Grâce à elle :</i> ${p.chg}`}));
+  return d;
+}
+function startCards(){cards(cardDeck(),"Cartes mémoire")}
+function startErrors(){
+  if(!ERR.length){app.innerHTML=top("Mes erreurs")+`<div class="card"><p class="q">Aucune erreur à revoir 🎉</p><p class="mute">Joue au quiz ou au vrai/faux : tes erreurs seront gardées ici.</p></div>`;return}
+  cards(ERR.slice(),"Mes erreurs");
+}
+function cards(deck,title){
+  const total=deck.length;let q=shuffle(deck),known=0,flip=false;
+  function r(){
+    if(!q.length){end(title,known,total,"cartes sues du premier coup ou après révision","startCards()");return}
+    const c=q[0];
+    app.innerHTML=top(title,`${known}/${total}`)+bar(known/total)+
+     `<div class="card fc ${flip?'back':''}" onclick="CUR.flip()">${flip?c.a:c.q}<div class="hint">${flip?'':'Touche pour retourner'}</div></div>`+
+     (flip?`<div class="row"><button class="btn" onclick="CUR.again()">À revoir 🔁</button><button class="btn" onclick="CUR.know()">Je savais ✅</button></div>`:'');
+  }
+  CUR={flip(){flip=true;r()},
+   know(){const c=q.shift();known++;okErr(c.q);good();flip=false;r()},
+   again(){const c=q.shift();addErr(c.q,c.a);bad();q.push(c);flip=false;r()}};
+  r();
+}
+
+/* ---------- quiz QCM ---------- */
+function nearYears(y){
+  const pool=[...new Set(YEARS.concat(EXTRA_YEARS))].filter(v=>v!==y).sort((a,b)=>Math.abs(a-y)-Math.abs(b-y)).slice(0,6);
+  return pick(pool,3);
+}
+function quizPool(){
+  const dq=EV.map(e=>({q:`En quelle année : ${e.t} ?`,opts:[String(e.y),...nearYears(e.y).map(String)],ans:String(e.y),exp:`${e.y} — ${e.tip}`}));
+  const fq=DEFS.map(d=>({q:`Que signifie « ${d.w.replace(/^(Un |Une |Le |La |L')/,'')} » ?`,opts:[d.d,...pick(DEFS.filter(x=>x!==d),3).map(x=>x.d)],ans:d.d,exp:`${d.w} : ${d.d}`}));
+  const P=PEOPLE.map(p=>p.n);
+  const mk=(q,ans,exp)=>({q,opts:P.slice(),ans,exp});
+  const pq=[
+   mk("Qui a défendu la loi sur l'IVG en 1975 ?","Simone Veil","Simone Veil, ministre de la Santé, loi du 17 janvier 1975."),
+   mk("Qui a porté la loi sur le mariage pour tous en 2013 ?","Christiane Taubira","Christiane Taubira était garde des Sceaux (ministre de la Justice)."),
+   mk("Qui était l'avocate du procès de Bobigny (1972) ?","Gisèle Halimi","Gisèle Halimi défendait une jeune fille jugée pour avoir avorté."),
+   mk("Qui refusait de payer ses impôts tant que les femmes ne pouvaient pas voter ?","Hubertine Auclert","Hubertine Auclert, suffragiste, fondatrice du journal La Citoyenne."),
+   mk("Qui est la première présidente du Parlement européen élu (1979) ?","Simone Veil","Simone Veil, qui est aussi entrée au Panthéon en 2018.")
+  ];
+  return [...pick(dq,6),...pick(fq,3),...pick(pq,3)];
+}
+function startQuiz(){
+  const qs=shuffle(quizPool()).map(x=>({...x,opts:shuffle(x.opts)}));
+  runQuiz("Quiz",qs,"startQuiz()");
+}
+function runQuiz(title,qs,again){
+  let i=0,g=0,answered=false;
+  function r(){
+    if(i>=qs.length){end(title,g,qs.length,"bonnes réponses",again);return}
+    const x=qs[i];answered=false;
+    app.innerHTML=top(title,`${i+1}/${qs.length}`)+bar(i/qs.length)+
+     `<div class="card"><p class="q">${x.q}</p>${x.opts.map((o,k)=>`<button class="btn" id="o${k}" onclick="CUR.pick(${k})">${o}</button>`).join('')}<div id="fb"></div></div>`;
+  }
+  CUR={pick(k){
+    if(answered)return;answered=true;const x=qs[i],chosen=x.opts[k],isOk=chosen===x.ans;
+    x.opts.forEach((o,j)=>{const b=document.getElementById('o'+j);b.disabled=true;if(o===x.ans)b.classList.add('ok');else if(j===k)b.classList.add('ko')});
+    if(isOk){g++;good();okErr(x.q)}else{bad();addErr(x.q,x.exp)}
+    document.getElementById('fb').innerHTML=`<div class="fb ${isOk?'ok':'ko'}">${isOk?'✅ Bravo ! ':'❌ Pas tout à fait. '}${x.exp}</div><button class="btn main" onclick="CUR.next()">${i+1>=qs.length?'Voir mon score':'Suivant →'}</button>`;
+  },next(){i++;r()}};
+  r();
+}
+
+/* ---------- vrai / faux ---------- */
+const VF=[
+ ["Les Françaises obtiennent le droit de vote en 1944.",true,"Ordonnance du 21 avril 1944."],
+ ["Les femmes ont voté pour la première fois en 1944.",false,"Premier vote en 1945 (municipales). 1944 = la décision."],
+ ["La loi Veil sur l'IVG date de 1975.",true,"Loi du 17 janvier 1975."],
+ ["Simone Veil est la ministre qui a fait voter le mariage pour tous.",false,"C'est Christiane Taubira (2013). Simone Veil : IVG (1975)."],
+ ["Le suffrage universel masculin date de 1789.",false,"Il date de 1848 (et il ne concerne que les hommes)."],
+ ["L'esclavage est aboli en France en 1848.",true,"Décret du 27 avril 1848."],
+ ["Avant 1965, une femme mariée devait avoir l'accord de son mari pour travailler.",true,"Loi du 13 juillet 1965 : fin de cette obligation."],
+ ["Hubertine Auclert refusait de payer ses impôts pour protester contre l'absence du droit de vote.",true,"Elle l'a fait pour dénoncer l'injustice : pas de vote, pas d'impôt."],
+ ["Gisèle Halimi était avocate.",true,"Elle a défendu des femmes à Bobigny (1972) et à Aix (1978)."],
+ ["La loi sur la parité date de 2006.",false,"La parité : 2000. 2006 : égalité salariale."],
+ ["Les lois Jules Ferry rendent l'école laïque, gratuite et obligatoire (1881-1882).",true,"École pour tous les enfants."],
+ ["L'impôt calculé selon le revenu est créé en 1914.",true,"Plus on gagne, plus on paie."],
+ ["La loi sur le mariage pour tous date de 2013.",true,"Loi Taubira du 17 mai 2013."],
+ ["La loi pour l'égalité des chances des personnes handicapées date de 2005.",true,"Loi du 11 février 2005."],
+ ["L'autorité parentale conjointe (1970) signifie que seul le père décide.",false,"Au contraire : le père ET la mère décident ensemble."],
+ ["Une ordonnance est un texte pris directement par le gouvernement.",true,"Comme l'ordonnance du 21 avril 1944."]
+];
+function startVF(){
+  const qs=pick(VF,10);let i=0,g=0,answered=false;
+  function r(){
+    if(i>=qs.length){end("Vrai ou faux",g,qs.length,"bonnes réponses","startVF()");return}
+    answered=false;
+    app.innerHTML=top("Vrai ou faux",`${i+1}/${qs.length}`)+bar(i/qs.length)+
+     `<div class="card"><p class="q">${qs[i][0]}</p><div class="row"><button class="btn" id="v1" onclick="CUR.pick(true)">Vrai ✔️</button><button class="btn" id="v0" onclick="CUR.pick(false)">Faux ✖️</button></div><div id="fb"></div></div>`;
+  }
+  CUR={pick(v){
+    if(answered)return;answered=true;const x=qs[i],isOk=v===x[1];
+    document.getElementById('v1').disabled=document.getElementById('v0').disabled=true;
+    document.getElementById(x[1]?'v1':'v0').classList.add('ok');
+    if(!isOk)document.getElementById(v?'v1':'v0').classList.add('ko');
+    if(isOk){g++;good();okErr(x[0])}else{bad();addErr(x[0],(x[1]?"VRAI. ":"FAUX. ")+x[2])}
+    document.getElementById('fb').innerHTML=`<div class="fb ${isOk?'ok':'ko'}">${isOk?'✅ Exact ! ':'❌ Raté. '}C'est <b>${x[1]?'vrai':'faux'}</b>. ${x[2]}</div><button class="btn main" onclick="CUR.next()">${i+1>=qs.length?'Voir mon score':'Suivant →'}</button>`;
+  },next(){i++;r()}};
+  r();
+}
+
+/* ---------- jeu d'association ---------- */
+function startMatch(){
+  const used=new Set(),pairs=[];
+  shuffle(EV).forEach(e=>{if(pairs.length<6&&!used.has(e.y)){used.add(e.y);pairs.push({l:e.s,r:String(e.y),k:e.y,fc:e.t+" : "+e.y})}});
+  match("Relie les dates",pairs,"startMatch()",true);
+}
+function startPeople(){
+  const pairs=PEOPLE.map(p=>({l:pick(p.clues,1)[0],r:p.n,k:p.n,fc:p.n+" : "+p.chg}));
+  match("Qui est-ce ?",pairs,"startPeople()",false);
+}
+function match(title,pairs,again,big){
+  const L=pairs.map((p,i)=>({...p,id:i})),R=shuffle(L);
+  let sl=null,sr=null,done=new Set(),mistakes=0;
+  function r(){
+    app.innerHTML=top(title,`${done.size}/${L.length}`)+bar(done.size/L.length)+
+     `<p class="mute">Touche un élément à gauche, puis celui qui lui correspond à droite.</p><div class="cols">`+
+     L.map((p,i)=>`<button class="btn ${done.has('l'+i)?'ok':sl===i?'sel':''}" id="l${i}" ${done.has('l'+i)?'disabled':''} onclick="CUR.pickL(${i})" style="grid-column:1">${p.l}</button><button class="btn ${big?'y':''} ${done.has('r'+R[i].id)?'ok':sr===R[i].id?'sel':''}" id="r${R[i].id}" ${done.has('r'+R[i].id)?'disabled':''} onclick="CUR.pickR(${R[i].id})" style="grid-column:2">${R[i].r}</button>`).join('')+`</div>`;
+  }
+  function check(){
+    if(sl===null||sr===null)return;
+    const a=L[sl],b=L[sr];
+    if(a.k===b.k){done.add('l'+sl);done.add('r'+sr);good();sl=sr=null;
+      if(done.size>=L.length*2){setTimeout(()=>end(title,L.length-Math.min(mistakes,L.length),L.length,"associations sans erreur",again),500)}r();
+    }else{mistakes++;bad();addErr(a.fc.split(' : ')[0],a.fc);
+      const x=document.getElementById('l'+sl),y=document.getElementById('r'+sr);
+      x.classList.add('ko','shake');y.classList.add('ko','shake');
+      setTimeout(()=>{sl=sr=null;r()},450);}
+  }
+  CUR={pickL(i){sl=i;r();check()},pickR(i){sr=i;r();check()}};
+  r();
+}
+
+/* ---------- frise à remettre dans l'ordre ---------- */
+function startOrder(){
+  const used=new Set(),items=[];
+  shuffle(EV).forEach(e=>{if(items.length<5&&!used.has(e.y)){used.add(e.y);items.push(e)}});
+  const pool=shuffle(items);let seq=[],checked=false;
+  function r(){
+    const left=pool.filter(e=>!seq.includes(e));
+    const sorted=items.slice().sort((a,b)=>a.y-b.y);
+    app.innerHTML=top("Remets la frise")+`<p class="mute">Touche les événements du <b>plus ancien</b> au <b>plus récent</b>. Touche un événement placé pour l'enlever.</p>
+     <div class="card">${seq.map((e,i)=>`<div class="slot" ${checked?'':`onclick="CUR.rm(${i})" style="cursor:pointer"`}><b>${i+1}</b><span>${e.s}${checked?` — <b style="background:none;color:var(--pur);min-width:0">${e.y}</b>`:''}</span></div>`).join('')||'<p class="mute">Rien de placé pour l\'instant…</p>'}</div>`+
+     (checked?'':left.map(e=>`<button class="btn" onclick="CUR.add(${items.indexOf(e)})">${e.s}</button>`).join(''))+
+     (checked?`<div class="fb ${CUR.ok?'ok':'ko'}">${CUR.ok?'✅ Parfait, frise juste !':'❌ Pas tout à fait. Ordre correct : '+sorted.map(e=>e.y+' '+e.s).join(' → ')}</div><button class="btn main" onclick="startOrder()">Nouvelle frise 🔄</button><button class="btn c" onclick="home()">Accueil</button>`:
+      (seq.length===items.length?`<button class="btn main" onclick="CUR.check()">Vérifier ✓</button>`:''));
+  }
+  CUR={ok:false,add(i){seq.push(items[i]);r()},rm(i){seq.splice(i,1);r()},
+   check(){const ok=seq.every((e,i)=>i===0||seq[i-1].y<=e.y);CUR.ok=ok;checked=true;
+     if(ok){good();good()}else{bad();addErr("Remets dans l'ordre : "+items.map(e=>e.s).join(', '),items.slice().sort((a,b)=>a.y-b.y).map(e=>e.y+' '+e.s).join(' → '))}r()}};
+  r();
+}
+
+/* ---------- couleurs des droits ---------- */
+function startColors(){
+  const qs=shuffle(CAT);let i=0,g=0,answered=false;
+  function r(){
+    if(i>=qs.length){end("Couleurs des droits",g,qs.length,"bien classés","startColors()");return}
+    answered=false;const x=qs[i];
+    app.innerHTML=top("Couleurs des droits",`${i+1}/${qs.length}`)+bar(i/qs.length)+
+     `<p class="mute"><span class="dot rouge"></span>travail <span class="dot bleu"></span>politique <span class="dot vert"></span>santé <span class="dot jaune"></span>justice</p>
+      <div class="card"><p class="mute" style="margin:0">${x.y}</p><p class="q">${x.t}</p><div class="cat">${Object.keys(CATS).map(k=>`<button class="btn ${CATS[k].c}" id="c_${k}" onclick="CUR.pick('${k}')">${CATS[k].n}</button>`).join('')}</div><div id="fb"></div></div>`;
+  }
+  CUR={pick(k){
+    if(answered)return;answered=true;const x=qs[i],isOk=k===x.c;
+    Object.keys(CATS).forEach(j=>document.getElementById('c_'+j).disabled=true);
+    document.getElementById('c_'+x.c).style.outline='4px solid var(--ok)';
+    if(!isOk)document.getElementById('c_'+k).style.opacity='.45';
+    const txt=`${x.t} → ${CATS[x.c].n} (${CATS[x.c].c}). ${x.tip}`;
+    if(isOk){g++;good();okErr(x.t)}else{bad();addErr(x.t,txt)}
+    document.getElementById('fb').innerHTML=`<div class="fb ${isOk?'ok':'ko'}">${isOk?'✅ Oui ! ':'❌ Non. '}${txt}</div><button class="btn main" onclick="CUR.next()">${i+1>=qs.length?'Voir mon score':'Suivant →'}</button>`;
+  },next(){i++;r()}};
+  r();
+}
+home();
+</script>
+</body>
+</html>
