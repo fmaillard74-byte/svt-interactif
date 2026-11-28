@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Révisions interactives – Chapitre 9 : Description des mouvements</title>
+<style>
+:root{
+  --bg:#fbf9f6; --card:#ffffff; --ink:#23303a; --muted:#5f6d78; --line:#e4ddd3;
+  --accent:#d9730d; --accent-soft:#fdf1e3; --teal:#17707d; --teal-soft:#e6f3f4;
+  --ok:#1d8a4b; --ok-soft:#e5f5ec; --ko:#c2392f; --ko-soft:#fbe9e7; --warn-soft:#fff6d9;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header.top{background:linear-gradient(135deg,#17707d,#1f8f9e);color:#fff;padding:22px 16px 18px}
+header.top .in{max-width:860px;margin:0 auto}
+header.top small{opacity:.85;letter-spacing:.04em;text-transform:uppercase;font-size:.75rem}
+header.top h1{margin:.2em 0 .3em;font-size:1.55rem;line-height:1.2}
+header.top p{margin:0;opacity:.92}
+nav.bar{position:sticky;top:0;z-index:20;background:rgba(251,249,246,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+nav.bar .in{max-width:860px;margin:0 auto;padding:8px 16px}
+.links{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}
+.links::-webkit-scrollbar{display:none}
+.links a{flex:none;font-size:.82rem;text-decoration:none;color:var(--teal);background:var(--teal-soft);padding:4px 10px;border-radius:999px;white-space:nowrap}
+.progress{display:flex;align-items:center;gap:10px;font-size:.82rem;color:var(--muted)}
+.track{flex:1;height:8px;background:#e9e3da;border-radius:99px;overflow:hidden}
+#pbar{height:100%;width:0;background:linear-gradient(90deg,var(--accent),#f0a04b);transition:width .4s}
+main{max-width:860px;margin:0 auto;padding:8px 16px 60px}
+section{margin-top:34px;scroll-margin-top:84px}
+h2{font-size:1.3rem;margin:0 0 4px;padding-bottom:6px;border-bottom:3px solid var(--accent);display:flex;gap:10px;align-items:center}
+h2 .tag{font-size:.7rem;background:var(--accent);color:#fff;padding:2px 9px;border-radius:99px;text-transform:uppercase;letter-spacing:.05em}
+h2 .tag.teal{background:var(--teal)}
+h3{font-size:1.05rem;margin:22px 0 8px;color:var(--teal)}
+.lead{color:var(--muted);margin:8px 0 14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:12px 0;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+.enonce{background:var(--accent-soft);border-left:5px solid var(--accent);border-radius:10px;padding:12px 16px;margin:12px 0}
+.enonce b.t{display:block;margin-bottom:4px;color:#9a4f05}
+.must{background:var(--warn-soft);border-left:5px solid #e0b400;border-radius:10px;padding:10px 14px;margin:12px 0}
+.tip{background:var(--teal-soft);border-left:5px solid var(--teal);border-radius:10px;padding:10px 14px;margin:12px 0}
+details.ret{background:var(--card);border:1px solid var(--line);border-radius:14px;margin:10px 0;overflow:hidden}
+details.ret>summary{cursor:pointer;padding:12px 16px;font-weight:700;list-style:none;display:flex;justify-content:space-between;align-items:center;background:#fff}
+details.ret>summary::-webkit-details-marker{display:none}
+details.ret>summary::after{content:"＋";color:var(--accent);font-size:1.2rem}
+details.ret[open]>summary::after{content:"－"}
+details.ret .body{padding:2px 16px 14px}
+table{border-collapse:collapse;width:100%;margin:8px 0;font-size:.95rem}
+th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+th{background:var(--accent-soft)}
+ul{margin:6px 0;padding-left:1.2em}
+li{margin:3px 0}
+.formula{text-align:center;font-weight:700;font-size:1.15rem;background:#fff;border:2px solid var(--ink);border-radius:10px;padding:8px;margin:10px auto;max-width:360px}
+.vec{position:relative;display:inline-block}
+.vec::before{content:"→";position:absolute;top:-.68em;left:.02em;font-size:.8em;line-height:1}
+sub{font-size:.72em}
+/* Questions */
+.q{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0;transition:border-color .2s,background .2s}
+.q.ok{border-color:var(--ok);background:var(--ok-soft)}
+.q.seen{border-color:#c9a227;background:#fffaf0}
+.qp{margin-bottom:8px}
+.qa{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.opts{display:flex;flex-direction:column;gap:7px;width:100%}
+.opt{text-align:left;font:inherit;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;cursor:pointer;color:inherit}
+.opt:hover:not(:disabled){border-color:var(--teal);background:var(--teal-soft)}
+.opt.ko{border-color:var(--ko);background:var(--ko-soft);text-decoration:line-through;opacity:.8}
+.opt.ok{border-color:var(--ok);background:#d4f0df;font-weight:600}
+.opt:disabled{cursor:default}
+select,input[type=text]{font:inherit;padding:6px 8px;border:1.5px solid #c8c0b4;border-radius:8px;background:#fff;color:inherit;max-width:100%}
+input[type=text]{width:7.5em;text-align:right}
+select.ok,input.ok{border-color:var(--ok);background:#d4f0df}
+select.ko,input.ko{border-color:var(--ko);background:var(--ko-soft)}
+.btn{font:inherit;font-weight:600;background:var(--teal);color:#fff;border:none;border-radius:9px;padding:7px 14px;cursor:pointer}
+.btn:hover{filter:brightness(1.08)}
+.btn.sec{background:#fff;color:var(--teal);border:1.5px solid var(--teal)}
+.btn:disabled{opacity:.45;cursor:default}
+.fb{margin-top:8px;font-size:.95rem}
+.fb .bad{color:var(--ko)} .fb .good{color:var(--ok);font-weight:600}
+.fb .hint{display:block;margin-top:4px;color:#7a5c00}
+.ex{margin-top:8px;font-size:.93rem;background:rgba(255,255,255,.7);border-radius:8px;padding:8px 10px;border:1px dashed #b9c9cc}
+.step{border-left:4px solid var(--teal);padding-left:12px;margin:18px 0 6px}
+.step .sh{display:flex;gap:9px;align-items:center;margin-bottom:2px}
+.step .num{background:var(--teal);color:#fff;width:24px;height:24px;border-radius:50%;display:inline-grid;place-items:center;font-size:.8rem;font-weight:700}
+.step .q{margin-top:6px}
+details.corr{margin:12px 0;border:1.5px dashed var(--accent);border-radius:12px;padding:8px 14px;background:#fff}
+details.corr summary{cursor:pointer;font-weight:700;color:#9a4f05}
+.done-banner{margin:14px 0;padding:12px 14px;border-radius:12px;background:var(--ok-soft);border:1.5px solid var(--ok);font-weight:600}
+/* Chronophotographie */
+.figure{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px;margin:10px 0}
+svg.chrono{width:100%;height:auto;display:block;background:#fcfdfd;border-radius:8px}
+svg.chrono.arrowmode{touch-action:none;cursor:crosshair}
+.chrono .g{stroke:#dbe5e7;stroke-width:1}
+.chrono .g5{stroke:#b9cbcf}
+.chrono .gl{font-size:12px;fill:#8aa0a6}
+.chrono .dot{fill:#17707d}
+.chrono .hit{fill:transparent;cursor:pointer}
+.chrono .pt.sel .dot{fill:var(--accent)}
+.chrono .lbl{font-size:21px;font-weight:700;fill:#10353c;paint-order:stroke;stroke:#fff;stroke-width:3px}
+.chrono .arrow{stroke:#c2392f;stroke-width:3.2;fill:none}
+.chrono .exp{stroke:#1d8a4b;stroke-width:3.2;stroke-dasharray:7 5;fill:none}
+.chrono .rule{stroke:var(--accent);stroke-width:2;stroke-dasharray:5 4}
+.chrono .chord{stroke:#7b8a90;stroke-width:1.6;stroke-dasharray:3 4}
+.chrono .rt{font-size:19px;font-weight:700;fill:#9a4f05;paint-order:stroke;stroke:#fff;stroke-width:3px}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:4px 0 8px}
+.tools .btn.on{background:var(--accent)}
+.readout{font-size:.9rem;color:var(--muted);min-height:1.3em;margin-top:4px}
+svg.strip{width:100%;max-width:330px;height:auto;display:block}
+.strips{display:grid;gap:2px;margin:6px 0 10px}
+.strips .row{display:flex;gap:8px;align-items:center}
+.strips .row b{width:2em}
+.drill{background:var(--teal-soft);border-radius:14px;padding:14px 16px}
+.drill .big{font-size:1.15rem;font-weight:700;margin-bottom:8px}
+.streak{float:right;font-size:.85rem;color:var(--teal);font-weight:700}
+footer{max-width:860px;margin:0 auto;padding:0 16px 40px;color:var(--muted);font-size:.82rem}
+.reset{margin-top:10px}
+@media (max-width:520px){h2{font-size:1.15rem} header.top h1{font-size:1.3rem}}
+@media print{nav.bar{display:none}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="in">
+    <small>Physique-Chimie · 2de · Thème « Mouvement et interactions »</small>
+    <h1>Chapitre 9 – Description des mouvements</h1>
+    <p>Fiche de révision interactive et autocorrective : cours en bref, quiz, puis deux paires d'exercices (<b>guidé</b> puis <b>sans aide</b>).</p>
+  </div>
+</header>
+
+<nav class="bar">
+  <div class="in">
+    <div class="links">
+      <a href="#retenir">À retenir</a><a href="#quiz">Quiz</a><a href="#vitesse">Vitesse moyenne</a><a href="#vecteur">Vecteur vitesse</a><a href="#defi">Défi</a><a href="#express">Express</a>
+    </div>
+    <div class="progress"><div class="track"><div id="pbar"></div></div><span id="ptxt">0 / 0 réussies</span></div>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============ À RETENIR ============ -->
+<section id="retenir">
+  <h2>À retenir</h2>
+  <p class="lead">Relis ces rappels (touche un titre pour l'ouvrir), puis teste-toi.</p>
+
+  <details class="ret" open>
+    <summary>I – Décrire un mouvement</summary>
+    <div class="body">
+      <ul>
+        <li><b>Système</b> : l'objet étudié, modélisé par un <b>point matériel G</b> (on perd la forme, la rotation…).</li>
+        <li><b>Référentiel</b> : l'objet de référence par rapport auquel on décrit le mouvement. Trois à connaître : <b>héliocentrique</b> (centre du Soleil), <b>terrestre</b> (sol / Terre), <b>géocentrique</b> (centre de la Terre).</li>
+        <li><b>Relativité du mouvement</b> : il dépend du référentiel. Un passager de train est immobile par rapport au train, en mouvement par rapport au quai.</li>
+        <li><b>Trajectoire</b> : ensemble des positions successives du point. On la décrit par sa forme : <i>rectiligne</i>, <i>circulaire</i>, <i>curviligne</i>.</li>
+      </ul>
+      <table>
+        <tr><th>Vitesse</th><th>Mouvement</th></tr>
+        <tr><td>Valeur constante</td><td>uniforme</td></tr>
+        <tr><td>Valeur qui augmente</td><td>accéléré</td></tr>
+        <tr><td>Valeur qui diminue</td><td>ralenti (ou décéléré)</td></tr>
+      </table>
+      <p><b>MRU</b> (mouvement rectiligne uniforme) : trajectoire <b>droite</b> et vitesse <b>constante</b> (le vecteur vitesse ne change ni de valeur, ni de direction, ni de sens).</p>
+      <p><b>Chronophotographie</b> : positions enregistrées à intervalles de temps <b>égaux</b> (τ). Écart régulier → uniforme · écart qui augmente → accéléré · écart qui diminue → ralenti.</p>
+      <div class="must"><b>À savoir par cœur :</b> toujours préciser <b>le système et le référentiel</b> avant de décrire un mouvement. Décrire un mouvement = donner la <b>trajectoire</b> + l'évolution de la <b>vitesse</b>.</div>
+    </div>
+  </details>
+
+  <details class="ret">
+    <summary>II – Calculer une vitesse moyenne</summary>
+    <div class="body">
+      <div class="formula">v = d / Δt</div>
+      <table>
+        <tr><th>Je cherche</th><th>Formule</th><th>Unités (SI)</th></tr>
+        <tr><td>la vitesse v</td><td>v = d / Δt</td><td>m/s</td></tr>
+        <tr><td>la distance d</td><td>d = v × Δt</td><td>m</td></tr>
+        <tr><td>la durée Δt</td><td>Δt = d / v</td><td>s</td></tr>
+      </table>
+      <table>
+        <tr><th>Conversion</th><th>Règle</th><th>Exemple</th></tr>
+        <tr><td>m/s → km/h</td><td>× 3,6</td><td>20 m/s = 72 km/h</td></tr>
+        <tr><td>km/h → m/s</td><td>÷ 3,6</td><td>90 km/h = 25 m/s</td></tr>
+        <tr><td>Durée en heures</td><td>min ÷ 60</td><td>1 h 45 min = 1,75 h</td></tr>
+        <tr><td>Durée en secondes</td><td>h × 3600 ; min × 60</td><td>2 min = 120 s</td></tr>
+      </table>
+      <p><b>Méthode en 4 étapes :</b> ① écrire les données avec leurs unités · ② convertir si besoin (unités cohérentes) · ③ écrire la formule littérale puis remplacer par les valeurs · ④ calculer et conclure avec une unité.</p>
+      <div class="tip"><b>Pièges :</b> mélanger km et s (ou m et h) · oublier l'unité du résultat · confondre vitesse moyenne (sur un trajet) et vitesse instantanée (en un point).</div>
+    </div>
+  </details>
+
+  <details class="ret">
+    <summary>III – Tracer un vecteur vitesse</summary>
+    <div class="body">
+      <table>
+        <tr><th>Caractéristique</th><th>Valeur pour <span class="vec">v</span><sub>i</sub> en M<sub>i</sub></th></tr>
+        <tr><td>Point d'application</td><td>le point M<sub>i</sub> considéré</td></tr>
+        <tr><td>Direction</td><td>tangente à la trajectoire en M<sub>i</sub> (≈ droite M<sub>i−1</sub>M<sub>i+1</sub>)</td></tr>
+        <tr><td>Sens</td><td>celui du mouvement</td></tr>
+        <tr><td>Valeur</td><td>la vitesse instantanée, représentée par la <b>longueur</b> de la flèche à l'échelle</td></tr>
+      </table>
+      <div class="formula">v<sub>i</sub> = M<sub>i</sub>M<sub>i+1</sub> / τ</div>
+      <p><b>Méthode :</b> ① mesurer M<sub>i</sub>M<sub>i+1</sub> sur le schéma (cm) · ② convertir avec l'<b>échelle des distances</b> (distance réelle) · ③ diviser par τ (vitesse réelle) · ④ longueur de la flèche = vitesse ÷ <b>échelle des vitesses</b> · ⑤ tracer en M<sub>i</sub>, parallèle à (M<sub>i−1</sub>M<sub>i+1</sub>), dans le sens du mouvement.</p>
+      <div class="tip">Les deux échelles (distances et vitesses) sont <b>indépendantes</b> : ne les confonds pas !</div>
+    </div>
+  </details>
+</section>
+
+<!-- ============ QUIZ ============ -->
+<section id="quiz">
+  <h2>Quiz de connaissances</h2>
+  <p class="lead">Réponds, la correction est immédiate. Les questions marquées 📖 viennent des exercices du livre.</p>
+  <h3>I – Décrire un mouvement</h3>
+  <div id="quiz1"></div>
+  <h3>II – Vitesse moyenne</h3>
+  <div id="quiz2"></div>
+  <h3>III – Vecteur vitesse</h3>
+  <div id="quiz3"></div>
+</section>
+
+<!-- ============ VITESSE MOYENNE ============ -->
+<section id="vitesse">
+  <h2><span class="tag">Exercice 1</span>Vitesse moyenne – guidé</h2>
+  <div class="enonce"><b class="t">Énoncé</b>Un train roule sur une ligne à grande vitesse. Il parcourt <b>270 km</b> en <b>1 h 15 min</b>.<br>Détermine sa <b>vitesse moyenne</b> en km/h, puis en m/s.</div>
+  <p class="lead">Suis les étapes : chacune se débloque quand la précédente est réussie.</p>
+  <div id="ex1"></div>
+
+  <h2 style="margin-top:40px"><span class="tag teal">Exercice 2</span>Vitesse moyenne – sans aide</h2>
+  <div class="enonce"><b class="t">Énoncé</b>Un train régional parcourt <b>108 km</b> en <b>1 h 12 min</b>.</div>
+  <p class="lead">Même méthode, mais cette fois sans les étapes. Le calcul, c'est à toi de l'organiser !</p>
+  <div id="ex2"></div>
+  <details class="corr"><summary>Voir la correction détaillée (essaie d'abord !)</summary>
+    <p><b>① Données :</b> d = 108 km ; Δt = 1 h 12 min = 1 + 12/60 = <b>1,2 h</b>.</p>
+    <p><b>② Q1 :</b> v = d / Δt = 108 / 1,2 = <b>90 km/h</b>.</p>
+    <p><b>③ Q2 :</b> 90 km/h ÷ 3,6 = <b>25 m/s</b>.</p>
+    <p><b>④ Q3 :</b> d = v × Δt avec Δt = 20 min = 1/3 h → d = 90 × 1/3 = <b>30 km</b> (ou 90 × 20/60).</p>
+    <p><b>⑤ Q4 :</b> Δt = d / v = 45 / 90 = <b>0,5 h = 30 min</b>.</p>
+  </details>
+</section>
+
+<!-- ============ VECTEUR VITESSE ============ -->
+<section id="vecteur">
+  <h2><span class="tag">Exercice 3</span>Vecteur vitesse – guidé</h2>
+  <div class="enonce"><b class="t">Énoncé</b>Un véhicule d'essai est filmé par chronophotographie : ses positions M<sub>1</sub> à M<sub>4</sub> sont enregistrées toutes les <b>τ = 0,50 s</b>.<br>
+  <b>Échelle des distances :</b> 1 cm sur le schéma ↔ 2,0 m réels.<br>
+  <b>Échelle des vitesses :</b> 1 cm ↔ 5 m/s.<br>
+  <b>Objectif :</b> tracer le vecteur vitesse <span class="vec">v</span><sub>2</sub> au point M<sub>2</sub>.</div>
+  <div class="figure" id="fig3"></div>
+  <div id="ex3"></div>
+
+  <h2 style="margin-top:40px"><span class="tag teal">Exercice 4</span>Vecteur vitesse – sans aide</h2>
+  <div class="enonce"><b class="t">Énoncé</b>Les positions M<sub>1</sub> à M<sub>5</sub> d'un mobile sont enregistrées toutes les <b>τ = 0,20 s</b>.<br>
+  <b>Échelle des distances :</b> 1 cm ↔ 0,50 m. <b>Échelle des vitesses :</b> 1 cm ↔ 5 m/s.</div>
+  <div class="figure" id="fig4"></div>
+  <div id="ex4"></div>
+  <details class="corr"><summary>Voir la correction détaillée (essaie d'abord !)</summary>
+    <p><b>Mesure :</b> M<sub>3</sub>M<sub>4</sub> = 5,0 cm sur le schéma → distance réelle = 5,0 × 0,50 = <b>2,5 m</b>.</p>
+    <p><b>Vitesse :</b> v<sub>3</sub> = M<sub>3</sub>M<sub>4</sub> / τ = 2,5 / 0,20 = <b>12,5 m/s</b>.</p>
+    <p><b>Flèche :</b> longueur = 12,5 / 5 = <b>2,5 cm</b> ; origine M<sub>3</sub> ; direction <b>parallèle à (M<sub>2</sub>M<sub>4</sub>)</b> ; sens du mouvement (de M<sub>1</sub> vers M<sub>5</sub>).</p>
+    <p><b>Nature :</b> trajectoire courbe (curviligne) et distances entre positions qui augmentent → mouvement <b>curviligne accéléré</b>.</p>
+    <button class="btn sec" id="showExp4">Afficher la flèche attendue sur le schéma</button>
+  </details>
+</section>
+
+<!-- ============ DÉFI ============ -->
+<section id="defi">
+  <h2><span class="tag teal">Défi</span>Le feu orange <small style="font-weight:400;color:var(--muted)">(fiche d'exercices n°3)</small></h2>
+  <div class="enonce"><b class="t">Énoncé</b>Simon roule à <b>50 km/h</b> et se trouve à <b>20 m</b> du feu lorsque celui-ci passe à l'orange. Il lui reste <b>3 s</b> avant le rouge. Sa voiture mesure <b>3 m</b> de long et l'arrière doit avoir franchi le feu avant le rouge.<br>
+  <b>A-t-il le temps de passer sans être verbalisé, en gardant une vitesse constante ?</b></div>
+  <div id="defiq"></div>
+</section>
+
+<!-- ============ EXPRESS ============ -->
+<section id="express">
+  <h2>Entraînement express : conversions</h2>
+  <p class="lead">Des conversions à enchaîner jusqu'à ce que ça devienne un réflexe.</p>
+  <div class="drill">
+    <span class="streak" id="streak">Série : 0</span>
+    <div class="big" id="dq">…</div>
+    <div class="qa">
+      <input type="text" id="di" inputmode="decimal" autocomplete="off" aria-label="Ta réponse">
+      <span id="du"></span>
+      <button class="btn" id="dv">Vérifier</button>
+      <button class="btn sec" id="dn">Passer</button>
+    </div>
+    <div class="fb" id="dfb"></div>
+  </div>
+  <button class="btn sec reset" onclick="location.reload()">↻ Tout recommencer</button>
+</section>
+</main>
+
+<footer>Page de révision construite d'après la fiche de synthèse « Mouvements, forces et principe d'inertie » (parties I à III), la fiche d'exercices du chapitre 9 et les exercices du livre (p. 149-162).</footer>
+
+<script>
+"use strict";
+/* ---------- utilitaires ---------- */
+const $ = (s, r=document) => r.querySelector(s);
+const h = html => { const t=document.createElement('template'); t.innerHTML=html.trim(); return t.content.firstChild; };
+const fmt = (x,d=1) => x.toFixed(d).replace('.',',');
+const V = (s,sub) => `<span class="vec">${s}${sub?`<sub>${sub}</sub>`:''}</span>`;
+function parseNum(s){
+  if(s==null) return NaN;
+  s=String(s).trim().replace(/\s/g,'').replace(',','.');
+  return /^[-+]?(\d+\.?\d*|\.\d+)$/.test(s) ? parseFloat(s) : NaN;
+}
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+/* ---------- progression ---------- */
+const Prog={total:0,done:0,
+  add(n){this.total+=n;this.paint();},
+  ok(){this.done++;this.paint();},
+  paint(){ $('#pbar').style.width=(this.total?this.done/this.total*100:0)+'%'; $('#ptxt').textContent=this.done+' / '+this.total+' réussies'; }
+};
+
+/* ---------- fabrique de questions ---------- */
+function makeQ(q, ctx, opts={}){
+  const root=h(`<div class="q"><div class="qp">${q.prompt||''}</div><div class="qa"></div><div class="fb" aria-live="polite"></div></div>`);
+  const qa=$('.qa',root), fb=$('.fb',root);
+  let fails=0, finished=false;
+  const msg=(html,cls='bad')=>{ fb.innerHTML=`<span class="${cls}">${html}</span>`; };
+  const hintHtml=()=> q.hint?`<span class="hint">💡 Coup de pouce : ${q.hint}</span>`:'';
+  let revealBtn=null;
+
+  function finish(status){
+    if(finished) return; finished=true;
+    root.classList.add(status);
+    if(revealBtn) revealBtn.remove();
+    if(status==='ok'){ fb.innerHTML='<span class="good">✔ Correct !</span>'; Prog.ok(); }
+    else { fb.innerHTML='<span class="bad">Réponse affichée – à retravailler.</span>'; }
+    if(q.explain){ const e=h(`<div class="ex">${q.explain}</div>`); root.appendChild(e); }
+    qa.querySelectorAll('button,select,input').forEach(x=>{ if(!x.classList.contains('keep')) x.disabled=true; });
+    if(opts.onDone) opts.onDone(status);
+  }
+  function fail(text){
+    fails++;
+    let html=`<span class="bad">${text}</span>`;
+    if(fails>=2) html+=hintHtml();
+    fb.innerHTML=html;
+    if(fails>=2 && !revealBtn && !finished){
+      revealBtn=h('<button class="btn sec" style="margin-top:8px">Voir la réponse</button>');
+      revealBtn.addEventListener('click',()=>reveal());
+      root.insertBefore(revealBtn, fb.nextSibling);
+    }
+  }
+  let reveal=()=>finish('seen');
+
+  /* --- QCM --- */
+  if(q.type==='mcq'){
+    const list=q.fixed? q.options : shuffle(q.options);
+    const box=h('<div class="opts"></div>'); qa.appendChild(box);
+    const btns=list.map(o=>{
+      const b=h(`<button class="opt">${o.t}</button>`);
+      b.addEventListener('click',()=>{
+        if(finished) return;
+        if(o.ok){ b.classList.add('ok'); finish('ok'); }
+        else { b.classList.add('ko'); b.disabled=true; fail(o.why||'Ce n\'est pas ça, essaie encore.'); }
+      });
+      box.appendChild(b); return {b,o};
+    });
+    reveal=()=>{ btns.forEach(x=>{ if(x.o.ok) x.b.classList.add('ok'); }); finish('seen'); };
+  }
+
+  /* --- texte à trous --- */
+  else if(q.type==='cloze'){
+    const wrap=h('<div style="width:100%;line-height:2.2"></div>'); qa.appendChild(wrap);
+    wrap.innerHTML=q.text.replace(/\{(\d+)\}/g,(m,k)=>{
+      const s=q.slots[+k];
+      return `<select data-k="${k}"><option value="">…</option>${shuffle(s.opts).map(o=>`<option>${o}</option>`).join('')}</select>`;
+    });
+    const sels=[...wrap.querySelectorAll('select')];
+    const check=h('<button class="btn">Vérifier</button>'); qa.appendChild(check);
+    check.addEventListener('click',()=>{
+      if(finished) return;
+      if(sels.some(s=>!s.value)){ msg('Complète tous les trous avant de vérifier.'); return; }
+      let all=true;
+      sels.forEach(s=>{ const good=s.value===q.slots[+s.dataset.k].ans; s.classList.remove('ok','ko'); s.classList.add(good?'ok':'ko'); if(!good) all=false; });
+      if(all) finish('ok'); else fail('Il y a au moins une erreur (en rouge). Corrige-la et revérifie.');
+    });
+    reveal=()=>{ sels.forEach(s=>{ s.value=q.slots[+s.dataset.k].ans; s.classList.remove('ko'); s.classList.add('ok'); }); finish('seen'); };
+  }
+
+  /* --- réponse numérique --- */
+  else if(q.type==='num'){
+    const inp=h('<input type="text" inputmode="decimal" autocomplete="off" aria-label="Ta réponse">');
+    qa.appendChild(inp);
+    let sel=null;
+    if(q.units){ sel=h(`<select><option value="">unité ?</option>${q.units.map(u=>`<option>${u}</option>`).join('')}</select>`); qa.appendChild(sel); }
+    else if(q.unitText){ qa.appendChild(h(`<span>${q.unitText}</span>`)); }
+    const check=h('<button class="btn">Vérifier</button>'); qa.appendChild(check);
+    const answers=()=> typeof q.answers==='function'? q.answers(ctx) : q.answers;
+    const tolOf=a=> a.tol!=null? a.tol : (q.tol!=null? q.tol : Math.max(0.01,Math.abs(a.v)*0.01));
+    const run=()=>{
+      if(finished) return;
+      const v=parseNum(inp.value);
+      if(isNaN(v)){ msg('Écris un nombre (par exemple 12,5).'); return; }
+      const A=answers();
+      const valueOk=A.filter(a=>Math.abs(v-a.v)<=tolOf(a));
+      if(sel && !sel.value){ msg('Choisis aussi une unité.'); return; }
+      const good=valueOk.some(a=> !sel || !a.u || a.u===sel.value);
+      inp.classList.remove('ok','ko');
+      if(good){ inp.classList.add('ok'); if(q.store) ctx[q.store]=v; finish('ok'); return; }
+      inp.classList.add('ko');
+      if(valueOk.length){ fail('La valeur est bonne, mais vérifie l\'<b>unité</b>.'); return; }
+      const trap=(q.traps||[]).find(t=>Math.abs(v-t.v)<=(t.tol!=null?t.tol:Math.max(0.01,Math.abs(t.v)*0.01)));
+      fail(trap? trap.msg : 'Ce n\'est pas la bonne valeur. Revérifie ton calcul et tes conversions.');
+    };
+    check.addEventListener('click',run);
+    inp.addEventListener('keydown',e=>{ if(e.key==='Enter') run(); });
+    reveal=()=>{ const a=answers()[0]; if(q.store) ctx[q.store]=a.v;
+      inp.value=(a.txt||String(a.v)).replace('.',','); if(sel&&a.u) sel.value=a.u; inp.classList.add('ok'); finish('seen'); };
+  }
+
+  /* --- tracé de flèche --- */
+  else if(q.type==='arrow'){
+    const check=h('<button class="btn">Vérifier ma flèche</button>'); qa.appendChild(check);
+    check.addEventListener('click',()=>{
+      if(finished) return;
+      const r=q.chrono.checkArrow();
+      if(r.ok) finish('ok'); else if(r.noTip) msg(r.msg); else fail(r.msg);
+    });
+    reveal=()=>{ q.chrono.showExpected(); finish('seen'); };
+  }
+  return {el:root};
+}
+
+/* ---------- exercices guidés / libres ---------- */
+function guided(host, steps, ctx){
+  Prog.add(steps.length);
+  let i=0;
+  (function next(){
+    if(i>=steps.length){ host.appendChild(h('<div class="done-banner">🎉 Exercice terminé ! Passe maintenant à l\'exercice suivant, sans les étapes.</div>')); return; }
+    const s=steps[i];
+    const card=h(`<div class="step"><div class="sh"><span class="num">${i+1}</span><b>${s.title}</b></div></div>`);
+    host.appendChild(card);
+    card.appendChild(makeQ(s.q,ctx,{onDone:()=>{ i++; setTimeout(next,450); }}).el);
+    if(i>0) card.scrollIntoView({behavior:'smooth',block:'center'});
+  })();
+}
+function listQ(host, qs, ctx={}){
+  Prog.add(qs.length);
+  qs.forEach((q,k)=>{ const w=h(`<div><b style="color:var(--teal)">Question ${k+1}</b></div>`); w.appendChild(makeQ(q,ctx).el); host.appendChild(w); });
+}
+
+/* ---------- chronophotographie interactive ---------- */
+function Chrono(host,cfg){
+  const U=40,W=cfg.W||16,H=cfg.H||9, id='ch'+(++Chrono.n);
+  const P=cfg.pts, I=cfg.i; // I = numéro (1-based) du point étudié
+  const px=x=>x*U, py=y=>(H-y)*U;
+  const O=P[I-1], A=P[I-2], B=P[I];
+  const dnext=Math.hypot(B[0]-O[0],B[1]-O[1]);
+  const vreal=dnext*cfg.scaleD/cfg.tau, L=vreal/cfg.scaleV;
+  let dir=[B[0]-A[0],B[1]-A[1]]; const dn=Math.hypot(dir[0],dir[1]); dir=[dir[0]/dn,dir[1]/dn];
+  let grid='';
+  for(let i=0;i<=W;i++){ grid+=`<line x1="${i*U}" y1="0" x2="${i*U}" y2="${H*U}" class="g${i%5===0?' g5':''}"/>`; if(i>0&&i%2===0) grid+=`<text x="${i*U+2}" y="${H*U-3}" class="gl">${i}</text>`; }
+  for(let j=0;j<=H;j++) grid+=`<line x1="0" y1="${j*U}" x2="${W*U}" y2="${j*U}" class="g${j%5===0?' g5':''}"/>`;
+  const pts=P.map((p,k)=>`<g class="pt" data-k="${k}"><circle cx="${px(p[0])}" cy="${py(p[1])}" r="5" class="dot"/><circle cx="${px(p[0])}" cy="${py(p[1])}" r="17" class="hit"/><text x="${px(p[0])+9}" y="${py(p[1])-10}" class="lbl">M<tspan dy="5" font-size="14">${k+1}</tspan></text></g>`).join('');
+  host.innerHTML=`
+    <div class="tools">
+      <button class="btn on" data-tool="rule">📏 Règle</button>
+      <button class="btn sec" data-tool="arrow">✏️ Tracer la flèche</button>
+      ${cfg.chordBtn?`<button class="btn sec" data-act="chord">Afficher la droite (M<sub>${I-1}</sub>M<sub>${I+1}</sub>)</button>`:''}
+      <button class="btn sec" data-act="clear">Effacer</button>
+    </div>
+    <svg class="chrono" viewBox="0 0 ${W*U} ${H*U}" role="img" aria-label="Chronophotographie sur quadrillage de 1 cm">
+      <defs>
+        <marker id="${id}-a" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L9,4.5 L0,9 z" fill="#c2392f"/></marker>
+        <marker id="${id}-e" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L9,4.5 L0,9 z" fill="#1d8a4b"/></marker>
+      </defs>
+      ${grid}
+      <g class="ly" style="pointer-events:none"><g id="${id}-ch"></g><g id="${id}-ms"></g><g id="${id}-ex"></g><g id="${id}-ar"></g></g>
+      ${pts}
+    </svg>
+    <div class="readout" id="${id}-ro">1 carreau du quadrillage = 1 cm sur le schéma. Mode règle : touche deux points pour mesurer leur distance.</div>`;
+  const svg=$('svg',host), ro=$('#'+id+'-ro',host);
+  const L_ch=$('#'+id+'-ch',host), L_ms=$('#'+id+'-ms',host), L_ex=$('#'+id+'-ex',host), L_ar=$('#'+id+'-ar',host);
+  let mode='rule', sel=[], tip=null, drawing=false;
+
+  function setMode(m){
+    mode=m; svg.classList.toggle('arrowmode',m==='arrow');
+    host.querySelectorAll('[data-tool]').forEach(b=>{ const on=b.dataset.tool===m; b.classList.toggle('on',on); b.classList.toggle('sec',!on); });
+    ro.textContent = m==='rule' ? 'Mode règle : touche deux points pour mesurer leur distance (en cm sur le schéma).'
+      : `Mode flèche : clique ou glisse sur le schéma ; la flèche part de M${I}. Longueur actuelle : ${tip?fmt(Math.hypot(tip[0]-O[0],tip[1]-O[1]))+' cm':'—'}.`;
+  }
+  function pick(k){
+    if(sel.length===2) sel=[];
+    if(sel.includes(k)) return;
+    sel.push(k);
+    host.querySelectorAll('.pt').forEach(g=>g.classList.toggle('sel',sel.includes(+g.dataset.k)));
+    L_ms.innerHTML='';
+    if(sel.length===2){
+      const a=P[sel[0]], b=P[sel[1]], d=Math.hypot(a[0]-b[0],a[1]-b[1]);
+      L_ms.innerHTML=`<line x1="${px(a[0])}" y1="${py(a[1])}" x2="${px(b[0])}" y2="${py(b[1])}" class="rule"/><text x="${(px(a[0])+px(b[0]))/2+6}" y="${(py(a[1])+py(b[1]))/2-6}" class="rt">${fmt(d)} cm</text>`;
+      ro.innerHTML=`📏 M<sub>${sel[0]+1}</sub>M<sub>${sel[1]+1}</sub> = <b>${fmt(d)} cm</b> sur le schéma.`;
+    } else ro.textContent='Choisis un deuxième point.';
+  }
+  function setTip(e){
+    const r=svg.getBoundingClientRect();
+    let x=(e.clientX-r.left)/r.width*W, y=H-(e.clientY-r.top)/r.height*H;
+    x=Math.min(W,Math.max(0,Math.round(x*10)/10)); y=Math.min(H,Math.max(0,Math.round(y*10)/10));
+    tip=[x,y]; drawArrow();
+    ro.innerHTML=`✏️ Flèche tracée depuis M<sub>${I}</sub> : longueur <b>${fmt(Math.hypot(x-O[0],y-O[1]))} cm</b>.`;
+  }
+  function drawArrow(){
+    L_ar.innerHTML=tip?`<line x1="${px(O[0])}" y1="${py(O[1])}" x2="${px(tip[0])}" y2="${py(tip[1])}" class="arrow" marker-end="url(#${id}-a)"/>`:'';
+  }
+  svg.addEventListener('pointerdown',e=>{
+    if(mode==='arrow'){ drawing=true; try{svg.setPointerCapture(e.pointerId);}catch(_){} setTip(e); e.preventDefault(); }
+    else { const g=e.target.closest('.pt'); if(g) pick(+g.dataset.k); }
+  });
+  svg.addEventListener('pointermove',e=>{ if(drawing) setTip(e); });
+  const stop=()=>{drawing=false;}; svg.addEventListener('pointerup',stop); svg.addEventListener('pointercancel',stop);
+  host.querySelectorAll('[data-tool]').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.tool)));
+  host.querySelectorAll('[data-act]').forEach(b=>b.addEventListener('click',()=>{
+    if(b.dataset.act==='clear'){ sel=[]; tip=null; L_ms.innerHTML=''; L_ar.innerHTML=''; host.querySelectorAll('.pt').forEach(g=>g.classList.remove('sel')); ro.textContent='Schéma remis à zéro.'; }
+    if(b.dataset.act==='chord'){ api.showChord(); }
+  }));
+
+  const api={
+    exp:{meas:dnext,v:vreal,L},
+    showChord(){
+      L_ch.innerHTML=`<line x1="${px(A[0])}" y1="${py(A[1])}" x2="${px(B[0])}" y2="${py(B[1])}" class="chord"/><text x="${(px(A[0])+px(B[0]))/2+8}" y="${(py(A[1])+py(B[1]))/2+18}" class="rt" style="fill:#5d6d73">(M${I-1}M${I+1})</text>`;
+      ro.innerHTML=`La tangente en M<sub>${I}</sub> est <b>parallèle à la droite (M<sub>${I-1}</sub>M<sub>${I+1}</sub>)</b> en pointillés.`;
+    },
+    showExpected(){
+      const t=[O[0]+dir[0]*L,O[1]+dir[1]*L];
+      L_ex.innerHTML=`<line x1="${px(O[0])}" y1="${py(O[1])}" x2="${px(t[0])}" y2="${py(t[1])}" class="exp" marker-end="url(#${id}-e)"/>`;
+      ro.innerHTML=`✅ Flèche attendue (vert) : longueur ${fmt(L)} cm, parallèle à (M<sub>${I-1}</sub>M<sub>${I+1}</sub>), dans le sens du mouvement.`;
+    },
+    checkArrow(){
+      if(!tip) return {ok:false,noTip:true,msg:'Trace d\'abord la flèche : passe en mode « ✏️ Tracer la flèche » puis clique ou glisse sur le schéma.'};
+      const vx=tip[0]-O[0], vy=tip[1]-O[1], len=Math.hypot(vx,vy);
+      if(len<0.2) return {ok:false,msg:'Ta flèche est presque nulle : trace-la plus loin du point.'};
+      const cos=Math.max(-1,Math.min(1,(vx*dir[0]+vy*dir[1])/len)), ang=Math.acos(cos)*180/Math.PI;
+      const angOk=ang<=12, lenOk=Math.abs(len-L)<=0.4;
+      if(angOk&&lenOk){ api.showExpected(); return {ok:true}; }
+      const m=[];
+      if(ang>100) m.push(`Le sens est à revoir : la flèche doit aller dans le sens du mouvement (de M<sub>1</sub> vers M<sub>${P.length}</sub>).`);
+      else if(!angOk) m.push(`La direction n'est pas la bonne (écart d'environ ${Math.round(ang)}°) : elle doit être parallèle à la droite (M<sub>${I-1}</sub>M<sub>${I+1}</sub>).`);
+      if(!lenOk) m.push(len<L?'Ta flèche est trop courte par rapport à l\'échelle des vitesses.':'Ta flèche est trop longue par rapport à l\'échelle des vitesses.');
+      return {ok:false,msg:m.join(' ')};
+    },
+    setMode
+  };
+  return api;
+}
+Chrono.n=0;
+
+/* ---------- petites chronophotos (quiz) ---------- */
+function strip(label,xs){
+  return `<div class="row"><b>(${label})</b><svg class="strip" viewBox="0 0 300 26"><line x1="4" y1="13" x2="296" y2="13" stroke="#cfd8da"/>${xs.map(x=>`<circle cx="${x}" cy="13" r="4.5" fill="#17707d"/>`).join('')}<path d="M286,6 L296,13 L286,20" fill="none" stroke="#9aa9ad"/></svg></div>`;
+}
+
+/* ===================== CONTENU ===================== */
+const ok=(t,why)=>({t,ok:true}), ko=(t,why)=>({t,ok:false,why});
+
+/* ---- Quiz I ---- */
+const quiz1=[
+ {type:'cloze',prompt:'<b>Compléter.</b>',text:'Pour décrire un mouvement, on précise toujours le {0} étudié et le {1} choisi.',
+  slots:[{opts:['système','référentiel','chronomètre'],ans:'système'},{opts:['référentiel','système','poids'],ans:'référentiel'}],
+  explain:'Sans système ni référentiel, décrire un mouvement n\'a pas de sens.'},
+ {type:'mcq',prompt:'Un passager est assis dans un train en marche. Que peut-on dire ?',
+  options:[ok('Il est immobile par rapport au train et en mouvement par rapport au quai.'),
+           ko('Il est immobile dans tous les référentiels.','Non : l\'immobilité dépend du référentiel.'),
+           ko('Il est en mouvement par rapport au train et immobile par rapport au quai.','C\'est l\'inverse.')],
+  explain:'C\'est la <b>relativité du mouvement</b> : il dépend du référentiel choisi.'},
+ {type:'cloze',prompt:'📖 <b>Choisir le bon référentiel</b> (exercice 4).',text:'Mouvement de la Lune autour de la Terre : référentiel {0}. Mouvement d\'une nageuse dans une piscine : référentiel {1}.',
+  slots:[{opts:['géocentrique (centre de la Terre)','terrestre (lié au sol)','héliocentrique (Soleil)'],ans:'géocentrique (centre de la Terre)'},
+         {opts:['géocentrique (centre de la Terre)','terrestre (lié au sol)','héliocentrique (Soleil)'],ans:'terrestre (lié au sol)'}],
+  explain:'On choisit le référentiel dans lequel le mouvement est le plus simple à décrire : centre de la Terre pour la Lune, sol (la piscine) pour la nageuse.'},
+ {type:'mcq',prompt:'📖 <b>Choisir le bon référentiel</b> (exercice 5). Quel référentiel permet de décrire le mouvement du ballon lancé par la joueuse vers le but ?',
+  options:[ok('Le référentiel lié au gymnase.'),ko('Le référentiel lié au ballon.','Dans ce référentiel, le ballon est… immobile : on ne décrit rien !')],
+  explain:'Le ballon est immobile dans son propre référentiel. Le gymnase (le sol) est le référentiel adapté.'},
+ {type:'cloze',prompt:'📖 <b>Trajectoire et référentiel</b> (exercice 9). Une personne marche sur un tapis roulant.',text:'Elle est immobile dans le référentiel lié au {0} et en mouvement dans le référentiel lié au {1}.',
+  slots:[{opts:['tapis roulant','sol'],ans:'tapis roulant'},{opts:['sol','tapis roulant'],ans:'sol'}],
+  explain:'Conclusion : la trajectoire et le mouvement dépendent du choix du référentiel.'},
+ {type:'cloze',prompt:'<b>Trajectoires.</b>',text:'Une voiture sur une route droite a une trajectoire {0} ; un point de la roue d\'un manège a une trajectoire {1}.',
+  slots:[{opts:['rectiligne','circulaire','curviligne'],ans:'rectiligne'},{opts:['rectiligne','circulaire','curviligne'],ans:'circulaire'}]},
+ {type:'cloze',prompt:`<b>Chronophotographies</b> (mouvement de gauche à droite, durées τ égales) :<div class="strips">${strip('a',[20,60,100,140,180,220,260])}${strip('b',[10,25,50,85,130,185,250])}${strip('c',[20,85,140,185,220,245,260])}</div>`,
+  text:'(a) mouvement {0} · (b) mouvement {1} · (c) mouvement {2}',
+  slots:[{opts:['uniforme','accéléré','ralenti'],ans:'uniforme'},{opts:['uniforme','accéléré','ralenti'],ans:'accéléré'},{opts:['uniforme','accéléré','ralenti'],ans:'ralenti'}],
+  explain:'Même durée entre deux positions : si l\'écart est constant → vitesse constante ; s\'il augmente → la vitesse augmente ; s\'il diminue → elle diminue.'},
+ {type:'mcq',prompt:'Qu\'est-ce qu\'un mouvement rectiligne uniforme (MRU) ?',
+  options:[ok('Une trajectoire droite et une vitesse constante.'),ko('Une trajectoire droite et une vitesse qui augmente.','Ce serait un mouvement rectiligne accéléré.'),ko('Une trajectoire courbe et une vitesse constante.','La trajectoire doit être droite pour un MRU.')]},
+ {type:'mcq',prompt:'📖 <b>Modéliser par un point</b> (exercice 7). Pourquoi modéliser le skieur par un point C ne permet-il pas de voir qu\'il accroche la porte avec son bras ?',
+  options:[ok('Parce qu\'un point ne contient plus d\'information sur la forme et les dimensions du skieur (position du bras).'),
+           ko('Parce que le skieur va trop vite.','La vitesse n\'a rien à voir avec la modélisation.'),
+           ko('Parce que le point C n\'a pas de masse.','Ce n\'est pas la question : on parle de forme, pas de masse.')]},
+ {type:'mcq',prompt:'📖 <b>Modéliser par un point</b> (exercice 6). La modélisation de l\'avion par un point permet-elle d\'observer une vrille ?',
+  options:[ok('Non : une vrille est une rotation de l\'avion sur lui-même, que le point ne permet pas de voir.'),
+           ko('Oui : un point suffit toujours à décrire tous les mouvements.','Non, la modélisation fait perdre des informations.'),
+           ko('Oui, si on choisit le bon référentiel.','Le choix du référentiel ne rend pas visible une rotation sur lui-même.')],
+  explain:'Système : l\'avion ; référentiel : le sol (le spectateur).'},
+ {type:'cloze',prompt:'📖 <b>Échelles de description</b> (exercice 2). On décrit le train d\'une montagne russe depuis le bord de l\'attraction.',text:'Échelle de temps adaptée : la {0}. Échelle d\'espace adaptée : le {1}.',
+  slots:[{opts:['seconde','heure','année'],ans:'seconde'},{opts:['mètre','kilomètre','micromètre'],ans:'mètre'}]}
+];
+
+/* ---- Quiz II ---- */
+const quiz2=[
+ {type:'cloze',prompt:'<b>Les trois formules</b> (v : vitesse, d : distance, Δt : durée).',text:'v = {0} · d = {1} · Δt = {2}',
+  slots:[{opts:['d / Δt','v × Δt','d / v','Δt / d'],ans:'d / Δt'},{opts:['d / Δt','v × Δt','d / v','Δt / d'],ans:'v × Δt'},{opts:['d / Δt','v × Δt','d / v','Δt / d'],ans:'d / v'}]},
+ {type:'mcq',prompt:'Pour passer de <b>m/s</b> à <b>km/h</b>, on…',
+  options:[ok('multiplie par 3,6.'),ko('divise par 3,6.','C\'est pour passer de km/h à m/s.'),ko('multiplie par 60.','60 sert à convertir des minutes en heures (ou en secondes).')],
+  explain:'1 m/s = 3,6 km/h : en 1 h (3 600 s) on parcourt 3 600 m = 3,6 km.'},
+ {type:'num',prompt:'Convertis <b>1 h 45 min</b> en heures.',unitText:'h',answers:[{v:1.75}],tol:0.005,
+  traps:[{v:1.45,msg:'45 min = 45 ÷ 60 = 0,75 h (et non 0,45 h).'}],hint:'45 min = 45 ÷ 60 h.'},
+ {type:'num',prompt:'Un sprinter court 100 m en 9,58 s. Sa vitesse moyenne en <b>m/s</b> (arrondie au dixième) ?',unitText:'m/s',answers:[{v:10.4}],tol:0.06,
+  traps:[{v:37.6,tol:0.3,msg:'37,6 est la valeur en km/h : on te demande des m/s.'}],hint:'v = d / Δt = 100 / 9,58.'}
+];
+
+/* ---- Quiz III ---- */
+const quiz3=[
+ {type:'mcq',prompt:'La <b>longueur de la flèche</b> du vecteur vitesse représente…',
+  options:[ok('la valeur de la vitesse, grâce à l\'échelle des vitesses.'),ko('la distance parcourue.','La distance se lit entre les positions, pas sur la flèche.'),ko('la durée τ entre deux positions.','τ est une durée, pas une vitesse.')]},
+ {type:'num',prompt:`📖 <b>Exercice 5.</b> En M, la vitesse vaut 12 m/s. Échelle : 1 cm ↔ 4 m/s. Quelle est la longueur de la flèche ${V('v','M')} ?`,unitText:'cm',answers:[{v:3}],tol:0.05,
+  traps:[{v:48,msg:'Tu as multiplié : la longueur est v ÷ échelle (12 ÷ 4).'}],hint:'Longueur = 12 m/s ÷ (4 m/s par cm).',
+  explain:'Flèche de 3 cm, origine M, dans le sens du déplacement.'},
+ {type:'num',prompt:`📖 <b>Exercice 6.</b> v<sub>1</sub> = 3,0 m/s et v<sub>2</sub> = 5,0 m/s ; échelle 1 cm ↔ 2 m/s. Quelle est la longueur de la flèche ${V('v',2)} ?`,unitText:'cm',answers:[{v:2.5}],tol:0.05,
+  traps:[{v:10,msg:'Tu as multiplié : divise 5,0 par 2.'}]},
+ {type:'mcq',prompt:`📖 <b>Exercice 6 (suite).</b> Les vecteurs ${V('v',1)} (1,5 cm) puis ${V('v',2)} (2,5 cm) ont même direction et même sens. Quelle est la nature du mouvement ?`,
+  options:[ok('Rectiligne accéléré.'),ko('Rectiligne uniforme.','La longueur de la flèche change, donc la vitesse n\'est pas constante.'),ko('Rectiligne ralenti.','La flèche s\'allonge : la vitesse augmente.'),ko('Circulaire uniforme.','Direction identique : la trajectoire est droite.')]},
+ {type:'mcq',prompt:`📖 <b>Vecteur déplacement</b> (exercice 11). Un boulet de canon décrit une trajectoire courbe entre M<sub>1</sub> et M<sub>4</sub>. Comparée à la longueur du vecteur déplacement M<sub>1</sub>M<sub>4</sub>, la distance réellement parcourue est…`,
+  options:[ok('plus grande (le chemin suivi est courbe, le vecteur est une « ligne droite »).'),ko('plus petite.','Le plus court chemin entre deux points est la ligne droite.'),ko('exactement égale.','Seulement si la trajectoire est rectiligne.')]}
+];
+
+/* ---- Exercice 1 (guidé) ---- */
+const ctx1={};
+const steps1=[
+ {title:'Écrire les données avec leurs unités',q:{type:'cloze',prompt:'Complète les données et l\'inconnue.',text:'Données : d = 270 {0} et Δt = 1 h 15 min. On cherche {1}.',
+   slots:[{opts:['km','m','h','s'],ans:'km'},{opts:['la distance d','la vitesse moyenne v','la durée Δt'],ans:'la vitesse moyenne v'}]}},
+ {title:'Convertir pour avoir des unités cohérentes',q:{type:'num',prompt:'La vitesse sera en km/h : il faut donc la durée en <b>heures</b>. Convertis Δt = 1 h 15 min en heures.',unitText:'h',answers:[{v:1.25}],tol:0.005,
+   traps:[{v:1.15,msg:'Attention : 15 min = 15 ÷ 60 = 0,25 h (une heure = 60 min, pas 100).'},{v:75,msg:'75 est la durée en <b>minutes</b>. On veut des heures.'},{v:1.5,msg:'15 min = un quart d\'heure = 0,25 h, pas 0,5 h.'}],
+   hint:'15 min = 15 ÷ 60 h. Ajoute ensuite l\'heure entière.',explain:'Δt = 1 + 15/60 = 1 + 0,25 = <b>1,25 h</b>.'}},
+ {title:'Écrire la formule littérale',q:{type:'mcq',prompt:'Quelle formule permet de calculer la vitesse moyenne ?',
+   options:[ok('v = d / Δt'),ko('v = d × Δt','On multiplie pour trouver une distance (d = v × Δt).'),ko('v = Δt / d','Ce serait l\'inverse : une durée par kilomètre !')],
+   explain:'On écrit toujours la formule <b>littérale</b> avant de remplacer par les valeurs.'}},
+ {title:'Calculer v en km/h',q:{type:'num',prompt:'Remplace : v = 270 / 1,25. Quelle est la vitesse moyenne ?',units:['km/h','m/s','km'],answers:[{v:216,u:'km/h',tol:0.6}],
+   traps:[{v:337.5,msg:'Tu as multiplié (270 × 1,25). Pour une vitesse on <b>divise</b> : v = d / Δt.'},{v:234.8,tol:0.6,msg:'Tu as divisé par 1,15 : revois la conversion de 15 min en heures.'},{v:180,tol:0.6,msg:'Tu as divisé par 1,5 : 15 min = 0,25 h, donc Δt = 1,25 h.'},{v:3.6,tol:0.05,msg:'Tu as divisé par 75 (minutes) : convertis d\'abord en heures.'}],
+   hint:'270 ÷ 1,25 = ?',explain:'v = 270 / 1,25 = <b>216 km/h</b>.'}},
+ {title:'Convertir le résultat en m/s',q:{type:'num',prompt:'Convertis 216 km/h en m/s.',unitText:'m/s',answers:[{v:60}],tol:0.2,
+   traps:[{v:777.6,tol:1,msg:'Tu as multiplié par 3,6. Pour passer de km/h à m/s, on <b>divise</b> par 3,6.'}],
+   hint:'216 ÷ 3,6',explain:'216 / 3,6 = <b>60 m/s</b>.'}},
+ {title:'Conclure avec une phrase',q:{type:'mcq',prompt:'Quelle conclusion est correcte et complète ?',
+   options:[ok('La vitesse moyenne du train est de 216 km/h, soit 60 m/s.'),ko('v = 216.','Il manque l\'unité et la phrase de conclusion.'),ko('La vitesse moyenne du train est de 60 km/h.','Attention aux unités : 60 est en m/s.')],
+   explain:'<b>Bilan de la méthode :</b> données + unités → conversions → formule littérale puis calcul → conclusion avec unité.'}}
+];
+
+/* ---- Exercice 2 (sans aide) ---- */
+const qs2=[
+ {type:'num',prompt:'<b>1.</b> Détermine la vitesse moyenne du train en <b>km/h</b>.',units:['km/h','m/s','km'],answers:[{v:90,u:'km/h',tol:0.5}],
+  traps:[{v:96.4,tol:0.5,msg:'1 h 12 min ≠ 1,12 h : 12 min = 12 ÷ 60 = 0,2 h.'},{v:1.5,tol:0.02,msg:'Tu as mélangé km et minutes (108 ÷ 72) : convertis la durée en heures.'}],hint:'Convertis d\'abord Δt en heures.'},
+ {type:'num',prompt:'<b>2.</b> Exprime cette vitesse en <b>m/s</b>.',unitText:'m/s',answers:[{v:25}],tol:0.2,
+  traps:[{v:324,tol:1,msg:'Pour passer de km/h à m/s on divise par 3,6 (on ne multiplie pas).'}]},
+ {type:'num',prompt:'<b>3.</b> En conservant cette vitesse, quelle distance parcourt-il en <b>20 min</b> ?',units:['km','m','min','h'],answers:[{v:30,u:'km',tol:0.3},{v:30000,u:'m',tol:300}],
+  traps:[{v:1800,tol:5,msg:'Tu as multiplié 90 par 20 minutes : convertis d\'abord 20 min en heures (1/3 h).'}],hint:'d = v × Δt, avec Δt en heures si v est en km/h.'},
+ {type:'num',prompt:'<b>4.</b> Quelle durée faut-il pour parcourir <b>45 km</b> à cette vitesse ?',units:['min','h','km'],answers:[{v:30,u:'min',tol:0.5},{v:0.5,u:'h',tol:0.01}],
+  traps:[{v:4050,tol:10,msg:'Tu as multiplié : pour une durée, Δt = d / v.'}],hint:'Δt = d / v'}
+];
+
+/* ---- Exercices 3 & 4 (chronophotos) ---- */
+const fig3=Chrono($('#fig3'),{pts:[[1,7.5],[2.5,5.5],[6.5,2.5],[11.3,1.1]],i:2,tau:0.5,scaleD:2,scaleV:5,chordBtn:true});
+const ctx3={};
+const steps3=[
+ {title:'Les 4 caractéristiques du vecteur vitesse',q:{type:'cloze',prompt:`Complète les caractéristiques de ${V('v',2)}.`,
+   text:'Point d\'application : {0}. Direction : {1}. Sens : {2}. Valeur : {3}.',
+   slots:[{opts:['le point M2','le point M1','le point M3'],ans:'le point M2'},
+          {opts:['la tangente en M2 (∥ M1M3)','la perpendiculaire à la trajectoire','toujours l\'horizontale'],ans:'la tangente en M2 (∥ M1M3)'},
+          {opts:['celui du mouvement','opposé au mouvement'],ans:'celui du mouvement'},
+          {opts:['la vitesse instantanée (longueur de la flèche)','la durée τ','la distance totale parcourue'],ans:'la vitesse instantanée (longueur de la flèche)'}]}},
+ {title:'Mesurer sur le schéma',q:{type:'num',prompt:'Utilise l\'outil <b>📏 Règle</b> du schéma : mesure la distance M<sub>2</sub>M<sub>3</sub> (sur le schéma).',unitText:'cm',answers:[{v:5,txt:'5',tol:0.25}],store:'meas',
+   hint:'Touche M2 puis M3 : la distance s\'affiche sous le schéma.',explain:'M<sub>2</sub>M<sub>3</sub> = <b>5,0 cm</b> sur le schéma.'}},
+ {title:'Passer à la distance réelle',q:{type:'num',prompt:'Échelle : 1 cm ↔ 2,0 m. Quelle est la distance <b>réelle</b> M<sub>2</sub>M<sub>3</sub> ?',unitText:'m',store:'dreal',
+   answers:c=>[{v:10,tol:0.5},{v:c.meas*2,tol:0.1}],traps:[{v:2.5,tol:0.2,msg:'Tu as divisé : chaque cm du schéma vaut 2,0 m, donc on <b>multiplie</b>.'}],
+   hint:'Distance réelle = distance mesurée × échelle (m par cm).',explain:'M<sub>2</sub>M<sub>3</sub> réelle = 5,0 × 2,0 = <b>10 m</b>.'}},
+ {title:'Calculer la valeur de la vitesse',q:{type:'num',prompt:'Durée entre deux positions : τ = 0,50 s. Calcule v<sub>2</sub> = M<sub>2</sub>M<sub>3</sub> / τ.',unitText:'m/s',store:'v',
+   answers:c=>[{v:20,tol:0.6},{v:c.dreal/0.5,tol:0.1}],traps:[{v:5,tol:0.2,msg:'Tu as multiplié par τ : une vitesse, c\'est une distance <b>divisée</b> par une durée.'}],
+   hint:'v = d / τ avec d en mètres.',explain:'v<sub>2</sub> = 10 / 0,50 = <b>20 m/s</b>.'}},
+ {title:'En déduire la longueur de la flèche',q:{type:'num',prompt:'Échelle des vitesses : 1 cm ↔ 5 m/s. Quelle est la longueur de la flèche ?',unitText:'cm',
+   answers:c=>[{v:4,tol:0.15},{v:c.v/5,tol:0.05}],traps:[{v:100,tol:1,msg:'Tu as multiplié : la longueur est v ÷ échelle.'}],
+   hint:'Longueur = 20 m/s ÷ (5 m/s par cm)',explain:'Longueur = 20 / 5 = <b>4,0 cm</b>.'}},
+ {title:'Tracer le vecteur',q:{type:'arrow',chrono:fig3,prompt:`Passe en mode <b>✏️ Tracer la flèche</b> et trace ${V('v',2)} : origine M<sub>2</sub>, <b>parallèle à (M<sub>1</sub>M<sub>3</sub>)</b>, dans le sens du mouvement, longueur 4 cm. (Tu peux afficher la droite (M<sub>1</sub>M<sub>3</sub>) avec le bouton au-dessus du schéma.)`,
+   hint:'Affiche la droite (M1M3) puis trace une flèche parallèle qui part de M2.',
+   explain:'Origine M<sub>2</sub> · direction ∥ (M<sub>1</sub>M<sub>3</sub>) · sens du mouvement · 4,0 cm ↔ 20 m/s.'}}
+];
+
+const fig4=Chrono($('#fig4'),{pts:[[1,1],[2.6,1.9],[5,3.3],[9,6.3],[15,7.8]],i:3,tau:0.2,scaleD:0.5,scaleV:5});
+const qs4=[
+ {type:'num',prompt:`<b>1.</b> Calcule la valeur de la vitesse ${V('v',3)} du mobile au point M<sub>3</sub>.`,unitText:'m/s',answers:[{v:12.5,tol:0.7}],
+  traps:[{v:2.5,tol:0.2,msg:'2,5 m est la <b>distance réelle</b> ; il faut encore diviser par τ.'},{v:5,tol:0.3,msg:'5 cm est la mesure sur le schéma : convertis avec l\'échelle puis divise par τ.'}],
+  hint:'v<sub>3</sub> = M<sub>3</sub>M<sub>4</sub> / τ ; mesure d\'abord, puis convertis.'},
+ {type:'arrow',chrono:fig4,prompt:`<b>2.</b> Trace le vecteur vitesse ${V('v',3)} au point M<sub>3</sub> avec l'échelle donnée.`,hint:'Longueur = v ÷ échelle ; direction ∥ (M2M4).'},
+ {type:'mcq',prompt:'<b>3.</b> Décris le mouvement du mobile entre M<sub>1</sub> et M<sub>5</sub>.',
+  options:[ok('Curviligne accéléré.'),ko('Rectiligne accéléré.','La trajectoire n\'est pas une droite.'),ko('Curviligne uniforme.','Les écarts entre positions augmentent : la vitesse n\'est pas constante.'),ko('Rectiligne ralenti.','Ni droite, ni ralenti.')]}
+];
+$('#showExp4').addEventListener('click',()=>fig4.showExpected());
+
+/* ---- Défi : feu orange ---- */
+const qsDefi=[
+ {type:'num',prompt:'<b>1.</b> Convertis la vitesse de Simon en m/s (arrondie au dixième).',unitText:'m/s',answers:[{v:13.9}],tol:0.06,
+  traps:[{v:180,tol:1,msg:'On passe de km/h à m/s en <b>divisant</b> par 3,6.'}],hint:'50 ÷ 3,6'},
+ {type:'mcq',prompt:'<b>2.</b> Quelle distance doit parcourir la voiture pour que son <b>arrière</b> ait franchi le feu ?',
+  options:[ok('23 m (20 m jusqu\'au feu + 3 m de longueur de voiture).'),ko('20 m.','L\'arrière de la voiture est 3 m plus loin que l\'avant.'),ko('17 m.','On ajoute la longueur de la voiture, on ne la soustrait pas.')]},
+ {type:'num',prompt:'<b>3.</b> Quelle durée lui faut-il à vitesse constante pour parcourir cette distance ? (arrondie au centième)',unitText:'s',answers:[{v:1.66,tol:0.05}],
+  traps:[{v:1.44,tol:0.02,msg:'Tu as utilisé 20 m : n\'oublie pas la longueur de la voiture (23 m).'}],hint:'Δt = d / v, avec d en m et v en m/s.'},
+ {type:'mcq',prompt:'<b>4.</b> Conclusion ?',
+  options:[ok('Oui : il lui faut ≈ 1,66 s, ce qui est inférieur aux 3 s avant le rouge.'),ko('Non : il lui faut plus de 3 s.','1,66 s est bien inférieur à 3 s.')]}
+];
+
+/* ---------- montage ---------- */
+function mountList(sel,qs){ const host=$(sel); Prog.add(qs.length); qs.forEach(q=>host.appendChild(makeQ(q,{}).el)); }
+mountList('#quiz1',quiz1); mountList('#quiz2',quiz2); mountList('#quiz3',quiz3);
+guided($('#ex1'),steps1,ctx1);
+listQ($('#ex2'),qs2);
+guided($('#ex3'),steps3,ctx3);
+listQ($('#ex4'),qs4);
+listQ($('#defiq'),qsDefi);
+
+/* ---------- entraînement express ---------- */
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const gens=[
+  ()=>{const v=pick([5,10,15,20,25,30,35,40]);return{p:`Convertis ${v} m/s en km/h.`,a:v*3.6,u:'km/h',tip:'m/s → km/h : × 3,6'};},
+  ()=>{const v=pick([36,54,72,90,108,126,144,180]);return{p:`Convertis ${v} km/h en m/s.`,a:v/3.6,u:'m/s',tip:'km/h → m/s : ÷ 3,6'};},
+  ()=>{const m=pick([6,12,15,18,24,30,36,45,48]);return{p:`Convertis ${m} min en heures.`,a:m/60,u:'h',tip:'minutes ÷ 60'};},
+  ()=>{const hh=pick([1,2,3]),m=pick([12,15,30,36,45]);return{p:`Convertis ${hh} h ${m} min en heures.`,a:hh+m/60,u:'h',tip:'heures + minutes ÷ 60'};},
+  ()=>{const m=pick([2,3,5,10]);return{p:`Convertis ${m} min en secondes.`,a:m*60,u:'s',tip:'minutes × 60'};},
+  ()=>{const m=pick([1,2,3]),s=pick([15,30,45]);return{p:`Convertis ${m} min ${s} s en secondes.`,a:m*60+s,u:'s',tip:'minutes × 60 + secondes'};}
+];
+let cur=null,streak=0;
+function newDrill(first){
+  cur=pick(gens)(); $('#dq').textContent=cur.p; $('#du').textContent=cur.u; $('#di').value=''; $('#di').classList.remove('ok','ko'); $('#dfb').textContent=''; if(!first) $('#di').focus({preventScroll:true});
+}
+function checkDrill(){
+  const v=parseNum($('#di').value);
+  if(isNaN(v)){ $('#dfb').innerHTML='<span class="bad">Écris un nombre.</span>'; return; }
+  if(Math.abs(v-cur.a)<=0.005){ streak++; $('#streak').textContent='Série : '+streak; $('#di').classList.add('ok'); $('#dfb').innerHTML='<span class="good">✔ Bravo !</span>'; setTimeout(newDrill,700); }
+  else { streak=0; $('#streak').textContent='Série : 0'; $('#di').classList.add('ko'); $('#dfb').innerHTML=`<span class="bad">Pas tout à fait. Rappel : ${cur.tip}.</span>`; }
+}
+$('#dv').addEventListener('click',checkDrill);
+$('#di').addEventListener('keydown',e=>{ if(e.key==='Enter') checkDrill(); });
+$('#dn').addEventListener('click',()=>{ streak=0; $('#streak').textContent='Série : 0'; newDrill(); });
+newDrill(true);
+Prog.paint();
+</script>
+</body>
+</html>
